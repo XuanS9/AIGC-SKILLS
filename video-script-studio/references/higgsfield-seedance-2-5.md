@@ -7,9 +7,11 @@ materials, 30-second native runtime, and three non-generation modes — it can e
 you already have, and extend one forward or backward from its boundary frame.
 
 The prompt grammar changes with it. Reference roles are declared in prose (`@Image 1
-defines …`), audio and text get bracket syntax, long videos are staged with explicit end
-states, and first/last frames are announced **inside the prompt** rather than selected as
-a mode.
+defines …`), audio and text get bracket syntax, and long videos are staged with explicit
+end states. **Current studio rule:** generation uses `omni_reference`; character, prop and
+scene images, reference videos and audio each have an attribute role, not a frame-anchor
+role. Even one image remains an ordinary reference. Legacy keyframe examples below are
+archival model examples and do not govern current project prompts.
 
 > **Model split — read this before writing anything.** 2.5 caps at **720p** and has no
 > `start_image` / `end_image` media role, no `genre` hint, and no 4K lane. If the job
@@ -17,7 +19,7 @@ a mode.
 > **Seedance 2.0** job — `higgsfield-seedance.md`. See § Choosing 2.0 vs 2.5.
 
 ## QUICK FACTS
-- Four modes, picked **before** writing: `t2v` · `omni_reference` · `video_edit` · `video_extension`; the mode changes what the prompt *is* [→](#the-mode-router)
+- Current studio generation uses `omni_reference` even with one or no attached references (without inventing slots). Native `video_edit`/`video_extension` require separate, verified source-timeline needs; the platform also lists `t2v` [→](#the-mode-router)
 - Higgsfield surface: **480p/720p only**, duration **4–30s**, no start/end-frame role, no genre hint, `extension_mode` required for (and only for) `video_extension` [→](#the-higgsfield-parameter-surface)
 - `video_edit` **ignores** `duration` and `aspect_ratio` and bills by the source video's length; `video_extension` inherits the source's aspect ratio [→](#the-higgsfield-parameter-surface)
 - Every reference material gets an explicit role **and** an exclusion — "what to use" plus "what not to use"; never let the model infer the mapping [→](#reference-roles--say-what-to-use-and-what-not-to-use)
@@ -27,7 +29,7 @@ a mode.
 - Long videos are **staged**, not paragraphed: one primary change per stage + an explicit **end state**; timestamps allocate a budget, they are not frame-accurate edit points [→](#long-video--stages-and-end-states)
 - If physics and performance compete in a failed take, splitting and stitching is an optional remedy; compatible action and response remain together [→](#split-by-job-not-only-by-length)
 - Bracket syntax: `()` music · `<>` SFX · `{}` dialogue · `【】` subtitles; non-Chinese dialogue needs a language line before the line [→](#audio-and-text--bracket-syntax)
-- First/last frames and multi-keyframes are declared **in the prompt** (`@Image 1 is the first frame`) — aspect ratio locks to the first image; never merge the two anchors into one sentence [→](#first-last-frame-and-multi-keyframe-control)
+- Current production: assign image/video/audio roles by attribute; describe opening actions and final state in prose, with no frame-anchor images. See the active role map [→](#reference-image-video-and-audio-roles)
 - Editing needs a **sole editing master** + edit scope + Timeline Inheritance; extension needs the **boundary frame aligned before** any new content: `higgsfield-seedance-2-5-mode-playbooks.md`
 - Storyboard grids, coarse-vs-fine blockouts, one-click video, seamless transitions: `higgsfield-seedance-2-5-mode-playbooks.md`
 - **AI-VFX production pipeline** — model-per-asset-class routing, the size-ref frame, location batching, the `omni_reference` v2v lane (source ≥4s, duration = source), the four-batch rule, the slop catalog: `higgsfield-seedance-2-5-vfx-pipeline.md`
@@ -79,27 +81,32 @@ For `video_edit`, source events and timestamps determine edit annotations: prese
 master's duration and timeline, subject to the documented rendering tolerance, and keep
 `duration`/`aspect_ratio` unset as controls. For `video_extension`, lock the source join's
 pose, props, motion phase/direction/speed, camera, lighting, and audio before budgeting
-new content. Forward extends the last-frame state; backward ends at the **source first-frame
-state**. The source timeline remains intact. Parameter limits below remain authoritative.
+new content. Forward extends the source video's end state; backward joins its **opening state**. The source timeline remains intact. Parameter limits below remain authoritative.
 
 ## The Mode Router
 
-Pick the mode first. The same sentence means different things in different modes, and two
-of the four modes are not generation at all.
+When the current studio defaults to Seedance 2.5 for video generation, set
+`omni_reference` and map any actual materials by attribute. A user-selected other model
+follows that model's verified capabilities; never claim `omni_reference` is supported
+by an unrelated model. Do not auto-route a single image to a frame-anchor workflow or no-reference
+text to `t2v`. Native edit/extension remains a separate choice when exact source timing
+or boundary continuation is requested and supported; the platform mode catalog below
+is factual, not the project's default selector.
 
 | The user wants | Mode | What the prompt is |
 |---|---|---|
-| A clip from a description, no materials | `t2v` | A scene brief — the core formula below |
-| A clip built from images / videos / audio they supply | `omni_reference` | A **role map** plus a scene brief |
+| A clip from a description, no materials (current studio) | `omni_reference` | A scene brief without invented reference slots; if platform requires `t2v` for zero materials, verify and report the actual limitation before execution |
+| A clip built from images / videos / audio they supply (current studio) | `omni_reference` | A **role map** plus a scene brief, no input-frame anchors |
 | To change something inside a video they already have | `video_edit` | An **edit order**: master + scope + preserve list |
 | More footage before or after a video they already have | `video_extension` | A **boundary contract** plus new content |
 
 Two rules that fall out of this:
 
-1. **First/last frames, keyframes, storyboard grids, and blockouts are all `omni_reference`.**
-   2.5 has no separate first/last-frame mode on this platform — the anchor images are
-   ordinary references whose *role sentence* says they are the first and last frame.
-   `[OFFICIAL — Dreamina: "no need to switch to a separate first/last-frame mode"]`
+1. **Current project generation uses `omni_reference` for all supplied images, video and audio.**
+   Each input has an attribute role and exclusion. A single reference image does not
+   determine the opening composition; stage order and ending are written as action and
+   state, never as input-image frame anchors. Source editing/extension requiring strict
+   timeline preservation is routed separately after verifying actual mode support.
 2. **Editing is not regeneration.** If the user wants the shot rebuilt, that is
    `omni_reference` with the old clip as a motion reference — not `video_edit`. `video_edit`
    preserves the master's timeline and changes one scoped thing inside it.
@@ -478,43 +485,30 @@ Two house rules carry over from `higgsfield-audio.md` and the film pipeline in
 
 ---
 
-## First-Last Frame and Multi-Keyframe Control
+## Reference image, video and audio roles
 
-`[OFFICIAL — Dreamina]` On 2.5 these are **prompt statements, not a mode**, because the
-platform surface has no start/end-frame media role.
+For current video generation use `omni_reference`. Map only supplied and actually bound
+materials. A role sentence names the specific attribute to use, degree of fidelity,
+and what to exclude; no image serves as the required opening or ending frame.
 
+```text
+@Image 1 defines <Character A>'s identity and outfit only. Ignore its background,
+pose and panel layout.
+@Image 2 defines <Prop A>'s structure and material only; it belongs to <Character A>.
+@Image 3 defines the scene layout and lighting only; ignore incidental people.
+@Video 1 supplies the timing and body trajectory of <action> only; do not copy
+its performer, costume or location.
+@Audio 1 supplies <voice, spoken words, music rhythm or ambience> only; do not
+introduce unrelated voices or sounds.
+Open with <story-driven action and staging>, then <causal event and response>.
+Finish with <visible character, prop and scene state plus sound and handoff>.
 ```
-@Image 1 is the first frame. It defines the opening composition, subject position, pose,
-prop state, scene, and camera direction.
-@Image 2 is the last frame. It defines the ending composition, subject position, pose,
-prop state, scene, and camera direction.
-@Image 3 defines <Subject A>'s <appearance, clothing, structure, or material>. Do not change
-the first-frame composition defined by @Image 1 or the last-frame composition defined by @Image 2.
 
-<Describe one continuous action or event>.
-The video begins naturally from the first frame defined by @Image 1 and reaches the last
-frame defined by @Image 2 after the continuous action.
-Between the first and last frames, maintain continuity in <character identity, prop structure
-and ownership, scene layout, and camera direction>.
-```
-
-Three failure sources, all avoidable:
-
-1. **Never merge the anchors** — `@Images 1 and 2 are the first and last frames` is the
-   documented wrong form. One role sentence per image.
-2. **First and last images must share an aspect ratio**, or the last frame stretches. The
-   output ratio locks to the **first** image; duration stays settable.
-3. **Supplementary references supplement only their named attribute** — each one repeats the
-   "do not change the first/last-frame composition" clause.
-
-**Multi-keyframe sequences** (3+ ordered stage images) open with `Use @Image 1 through
-@Image N as keyframes in this order`, then describe the key state each image represents.
-Independent keyframe images align far more reliably than several frames combined into one
-grid. Keyframes control **stage order and key states** — they do not reproduce every
-intermediate frame.
-
-Storyboard grids and blockout references (coarse vs fine) are the next rung up:
-`higgsfield-seedance-2-5-mode-playbooks.md` § Storyboard grids and § Blockout references.
+Replace example slots with actual attachment bindings. If a referenced file or
+current slot is missing, keep its logical name in the planning list and describe
+the subject in prose; do not invent an `@Image`/`@Video`/`@Audio` binding. One image
+uses the same rule; no special image mode or additional starting composition is needed.
+The ending is a narrative output state, not a second reference image.
 
 ---
 
@@ -532,7 +526,7 @@ before opening it:
   independently.
 - **Video extension** — the one rule that decides success: **align the boundary frame before
   describing new content.** Forward extension continues from the source's last frame;
-  backward extension must land *on* the source's first frame as its explicit end state.
+  backward extension must meet the source video's opening motion, space and sound state.
   Inherit pose, prop ownership, motion phase/direction/speed, framing, lighting, and audio
   phase at either join; new stages must not restage or retime the source.
   "Then connect to the source video" is the documented failure phrasing — it leaks later

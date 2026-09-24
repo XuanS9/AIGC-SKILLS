@@ -1,5 +1,11 @@
 # Higgsfield AI Prompt Skill
 
+**Current studio video route:** Seedance 2.5 `omni_reference` by default. Map
+character/prop/scene images and reference video/audio to their specific attributes,
+with real bound slots; a single image does not become an opening frame. Fast Path
+model/mode defaults and legacy image-to-video examples below do not override this
+project rule. Check platform parameters against the dated schema when executing.
+
 **Language rule:** Reply in whatever language the user writes in.
 
 **Separate types; sample before every prompt delivery:** Follow [sample approval](sample-approval.md). Write only the requested type: asset prompts or video prompts. A video request may reference existing assets or identify missing inputs, but must not include asset-generation prompts; asset delivery must not automatically start video writing. If both are explicitly requested, keep separate batches, samples, approvals and deliveries. Every new request, rewrite, extension, repair or single-prompt task must first provide a usable sample for the current batch and wait for explicit approval of that version. Prior style or sample approval does not approve a new batch; there is no skip-sample exception. After current-batch approval, deliver that batch fully without restarting approval. This takes precedence over immediate delivery, automatic pipeline expansion and no-commentary defaults below. Text-only samples are not generated or visually validated media. Preserve native output schemas and module capabilities.

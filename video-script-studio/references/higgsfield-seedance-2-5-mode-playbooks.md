@@ -1,5 +1,12 @@
 # Seedance 2.5 — Mode Playbooks
 
+Current project generation uses `omni_reference` for image/video/audio inputs. The
+legacy first/last-frame and keyframe recipes below are retained for historical model
+context and must not be selected for this project's video prompts. For edit/extension
+requests, use a source video as a reference when a re-render is acceptable; use native
+edit/extension mode only after checking the user's timeline-preservation needs and
+current platform schema. Do not promise pixel-accurate preservation from a reference.
+
 The long-form templates for the modes and techniques that `higgsfield-seedance-2-5.md` routes to. Every
 template here is `[OFFICIAL — Dreamina]` (ByteDance's *Seedance 2.5 Prompt Guide* and
 *User Guide*), normalized to this repo's house conventions: positive phrasing, no age
@@ -21,7 +28,7 @@ reference limits, and explicit subject-count locks retain their original force.
 |---|---|
 | Change something inside an existing video | § Video editing |
 | Add footage after (or before) an existing video | § Video extension |
-| First/last frames, keyframe stages | `higgsfield-seedance-2-5.md` § First-Last Frame and Multi-Keyframe Control |
+| Character/prop/scene images, reference video/audio | `template-omni-reference-2-5.md` (role maps, exclusions, scene stages) |
 | A storyboard grid drives shot order | § Storyboard grids |
 | A 3D previz / white-model drives the shot | § Blockout references |
 | A batch of stills becomes one edited video | § One-click video |
@@ -31,8 +38,11 @@ reference limits, and explicit subject-count locks retain their original force.
 
 ## Auto-locked parameters
 
-Three modes take parameters away from you. Know this before promising an aspect ratio or a
-runtime.
+Current `omni_reference` generation takes its ratio and duration from the verified
+platform settings; reference image order does not set the opening frame or ratio.
+The frame-anchor row below is retained only as historical model guidance and is not
+a current-project route. Native edit/extension modes have different locks and must
+be verified before a strict source-preserving job.
 
 | Task | Aspect ratio | Duration |
 |---|---|---|

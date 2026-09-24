@@ -1,10 +1,17 @@
 # Higgsfield Prompt Engineering
 
+Current studio video generation defaults to Seedance 2.5 `omni_reference` for role-based
+character, prop and scene images plus motion/camera video and sound/audio references.
+Even a single picture is an attribute reference, never a forced opening image.
+The I2V section below describes a legacy alternative for other model workflows and
+must not route current studio video tasks. Describe opening motion and final state
+in words, using real reference slots and avoiding invented attachments.
+
 Follow [sample approval](sample-approval.md) for every prompt-writing request, including rewrites, repairs and single prompts. Write only the requested type: assets or video. If both are requested, use separate batches with their own samples and approvals. First provide a representative, usable sample for the current batch, wait for explicit approval of that version, then deliver all prompts in that batch. Prior approval does not approve a new request; there is no skip-sample exception. Apply the methods below only to the sample's scope until approval; after approval complete the batch without another sample loop. Never append asset-generation prompts to a video request, automatically continue from assets into video, or present intended effects as generated results.
 
 ## QUICK FACTS
 - MCSLA = Model, Camera, Subject, Look, Action — the five layers of every prompt [→](#the-mcsla-formula)
-- I2V: let the image own appearance; retain reference locks, causal motion and state handoffs [→](#image-to-video-i2v)
+- For this project, images own only their assigned appearance, prop or scene attributes; retain causal motion and state handoffs in the `omni_reference` prompt. I2V below is legacy context [→](#image-to-video-i2v)
 - Keep prompts under 200 words — **short-form MCSLA regime only**; block-scaffold production prompts replace the cap with structural lint (HARD RULE 8 carve-out); Cinema Studio has a hard 512-character cap [→](#high-performing-prompt-patterns)
 - One primary change per narrative stage; compatible stages may share a shot or clip. Action counts are complexity examples, not quotas; Fast Motion Trick: render in Slow Mo, speed up in post [→](#one-action-per-scene)
 - Never leave a generic emotion ("sad"/"angry") in a prompt — decompose into muscle movements, breath, eyes, skin [→](#generic-emotion-decomposition--which-kind-of-x)
@@ -108,8 +115,8 @@ Style: Cinematic, desaturated orange and deep blue, 2.35:1 anamorphic.
 
 ---
 
-### Image-to-Video (I2V)
-Animate a provided still image. The image defines the starting frame.
+### Image-to-Video (I2V) — legacy model context, not the current studio route
+Animate a provided still image. In legacy I2V models the image defines the starting frame; for this project's Seedance 2.5 video tasks, assign it an attribute reference role instead.
 Best for: character consistency, product shots, portrait animation, storyboard bring-to-life.
 
 ```

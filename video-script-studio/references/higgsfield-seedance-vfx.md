@@ -1,5 +1,11 @@
 # Higgsfield Seedance VFX — Footage Transformation
 
+**Legacy Seedance 2.0 lane.** Current studio video work defaults to Seedance 2.5
+`omni_reference` with the existing clip as a role-scoped video reference. The
+start/end-frame recipes in this file are historical platform instructions and are not
+a requirement or route for the current project. If a user explicitly selects a different
+model, verify its actual inputs separately and follow that request.
+
 This skill is for **editing a clip the user already has**: keep a real subject and the
 real camera move, change only what they ask for. It is the video-to-video sibling of
 `higgsfield-seedance.md` (the general Seedance director). It **reuses that skill's

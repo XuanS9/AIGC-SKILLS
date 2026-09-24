@@ -26,7 +26,7 @@ that build.
 - Field v2v runs in **`omni_reference` with a video reference, not `video_edit`** — which is why duration is settable, and must equal the source [→](#stage-4--footage-transformation-the-omni_reference-v2v-lane)
 - Source clip **≥ 4 s** (the model's own duration floor); pad a shorter one by freeze-framing its last frame [→](#stage-4--footage-transformation-the-omni_reference-v2v-lane)
 - **The four-batch rule**: the same defect in all four batches is a prompt or source fault — more batching only burns credits [→](#stage-5--when-v2v-fails-the-four-batch-rule)
-- v2v cannot invent an action the plate has no anchor for; fall back to **i2v from a location screenshot** and write a deliberate **empty-frame pause** as the stitch point [→](#stage-5--when-v2v-fails-the-four-batch-rule)
+- v2v cannot inherit an action missing from the source; use a location screenshot as a **scene reference** and describe the missing motion in `omni_reference`. A deliberate empty beat can serve as a cut point [→](#stage-5--when-v2v-fails-the-four-batch-rule)
 - "Make it more natural" does nothing — the fix is a **physical picture** of the movement [→](#the-slop-catalog)
 - The tells that give a shot away — the CG-double fall, the origami wing, the warped logo — and what each one is asking you to write [→](#the-slop-catalog)
 - Direction patterns from the build: open mid-action, the cloud-punch opener, the high-speed kit, emotion with no video reference, the voice lock [→](#direction-patterns-from-the-build)
@@ -326,13 +326,11 @@ can only render an action the plate has an anchor for. There was no jump moment 
 source footage — so a prompt asking for a jump had nothing to inherit and turned to slop
 every time. No amount of re-rolling creates an anchor that was never filmed.
 
-**The fallback is image-to-video, and it is a downgrade in continuity, not in quality:**
+**The current fallback remains `omni_reference` and requires a fresh continuity check:**
 
-1. Screenshot a frame of the location out of the plate.
-2. Use it as the **starting frame** — declared in the prompt, not as a mode
-   (`higgsfield-seedance-2-5.md` § First-Last Frame and Multi-Keyframe Control).
-3. Write the action from scratch, since nothing is being inherited any more.
-4. Stitch the i2v shot to the v2v shot in the edit.
+1. Screenshot a location view from the source and use it only as a **scene reference**; state which layout and lighting to retain, excluding unrelated people or motion.
+2. Map character and prop images separately, then describe the missing action from scratch because the source lacks its motion.
+3. Specify the desired cut point and final motion/audio state; stitch the new shot to the source in the edit and check the join visually. Do not promise pixel-identical continuity.
 
 ### The empty-frame pause
 

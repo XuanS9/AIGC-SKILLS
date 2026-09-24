@@ -1,5 +1,10 @@
 # Reference — First / start-frame workflow
 
+**Historical Seedance 2.0 recipe; do not use in this project's current video flow.**
+Extracted stills, when needed for look development, serve as scene/style references
+inside Seedance 2.5 `omni_reference` alongside role-scoped character, prop, motion-video
+and audio references. No still becomes the generation's required opening image.
+
 Video credits are the expensive part of a footage transform. When the *look* is uncertain —
 a new creature, an unfamiliar relight, an environment you haven't tried — lock it as a **still
 first**, then animate from that still. You approve a single image cheaply, then hand it to

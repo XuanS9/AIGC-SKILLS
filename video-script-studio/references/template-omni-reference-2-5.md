@@ -9,14 +9,16 @@ Doctrine: `higgsfield-seedance-2-5.md`. Long-form mode templates
 
 ## When to use this template
 
-- The user supplies **more than one** reference material, or one reference plus a description
+- For every current-project Seedance 2.5 video generation: zero, one or multiple reference materials. One image remains an attribute reference, never a starting frame.
 - Two or more named subjects must not swap appearance, clothing, or props
 - The clip runs longer than a single continuous beat (stage it)
-- Any 2.5 job that is *not* plain `t2v` and *not* an edit/extension order
+- For editing or extension, use the source as a video reference when the task permits regeneration; if preserving the original timeline exactly is essential, verify the native editing/extension capability separately.
 
-For a single-subject clip with one reference and one continuous action, skip the structure and
-use the core formula in `higgsfield-guide.md` § The Core Prompt Formula — this template is for the case
-where material mapping is the risk.
+When the user selects a different model, check its supported media roles before using this
+Seedance 2.5 template. For zero references, describe the subject and space in words
+without inventing slots. For a
+single reference, use a compact version of the same role map; do not convert it to a
+frame-driven workflow. Declare only actual materials and real bound slots.
 
 ## Platform settings (not prompt text)
 
@@ -45,6 +47,16 @@ Determine stages from events, causality, reveals, or state changes, then choose 
 coverage and allocate time for actions, responses, dialogue, and transitions. No preset
 stage count or equal time. A stage is not automatically a cut or a generation. Preserve
 confirmed story/ending and inherited states; check the total against the legal runtime.
+
+The `@Image 1`, `@Video 1` and `@Audio 1` tokens below are **syntax examples only**.
+If the user says they have references but no actual files or platform slots can be
+inspected, use descriptive role labels in the copyable prompt (e.g. “人物参考图”,
+“动作参考视频”, “环境声参考音频”) and keep exact slot mapping outside as pending.
+Never infer `@Image 1` merely because the user mentioned one picture. Only write
+an `@` token after checking its real attachment and current clip's slot mapping.
+A source video may show several subjects: it supplies only the requested motion or
+camera property, not extra actors or animals in the output. Unknown assets stay
+“待核验/待绑定”; do not state that they are bound in prose or the prompt.
 
 Fill the bracketed fields. **Delete any block the shot does not need** — an empty block is
 noise, not structure. Repeat the stage block only as required by the planned changes.

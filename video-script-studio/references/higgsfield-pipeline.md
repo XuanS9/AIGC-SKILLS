@@ -1,5 +1,11 @@
 # Higgsfield Production Pipeline
 
+**Current studio routing:** Video generation defaults to Seedance 2.5
+`omni_reference`. Image prompts produce role-scoped character, prop and scene
+references; source video and audio serve motion, camera and sound roles. The
+legacy “provided image as first frame” examples below do not apply to the
+current project. The user's explicitly selected model still takes precedence.
+
 Plan with [shared narrative planning](narrative-planning.md) before
 choosing tools. A **narrative stage** is a dramatic event or state transition;
 a **shot** is continuous camera coverage between cuts; a **generation clip** is

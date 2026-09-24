@@ -1,5 +1,10 @@
 # Template: Footage VFX Transform (Seedance 2.0, video-to-video)
 
+**Historical Seedance 2.0 template.** For the current project use Seedance 2.5
+`omni_reference`: source footage is a video reference with a named motion/timing
+role, and character/prop/scene pictures and audio carry their respective attributes.
+Do not select this template's start-frame steps for current-project generation.
+
 Paste-ready scaffolding for transforming a clip the user **already shot** — preserve the
 real subject + camera move, change only the named element. Pairs with
 `higgsfield-seedance-vfx.md`; that skill carries the rules, this file carries
