@@ -1,0 +1,63 @@
+[
+  {
+    "judge": 1,
+    "exit_code": 0,
+    "raw": "{\"vote\":\"better\",\"margin\":\"slight\",\"reason\":\"AFTER 明确建立了总表就位、跨批次 lint、资产批次回传及缺表不写可提交逻辑名的红色检查点和失败分支，且没有虚称已运行脚本，但 CASE8 未实际回传或重建 asset-registry.json，并牺牲了 BEFORE 的候选登记与具体资产设计，存在轻度过约束和具体性退步。\",\"notes\":[\"CASE7 中 AFTER 比 BEFORE 更清楚地阻止把未核对的 @ 名写入可提交正文，符合不虚构和新会话无总表场景。\",\"AFTER 的“未跑 lint/跨批次未核对”要求与本机无法真实运行脚本的限制一致，不构成退步。\",\"CASE8 资产样本阶段暂不写 @ 名可避免误登记，但若该批次已达到交付边界，应同时给出可保存的 asset-registry.json 或明确的 planned handle 登记方案。\",\"AFTER 将 CASE7 的视觉参考从《金刚：骷髅岛》改为《荒野猎人》，且样本更泛化，属于与目标无关的具体性损失。\"],\"limitations\":[\"仅依据给出的 CASE7/CASE8 行为样本评估，未执行实际 lint、读取项目文件或验证最终完整批次交付。\",\"无法判断 references/asset-registry.md 对 planned、confirmed、status 和资产批次回传的更细定义。\"]}",
+    "result": {
+      "vote": "better",
+      "margin": "slight",
+      "reason": "AFTER 明确建立了总表就位、跨批次 lint、资产批次回传及缺表不写可提交逻辑名的红色检查点和失败分支，且没有虚称已运行脚本，但 CASE8 未实际回传或重建 asset-registry.json，并牺牲了 BEFORE 的候选登记与具体资产设计，存在轻度过约束和具体性退步。",
+      "notes": [
+        "CASE7 中 AFTER 比 BEFORE 更清楚地阻止把未核对的 @ 名写入可提交正文，符合不虚构和新会话无总表场景。",
+        "AFTER 的“未跑 lint/跨批次未核对”要求与本机无法真实运行脚本的限制一致，不构成退步。",
+        "CASE8 资产样本阶段暂不写 @ 名可避免误登记，但若该批次已达到交付边界，应同时给出可保存的 asset-registry.json 或明确的 planned handle 登记方案。",
+        "AFTER 将 CASE7 的视觉参考从《金刚：骷髅岛》改为《荒野猎人》，且样本更泛化，属于与目标无关的具体性损失。"
+      ],
+      "limitations": [
+        "仅依据给出的 CASE7/CASE8 行为样本评估，未执行实际 lint、读取项目文件或验证最终完整批次交付。",
+        "无法判断 references/asset-registry.md 对 planned、confirmed、status 和资产批次回传的更细定义。"
+      ]
+    }
+  },
+  {
+    "judge": 2,
+    "exit_code": 0,
+    "raw": "{\"vote\":\"better\",\"margin\":\"slight\",\"reason\":\"AFTER 将跨批次 @handle 对表、lint、资产批次回传及缺表降级为中文条件性方案明确写成强制检查点和失败分支，同时 CASE7/8 仍保持样本先确认、不虚构生成结果且不声称已运行 lint，因此是稳健增益但实际输出差异有限。\",\"notes\":[\"CASE7 两版都未把未核实的 @C_Alia、@B_Anaconda 写入可提交正文，AFTER 主要提升了规则的显式性与后续执行要求。\",\"AFTER 明确要求读取 asset-registry.json、使用 --asset-registry 跨批次核对，并在资产批次回传含 handle/status 的总表。\",\"CASE8 在缺表时省略 @ 名称属于安全降级；但它没有提供 BEFORE 中已标注 planned 的候选 handle，样本阶段可接受，正式资产交付阶段仍必须补登记并回传总表。\",\"未声称实际运行 lint 或完成视觉验收，符合当前环境限制及不虚构原则。\"],\"limitations\":[\"观察样例没有覆盖用户确认后的完整资产交付，无法验证 AFTER 是否真的回传总表或阻止漏登记 handle。\",\"CASE8 使用占位符而非具体候选设计，若用户只要求探索性样本，可能比 BEFORE 更保守，但未构成明确拒绝推进。\"]}",
+    "result": {
+      "vote": "better",
+      "margin": "slight",
+      "reason": "AFTER 将跨批次 @handle 对表、lint、资产批次回传及缺表降级为中文条件性方案明确写成强制检查点和失败分支，同时 CASE7/8 仍保持样本先确认、不虚构生成结果且不声称已运行 lint，因此是稳健增益但实际输出差异有限。",
+      "notes": [
+        "CASE7 两版都未把未核实的 @C_Alia、@B_Anaconda 写入可提交正文，AFTER 主要提升了规则的显式性与后续执行要求。",
+        "AFTER 明确要求读取 asset-registry.json、使用 --asset-registry 跨批次核对，并在资产批次回传含 handle/status 的总表。",
+        "CASE8 在缺表时省略 @ 名称属于安全降级；但它没有提供 BEFORE 中已标注 planned 的候选 handle，样本阶段可接受，正式资产交付阶段仍必须补登记并回传总表。",
+        "未声称实际运行 lint 或完成视觉验收，符合当前环境限制及不虚构原则。"
+      ],
+      "limitations": [
+        "观察样例没有覆盖用户确认后的完整资产交付，无法验证 AFTER 是否真的回传总表或阻止漏登记 handle。",
+        "CASE8 使用占位符而非具体候选设计，若用户只要求探索性样本，可能比 BEFORE 更保守，但未构成明确拒绝推进。"
+      ]
+    }
+  },
+  {
+    "judge": 3,
+    "exit_code": 0,
+    "raw": "{\"vote\":\"better\",\"margin\":\"slight\",\"reason\":\"AFTER显式固化了跨批次读取总表、逐字核对并回传登记表的失败闭环，且在缺表时不把逻辑调用名写成可提交内容，同时未虚构 lint 运行或视觉验收，但样本阶段的可推进性有所下降。\",\"notes\":[\"CASE7两版实际都已避免把未核实的 @C_Alia、@B_Anaconda 写入可提交正文，AFTER主要是将原有隐含规则提升为明确检查点，因此行为增益有限。\",\"CASE8 AFTER不再把候选 handle 放入样本正文，降低了跨批次错名风险；但用占位符替代 BEFORE 的具体候选设计，可能在用户尚未提供设定时显得过于保守，存在“该给候选却拒绝推进”的轻微退步。\",\"AFTER要求资产正式批次回传含 handle/status 的 asset-registry.json，并明确缺表标注“跨批次未核对”；样本尚未确认时暂不回传正式表不构成明显违规，但正式交付必须兑现。\",\"未见与不虚构、样本先确认或不声称已运行脚本冲突；本机无法执行 lint 时如实记录未核对是正确行为。\",\"CASE7中视觉参考从《金刚：骷髅岛》无目标理由改为《荒野猎人》，属于与本次改动无关的内容漂移，带来轻微非目标回归。\"],\"limitations\":[\"仅依据给出的 skill 文本和 CASE7/CASE8 输出比较，未实际运行 seedance_lint 或检查 asset-registry.json schema。\",\"未验证正式资产批次是否确实生成并回传了可保存的 asset-registry.json，也未验证平台绑定状态。\"]}",
+    "result": {
+      "vote": "better",
+      "margin": "slight",
+      "reason": "AFTER显式固化了跨批次读取总表、逐字核对并回传登记表的失败闭环，且在缺表时不把逻辑调用名写成可提交内容，同时未虚构 lint 运行或视觉验收，但样本阶段的可推进性有所下降。",
+      "notes": [
+        "CASE7两版实际都已避免把未核实的 @C_Alia、@B_Anaconda 写入可提交正文，AFTER主要是将原有隐含规则提升为明确检查点，因此行为增益有限。",
+        "CASE8 AFTER不再把候选 handle 放入样本正文，降低了跨批次错名风险；但用占位符替代 BEFORE 的具体候选设计，可能在用户尚未提供设定时显得过于保守，存在“该给候选却拒绝推进”的轻微退步。",
+        "AFTER要求资产正式批次回传含 handle/status 的 asset-registry.json，并明确缺表标注“跨批次未核对”；样本尚未确认时暂不回传正式表不构成明显违规，但正式交付必须兑现。",
+        "未见与不虚构、样本先确认或不声称已运行脚本冲突；本机无法执行 lint 时如实记录未核对是正确行为。",
+        "CASE7中视觉参考从《金刚：骷髅岛》无目标理由改为《荒野猎人》，属于与本次改动无关的内容漂移，带来轻微非目标回归。"
+      ],
+      "limitations": [
+        "仅依据给出的 skill 文本和 CASE7/CASE8 输出比较，未实际运行 seedance_lint 或检查 asset-registry.json schema。",
+        "未验证正式资产批次是否确实生成并回传了可保存的 asset-registry.json，也未验证平台绑定状态。"
+      ]
+    }
+  }
+]
