@@ -11,7 +11,7 @@ description: 将剧本、角色/道具/场景参考图、分镜、参考视频�
    资产、视频、分镜及其改写任务均先完整读取 [项目资产总表](references/asset-registry.md)，读取用户项目内同一份 `asset-registry.json`；没有总表时从已确认交付及实际素材建立。样本和完整稿逐字复用已有调用名，交付前对表核对；分开生成不另起名称。
    提示词任务先完整读取 [样本确认流程](references/sample-approval.md)，识别本次类型：要求资产只写资产，要求视频只写视频；同时明确要求两类时分成独立批次，分别给样本、确认和交付。每次先交本次类型的代表性样本及预期效果，停止并等待用户明确确认，再输出对应批次全部提示词；新请求、改写、补镜、修词及单条交付均适用，历史确认不替代本次确认，不设跳过样本的例外。
 2. 视频创作、改写、分镜、编辑或延伸：先区分剧情段落、镜头与模型生成片段，按观看任务、动作因果及表演负荷决定切点与时长，不向30秒或模型上限凑段；具体方法执行 [按内容拆镜与估时](references/narrative-planning.md#按内容拆镜与估时)。完整读取 [导演编排与交付](references/directing-workflow.md)、[叙事规划](references/narrative-planning.md)、[八栏目模板](references/template-general-director-2-5.md)；完整创作和改写还需完整读取 [演出范本](references/template-full-performance-example.md)。
-3. 打斗、武打、追逐、对抗、演武、人兽战：完整读取 [动作导演](references/fight-director.md)，按需读取 [动作设计](references/fight-fight-design.md)、[动作摄影](references/fight-camera-guide.md)、[动作诊断](references/fight-diagnostics.md)。支持 Seedance、MiniMax-H3 及通用模型。
+3. 打斗、武打、追逐、对抗、演武、人兽战：完整读取 [动作导演](references/fight-director.md)，按需读取 [动作设计](references/fight-fight-design.md)、[动作摄影](references/fight-camera-guide.md)、[动作诊断](references/fight-diagnostics.md)。人兽战、兽袭、群兽围攻、演武群战默认采用 fight-director 的高强度奇观编排（升级式奇观纲要 + 行为与交互铁律栏 + 按回合升级分镜 + 禁收势尾帧 + 完整负面提示词栏），同时保留因果交锋、双向攻防与真实受力。支持 Seedance、MiniMax-H3 及通用模型。
 4. Higgsfield 任务：完整读取 [平台制作指南](references/higgsfield-guide.md) 和下表匹配的模块。提示词任务另须完整读取 [提示词构建](references/higgsfield-prompt.md)，按其 Load Map 加载模型与任务资料。联合动作任务先编排动作因果、空间和角色状态，再转换为平台格式。
 5. 人物出现时加载表演与 FACS 身体微反应；剧情改写加载场景引擎；多场景或分镜加载拆镜模块；对白、具体声效或音乐同步加载音频模块。非动作任务沿用对应原生流程。
 6. 按下方「提示词内容边界」将内部规划转成当前生成任务的正向描述，再执行「输出验证关卡」，检查素材职责、人物身份、数量、时序绑定、动作因果、连续状态、本镜声源与画面对应、实际模型限制及适用约束；修复文本失败项后再交付，并附实际验证结果。失败迭代根据当前素材诊断，每轮只改一类变量。
