@@ -29,16 +29,16 @@ including a single take. Follow the root/shared contract and read the
 **1 资产与参考锁定 → 2 一句话总合成 → 3 全局视听与空间 → 4 主体行为与节奏规则 →
 5 分段演出 → 6 连续性 → 7 结尾状态与交接 → 8 关键约束与排除**.
 
-Bind real voice/track references and their purposes in section 1. Establish the global
-audio strategy **once in section 3**: the continuous sound bed, allowed layers, mix priorities,
-acoustics, and whether a source track is preserved, mixed, or used only as a reference. Section 4 carries delivery
-and pacing rules. In section 5, write each event's continuous performance, action/response,
-visible result, camera path, and **声音**: exact speaker-attributed dialogue, breath,
-reactions, silence, and sound cues at their causes. Put inherited voice, breath, room tone, environmental bed, phrase and action phase in section 6;
-each stage records only additions, changes, ducking, masking or removal and explicitly
-inherits the rest. The final audible state, decay, and join go in section 7. Section 8
-contains only remaining task-specific constraints; do not repeat the global mix policy. Four-layer inventories, reference-role tables, and diagnostics are internal aids,
-not extra prompt sections or substitutes for the performed scene.
+Bind real voice/track references and their purposes in section 1. In section 3, describe
+only sounds this generated clip can contain: scene ambience, dialogue, effects, acoustics
+and reference-audio role. Default to NO BGM. Section 5 attaches exact speaker-attributed
+dialogue, breaths and action effects to their visible causes. Section 6 tracks changes
+within the *same generation*; an independently generated next shot cannot inherit
+its waveform or mix. Section 7 describes the current clip's audible ending. For cross-shot
+continuity, record intended ambience and sound transitions as **editing/post-production
+notes outside each copyable prompt**, then mix the assembled film; do not tell the model
+to control the full film's sound bed. Four-layer inventories, reference-role tables and
+diagnostics are internal aids, not extra prompt sections.
 
 Explicitly concise requests, local edits, audio-only tasks, and hard-limited/native
 submissions keep their relevant inline cues, Audio fields, `[AUDIO: Xs]`, radio-drama,
@@ -54,7 +54,8 @@ framing, and light at the join. Forward starts from the source tail; reverse ext
 ends at the **source first-frame and audio state**. Only new material receives a new budget.
 Transitions, pauses, and the final hold/decay count within the total. For multiple clips,
 distinguish source, final-timeline, and clip-local timestamps; count overlaps/crossfades
-once and keep continuous master audio through picture cuts. The Seedance 2.0
+once in the final edit; a prompt for an independently generated shot cannot enforce
+this continuity. The Seedance 2.0
 15s reference/extraction limit, Cinema Studio's ≤15s combined input limit, and each
 other model's actual limits below remain intact; none sets narrative-stage length.
 
@@ -169,9 +170,9 @@ Audio: diegetic sound only — footsteps on wet stone, fabric shift, breath, roo
 NO BGM — no background music.
 ```
 
-**In a full video draft, state the no-score policy once in section 3.** Section 5
-then describes only the permitted sound events; do not repeat the policy in a header or
-closing block. `NO BGM` excludes score, not all sound. For a requested native short prompt,
+**For each independently generated shot, default to NO BGM in that shot's audio field.**
+Within one model generation containing multiple stages, state it once in section 3.
+Section 5 then describes only permitted sound events. `NO BGM` excludes score, not all sound. For a requested native short prompt,
 place the policy in its audio field. This is demo wording, not a universal guarantee;
 use positive source/mix wording where the selected mode requires it.
 
@@ -442,22 +443,21 @@ that can coexist. (Sibling of `higgsfield-seedance.md` § Reference Roles
 
 ### Cutting to music — assembling separately-generated clips on one track
 
-For non-musical scenes the same continuity rule applies to ambience and effects: carry
-ongoing sound sources through the next shot and write only what changes at the cut. If a
-source moves, is muffled by a door, passes behind an obstacle, ducks under dialogue, or
-stops, describe that audible transition and its visual cause.
+For non-musical scenes, the editor can carry ambience and effect tails across cuts.
+Record this as a post-production handoff, not an instruction that one generated shot
+can read the previous shot's sound. Each independent shot prompt states only its own
+audible sources; matching and crossfades happen after generation.
 
 `[EMPIRICAL — MiniMax H3 skill corpus, re-derived; cross-model editing craft]`
 Beat sync governs what happens *inside* a clip; these three laws govern the
 timeline the clips land on:
 
-- **One continuous master sound bed.** Keep a stable ambience, room tone, weather bed,
-  ongoing source or music across picture cuts; never restart or replace the complete
-  sound list at every shot. A new shot inherits the previous bed unless a motivated
-  transition is written.
-- **One master track for music.** The piece binds to a single continuous music track laid
-  in post — never per-clip audio stitched end to end. A join in the music is
-  audible before a join in the picture is visible.
+- **Continuity is an editing decision.** If the assembled film needs uninterrupted
+  weather or room tone, mix one consistent bed and transition effect tails in post.
+  Individual generation prompts cannot guarantee the same sound across shots.
+- **Music is optional and defaults off in shots.** If the user explicitly wants a film
+  score, plan a master music track in post; do not generate a new score in every shot.
+  Cuts in a requested music track are audible before picture cuts.
 - **Cuts land on musical punctuation** — a breath, a lyric pause, a snare, the
   drop. Never hard-cut inside a sung vowel unless the incoming shot is an ECU
   whose mouth shape continues that vowel: lip continuity is an *edit*

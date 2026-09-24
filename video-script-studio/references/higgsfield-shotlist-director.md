@@ -152,6 +152,12 @@ Use the full template and performance example linked above. Each stage contains
 subject follow-through, spatial layers and state changes; headings or plot
 summaries alone do not satisfy the contract. People also follow the shared acting
 and FACS rules for motivation, gaze, body mechanics, breath and carried emotion.
+Each independently generated shot describes only its own audible ambience, dialogue
+and action sounds. Do not write “inherit the previous shot's audio” in a copy-block:
+it cannot hear or control that previous shot. Default NO BGM in shot prompts. If the
+finished sequence needs continuous ambience or an explicitly requested score, record
+that as an editorial/post-production handoff outside the copy-block and mix it after
+assembly.
 
 HTML is the delivery container. The following mapping preserves the old workflow
 without imposing its English labels or losing any of the eight sections:
