@@ -11,3 +11,5 @@ timestamp	commit	skill	old_score	new_score	status	dimension	note	eval_mode
 2026-09-24T05:17	paired	script-writing-studio	-	2-0-1 better-worse-tie	keep	paired	3 independent paired calls read original and final in same request; evidence=darwin-paired-results.json	paired
 2026-09-24T05:17	live-output	video-script-studio	-	2/2 outputs	verified	dim8	3 variants per case: baseline/original/final; evidence=darwin-eval-evidence.json	full_test
 2026-09-24T05:17	paired	video-script-studio	-	3-0-0 better-worse-tie	keep	paired	3 independent paired calls read original and final in same request; evidence=darwin-paired-results.json	paired
+2026-09-24T05:51	live-omni	video-script-studio	-	2/2 outputs	verified	routing	previous vs omni vs no-skill actual text output; evidence=darwin-omni-evidence.json	full_test
+2026-09-24T05:51	paired-omni	video-script-studio	-	3-0-0 better-worse-tie	keep	paired	three same-call old/new judges; reference-role correction; evidence=darwin-omni-paired.json	paired
