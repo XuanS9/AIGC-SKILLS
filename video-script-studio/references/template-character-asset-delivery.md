@@ -70,6 +70,28 @@
 - **道具与场景**：继续保留道具多角度及必要底部视图、真实尺寸、结构接缝、材质厚度、重力支撑与使用状态；独立资产保持中性背景。场景保留无人底图、三分之四纵深、可行动区域、光源方向、环境反射及接触阴影，不把人物参考背景要求搬进真实环境。
 - **变体与比例**：换装、湿衣、损伤等反复出现的状态独立建图，沿用主脸与原有细节合成方法；同框比例参考、非人设计、头饰/后脑局部研究、多角度研究和试演能力全部保留。特殊参考单独标明职责，不混入默认参考图。
 
+### 六行结构自动校验
+
+交付角色六行组板前运行以下 Python 标准库检查（`text` 为即将交付的完整代码块内容），报告各失败项并修复后再交付；用户指定的其他格式不套此检查。六行顺序：总述→姓名/年龄/性别→左侧正面面部→右侧无头三视图→背景/一致性/无文字→灯光/质感；自动换行不算新行。
+
+```python
+def validate_character_sheet(text):
+    import re
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    if len(lines) != 6:
+        return [f"六行结构失败：实际{len(lines)}行"]
+    checks = [
+        ("总述分区", all(x in lines[0] for x in ("角色资产参考图", "左侧", "面部特写", "右侧", "无头"))),
+        ("独立身份行", bool(re.search(r"\d+岁.*(?:女性|男性|女|男)", lines[1])) and not lines[1].startswith(("左侧", "右侧"))),
+        ("正面面部", lines[2].startswith("左侧：") and "正面面部特写" in lines[2]),
+        ("无头三视图", lines[3].startswith("右侧：") and all(x in lines[3] for x in ("无头", "正面", "侧面", "背面"))),
+        ("背景与同一身份", "背景" in lines[4] and "同一" in lines[4]),
+        ("无文字约束", all(x in lines[4] for x in ("不出现", "文字", "字母", "数字", "姓名", "视图标签", "尺寸标注", "签名", "水印"))),
+        ("灯光与质感", "光" in lines[5] and "质感" in lines[5]),
+    ]
+    return [name for name, ok in checks if not ok]
+```
+
 ## 3. 视频参考：同一身份与区域职责
 
 ### 正面身份主参考
