@@ -27,17 +27,17 @@ including a single take. Follow the root/shared contract and read the
 [full performance example](template-full-performance-example.md) and
 [director template](template-general-director-2-5.md) before drafting:
 **1 资产与参考锁定 → 2 一句话总合成 → 3 全局视听与空间 → 4 主体行为与节奏规则 →
-5 分段演出 → 6 连续性 → 7 尾帧 → 8 关键约束与排除**.
+5 分段演出 → 6 连续性 → 7 结尾状态与交接 → 8 关键约束与排除**.
 
 Bind real voice/track references and their purposes in section 1. Establish the global
-audio strategy **once in section 3**: allowed layers, mix priorities, acoustics, and whether
-a source track is preserved, mixed, or used only as a reference. Section 4 carries delivery
+audio strategy **once in section 3**: the continuous sound bed, allowed layers, mix priorities,
+acoustics, and whether a source track is preserved, mixed, or used only as a reference. Section 4 carries delivery
 and pacing rules. In section 5, write each event's continuous performance, action/response,
 visible result, camera path, and **声音**: exact speaker-attributed dialogue, breath,
-reactions, silence, and sound cues at their causes. Put inherited voice, breath, room tone,
-phrase and action phase in section 6; the final audible state, decay, and join in section 7.
-Section 8 contains only remaining task-specific constraints; do not repeat the global mix
-policy. Four-layer inventories, reference-role tables, and diagnostics are internal aids,
+reactions, silence, and sound cues at their causes. Put inherited voice, breath, room tone, environmental bed, phrase and action phase in section 6;
+each stage records only additions, changes, ducking, masking or removal and explicitly
+inherits the rest. The final audible state, decay, and join go in section 7. Section 8
+contains only remaining task-specific constraints; do not repeat the global mix policy. Four-layer inventories, reference-role tables, and diagnostics are internal aids,
 not extra prompt sections or substitutes for the performed scene.
 
 Explicitly concise requests, local edits, audio-only tasks, and hard-limited/native
@@ -442,11 +442,20 @@ that can coexist. (Sibling of `higgsfield-seedance.md` § Reference Roles
 
 ### Cutting to music — assembling separately-generated clips on one track
 
+For non-musical scenes the same continuity rule applies to ambience and effects: carry
+ongoing sound sources through the next shot and write only what changes at the cut. If a
+source moves, is muffled by a door, passes behind an obstacle, ducks under dialogue, or
+stops, describe that audible transition and its visual cause.
+
 `[EMPIRICAL — MiniMax H3 skill corpus, re-derived; cross-model editing craft]`
 Beat sync governs what happens *inside* a clip; these three laws govern the
 timeline the clips land on:
 
-- **One master track.** The piece binds to a single continuous music track laid
+- **One continuous master sound bed.** Keep a stable ambience, room tone, weather bed,
+  ongoing source or music across picture cuts; never restart or replace the complete
+  sound list at every shot. A new shot inherits the previous bed unless a motivated
+  transition is written.
+- **One master track for music.** The piece binds to a single continuous music track laid
   in post — never per-clip audio stitched end to end. A join in the music is
   audible before a join in the picture is visible.
 - **Cuts land on musical punctuation** — a breath, a lyric pause, a snare, the
