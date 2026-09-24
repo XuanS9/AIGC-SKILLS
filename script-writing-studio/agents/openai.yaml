@@ -1,0 +1,4 @@
+interface:
+  display_name: "剧情文案创作"
+  short_description: "3–30分钟剧情作品：独立创作、会诊与对白再创作"
+  default_prompt: "使用script-writing-studio。先读references/00-preflight.md，核已有决定，集中询问缺失的题材/受众/范围/具体时长与单片单集单位并等待回答，已确认不重复问。完整创作读references/19-runtime-structure.md，不默认5分钟、短视频节奏、竖屏或反转配额。接收任何来源灵感/大纲/稿件，不要求先运行其他Skill。按references/16-copy-confirmation.md做实质性再创作并交完整文案待明确确认，事实核验用本地事实规范；不可擅改锁定项，不因篇幅长把正文缩为摘要。交付读references/06-writing-delivery.md，正式剧本按references/04-screenplay-format.md输出剧本总表 + 场次表，保持动作与对白时序；修改交完整替换结果，诊断/设定按任务用表，不把摘要或空表当正文。需要制作或同步才委派对应Skill，不直接读制作技术或写生成输入。维护Skill不写作品画布；下游制作按 Skill 名称路由，不依赖脆弱相对路径；不自动生成或扣费，工具审批拒绝不绕过。"

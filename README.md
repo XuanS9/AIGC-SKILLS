@@ -1,6 +1,6 @@
-# 三个独立 Skill 整合包
+# 三个独立 Skill
 
-每个目录都是可以单独复制、安装的完整 Skill。每包只有根目录一个 `SKILL.md`；详细功能按任务读取，不需要逐个安装。视频包采用 `SKILL.md + references/ + scripts/`，模板与参数均放在 references，scripts 仅保留本地提示词检查器。请复制整个目录，不能只复制入口文件。
+本仓库以三个 Skill 目录为交付源。每个目录都可以单独安装，且只有根目录一个 `SKILL.md`；详细功能按任务读取。视频 Skill 使用 `SKILL.md + references/ + scripts/`。更新直接提交到 Git 仓库，不再制作或提交 ZIP；安装时复制整个目录。
 
 | 原文件夹 | 整合后的独立 Skill | 功能范围 |
 |---|---|---|
@@ -22,12 +22,9 @@
 
 ## 保留方式与核验资料
 
-- 来源文件保留清单同时记录安装包与包外归档。剧本优化包按用户要求移出5个戏曲及舞台剧模块（27份文件），完整备份和移出资料位于 `维护归档/screenwriting-optimizer/film-focused/`；旧注册配置与维护资料也不随安装包分发。视频包按要求移除记忆、营销及宣发功能，修改前完整备份与移出文件位于 `维护归档/video-script-studio/creation-focused/`。视频包标准化前备份及迁移核验记录位于 `维护归档/video-script-studio/standard-skill/`；说明、协议、声明及维护文件不随安装包分发。
+- 本仓库只发布三个可安装的 Skill 目录、使用说明和本次优化记录。本地工作区的 `维护归档/`、`source-manifest.json`、`source-link-baseline.json`、`preservation-report.json` 与 `验证报告.md` 保存来源核验资料，不属于安装文件，也不随此仓库提交。剧本优化包按原范围移出戏曲与舞台剧专章，视频包按原范围移出记忆、营销和宣发功能。
 - 原功能指南按需加载。入口中的路由表用于定位全文，不能代替全文里的工作流、细则与输出要求。
 - 重叠规则按任务适用范围协调；尤其保留动作导演三套强度方案与标准/极速两档，并在 Higgsfield 联合任务中执行平台格式、参数与连续性检查。
-- 创作包的 `MERGE-NOTES.md` 提供功能覆盖与路径说明；视频包当前功能入口见其 `SKILL.md`，旧说明在包外维护归档；剧本优化包的整理记录位于 [维护归档](维护归档/screenwriting-optimizer/整理报告.md)。
-- `source-manifest.json` 记录全部 299 个来源文件的原始 SHA-256，供核对原文件未改变。
-- `source-link-baseline.json` 记录合并前 Markdown 链接扫描基线。
-- `preservation-report.json` 和 `验证报告.md` 提供最终逐文件核对与检查结果。
+- 创作包的 `MERGE-NOTES.md` 提供功能覆盖与路径说明；视频包当前功能入口见其 `SKILL.md`。本地来源核验记录保留在工作区，不随安装目录发布。
 
 结构校验和脚本测试用于核实文件保留、路由、链接及工具可用性；创作质量和在线生成结果仍需在具体任务中验收。
