@@ -16,3 +16,5 @@ timestamp	commit	skill	old_score	new_score	status	dimension	note	eval_mode
 2026-09-24T11:05	baseline	video-script-studio	-	71.0-triage	baseline	dim8	提示词内容边界问题triage，仅排序不作keep依据	dry_run
 2026-09-24T11:05	<wt>	video-script-studio	-	3 out-of-scope→0	verified	dim8	3用例×前/后/无技能文本；证据darwin-prompt-boundary-final-evidence.json	full_test
 2026-09-24T11:05	paired	video-script-studio	（内容边界修复）	3-0-0 better-worse-tie	keep	paired	同调用读旧/新入口+三组输出，margin=clear；证据darwin-prompt-boundary-paired.json	paired
+2026-09-24T12:30	1a2density	video-script-studio	-	2版行为一致	dry_run	dim3	批量后段密度退化：本机模型两次采样(有/无强指令)均未复现退化	dry_run
+2026-09-24T12:30	paired	video-script-studio	（规则质量评估）	3-0-0 better-worse-tie	keep	paired	paired评规则编码质量非行为差异，margin=clear；证据darwin-density-paired.json	paired
