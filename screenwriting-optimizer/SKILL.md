@@ -61,4 +61,4 @@ description: 面向电影、短片与电视剧的剧本创作和优化。支持�
 
 按命中模块交付具体改稿、工作单或诊断，不用抽象建议替代用户请求的成果。需要视频制作时，可向可用的 video-script-studio 交接确认稿与不可改项。
 
-只注册根 SKILL.md；安装及来源见 [README.md](README.md)，权利说明见 [LICENSE.md](LICENSE.md) 与 [NOTICE.md](NOTICE.md)。
+只注册根 SKILL.md；详细方法均位于本目录的 references/，按任务读取。
