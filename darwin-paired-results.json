@@ -1,0 +1,65 @@
+[
+  {
+    "judge": 1,
+    "skill": "screenwriting-optimizer",
+    "raw": "{\"vote\":\"better\",\"margin\":\"slight\",\"reason\":\"AFTER新增了清晰的输入不足、冲突与资料不可得时的处理分支和可执行工作单，但案例1出现药物逻辑与结尾保留度的小幅回退，案例2也比BEFORE更显得索取材料过多。\",\"case_notes\":[\"CASE 1：AFTER的三段升级和代价更明确，但“即将过期的药”及锁药房报警等设定削弱了医疗场景可信度，并略改动了原结尾。\",\"CASE 2：AFTER更明确地避免虚构并提供A/B线验收项，但BEFORE允许用户只给概念后由助手先建立假设，交互门槛更低。\"]}",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "judge": 2,
+    "skill": "screenwriting-optimizer",
+    "raw": "{\"vote\":\"better\",\"margin\":\"slight\",\"reason\":\"BEFORE performs slightly better overall because its short-film revision more faithfully preserves the requested ending and offers cleaner escalating beats, while AFTER improves missing-input handling but introduces some contrived details and narrows its fallback.\",\"case_notes\":[\"AFTER adds a useful explicit branch for absent outlines, conflicting materials, and unavailable research, with clearer checkpoints and a structured pilot worksheet.\",\"In Case 1, BEFORE gives more coherent, filmable escalation and preserves the specified ending more precisely; AFTER adds concrete consequences but alters the ending logic and includes questionable devices such as an expiring dose and locking the pharmacy before calling police.\"]}",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "judge": 3,
+    "skill": "screenwriting-optimizer",
+    "raw": "{\"vote\":\"better\",\"margin\":\"slight\",\"reason\":\"AFTER增加了输入不足时的明确分支与可填写工作单，并在案例1中强化了行动后果和因果交汇，但部分修订细节的动机与可拍逻辑不如BEFORE稳妥。\",\"case_notes\":[\"案例1：AFTER让女主的怀疑造成实际照护后果，升级更清楚，但“即将过期”、锁药房报警等细节削弱了护士行为和冲突的可信度。\",\"案例2：AFTER的A/B线工作单更具体、可执行且避免虚构未提供内容，但BEFORE额外提供了可先行采用的pilot骨架，帮助性略强。\"]}",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "judge": 1,
+    "skill": "script-writing-studio",
+    "raw": "{\"vote\":\"tie\",\"margin\":\"slight\",\"reason\":\"AFTER在案例1中增加了时点、选择和威胁细节，但也引入额外情节、含混的“隐瞒已击毙鹿人”节点并遗漏制作初判，案例2仅有轻微措辞改进和多余说明。\",\"case_notes\":[\"案例1：AFTER的开场节奏与人物选择更具体，但因果完整性和交付字段不如BEFORE稳定。\",\"案例2：两版均保留事件与立场，AFTER的“擅自”更明确但附加了用户未要求的解释。\"]}",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "judge": 2,
+    "skill": "script-writing-studio",
+    "raw": "{\"vote\":\"better\",\"margin\":\"slight\",\"reason\":\"AFTER improves checkpointing, character choices, concrete timing, and dialogue clarity, but adds unsupported plot machinery and some less coherent causal details.\",\"case_notes\":[\"CASE 1: AFTER adds explicit story specifications, actionable choices, visible opening checkpoints, and production risks, while introducing drones, supernatural vines, and a compressed bomb-resolution logic not required by the request.\",\"CASE 2: AFTER preserves the event and positions while making the hunter’s accusation more specific, though its explanatory note is unnecessary for a narrowly scoped dialogue-polish request.\"]}",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "judge": 3,
+    "skill": "script-writing-studio",
+    "raw": "{\"vote\":\"better\",\"margin\":\"slight\",\"reason\":\"AFTER adds clearer anti-overreach guidance and a useful missing-source fallback while producing equally usable test results, though it regresses by omitting the required制作初判 section from the synopsis.\",\"case_notes\":[\"Case 1 is more concrete about goals, opponent resources, and causal choices, but loses the BEFORE version’s explicit production-risk assessment.\",\"Case 2 preserves the requested event and relationship, and the added explanation remains in scope without triggering production work.\"]}",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "judge": 1,
+    "skill": "video-script-studio",
+    "raw": "{\"vote\":\"better\",\"margin\":\"clear\",\"reason\":\"AFTER better handles missing assets and uncertain model inputs with explicit conditional fallbacks while avoiding unbound asset tags and unsupported assumptions.\",\"case_notes\":[\"Case 1: AFTER does not place the unavailable @B_Wolf label in the executable prompt and clearly marks the wolf as a temporary descriptive fallback.\",\"Case 2: AFTER preserves the required video-sample checkpoint and explicitly avoids assuming that 20 seconds can be generated as one segment without a confirmed mode.\"]}",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "judge": 2,
+    "skill": "video-script-studio",
+    "raw": "{\"vote\":\"better\",\"margin\":\"clear\",\"reason\":\"AFTER 更明确处理缺失素材、缺少剧本和模式未定等失败分支，避免虚构已绑定资产，并保持视频样本先确认的流程。\",\"case_notes\":[\"CASE 1 中 AFTER 不调用缺失的 @B_Wolf，明确把具体地形、站位和结局留待核对，资产与视频职责更清晰。\",\"AFTER 将 CASE 1 样本缩为约6秒而非直接覆盖12秒，虽降低了时长对应性，但更适合作为节奏验证样本。\"]}",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "judge": 3,
+    "skill": "video-script-studio",
+    "raw": "{\"vote\":\"better\",\"margin\":\"slight\",\"reason\":\"AFTER adds explicit missing-input and mode-conflict handling while preserving the sample-confirmation gate, though its shorter Case 1 sample is slightly less aligned with the requested 12-second target.\",\"case_notes\":[\"Case 1: AFTER more clearly separates the 12-second batch from its 6-second validation sample and forbids treating the unfiled wolf as a bound asset, but the reduced sample duration is a minor regression.\",\"Case 2: AFTER correctly refuses to fabricate unavailable scene details, avoids assuming a 20-second single-generation mode, and explicitly distinguishes confirmed asset samples from unconfirmed video prompts.\"]}",
+    "stderr": "",
+    "exit": 0
+  }
+]
