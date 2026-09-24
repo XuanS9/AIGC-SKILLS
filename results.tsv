@@ -13,3 +13,6 @@ timestamp	commit	skill	old_score	new_score	status	dimension	note	eval_mode
 2026-09-24T05:17	paired	video-script-studio	-	3-0-0 better-worse-tie	keep	paired	3 independent paired calls read original and final in same request; evidence=darwin-paired-results.json	paired
 2026-09-24T05:51	live-omni	video-script-studio	-	2/2 outputs	verified	routing	previous vs omni vs no-skill actual text output; evidence=darwin-omni-evidence.json	full_test
 2026-09-24T05:51	paired-omni	video-script-studio	-	3-0-0 better-worse-tie	keep	paired	three same-call old/new judges; reference-role correction; evidence=darwin-omni-paired.json	paired
+2026-09-24T11:05	baseline	video-script-studio	-	71.0-triage	baseline	dim8	提示词内容边界问题triage，仅排序不作keep依据	dry_run
+2026-09-24T11:05	<wt>	video-script-studio	-	3 out-of-scope→0	verified	dim8	3用例×前/后/无技能文本；证据darwin-prompt-boundary-final-evidence.json	full_test
+2026-09-24T11:05	paired	video-script-studio	（内容边界修复）	3-0-0 better-worse-tie	keep	paired	同调用读旧/新入口+三组输出，margin=clear；证据darwin-prompt-boundary-paired.json	paired
