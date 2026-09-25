@@ -7,7 +7,7 @@ The I2V section below describes a legacy alternative for other model workflows a
 must not route current studio video tasks. Describe opening motion and final state
 in words, using real reference slots and avoiding invented attachments.
 
-Follow [sample approval](sample-approval.md) for every prompt-writing request, including rewrites, repairs and single prompts. Write only the requested type: assets or video. If both are requested, use separate batches with their own samples and approvals. First provide a representative, usable sample for the current batch, wait for explicit approval of that version, then deliver all prompts in that batch. Prior approval does not approve a new request; there is no skip-sample exception. Apply the methods below only to the sample's scope until approval; after approval complete the batch without another sample loop. Never append asset-generation prompts to a video request, automatically continue from assets into video, or present intended effects as generated results.
+Follow [sample approval](sample-approval.md) and the shared [asset registry](asset-registry.md). For end-to-end production or combined asset/video requests, organize scene-based batches: plan names and scene layout once, present coordinated samples, obtain approval for that batch, then deliver its asset prompts and matching video prompts in separate code blocks. Reuse established assets in later batches and wait before expanding the next batch. Explicit asset-only or video-only requests stay within their stated scope. A text plan is not proof of generated media or actual reference binding; preserve native output schemas.
 
 ## QUICK FACTS
 - MCSLA = Model, Camera, Subject, Look, Action — the five layers of every prompt [→](#the-mcsla-formula)
