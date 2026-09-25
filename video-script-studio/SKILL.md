@@ -8,7 +8,7 @@ description: 将剧本、角色/道具/场景参考图、分镜、参考视频�
 ## 工作流程
 
 1. 继承用户已确认的角色、剧情、结局、对白、模型、时长、画幅、语言、速度及素材；缺非关键参数用默认值，只补问影响执行的缺失信息。用户指定的模型与能力边界优先；未指定模型时视频生成默认 Seedance 2.5 `omni_reference`，角色/道具/场景图片及参考视频、音频各按职责输入，无参考时用文字描述主体。严格保留原时间线或接续的已有视频，先核对实际模式能力再处理。
-2. 先完整读取 [项目资产总表](references/asset-registry.md) 与 [样本确认流程](references/sample-approval.md)。读取用户项目内同一份 `asset-registry.json`，样本与完整稿逐字复用已登记调用名；无总表时从已确认交付建立。完整制作或同时要求资产与视频时，按场景/连续剧情分批，共用名称与场景布局，同批配套交付；明确只要资产或视频时保留单类型范围。先交本批代表性样本与预期效果，确认后展开本批；批次组织按下方规范执行。
+2. 先完整读取 [项目工作区](references/project-workspace.md)、[项目资产总表](references/asset-registry.md) 与 [样本确认流程](references/sample-approval.md)。用户指向已有项目工作区时，先读项目目录的 `project.md` 与 `asset-registry.json`，继承已确认的参数、故事、结局、人物、对白、资产名、场景布局与批次进度；未指向工作区或读不到时按新项目处理并说明需提供路径才能继承，不虚报自动记住上次项目。样本与完整稿逐字复用已登记调用名；无总表时从已确认交付建立。识别本次类型：要资产只写资产，要视频只写视频，两类都要则按场景分批配套。每次先交本次类型的代表性样本+预期效果，停下等用户确认，再输出该批次全部提示词；新写、改写、补镜、修词、单条交付均适用。用户确认新的参数、剧情、结局、资产或交付批次后，把确认内容写回 `project.md` 与 `asset-registry.json`、并把可复制提示词存入 `prompts/`。完整制作或同时要求资产与视频时，按场景/连续剧情分批，共用名称与场景布局，同批配套交付；明确只要资产或视频时保留单类型范围。先交本批代表性样本与预期效果，确认后展开本批；批次组织按下方规范执行。
 3. 视频创作、改写、分镜、编辑或延伸：区分剧情段落、镜头与生成片段，默认向 30 秒模型上限凑段、单片段承载连续多阶段动态，按观看任务与动作因果编排片段内切点；方法见 [按内容拆镜与估时](references/narrative-planning.md#按内容拆镜与估时)。完整读取 [导演编排](references/directing-workflow.md)、[叙事规划](references/narrative-planning.md)、[七栏目模板](references/template-general-director-2-5.md)；完整创作与改写还需 [演出范本](references/template-full-performance-example.md)。
 4. 打斗、追逐、对抗、演武、人兽战：完整读取 [动作导演](references/fight-director.md)，按需读 [动作设计](references/fight-fight-design.md)、[动作摄影](references/fight-camera-guide.md)、[动作诊断](references/fight-diagnostics.md)。人兽战、兽袭、群兽围攻默认走 fight-director 的高强度奇观编排（升级式奇观纲要+行为与交互铁律栏+按回合升级分镜+禁收势尾帧+负面提示词栏），并保留因果交锋、双向攻防与真实受力。支持 Seedance、MiniMax-H3 及通用模型。
 5. Higgsfield 任务：完整读取 [平台制作指南](references/higgsfield-guide.md) 与下表匹配的模块，提示词任务另读 [提示词构建](references/higgsfield-prompt.md) 并按其 Load Map 加载。人物出现时加载表演与 FACS；剧情改写加载场景引擎；多场景或分镜加载拆镜模块；对白、声效或音乐加载音频模块。
@@ -97,6 +97,7 @@ description: 将剧本、角色/道具/场景参考图、分镜、参考视频�
 
 | 任务 | 参考文件 |
 |---|---|
+| 跨会话继承剧本与资产、项目工作区 | [project-workspace](references/project-workspace.md) |
 | 选择平台工作区或工具 | [higgsfield-workspaces](references/higgsfield-workspaces.md) |
 | 提示词写作、改写、MCSLA | [higgsfield-prompt](references/higgsfield-prompt.md) |
 | 图像景别、构图与角度 | [higgsfield-image-shots](references/higgsfield-image-shots.md) |
