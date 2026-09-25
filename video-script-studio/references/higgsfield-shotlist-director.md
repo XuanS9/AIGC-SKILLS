@@ -145,7 +145,7 @@ Plan each stage as **entry state → main change → visible response → exit s
 
 Default prompt content follows this visible order, including inside each HTML
 copy-block: **【资产与参考锁定】→【一句话总合成】→【全局视听与空间】→
-【主体行为与节奏规则】→【分段演出】→【连续性】→【尾帧】→【关键约束与排除】**.
+【主体行为与节奏规则】→【分段演出】→【尾帧】→【关键约束与排除】**.
 Use the full template and performance example linked above. Each stage contains
 **time range + event title → continuous performance prose → 画面与结果 → 运镜 →
 声音**, with a visible outcome and next-stage handoff. Develop action, response,
@@ -160,7 +160,7 @@ that as an editorial/post-production handoff outside the copy-block and mix it a
 assembly.
 
 HTML is the delivery container. The following mapping preserves the old workflow
-without imposing its English labels or losing any of the eight sections:
+without imposing its English labels or losing any of the seven sections:
 
 | Current content section | HTML / optional legacy scaffold destination |
 |---|---|
@@ -168,8 +168,7 @@ without imposing its English labels or losing any of the eight sections:
 | 一句话总合成 | Prompt's visible objective; legacy Scene opening |
 | 全局视听与空间 | Style source compiled once plus local geography; legacy Style + Scene |
 | 主体行为与节奏规则 | Prompt-wide behavior rules; legacy Characters / performance lead-in |
-| 分段演出 | Full event-led stage prose; legacy CUT entries only where actual cuts occur |
-| 连续性 | Entry/exit state, persistent effects, carried performance and Off-screen lines |
+| 分段演出 | Full event-led stage prose with entry/exit state, persistent effects, carried performance and Off-screen lines; legacy CUT entries only where actual cuts occur |
 | 尾帧 | Explicit final composition, action/prop/audio state and join to the next generation |
 | 关键约束与排除 | Scoped prompt constraints; platform settings stay outside the copy text |
 
@@ -222,7 +221,7 @@ rolling back one at a time, a soft knee-dip, a loose finger-snap, finishing on a
 quarter-spin."* (Full pattern: `template-10-dance-music-performance.md`.)
 
 **The Off-screen line is what keeps re-entries legal.** In the default format,
-place 离场 / Off-screen under 【连续性】: anyone present in the previous prompt
+place 离场 / Off-screen inside 【分段演出】's stage handoff: anyone present in the previous prompt
 but absent here retains their exit side and last visible state, including held
 props, emotion, breath and motion phase. Carry this line into the next prompt;
 after two consecutive absences it may leave the copy text, but retain the state
@@ -459,7 +458,7 @@ continues to handle copying and scene progress independently of prompt grammar.
 </style></head><body><div class="container">
   <h1>{{PROJECT_TITLE}}</h1>
   <div class="howto">完成后勾选场景，进度自动保存。
-    复制按钮复制该生成片段的完整提示词（八栏目及已合并的风格与连续状态）。可按编号请求修订。</div>
+    复制按钮复制该生成片段的完整提示词（七栏目及已合并的风格与连续状态）。可按编号请求修订。</div>
   <details class="style-prefix"><summary>全局风格源（修改后同步到各提示词，保留局部覆盖）</summary>
     <pre>{{STYLE_PREFIX_TEXT}}</pre></details>
   <div class="howto">{{ASSET_GLOSSARY_HTML}}</div>
@@ -494,11 +493,11 @@ Record retained edit lengths or in/out points in the scene notes if they differ:
   </div>
   <div class="prompt-block">
     <div class="prompt-label"><span>Prompt 3a · {{DURATION_3A}}s</span><button class="copy-btn">Copy</button></div>
-    <pre class="prompt">[完整八栏目提示词：本片段参考与目标、一次全局视听、行为规则、详细分段演出、连续性、尾帧、约束；已应用局部覆盖]</pre>
+    <pre class="prompt">[完整七栏目提示词：本片段参考与目标、一次全局视听、行为规则、详细分段演出（含段间承接）、尾帧、约束；已应用局部覆盖]</pre>
   </div>
   <div class="prompt-block">
     <div class="prompt-label"><span>Prompt 3b · {{DURATION_3B}}s</span><button class="copy-btn">Copy</button></div>
-    <pre class="prompt">[场景3下一叙事单元或受模型上限影响的接续提示词：完整八栏目、独立生成所需最小上下文、上一片段退出状态及本片段变化]</pre>
+    <pre class="prompt">[场景3下一叙事单元或受模型上限影响的接续提示词：完整七栏目、独立生成所需最小上下文、上一片段退出状态及本片段变化]</pre>
   </div>
 </div>
 ```
