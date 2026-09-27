@@ -34,4 +34,4 @@
 | Topaz | topaz_image_generative | — | — | — | — | medias: image_references | — |
 | Z Image | z_image | — | — | — | 1:1, 4:3, 3:4, 16:9, 9:16 | — | — |
 
-Full per-model parameter schemas live in `image-model-specs.json` / `image-model-specs.json`.
+Full per-model parameter schemas live in `image-model-specs.json`.

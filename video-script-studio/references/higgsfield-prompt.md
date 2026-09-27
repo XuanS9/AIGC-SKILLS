@@ -48,9 +48,9 @@ continuity/state inheritance; final frame/join; scoped constraints**. Compile in
 Identity/Motion blocks, fluid narrative, timestamped prose, or the chosen model's native
 format. For this project, complete prose video prompts in every genre visibly follow
 [the shared full-director format](template-general-director-2-5.md):
-assets, goal, audiovisual/space, behavior, staged performance, continuity, final frame,
-and constraints. Each stage uses a time/event heading, developed performance prose,
-visual results, camera and sound. Explicit native-format or scoped requests retain their
+assets, goal, audiovisual/space, behavior, staged performance, final frame,
+and constraints (seven sections; continuity is carried inside the staged performance and constraints, not a separate section). Each stage uses a time/event heading, developed performance prose,
+visual results, camera and sound inlined into the action. Explicit native-format or scoped requests retain their
 output contracts without a duplicate long-form document. Each stage has
 an initial state, primary change, visible response, and end state inherited by the next.
 Count the final frame and transitions inside the runtime; preserve results until a
@@ -198,7 +198,7 @@ Use the exact catalog name when selecting a supported platform preset; free pros
 
 **For short-form MCSLA, lead with subject, end with style:**
 Subject → Action → Camera → Style is a useful compilation order; full delivery keeps
-the shared eight-section order.
+the shared seven-section order.
 
 **Keep it under 200 words (short-form regime):**
 Focused prompts outperform exhaustive ones. One clear intention > ten vague details.

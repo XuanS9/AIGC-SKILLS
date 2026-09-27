@@ -20,7 +20,7 @@ In this merged studio, ordinary narrative creation also uses this engine interna
 Keep the bespoke definitions and deletion/information/value-shift tests below intact;
 apply them to the relevant scene or sequence, not as a demand for a reversal in every
 shot. For an explicit audit, deliver the full findings and Minimal/Clean/Optional repair
-levels. For prompt creation, express the chosen causal repairs in the eight-section
+levels. For prompt creation, express the chosen causal repairs in the seven-section
 performance draft without attaching an audit report. Preserve user-approved events and
 endings; flag a deliberate deviation rather than silently rewriting it. Pure landscape,
 product-function and other non-dramatic tasks do not need an invented conflict arc.

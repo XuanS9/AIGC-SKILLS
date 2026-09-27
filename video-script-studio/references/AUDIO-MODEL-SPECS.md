@@ -11,4 +11,4 @@
 | Sonilo Music | sonilo_music | — | — | — | — | — | — |
 | Text to Speech V2 | text2speech_v2 | — | — | — | — | — | — |
 
-Full per-model parameter schemas live in `audio-model-specs.json` / `audio-model-specs.json`.
+Full per-model parameter schemas live in `audio-model-specs.json`.

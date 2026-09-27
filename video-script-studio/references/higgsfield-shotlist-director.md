@@ -18,13 +18,13 @@ prompts that all inherit both.
 > for 2.5, `higgsfield-seedance.md` for 2.0/Pro. The legacy four-part
 > scaffold is an optional compilation format, not a language or content override.
 
-**Current project defaults:** **Seedance 2.5 · 16:9 · Chinese**, unless the user has specified otherwise. Runtime inherits the approved film and sequence budgets; otherwise estimate it from action and performance. There is no automatic 30s total or near-30s target for shots or generated clips. Editing inherits the source timeline; extension follows its direction and mode limits. Apply [content-led shot segmentation](narrative-planning.md#按内容拆镜与估时): distinguish shot duration, generation duration and retained edit duration.
+**Current project defaults:** **Seedance 2.5 · 16:9 · Chinese**, unless the user has specified otherwise. Runtime inherits the approved film and sequence budgets; otherwise estimate it from action and performance. When no budget is set, each **generation clip** defaults to targeting the model's single-generation cap (~30s for Seedance 2.5): pack continuous multi-stage action into one near-30s generation and prefer merging adjacent shots into it, splitting only when the action genuinely exceeds the cap — never pad or slow motion to reach it. Shot and retained edit durations still follow content. Editing inherits the source timeline; extension follows its direction and mode limits. Apply [content-led shot segmentation](narrative-planning.md#按内容拆镜与估时): distinguish shot duration, generation duration and retained edit duration.
 
 ## QUICK FACTS
 - **导演先于拆镜**：先定本段观众先看到什么、后知道什么、情绪转向、视觉命题、空间锚点与主动权，再决定镜头职责、景别、机位和切点；执行规则见 [顶级导演分镜方法](directorial-shot-design.md)。不得用固定秒数、固定镜头数或景别轮换代替导演判断。
 - Output = **one self-contained HTML file** (inline CSS/JS, no deps), not loose prompts [→](#what-you-produce)
 - Three structural layers, top to bottom: **Global Style Prefix → `@`-asset glossary → named per-scene prompts** [→](#the-three-layers)
-- Per-scene prompt law: **eight Chinese sections → HTML copy-blocks**; optional legacy `Style → Characters → Scene → CUT 1..N` mapping retains the full performance content. Cut and prompt boundaries follow visible events and state handoffs, with model-supported durations [→](#per-scene-prompt-law)
+- Per-scene prompt law: **seven Chinese sections → HTML copy-blocks**; optional legacy `Style → Characters → Scene → CUT 1..N` mapping retains the full performance content. Cut and prompt boundaries follow visible events and state handoffs, with model-supported durations [→](#per-scene-prompt-law)
 - Density heuristic (adapted from the historical source; current shared planning governs): group rows when they share cast, location, one emotional unit, and a manageable causal unit; consider splits at location cuts, cast changes, setup changes, performance arcs, inserts, or state handoffs when clarity or model limits require them — **don't fragment grief**; complexity budget + auto-enrichment defaults for thin briefs [→](#prompt-density--grouping-script-beats-into-narrative-units)
 - **Shot density follows dramatic pressure, not runtime**：温馨/信任/悲痛可以少切，但长镜内部必须有关系动作、视线、blocking、空间揭示或声音推进；潜伏使用大景、遮挡、慢推与信息差；爆发使用接触、受力、反应、后果的有因果快切；每次切换必须改变观看任务。
 - Whole-sequence checks before delivery: **tempo budget** (story-led shot lengths reconcile to the requested edit runtime) + **monotony audit** (review repeated framing/moves for intent; holds are optional) [→](#sequence-tempo-and-variety)
@@ -51,13 +51,13 @@ user can open it offline and it just works. Structure:
 5. A short "how to use" note (checkboxes auto-save; ask Claude to revise).
 
 The collapsible Style Prefix is the document's single editable source. In each
-connected prompt, compile global rules **once**, into their eight-section homes;
+connected prompt, compile global rules **once**, into their seven-section homes;
 individual stages describe changes and inherited state instead of repeating the
 whole prefix. Each independently submitted generation block carries the minimum
 self-contained style, asset roles, spatial anchors, entry state and constraints
 it needs, so copying it requires no reassembly or reference to an unavailable
 previous prompt. A full legacy prefix may be compiled once per independent block
-when that format is requested. Do not prepend it again to an eight-section prompt.
+when that format is requested. Do not prepend it again to a seven-section prompt.
 
 ---
 
@@ -78,7 +78,7 @@ Ship the reusable fill-in-the-blanks block from
 editable source, retaining its wording when compiling applicable clauses. If a
 clause conflicts with confirmed requirements or actual model limits, surface that
 conflict rather than silently changing it. Otherwise adapt the template to the
-project's confirmed style and eight-section structure; its sample technical
+project's confirmed style and seven-section structure; its sample technical
 settings and audio convention are not universal platform requirements.
 
 ### 2. `@`-asset glossary
@@ -135,7 +135,7 @@ felt like keeping that day.
 
 ### 3. Named per-scene prompts
 
-Every scene is numbered (`1`, `2`, `3`…) and split into named prompts where dramatic events, causal turns, performance units, location changes, continuity handoffs, or model limits require separate generations (`1a`, `1b`, `2a`). One checkbox per **scene**, even when a scene needs several connected prompts. Prompt duration follows the selected model and the amount of action that must read clearly; there is no fixed prompt count or per-generation duration quota. No 30s creative default applies. Each shot has a viewing purpose and motivated cut; clips group or split shots according to continuity, complexity and actual model constraints, never to approach 30s.
+Every scene is numbered (`1`, `2`, `3`…) and split into named prompts where dramatic events, causal turns, performance units, location changes, continuity handoffs, or model limits require separate generations (`1a`, `1b`, `2a`). One checkbox per **scene**, even when a scene needs several connected prompts. When no user budget is set, each generation clip defaults to targeting the model's single-generation cap (~30s for Seedance 2.5), merging adjacent shots into one near-30s generation and splitting only when the action exceeds the cap; there is no fixed prompt count, and clips are never padded or slowed to reach the cap. Each shot still has a viewing purpose and motivated cut; shots group or split according to continuity, complexity and actual model constraints.
 
 Use [shared narrative planning](narrative-planning.md) to distinguish a **stage** (a dramatic event or state transition), a **shot** (continuous camera coverage between cuts), and a **generation clip** (one model output). A shot can span several stages; a stage can need several shots; a clip can contain multiple shots where the model supports them. These boundaries need not coincide.
 
@@ -291,7 +291,7 @@ a neutral-to-portrait lens (63°/47° FOV in Seedance block prompts — mm
 vocabulary like "35–50mm" is for non-Seedance surfaces; 29° only if a
 close-up needs it — `higgsfield-seedance.md` § FOV anchors) ·
 motivated practical light · subtle ambience + one meaningful SFX · a clear
-final frame. **Per-generation duration is planned from events**, the agreed total runtime and the selected model/mode's legal range. If no total is specified, estimate natural runtime from the content. Preserve an explicitly approved 30s sequence as a sequence budget, never as the length of each shot or clip. Record shot ID, viewing purpose, entry/exit state, cut reason, retained edit duration, clip ID/generation duration and continuity handoff in a compact allocation table. Editing, extension and other models follow their own runtime rules. State fixed or discrete platform constraints and map the narrative units to them.
+final frame. **Per-generation duration targets the model/mode's single-generation cap (~30s for Seedance 2.5) when no budget is set**, packing continuous action into one near-30s generation; otherwise it follows the agreed total runtime and the selected model/mode's legal range. If no total is specified, estimate natural runtime from the content. An explicitly approved 30s sequence is a sequence budget; the retained edit duration of an individual shot may still be shorter than its generation clip. Record shot ID, viewing purpose, entry/exit state, cut reason, retained edit duration, clip ID/generation duration and continuity handoff in a compact allocation table. Editing, extension and other models follow their own runtime rules. State fixed or discrete platform constraints and map the narrative units to them.
 
 For optional comparison, see [historical calibration](higgsfield-shotlist-director-historical-calibration.md):
 source density examples, the duration ladder, shot-type ranges and field length
@@ -344,7 +344,7 @@ loose chats:
   sunny midday, strong frontal sun, deep blue sky, hard-edged shadows"*) while
   every other scene keeps the soft global lighting. Store the override as a local
   field replacement; unaffected fields still inherit future global edits. In an
-  eight-section block it appears in 【全局视听与空间】; in a requested legacy block
+  seven-section block it appears in 【全局视听与空间】; in a requested legacy block
   it appears in Style. Do not append a second conflicting lighting instruction.
 
 When revising, **re-render the same HTML file with the change applied** — don't
@@ -390,7 +390,7 @@ into the rest of the repo, which is the whole point:
    legacy-check mismatch without claiming a clean lint pass or forcing English.
 
    The script checks filter terms, recognized shot/time markers, declared
-   parameters against local specs, and supported mode pairings. It does not validate all Chinese stage headings, the eight-section
+   parameters against local specs, and supported mode pairings. It does not validate all Chinese stage headings, the seven-section
    content, bound media, audio codecs or generated pixels/sound. Manually check
    those and run § Sequence tempo and variety for the whole edit. Surface stale
    specs and unresolved findings; snapshot validity is not live verification.
@@ -427,7 +427,7 @@ into the rest of the repo, which is the whole point:
 3. **Build the `@`-glossary.** One entry per recurring asset; multi-state variants
    get their own locked entry.
 4. **Block the scenes.** Number them; identify stages and state handoffs, choose shots, then map them to prompts with supported generation durations and intended edit lengths. A 40s confession may become `5a/5b/5c` only when its performance arc or model limit requires those boundaries; preserve the emotional progression across clips.
-5. **Write each prompt** as the complete eight-section performance brief in
+5. **Write each prompt** as the complete seven-section performance brief in
    Chinese by default, inheriting the user's language choice. Compile it into
    HTML copy-blocks with resolved style and sufficient independent context;
    use the mapping above for a requested legacy scaffold.
@@ -443,10 +443,10 @@ into the rest of the repo, which is the whole point:
 Self-contained, dark directing-room aesthetic. Inline everything. Checkbox state
 persists in `localStorage`; each prompt has a Copy button. The Style Prefix is
 editable through revisions in the collapsible source block; each `<pre>` contains
-resolved eight-section text, including its applicable style once. The renderer
+resolved seven-section text, including its applicable style once. The renderer
 fills the glossary, settings, scene notes and preflight results as well as prompts;
 the Copy button copies only that prompt. HTML-escape inserted text so reference
-labels, dialogue and `<SFX>` survive as literal text. Use `lang="zh-CN"` by default
+labels, `「」` dialogue and inlined sound cues survive as literal text. Use `lang="zh-CN"` by default
 and change it when the user selects another language. The existing JavaScript
 continues to handle copying and scene progress independently of prompt grammar.
 
@@ -528,7 +528,7 @@ Record retained edit lengths or in/out points in the scene notes if they differ:
 - [Historical calibration appendix](higgsfield-shotlist-director-historical-calibration.md) — optional source
   tables and density/shot-duration references; no fixed timing or count quotas
 - `higgsfield-seedance-2-5` — current default model's role map, mode workflows and
-  parameter constraints, compiled from the shared eight-section performance brief
+  parameter constraints, compiled from the shared seven-section performance brief
 - `higgsfield-seedance` — 2.0/Pro grammar and legacy scaffolds (six-slot formula,
   Prompt-Craft Laws, Reference Roles, preflight linter, engine + failure modes)
 - `higgsfield-pipeline` — upstream multi-shot production planning the shotlist

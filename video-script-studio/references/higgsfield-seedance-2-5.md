@@ -65,9 +65,11 @@ stage count or equal-length intervals. A **stage is not a cut or a generation cl
 one shot can span stages, a stage can need several shots, and a generation can carry
 several stages within the actual mode, complexity, and reference limits.
 
-Complete video prompts visibly use the shared eight-section format: **assets and
+Complete video prompts visibly use the shared seven-section format: **assets and
 reference roles; overall goal; global sight/sound/space; behavior and pacing; staged
-performance; continuity/state inheritance; final frame/join; scoped constraints**.
+performance; final frame/join; scoped constraints**. Continuity/state inheritance is
+not its own section — it lives inside staged performance (segment-to-segment carryover)
+and the scoped constraints.
 Read the [full performance example](template-full-performance-example.md)
 and [director template](template-general-director-2-5.md) before drafting.
 Each stage has a time/event heading, developed causal action, object/opponent response,

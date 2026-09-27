@@ -39,4 +39,4 @@ Image models: see IMAGE-MODEL-SPECS.md (snapshot 2026-08-01); this file covers v
 | Wan 2.6 Video | wan2_6 | 5/10/15s | — | — | 16:9, 9:16, 1:1 | medias: image_references, video_references, audio_references | — |
 | Wan 2.7 | wan2_7 | 2–15s | 720p, 1080p | — | 16:9, 9:16, 1:1, 4:3, 3:4 | medias: start_image, end_image, audio_references | — |
 
-Full per-model parameter schemas live in `model-specs.json` / `model-specs.json`.
+Full per-model parameter schemas live in `model-specs.json`.
