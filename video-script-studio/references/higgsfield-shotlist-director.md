@@ -21,10 +21,12 @@ prompts that all inherit both.
 **Current project defaults:** **Seedance 2.5 · 16:9 · Chinese**, unless the user has specified otherwise. Runtime inherits the approved film and sequence budgets; otherwise estimate it from action and performance. There is no automatic 30s total or near-30s target for shots or generated clips. Editing inherits the source timeline; extension follows its direction and mode limits. Apply [content-led shot segmentation](narrative-planning.md#按内容拆镜与估时): distinguish shot duration, generation duration and retained edit duration.
 
 ## QUICK FACTS
+- **导演先于拆镜**：先定本段观众先看到什么、后知道什么、情绪转向、视觉命题、空间锚点与主动权，再决定镜头职责、景别、机位和切点；执行规则见 [顶级导演分镜方法](directorial-shot-design.md)。不得用固定秒数、固定镜头数或景别轮换代替导演判断。
 - Output = **one self-contained HTML file** (inline CSS/JS, no deps), not loose prompts [→](#what-you-produce)
 - Three structural layers, top to bottom: **Global Style Prefix → `@`-asset glossary → named per-scene prompts** [→](#the-three-layers)
 - Per-scene prompt law: **eight Chinese sections → HTML copy-blocks**; optional legacy `Style → Characters → Scene → CUT 1..N` mapping retains the full performance content. Cut and prompt boundaries follow visible events and state handoffs, with model-supported durations [→](#per-scene-prompt-law)
 - Density heuristic (adapted from the historical source; current shared planning governs): group rows when they share cast, location, one emotional unit, and a manageable causal unit; consider splits at location cuts, cast changes, setup changes, performance arcs, inserts, or state handoffs when clarity or model limits require them — **don't fragment grief**; complexity budget + auto-enrichment defaults for thin briefs [→](#prompt-density--grouping-script-beats-into-narrative-units)
+- **Shot density follows dramatic pressure, not runtime**：温馨/信任/悲痛可以少切，但长镜内部必须有关系动作、视线、blocking、空间揭示或声音推进；潜伏使用大景、遮挡、慢推与信息差；爆发使用接触、受力、反应、后果的有因果快切；每次切换必须改变观看任务。
 - Whole-sequence checks before delivery: **tempo budget** (story-led shot lengths reconcile to the requested edit runtime) + **monotony audit** (review repeated framing/moves for intent; holds are optional) [→](#sequence-tempo-and-variety)
 - Continuity carries exits too: an **Off-screen line** (exit side + last state) per just-departed character keeps re-entry direction legal [→](#per-scene-prompt-law)
 - **Edit-once-propagates**: change the prefix once → it changes in every prompt; per-scene **override** lets one scene break the global look [→](#edit-once-and-per-scene-override)
@@ -140,6 +142,25 @@ Use [shared narrative planning](narrative-planning.md) to distinguish a **stage*
 Plan each stage as **entry state → main change → visible response → exit state**, then choose coverage and map it to generation prompts. Carry identity, position, props, emotion, and environmental changes across handoffs. Keep generation duration separate from the portion used in the edit: the local specs list **4–30s for Seedance 2.5** and **4–15s for Seedance 2.0**, subject to mode-specific rules and current platform verification. Neither range defines a scene template. Generate a legal clip and trim for a shorter editorial beat; use connected clips for longer scenes.
 
 ---
+
+## Director gate before the shotlist
+
+Before any scene becomes rows or copy-blocks, write a short director brief:
+
+```text
+Scene intention：观众这一段先看到什么、后知道什么；情绪起点→终点；视觉命题
+Information gap：观众/人物各自知道什么
+Space anchor：人物、威胁、出口、遮挡物、屏幕方向
+Power movement：谁观察、谁逼近、谁判断、谁失控、谁改变策略
+Required viewing tasks：每个镜头只写一个主要任务
+Cut reasons：信息、注意、接触、主动权、后果、情绪或转场变化
+Holds that earn their time：长镜内部的动作链/关系动作/背景变化
+
+镜头表：
+| 镜头 | 观看任务 | 起态→动作→末态 | 景别/机位 | 切点理由 | 预计剪辑时长 |
+```
+
+A row is not a shot merely because time passed. A reaction close-up is not required for every character. The director chooses whether to hold, cut, reveal, or withhold based on the audience's current attention and the story's visual arc.
 
 ## Per-scene prompt law
 
@@ -285,9 +306,7 @@ emotional arc or reinstate a 15s target.
 heuristics, unmeasured here]` — two whole-sequence checks that no per-prompt
 rule can catch, run once before delivery:
 
-**Tempo budget — the arithmetic gate.** Identify the story's stages and their
-coverage first, then assign shot lengths from action, dialogue, reaction, reveal,
-and emotional workload. Do not derive cut count from runtime or equal time slices.
+**Tempo budget — the arithmetic gate.** Identify the story's stages, director intention and coverage first, then assign shot lengths from action, dialogue, reaction, reveal, spatial reading and emotional workload. Do not derive cut count from runtime or equal time slices. A ten-second hold is valid only when its internal blocking, relationship change, reveal or pressure earns it.
 A hero hold is optional and lasts only as long as the beat needs; there is no
 required money moment or 6–8s reservation.
 
