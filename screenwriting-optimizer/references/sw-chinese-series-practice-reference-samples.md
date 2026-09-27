@@ -1,6 +1,6 @@
 # 国产剧实务（二）：格式样本、策划样本、场面表与境遇清单
 
-> 国产剧实务的参考资料分四册：本册（一–八：类型学、策划文件、剧本格式、单集指标、改编、片段改编、制片链与审查、术语字典）／[sw-chinese-series-practice-reference-samples.md](sw-chinese-series-practice-reference-samples.md)（九–十二：四种格式样本、策划文件样本、单集场面表实例、36 种境遇与喜剧情势）／[sw-chinese-series-practice-reference-cases.md](sw-chinese-series-practice-reference-cases.md)（十三：张巍六个改编案例）／[sw-chinese-series-practice-reference-rules.md](sw-chinese-series-practice-reference-rules.md)（十四–十五：赵彬彬 26 个片段索引、《通则》红线表）。
+> 国产剧实务的参考资料分四册：[sw-chinese-series-practice-reference.md](sw-chinese-series-practice-reference.md)（一–八：类型学、策划文件、剧本格式、单集指标、改编、片段改编、制片链与审查、术语字典）／本册（九–十二：四种格式样本、策划文件样本、单集场面表实例、36 种境遇与喜剧情势）／[sw-chinese-series-practice-reference-cases.md](sw-chinese-series-practice-reference-cases.md)（十三：张巍六个改编案例）／[sw-chinese-series-practice-reference-rules.md](sw-chinese-series-practice-reference-rules.md)（十四–十五：赵彬彬 26 个片段索引、《通则》红线表）。
 
 ## 九、四种中文剧本格式的样本（姚扣根）
 
@@ -502,12 +502,10 @@
 
 ---
 
-**续篇：第十三至十五节见 [sw-chinese-series-practice-reference-cases.md](sw-chinese-series-practice-reference-cases.md)**
+**续篇：第十三节见 [sw-chinese-series-practice-reference-cases.md](sw-chinese-series-practice-reference-cases.md)，第十四至十五节见 [sw-chinese-series-practice-reference-rules.md](sw-chinese-series-practice-reference-rules.md)**
 
-本文件收第一至十二节。余下三节因篇幅单独成册，编号连续：
+本文件收第九至十二节（第一至八节见 [sw-chinese-series-practice-reference.md](sw-chinese-series-practice-reference.md)）。其余三节因篇幅单独成册，编号连续：
 
-- **第十三节 张巍六个改编案例对照表**（《杜拉拉升职记》《马文的战争》《梅兰芳》⚠️未投拍《神话》《铁梨花》《亮剑》，每案含原著体量→集数、主题坐标、人物手术、结构处理、可迁移手法，末附六案横向总表）
-- **第十四节 赵彬彬 26 个片段索引表**（片段名｜原作｜题材｜人数｜取自原作哪一段｜示范的手法，＋5 段代表性台词范例＋交付格式）
-- **第十五节《电视剧内容制作通则》红线分类表（2015-12-31 版）**（第五条十大类逐条展开为可自查条目，＋第六条专家把关三类、第三条倡导八项、读稿清单）
-
-→ [sw-chinese-series-practice-reference-cases.md](sw-chinese-series-practice-reference-cases.md)
+- **第十三节 张巍六个改编案例对照表**（《杜拉拉升职记》《马文的战争》《梅兰芳》⚠️未投拍《神话》《铁梨花》《亮剑》，每案含原著体量→集数、主题坐标、人物手术、结构处理、可迁移手法，末附六案横向总表）→ [sw-chinese-series-practice-reference-cases.md](sw-chinese-series-practice-reference-cases.md)
+- **第十四节 赵彬彬 26 个片段索引表**（片段名｜原作｜题材｜人数｜取自原作哪一段｜示范的手法，＋5 段代表性台词范例＋交付格式）→ [sw-chinese-series-practice-reference-rules.md](sw-chinese-series-practice-reference-rules.md)
+- **第十五节《电视剧内容制作通则》红线分类表（2015-12-31 版）**（第五条十大类逐条展开为可自查条目，＋第六条专家把关三类、第三条倡导八项、读稿清单）→ [sw-chinese-series-practice-reference-rules.md](sw-chinese-series-practice-reference-rules.md)

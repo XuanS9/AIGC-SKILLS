@@ -1,6 +1,6 @@
 # 国产剧实务（四）：片段索引与内容红线
 
-> 国产剧实务的参考资料分四册：本册（一–八：类型学、策划文件、剧本格式、单集指标、改编、片段改编、制片链与审查、术语字典）／[sw-chinese-series-practice-reference-samples.md](sw-chinese-series-practice-reference-samples.md)（九–十二：四种格式样本、策划文件样本、单集场面表实例、36 种境遇与喜剧情势）／[sw-chinese-series-practice-reference-cases.md](sw-chinese-series-practice-reference-cases.md)（十三：张巍六个改编案例）／[sw-chinese-series-practice-reference-rules.md](sw-chinese-series-practice-reference-rules.md)（十四–十五：赵彬彬 26 个片段索引、《通则》红线表）。
+> 国产剧实务的参考资料分四册：[sw-chinese-series-practice-reference.md](sw-chinese-series-practice-reference.md)（一–八：类型学、策划文件、剧本格式、单集指标、改编、片段改编、制片链与审查、术语字典）／[sw-chinese-series-practice-reference-samples.md](sw-chinese-series-practice-reference-samples.md)（九–十二：四种格式样本、策划文件样本、单集场面表实例、36 种境遇与喜剧情势）／[sw-chinese-series-practice-reference-cases.md](sw-chinese-series-practice-reference-cases.md)（十三：张巍六个改编案例）／本册（十四–十五：赵彬彬 26 个片段索引、《通则》红线表）。
 
 ## 十四、赵彬彬 26 个片段索引表
 

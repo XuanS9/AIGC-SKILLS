@@ -17,7 +17,7 @@ description: Mainland-Chinese TV-series craft, documents and production chain (�
 
 美式方法本身不在此处：单集幕结构见 `sw-series-structure`，引擎与 bible 见 `sw-series-engine-bible`，编剧室见 `sw-writers-room`，场号制版面规范见 `sw-format-adaptation` 第二之二节，对白通法见 `sw-dialogue`，美剧案例见 `sw-series-case-studies`。本 skill 只写"国产剧自己怎么做"与"与美剧体系的对应与差异"。
 
-格式样本、策划文件样本、单集场面表、36 境遇／36 喜剧情势清单与术语字典见同目录 [sw-chinese-series-practice-reference.md](sw-chinese-series-practice-reference.md)（第一至十二节）；六个改编案例对照表、26 个片段索引表与红线分类表见 [sw-chinese-series-practice-reference-cases.md](sw-chinese-series-practice-reference-cases.md)（第十三至十五节）。
+类型学、策划文件、剧本格式、单集指标、改编、片段改编、制片链与审查、术语字典见同目录 [sw-chinese-series-practice-reference.md](sw-chinese-series-practice-reference.md)（第一至八节）；四种格式样本、策划文件样本、单集场面表实例、36 境遇／喜剧情势清单见 [sw-chinese-series-practice-reference-samples.md](sw-chinese-series-practice-reference-samples.md)（第九至十二节）；张巍六个改编案例对照表见 [sw-chinese-series-practice-reference-cases.md](sw-chinese-series-practice-reference-cases.md)（第十三节）；赵彬彬 26 个片段索引表与《通则》红线分类表见 [sw-chinese-series-practice-reference-rules.md](sw-chinese-series-practice-reference-rules.md)（第十四至十五节）。
 
 ⚠️ 政策、机构名、费率、平台格局均按来源书年份标注（2014／2015／2016），引用前必须核对现行文件。
 ## 按任务读哪几节（不要通读）
