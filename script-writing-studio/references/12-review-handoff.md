@@ -21,7 +21,7 @@
 
 ## 联动
 
-文案 Skill 执行创意开发→正文写作→文案会诊定位问题→按授权正文写作/对白精修回稿，交文案待确认；用户明确确认后，按 Skill 名称委派 `script-package-production`，由其自行执行制作前置确认。文案确认规则见 `00-preflight.md`。画布写入按 Skill 名称委派 `canvas-production`。不要求用户复制给另一个助手，也不能用同轮联动越过两道确认门槛。独立单阶段只交其范围。
+文案 Skill 执行创意开发→正文写作→文案会诊定位问题→按授权正文写作/对白精修回稿，交文案待确认；用户明确确认后，按 Skill 名称委派 `video-script-studio`，由其自行执行制作前置确认。文案确认规则见 `00-preflight.md`。画布写入按 Skill 名称委派 `video-script-studio`（其 Higgsfield Canvas 能力/higgsfield-canvas）。不要求用户复制给另一个助手，也不能用同轮联动越过两道确认门槛。独立单阶段只交其范围。
 
 ## 输出结束
 

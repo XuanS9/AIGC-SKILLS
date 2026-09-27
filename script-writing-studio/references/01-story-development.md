@@ -2,13 +2,13 @@
 
 > 3–30分钟完整作品按 `19-runtime-structure.md` 确认具体单片/单集目标、全片覆盖与长内容接续；局部任务只处理相关范围，不强制跑其他Skill。
 
-> 本模块由文案Skill执行。开始正式创作前按 `00-preflight.md` 核对已知信息，集中询问缺失的关键创作条件并等待；不强问视频模型。文案明确确认后的生产任务委派script-package-production，画布同步统一委派canvas-production。
+> 本模块由文案Skill执行。开始正式创作前按 `00-preflight.md` 核对已知信息，集中询问缺失的关键创作条件并等待；不强问视频模型。文案明确确认后的生产任务委派video-script-studio，画布同步统一委派video-script-studio（其 Higgsfield Canvas 能力/higgsfield-canvas）。
 
 ## 1. 入口与边界
 
 从灵感、人物、题材或一句话故事开始开发时读取本文件与 `15-dramatic-tension.md`。已有足够材料且用户要正式稿时，同轮补齐最小设定并进入 `02-screenplay-writing.md`，不以开发流程阻塞写作。只做讨论、比较或定位时，不擅自展开全剧与制作资产。
 
-说明、动作默认简体中文，对白默认英文，用户指定优先。非关键设定可合理暂定；已确认人物、关系、世界规则、结局和价值观不得因追求刺激而擅改。真实性与专业要求按总控路由进入知识叙事/历史核验/专业核验。需要制作或画布同步时按 Skill 名称委派 `script-package-production` 或 `canvas-production`，不把相对路径当作运行依赖；本模块不直接执行画布写入，维护 Skill 不写作品画布。
+说明、动作默认简体中文，对白默认英文，用户指定优先。非关键设定可合理暂定；已确认人物、关系、世界规则、结局和价值观不得因追求刺激而擅改。真实性与专业要求按总控路由进入知识叙事/历史核验/专业核验。需要制作或画布同步时按 Skill 名称委派 `video-script-studio`（画布同步用其 Higgsfield Canvas 能力/higgsfield-canvas），不把相对路径当作运行依赖；本模块不直接执行画布写入，维护 Skill 不写作品画布。
 
 ## 2. 最小启动
 
