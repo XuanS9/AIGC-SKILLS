@@ -477,7 +477,7 @@ continues to handle copying and scene progress independently of prompt grammar.
 </style></head><body><div class="container">
   <h1>{{PROJECT_TITLE}}</h1>
   <div class="howto">完成后勾选场景，进度自动保存。
-    复制按钮复制该生成片段的完整提示词（七栏目及已合并的风格与连续状态）。可按编号请求修订。</div>
+    复制按钮复制该生成片段的完整提示词（四段式及已合并的风格与连续状态）。可按编号请求修订。</div>
   <details class="style-prefix"><summary>全局风格源（修改后同步到各提示词，保留局部覆盖）</summary>
     <pre>{{STYLE_PREFIX_TEXT}}</pre></details>
   <div class="howto">{{ASSET_GLOSSARY_HTML}}</div>
@@ -512,11 +512,11 @@ Record retained edit lengths or in/out points in the scene notes if they differ:
   </div>
   <div class="prompt-block">
     <div class="prompt-label"><span>Prompt 3a · {{DURATION_3A}}s</span><button class="copy-btn">Copy</button></div>
-    <pre class="prompt">[完整七栏目提示词：本片段参考与目标、一次全局视听、行为规则、详细分段演出（含段间承接）、尾帧、约束；已应用局部覆盖]</pre>
+    <pre class="prompt">[完整四段式提示词：参考素材职责、一句话概述、具体情节（按时间轴分镜、含段间承接与结束状态）、全局补充；已应用局部覆盖]</pre>
   </div>
   <div class="prompt-block">
     <div class="prompt-label"><span>Prompt 3b · {{DURATION_3B}}s</span><button class="copy-btn">Copy</button></div>
-    <pre class="prompt">[场景3下一叙事单元或受模型上限影响的接续提示词：完整七栏目、独立生成所需最小上下文、上一片段退出状态及本片段变化]</pre>
+    <pre class="prompt">[场景3下一叙事单元或受模型上限影响的接续提示词：完整四段式、独立生成所需最小上下文、上一片段退出状态及本片段变化]</pre>
   </div>
 </div>
 ```
