@@ -44,12 +44,13 @@ close-up format. Record the starting expression and intended final expression/ga
 
 Beat [n] ([start-end seconds, allocated after planning]): [trigger and inherited expression]
 → [AU codes] ([optional short anatomical description]) → [visible response / end state]
+[After the physical facial/body action, add only when useful: （潜台词：[one short, direct performance intention]）]
 [— delivers "<line>"]
 [Repeat only for necessary expression changes; respect the per-generation complexity ceiling.]
 Final expression and gaze: [state held into the final frame or next clip].
 
-[One-line mood / subtext — e.g. "the face never fully commits to either; the
- audience reads both at once."]
+[One-line mood / subtext — optional. Keep it as a direct acting intention, not a
+ literary inner monologue; do not add one to every beat.]
 
 **Camera:** [one dominant move — slow push-in / static medium close-up]
 ```

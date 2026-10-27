@@ -44,7 +44,7 @@ per-prompt — edit it once and re-render the whole shotlist.
 
 ```
 Style: [IMAX cinematic look], [16:9] widescreen. Photorealistic — no 3D render, no game engine.
-Lighting: [Natural light only — soft, even morning daylight, gentle atmospheric haze throughout. Key light from sky and windows only. No artificial light.]
+Lighting: [Source-motivated light, palette and contrast derived from the chosen film reference and location. Each scene specifies story time, weather and available sources; exposure follows those conditions.]
 Color: [60:30:10] — dominant / secondary / accent.
 Camera: Physical cine lens. 180° shutter motion blur.
 Skin: Pore-level realism — vellus hair, asymmetric moles, capillary flush, pore-shadow matching on-set light.
@@ -62,6 +62,7 @@ Notes on the fields:
   supports `auto/21:9/16:9/4:3/1:1/3:4/9:16` and `480p/720p/1080p/4k` (4K in
   `mode=std` only). Keep it inside the model enum — the preflight linter catches
   out-of-enum values.
+- **Lighting** — read the current project art direction. Carry its source logic, palette and contrast into each scene, with story time, weather, exposure and source changes specified locally. Update the project art direction when the selected style changes, then recompile affected prompts.
 - **Color `60:30:10`** — dominant / secondary / accent ratio; name the three
   colours in the per-scene Scene block, not here.
 - **Audio: diegetic-only** — the prompt body names only real-world SFX; layer any

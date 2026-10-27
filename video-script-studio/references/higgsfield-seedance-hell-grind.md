@@ -80,20 +80,13 @@ original.
 
 ### The voice is not an asset — it is a locked descriptor
 
-Seedance holds three or four voices per character inside one tonality. That is enough for a
-feature film **only if the voice is managed**.
-
-Lock every character's voice in pre-production, before any dialogue is written, right in the
-descriptor: **register, tempo, accent, manner.** It is pasted into the audio field as-is,
-every time that character speaks, and it never changes.
+Actual speaker/reference support depends on the selected model and mode, not an inferred fixed voice count. Studio character/video drafts do not carry timbre, register, resonance or accent descriptors, nor copy a fixed Voice field on every appearance. Write current delivery inline: breath, pace, loudness, pauses and strain. Actual provided audio references or IDs remain input mappings, not invented descriptions.
 
 ```
-Voice: deep, gravelly bass-baritone; slow, calculated pacing; London street accent;
-menacing calm — he never raises his voice.
+Delivery: short measured phrases, quieter when pressing the partner.
 ```
 
-**Stress-test the voice between generations the same way you stress-test the look.** If it
-drifts between shots, go back and lock it harder. Do not "keep shooting."
+Inspect actual audio matching between generations when available. Text wording alone does not prove stable generated speech.
 
 ### The acting is locked the same way as the look and the voice
 

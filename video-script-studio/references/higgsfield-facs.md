@@ -11,10 +11,11 @@ forced smiles, uncanny faces, mixed emotions and close-up dialogue; plain visibl
 behavior remains valid, and neither precise execution nor a close-up is required.
 
 > **This skill is a facial-control layer on top of `higgsfield-seedance.md`.**
-> Every FACS prompt is still a Seedance prompt — six-slot formula, Prompt-Craft
-> Laws, preflight linter. FACS only changes *how you specify the face*: AU codes
-> instead of (or alongside) emotion words. It is the muscle-level case of the
-> Voice Rewrite rule "describe physics, not emotion."
+> Full video prompts still use the studio four sections; native or expression-study formats
+> apply only when explicitly selected. FACS only refines relevant visible behavior, not the
+> output contract. Apply [表演证据验收](higgsfield-acting.md#表演证据验收), and for non-human
+> subjects use [非人角色表演适配](higgsfield-acting.md#非人角色表演适配) rather than assuming
+> human muscles/AUs. Reading this module does not require using AU codes or generating a sheet.
 
 ## QUICK FACTS
 *Routing aids — read the linked sections for the actual rules.*
@@ -41,7 +42,7 @@ expression:
 
 - `AU6` — cheek raiser (orbicularis oculi tightens, crow's feet appear)
 - `AU12` — lip-corner puller (zygomaticus major pulls the corners up and out)
-- Together, `AU6 + AU12` = a **Duchenne smile** (the genuine, eyes-involved one)
+- Together, `AU6 + AU12` describe a **Duchenne-pattern smile** (cheek and lip-corner activation); the pattern alone does not prove an inner emotion
 
 A smile that uses only `AU12` reads as *polite/forced* — the eyes don't
 participate. That distinction is invisible to "smile" as a prompt word and
@@ -190,9 +191,9 @@ rather than trust a 49-panel dump.
 
 ## Step 2 — Put AU Codes in the Seedance Prompt
 
-Once you know the AUs, they go into an ordinary Seedance 2.0 prompt. Everything
-in `higgsfield-seedance.md` still applies — six slots, Prompt-Craft
-Laws, preflight linter. FACS only changes the face specification.
+Once selected, optional AUs accompany the appropriate timed visible behavior. The root
+studio four-section contract and actual model/mode take precedence; the Seedance 2.0
+examples below are not universal platform requirements. FACS only refines the face specification.
 
 ### Two specification styles — test both
 
@@ -395,8 +396,9 @@ breath or microexpression details without adding an each-second schedule:
 
 - **No tears unless the script explicitly calls for them** — wet-with-catchlight
   is the default sadness read.
-- **No cartoon grimaces**; no "eyes to the ceiling" for thinking — name a
-  specific gaze direction instead.
+- **Match the approved performance style.** Avoid unmotivated grimaces in restrained
+  work; stylized/cartoon expression is valid when established. Name the attention target
+  rather than adding generic eye-rolling to depict thought.
 - **Give speakers and listeners a task.** A meaningful held posture or gaze can
   carry it; continual micro-movement is not required.
 - **Reactions follow perception and motivation.** Vary onset and strength with
@@ -427,7 +429,7 @@ Schedule **one AU set per spoken beat**, aligned to the line being delivered:
 
 ```
 Beat 1 (0-1s): AU5 + AU38 (upper lid raiser + nostril dilator — genuine fear, pre-dialogue)
-Beat 3 (2-4s): AU12 + AU6 (Duchenne smile — forced warmth) — delivers "everything's fine"
+Beat 3 (2-4s): AU12 (lip-corner pull — attempted reassuring smile; cheeks remain restrained) — delivers "everything's fine"
 Beat 5 (5-6s): AU7 (lid tightener — eyes betraying the fear the smile hides)
 Beat 7 (8-10s): AU4 + AU24 (brow lowerer + lip presser — seriousness cracking through)
 ```
@@ -460,10 +462,10 @@ these are not three mandatory new gestures or separately timed beats:
 
 A dialogue FACS prompt pairs naturally with the audio conditioning layer:
 
-- Use the **`[AUDIO: Xs]` script block** (`higgsfield-audio.md` § Audio
-  as a Conditioning Input) to place the spoken lines — quoted text generates
-  speech **with automatic lip-sync**, so the mouth shapes the words while your AU
-  schedule drives the *expressive* muscles around them.
+- In studio four-section video drafts, place spoken lines inline in 【具体情节】 using
+  speaker + delivery + 「dialogue」. The **`[AUDIO: Xs]` script block** is only for explicitly
+  selected native/short workflows that support it. Actual model/mode governs audio and
+  lip-sync; neither quoting dialogue nor writing AUs guarantees synchronized mouths.
 - A tight close-up + a strong `@Image1` identity reference can help inspect or
   repair lip-sync (the audio skill's Lip-Sync Rules). Use that coverage when it
   serves the scene; wider dialogue remains valid and uses readable cues.
@@ -536,7 +538,7 @@ where we stay really quiet. Can you do that for me?"
 
 Beat 1 (0-1s): AU5 + AU38 (upper lid raiser + nostril dilator — genuine fear, pre-dialogue)
 Beat 2 (1-2s): AU45 (blink — composing the mask)
-Beat 3 (2-5s): AU12 + AU6 (forced Duchenne warmth) — "everything's fine, okay?"
+Beat 3 (2-5s): AU12 (attempted reassuring smile; cheeks remain restrained) — "everything's fine, okay?"
 Beat 4 (5-8s): AU2 + AU12 (smile + outer brow raise — performing fun) — "we're just gonna play a game"
 Beat 5 (8-10s): AU4 + AU24 (brow lowerer + lip presser — seriousness cracking) — "where we stay really quiet"
 Beat 6 (10-15s): AU6 + AU17 + AU1 (eyes smiling while chin trembles, desperation) — "can you do that for me?"
@@ -554,7 +556,7 @@ fully commits to either; the audience reads both at once.
 ## Related Skills
 
 - `higgsfield-seedance.md` — the base prompt grammar every FACS prompt
-  obeys (six slots, Prompt-Craft Laws, preflight linter, § Voice Rewrite "physics
+  uses as scoped legacy vocabulary (the studio four-section contract overrides full-video layout; § Voice Rewrite "physics
   not emotion" — FACS is its muscle-level case)
 - `higgsfield-soul.md` § Micro-Expressions — 19 named expressions; FACS
   is the precise-control layer beneath them

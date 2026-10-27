@@ -65,11 +65,7 @@ stage count or equal-length intervals. A **stage is not a cut or a generation cl
 one shot can span stages, a stage can need several shots, and a generation can carry
 several stages within the actual mode, complexity, and reference limits.
 
-Complete video prompts visibly use the shared seven-section format: **assets and
-reference roles; overall goal; global sight/sound/space; behavior and pacing; staged
-performance; final frame/join; scoped constraints**. Continuity/state inheritance is
-not its own section — it lives inside staged performance (segment-to-segment carryover)
-and the scoped constraints.
+Complete video drafts use the studio four sections: **【参考素材职责】 → 【一句话概述】 → 【具体情节】 → 【全局补充】**. The seven planning categories map into them; they are not seven output headings. Use direct registered references without repeating asset appearance. Dialogue in 「」 and effects are inline at their timed actions; legacy bracket examples below do not override this contract. Do not add fixed timbre/voice-profile prose. Continuity lives in timed action and necessary global facts.
 Read the [full performance example](template-full-performance-example.md)
 and [director template](template-general-director-2-5.md) before drafting.
 Each stage has a time/event heading, developed causal action, object/opponent response,
@@ -747,7 +743,7 @@ rather than extending an extension — the same degradation curve as 2.0's chain
 
 ## 整合版：人物身份与表情参考的职责
 
-本项目执行 [角色资产交付规范](template-character-asset-delivery.md)。默认图左侧是正面面部特写，右侧是无头部的全身正面、侧面、背面，按需附服装、配饰或道具的关键细节局部图；干净浅色背景，左右分区清晰。正面定稿为身份主参考，其他面部角度按需单独补充并核对身份。右侧身体与局部图只负责体型、服装、道具及对应细节，均属于同一角色，不能把不同视图识别成多个人或将局部图中的物品算成新增道具。旧图或失败结果右侧残留头部时按需另存裁切修复版。强表情图只交同源生成备注，由用户另行生成，默认不混入设定板，也不引用尚未上传的表情素材。用户补充并核对表情图后，只赋予其表情肌肉、嘴形和牙齿结构的辅助职责，不改变定稿身份。
+本项目执行 [角色资产交付规范](template-character-asset-delivery.md)：全图共4格，唯一清晰面部特写＋正面/90°侧面/背面完整全身；三个全身格保留头部、不刻画五官，头顶至鞋完整。面部格负责身份，全身格负责比例、体型、服装和穿戴配饰，均属于同一角色。图底仅非文字波形，不附音色描述或标签；实际音频参考或TTS设置只按输入/参数使用，不改写成视频音色段落。参考板的四格排版、背景、图底条和全身格面部处理均不进入成片，视频人物五官自然完整。表情辅助仍单独按需生成，不引用尚未上传的素材。旧图按实际问题局部修复，保留已定稿身份。
 
 提示词必须说明各素材属于谁、负责什么、排除什么；灰底、多视图排版和身体图裁切不进入成片。中性资产用于固定形体与材质，视频场景自行定义光照；写实质感从通过视觉验收的主参考延续，不靠视频提示词反复描述五官来重造身份。继续执行原阶段状态、参考映射、模式参数及 preflight；静态 lint 通过不能证明面部一致性或视觉真实感。
 

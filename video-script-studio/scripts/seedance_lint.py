@@ -36,6 +36,11 @@ and can be overridden per-field with --ar / --resolution / --mode / --duration.
 The specs path is relative to the skill directory, independent of the working
 directory. Use --specs /path/to/model-specs.json to supply another local snapshot.
 
+The 1800-character ZH limit is enabled only with --profile bilingual-json.
+It applies to an extracted ZH prompt, or the decoded ZH prompt field of the
+paired EN/ZH JSON array. Standard four-section production drafts are exempt;
+actual platform submission limits still require their own verification.
+
 Pass --asset-registry /path/to/project/asset-registry.json to compare project
 handles exactly across batches, even if --preflight / --model are omitted.
 Platform @Image1 / @Video1 / @Audio1 slots require separate binding review.
@@ -344,8 +349,12 @@ def detect_regime(text: str) -> str:
 
     Block regime is recognized from structure, never from length: at least
     BLOCK_REGIME_MIN_LABELS distinct canonical block labels at line starts,
-    or 2+ 【镜头N】/[Shot N] shot-block markers (the shotlist copy-block form).
+    or the standard four-section Chinese contract, or 2+ 【镜头N】/[Shot N]
+    shot-block markers (the shotlist copy-block form).
     """
+    section_headers = re.findall(r"^\s*【([^】\n]+)】\s*$", text, re.M)
+    if section_headers == ["参考素材职责", "一句话概述", "具体情节", "全局补充"]:
+        return "block"
     labels = {m.group(1) for m in BLOCK_LABEL_RE.finditer(text)}
     if len(labels) >= BLOCK_REGIME_MIN_LABELS:
         return "block"
@@ -397,6 +406,46 @@ def load_asset_registry(path: Path) -> dict[str, dict]:
         handles_seen.add(handle.casefold())
         names_seen.add(name)
         registry[handle] = entry
+
+    # Explicit per-image authoring aliases are optional. A bare S image ID is
+    # never treated as a bound platform slot or inferred from a scene handle.
+    aliases = data.get("reference_aliases", [])
+    if not isinstance(aliases, list):
+        raise ValueError("reference_aliases must be an array")
+    for alias in aliases:
+        if not isinstance(alias, dict):
+            raise ValueError("reference alias must be an object")
+        handle, image_id = alias.get("handle"), alias.get("image_id")
+        if (not isinstance(image_id, str)
+                or not re.fullmatch(r"S\d{2,}(?:-\d{2,})?", image_id)
+                or handle != "@" + image_id):
+            raise ValueError("scene reference alias must be @ followed by its exact S image_id")
+        if handle.casefold() in handles_seen:
+            raise ValueError(f"duplicate reference handle: {handle}")
+        asset_handle = alias.get("asset_handle")
+        parent = registry.get(asset_handle) if isinstance(asset_handle, str) else None
+        if parent is None or parent.get("type") != "S":
+            raise ValueError(f"{handle}: scene asset_handle is not registered")
+        if not isinstance(parent.get("view_plan"), list):
+            raise ValueError(f"{handle}: scene requires a view_plan array")
+        candidates = [v for v in parent["view_plan"]
+                      if isinstance(v, dict) and v.get("image_id") == image_id
+                      and v.get("generate_separate_image", True)]
+        if (len(candidates) != 1 or not isinstance(candidates[0].get("name"), str)
+                or not candidates[0]["name"].strip()):
+            raise ValueError(f"{handle}: expected one named independent scene image view")
+        status, asset_file = alias.get("status"), alias.get("file")
+        if ("file" not in alias
+                or status not in ("planned", "available", "bound", "verified")):
+            raise ValueError(f"{handle}: requires valid status and explicit file")
+        if asset_file is not None and (not isinstance(asset_file, str) or not asset_file.strip()):
+            raise ValueError(f"{handle}: file must be a nonblank string or null")
+        if status != "planned" and asset_file is None:
+            raise ValueError(f"{handle}: {status} requires an actual file identifier")
+        if asset_file != candidates[0].get("actual_file"):
+            raise ValueError(f"{handle}: file does not match its scene view actual_file")
+        registry[handle] = dict(alias, name=parent["name"] + "/" + candidates[0]["name"])
+        handles_seen.add(handle.casefold())
     return registry
 
 
@@ -427,10 +476,13 @@ def asset_registry_lint(text: str, registry: dict[str, dict]) -> list[Finding]:
     return findings
 
 
-def structural_lint(text: str, settings: Settings, spec: dict | None) -> list[Finding]:
+def structural_lint(text: str, settings: Settings, spec: dict | None,
+                    *, profile: str = "standard") -> list[Finding]:
     """Structural preflight: the failures that waste credits, not the ones
     that trip the content filter. Enum legality comes ONLY from the specs
     layer — when no model/spec is available the checks downgrade to INFO."""
+    if profile not in ("standard", "bilingual-json"):
+        raise ValueError(f"Unknown output profile: {profile}")
     findings: list[Finding] = []
 
     # ── Shot count: declared vs actual block markers ─────────────────────
@@ -501,14 +553,35 @@ def structural_lint(text: str, settings: Settings, spec: dict | None) -> list[Fi
                 "Beats should sum exactly to the clip duration — trailing "
                 "uncovered seconds are improvised dead air."))
 
-    # ── ZH house-format checks ───────────────────────────────────────────
+    # The 1800-character limit belongs only to the selected bilingual-JSON
+    # output contract. Standard production drafts have no limit from this rule.
+    # Accept either an extracted ZH prompt or the profile's paired JSON array;
+    # count decoded ZH strings, never EN text or JSON serialization overhead.
+    if profile == "bilingual-json":
+        zh_prompts = [("ZH prompt", text)]
+        try:
+            paired = json.loads(text)
+        except json.JSONDecodeError:
+            paired = None
+        if isinstance(paired, list):
+            if (len(paired) != 2 or
+                    any(not isinstance(item, dict) for item in paired) or
+                    [item.get("lang") for item in paired] != ["en", "zh"] or
+                    any(not isinstance(item.get("prompt"), str) for item in paired)):
+                findings.append(Finding(
+                    "FAIL", "bilingual-json-shape", "expected EN then ZH prompt objects",
+                    "Provide the paired EN/ZH array or an extracted ZH prompt."))
+                zh_prompts = []
+            else:
+                zh_prompts = [("ZH prompt", paired[1]["prompt"])]
+        for label, zh_text in zh_prompts:
+            if len(zh_text) > ZH_CHAR_CAP:
+                findings.append(Finding(
+                    "FAIL", "zh-overlength", f"{label}: {len(zh_text)} chars",
+                    f"The selected bilingual-JSON profile limits its ZH prompt "
+                    f"to {ZH_CHAR_CAP} characters. Compile this submission "
+                    "separately from the complete production draft."))
     if CJK_RE.search(text):
-        if len(text) > ZH_CHAR_CAP:
-            findings.append(Finding(
-                "FAIL", "zh-overlength", f"{len(text)} chars",
-                f"ZH prompts hard-cap at {ZH_CHAR_CAP} characters "
-                "under the bilingual-JSON output contract. Cut scene-setting "
-                "prose; keep blocking, camera, and audio cues."))
         zh_hits = [t for t in ANTISLOP_ZH if t in text]
         if zh_hits:
             findings.append(Finding(
@@ -949,6 +1022,11 @@ def main() -> int:
     parser.add_argument("--preflight", action="store_true",
                         help="Full chained preflight: filter lint → structural "
                              "lint, one report")
+    parser.add_argument("--profile", choices=["standard", "bilingual-json"],
+                        default="standard",
+                        help="Output contract; only bilingual-json applies the "
+                             "1800-character cap to an extracted ZH prompt or "
+                             "the ZH field of the paired JSON array.")
     parser.add_argument("--regime", choices=["auto", "short", "block"],
                         default="auto",
                         help="Prompt regime: 'short' = single-shot MCSLA (word "
@@ -1010,9 +1088,10 @@ def main() -> int:
                                  if args.extension_mode else None)))
 
     filter_findings = lint(prompt, regime=args.regime)
-    run_structural = args.preflight or spec is not None or any(
+    run_structural = args.preflight or args.profile != "standard" or spec is not None or any(
         [settings.ar, settings.resolution, settings.mode, settings.duration is not None])
-    structural = structural_lint(prompt, settings, spec) if run_structural else []
+    structural = (structural_lint(prompt, settings, spec, profile=args.profile)
+                  if run_structural else [])
     if age_finding is not None:
         structural.insert(0, age_finding)
     if registry is not None:

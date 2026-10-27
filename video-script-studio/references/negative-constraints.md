@@ -59,6 +59,23 @@ These occur when the model misinterprets visual style or rendering instructions.
 
 ## Whole-Frame Degradation — quality words vs. look choices
 
+Keep the requested or established style; do not reselect the medium to fix an
+output deviation. Only if style is missing, infer it from content/genre and
+narrative tone; do not default to live action. Genre alone does
+not dictate medium, and realistic 3D is not live action. Only for human asset sheets
+in a selected live-action project, follow the
+[character asset template](template-character-asset-delivery.md#真人实拍分支降低意外-cg-感的写法):
+anchor the medium as live-actor costume fitting photography, not a render-quality
+label. Its subtle photographic grain is a declared look choice, not a substitute
+for pores or fabric texture; keep those details readable and reduce or omit grain
+if it obscures them. For CG-like live-action characters, inspect the positive
+prompt and appended templates for conflicting render/showcase language and generic
+quality boosters. Remove or replace that contamination while preserving the target
+style, identity and costume. Do not compensate by stacking camera terms or by
+adding negative style prompts, even when a separate negative field is supported.
+Animation, illustration, CG and stop motion use their own medium-specific
+material and lighting language. Do not exclude 3D rendering when CG is the target.
+
 Some tokens authors reach for to make an output feel filmic are read as instructions
 about the **rendering** rather than about the subject, and a rendering instruction
 lands on the entire frame. `film grain` dropped in as a quality note softens

@@ -1,47 +1,30 @@
-# Worksheet: Style Sheet — Visual DNA + Forbidden List (Step 5)
+# Worksheet: Project Art Direction
 
-> Lock the look once, then inject it verbatim into every prompt. The Forbidden List is often more
-> valuable than the palette — naming what the world is NOT is your strongest anti-slop lever.
-> Framework adapted from Higgsfield's Character Design materials by @vavavinca.
+Store the completed sheet in the user's project, using its existing art-direction file or section. Record that location and version in `project.md` and the asset registry. This template supplies fields; the project supplies the visual choices.
 
-## Path A — let the model draft it from your World Sheet
-Paste this into an image model (e.g. Nano Banana Pro / GPT Image 2), then refine by hand:
+## Reference and scope
 
-```
-Based on this world description: [paste your World Sheet six dimensions], propose a Visual DNA:
-1) a 5–7 swatch color palette as #RRGGBB hex codes, 2) the recurring lighting logic,
-3) the dominant materials/textures, 4) one familiar+new juxtaposition that fixes the world's identity,
-5) the age/proportion/era language, and 6) a FORBIDDEN list of looks to avoid so it never reads as
-generic AI output. Return hex codes, not color names.
-```
+- Reference works or images: <selected by the user, or a proposed reference awaiting review>
+- Applicable regions, scenes and period: <which part of each reference applies>
+- Role of each reference: <architecture, materials, lighting, palette, photography, scale>
+- Medium: <the confirmed image-making medium>
+- Evidence: <written interpretation or actual images reviewed>
 
-## Path B — fill by hand
+## Visible art direction
 
-**Palette (5–7 hex codes):**
-> `#______`  `#______`  `#______`  `#______`  `#______`  `#______`
+- Palette: <dominant colors, accents and their use; hex values when useful>
+- Environment and weather: <climate, atmosphere and seasonal appearance for this project>
+- Lighting: <sources, direct/diffuse balance, exposure, contrast and shadow transitions>
+- Time of day: <how daylight, dawn, dusk and night preserve the selected look>
+- Architecture and scale: <forms, construction and cultural period>
+- Materials and furnishings: <surfaces, furniture, cargo, daily objects and use marks>
+- Staging space: <open routes, working areas and required points of contact>
+- Characters and creatures: <proportions, material treatment and continuity with the environment>
 
-**Lighting** — the recurring light logic.
-> _______________________________________________
+Describe the intended appearance in visible terms. Use brief output requirements where needed; keep production checks in the project record.
 
-**Materials** — what the world is physically made of.
-> _______________________________________________
+## Version and handoff
 
-**Juxtaposition** — one familiar + new pairing that fixes the identity.
-> _______________________________________________
+Record the version, confirmed scope and affected scenes. Each prompt includes the relevant concrete traits for its subject, time and action. A style change updates this project sheet first, followed by affected assets and prompts.
 
-**Age & proportion** — build/era language for characters.
-> _______________________________________________
-
-**Real-life refs** — 2–3 actors / paintings / films (LOOK reference only, not identity to copy).
-> _______________________________________________
-
-## Forbidden List (the most important field)
-What this world is NOT — list the generic defaults to avoid:
-> NO ____________________
-> NO ____________________
-> NO ____________________
-> *(e.g. NO teal-and-orange grade · NO neon · NO pristine surfaces · NO photoreal celebrity faces · NO pure-black shadows)*
-
-## Hand off
-This Visual DNA (hex palette + forbidden list) gets pasted **verbatim** into every generation prompt.
-→ `higgsfield-prompt` (build the prompt) · `higgsfield-soul` (Soul HEX color lock + Soul ID for recurring characters) · `model-guide.md` (pick the model).
+Use [visual-reference matching](higgsfield-style.md#电影视觉参考匹配) to interpret references, [project workspace](project-workspace.md) to record them, and [prompt construction](higgsfield-prompt.md) to compile independent prompts.

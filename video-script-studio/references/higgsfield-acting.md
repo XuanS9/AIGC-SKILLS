@@ -9,9 +9,10 @@ Higgsfield's 95-minute AI feature film, adapted to this repo's prompt surfaces.
 emotion.** A character wants something, something is in the way, and they act to get it.
 Emotion is a byproduct of that struggle — never the thing you write directly.
 
-This is a **layer on top of** `higgsfield-seedance.md`: the paragraph this skill
-produces goes into the PERFORMANCE / CHARACTER ACTING block of an otherwise normal Seedance
-prompt. It does not change camera, light, wardrobe, or grade.
+This is the performance craft layer for the studio. In full video prompts, compile it into
+【具体情节】 and necessary continuity in 【全局补充】; do not add a PERFORMANCE / CHARACTER ACTING
+heading. Native platform fields apply only when that output is explicitly selected.
+Identity assets, camera, lighting and grade retain their own responsibilities.
 
 ## QUICK FACTS
 - Write the **objective** (a verb aimed at a partner), never the state — "make him confess", never "be angry" [→](#the-five-pillars-of-every-scene)
@@ -20,14 +21,14 @@ prompt. It does not change camera, light, wardrobe, or grade.
 - The body carries the biography: **center of gravity, tempo, openness, breath** — set all four before any psychology [→](#the-body)
 - **Business** — a physical task the hands are doing — kills theatricality; the strongest accent in a scene is the moment the character **stops** it [→](#the-body)
 - **Distance is drama** when it changes the relationship; status is what you DO, and a status break can mark an event [→](#the-body)
-- The **master profile** is 150–220 words, one paragraph, fixed block order, written once per character and then rewritten per scene — never pasted [→](#the-acting-master-profile)
-- Every tic carries a **trigger**; every mask carries a **crack** — at least one "However, when X…" clause per profile [→](#the-acting-master-profile)
+- Reuse the character master profile and adapt relevant behaviors per scene; the 150–220-word paragraph below is an example form, not mandatory prompt padding [→](#the-acting-master-profile)
+- Any tic or mask used needs a **trigger**; a crack is optional when the character and scene support it [→](#the-acting-master-profile)
 - **Purposeful attention is required** — choose readable gaze/blink cues for the event and framing; the eye-life menu is not a quota [→](#eye-life)
 - Scene adaptation preserves motivation while selecting visible behavior; convert useful tics and omit irrelevant ones [→](#scene-adaptation)
-- The **voice prompt is locked** — one per character, pasted verbatim into the audio field, never adapted per scene [→](#voice--fixed-identity-never-adapted)
+- Describe current delivery (breath, pace, loudness), not a fixed timbre/profile; actual audio references keep their recorded role [→](#voice--fixed-identity-never-adapted)
 - **State anchors are optional remediation.** Retain the full preparation → action → response → recovery chain and inherited states [→](#states-not-transitions)
 - Ensemble reactions follow individual perception; wave timing and still/quiet power are optional performance patterns [→](#ensemble-and-space)
-- 15 named bad-acting symptoms with prompt-level fixes, and a 0–5 self-check scale — **aim every hero shot at 4+** [→](#the-atlas-of-bad-acting)
+- 15 named bad-acting symptoms and a descriptive 0–5 scale; accept using [evidence checks](#表演证据验收), not a score threshold [→](#the-atlas-of-bad-acting)
 
 ---
 
@@ -38,7 +39,7 @@ prompt. It does not change camera, light, wardrobe, or grade.
 | **Craft** — why the character does anything | **this skill** | objective, obstacle, tactics, beats, subtext, status, business |
 | Muscle | `higgsfield-facs.md` | facial Action Unit codes (AU12, AU6…) |
 | Named expressions | `higgsfield-soul.md` § Micro-Expressions | expression vocabulary for identity work |
-| Production form | `higgsfield-seedance-hell-grind.md` § Two extra blocks | the CHARACTER ACTING block this output fills |
+| Production form | `director-compiler.md` | performance within the studio four-section contract; no extra acting block |
 | Backstory | `higgsfield-character-design.md` | who the character is before any scene exists |
 
 Use this skill to decide **what the body does**; optionally use FACS to specify
@@ -65,8 +66,9 @@ not "expressive faces."
 
 ## The five pillars of every scene
 
-Every character in every scene decomposes into five elements. If one is missing, the
-performance falls apart.
+Use these five questions for active dramatic characters; adapt to the scene and character.
+An unconscious or sleeping figure has a physical state, not an invented conscious objective.
+Do not add goals, conflict or subtext to fill a template for non-dramatic work.
 
 **1. Objective.** What the character wants IN THIS SCENE, RIGHT NOW, FROM A SPECIFIC PERSON.
 Always a verb aimed at the partner: *make him confess* · *beg a week's extension* ·
@@ -98,6 +100,24 @@ repetitions (asking the same thing — they don't believe the answer) · abrupt 
 jokes at the wrong moment (a shield against vulnerability) · answers that are too short
 ("Fine." "Sure." — a closed door).
 
+### 提示词编译：物理动作后接潜台词
+
+潜台词是给生成模型的**表演意图提示**，不是第二套动作，也不是文学化的心理独白。需要时，先写当前取景中能看见的物理动作、表情、视线、呼吸或手部任务，再紧接一句简短的潜台词：
+
+```text
+她眉峰夹紧，下唇微颤，压低下巴稳住握刀手。
+（潜台词：不是恐惧，而是强行压住疼痛和慌乱，逼自己把注意力全部钉在敌人身上）
+```
+
+使用规则：
+
+- 只在面部特写、情绪转折、重要决定、听者反应或动作意图容易被演空的关键 beat 使用；不是每个时间段都要补。
+- 潜台词保持一句、直白、可执行，说明“为什么这样做”或“想对谁做什么”；优先写 `逼自己稳住`、`掩饰心虚`、`等对方露出破绽`，不写“她很紧张”“她感到痛苦”这类情绪标签。
+- 潜台词必须服从已确认的目标、障碍、信息和角色状态；不能用它擅自增加秘密、反转、关系或未发生的心理事实。
+- 先写可见动作，后写潜台词。潜台词不替代动作、刺激源、视线目标或动作结果，也不要求模型把括号内容逐字表现成夸张表情。
+- 连续动作、纯景观/产品镜头、无意识状态和无需心理解释的物理行为通常省略；非人角色只使用其已确认的感知与行为渠道。
+- 复制用视频提示词中可保留 `（潜台词：...）` 作为紧邻动作的导演意图；不另设 PERFORMANCE/心理分析栏目。内部规划可用更完整的目标与障碍，提交正文只保留本镜需要的短句。
+
 ## The layer above the pillars — one direction, different fuel
 
 `[DEMO — Tigran (tig-acting-task), 2026-07-10]` `[UNPROVEN HERE]` The five pillars are
@@ -105,7 +125,7 @@ per-character. They do not say what holds an ensemble together, and that is why 
 built from them alone can read as several good performances that are not in the same
 scene. One layer sits above them.
 
-**The scene has ONE direction, and every character plays toward it.** Usually unspoken —
+**Optional ensemble lens: a shared scene direction, with different motives.** Use it when the scene supports a common intention; opposing objectives need not be rewritten into agreement. Usually unspoken —
 a mutual silent agreement about how this time will be lived. *Part without pain, stay
 positive* (a mother packing her son's kit before he leaves). It belongs to everyone in
 the room at once. It is **not** the film's dramaturgic function: characters never play
@@ -262,8 +282,8 @@ collapse*, or *enter low and flip the room*.
   currency of the weak; the character who owns the scene lowers the volume and everyone leans in.
 - Pauses are events, not holes — a pause is legal only if something happens inside it: an
   assessment, a decision, a refusal to answer.
-- Real speech has litter: interruptions, half-heard words, repetitions, unfinished phrases.
-  Perfectly constructed sentences kill street truth.
+- Speech may include interruptions or unfinished thoughts when the approved script supports
+  them. Preserve confirmed dialogue exactly; adjust delivery, not words, unless rewriting is authorized.
 
 ---
 
@@ -272,16 +292,15 @@ collapse*, or *enter low and flip the room*.
 ## The acting master profile
 
 Every recurring character gets **one** master profile — the permanent source of truth about
-how they act. Written once, then adapted per scene. Target: **150–220 words, one flowing
-paragraph**, fully observable and filmable.
+how they act. Written once, then adapted per scene. The **150–220-word flowing paragraph** below is an optional planning form,
+not a required length or an extra output block. Keep relevant behavior observable and filmable.
 
-**Block order is fixed:**
+**Suggested planning order:**
 
 ```
 Character acting as [NAME]. [Build, physique, posture — the body as a document of their
 biography]. [The psychological engine in one clause — the inner drive that explains the
-physicality]. Vocal profile: [pitch/timbre, accent/origin, pace and delivery manner, and how
-the voice breaks or shifts under emotion]. Key physical habits and tics: [signature tic with
+physicality]. Current delivery: [breath, pace, loudness and phrase breaks at the actual event]. Key physical habits and tics: [signature tic with
 its trigger; stress tic with its trigger; concealment behavior — what they do to hide what
 they feel; the facial mask and the exact condition under which it cracks]. Eye life: [blink
 quality and rate, scanning pattern, gaze-before-head, catchlights]. Walking style: [the gait
@@ -304,11 +323,10 @@ when [emotional trigger], [the transformation — how the posture, gait, and fac
 4. **Build in the mask AND the crack.** The single most cinematic device in a profile is the
    conditional transformation: the facade, plus the precise trigger that collapses it. A
    dominant swagger that crumbles into a childlike slouch when rejected; stern discipline that
-   melts into a radiant smile at one specific person. **Every profile carries at least one
-   "However, when X — …" clause.** A character playing two truths at once is the difference
-   between a puppet and a person.
-5. **One softening target.** Where it fits, give the face exactly one person, animal, or object
-   it genuinely softens for. One — not two. This humanizes without diluting.
+   melts into a radiant smile at one specific person. A "However, when X — …" clause can specify a genuine change of strategy.
+   It is optional: do not invent a mask or contradiction for every character.
+5. **Softening targets, when established.** Use the relationships already supported by the
+   character and scene; do not impose a count or invent a relationship.
 6. **No wardrobe.** Clothing lives in the scene/look block, never in the acting profile. The
    profile must survive any costume change.
 7. **No camera, no color.** Acting drives performance, face, voice, and motion only.
@@ -316,11 +334,10 @@ when [emotional trigger], [the transformation — how the posture, gait, and fac
    from past struggles", shoulders "perpetually tense", a posture "over-corrected to project
    authority". Profession, past injuries, and self-image must be readable in the body.
 
-> **Age is not a profile field.** Engine rule 1 (`higgsfield-seedance-engine-rules.md`) is
-> age-blind characters, and the content filter tightens sharply on age words. Carry the same
-> information through **build, wear, posture, and voice** — "a body that has already been
-> repaired twice", "a working-class rasp", "an old boxer's walk" — never a number and never
-> *boy / girl / young / teen*.
+> **Identity and age follow confirmed project facts.** This craft module imposes no blanket
+> age-word ban. Body, posture and voice may express life experience without repeating asset
+> descriptions, but do not conceal age, change identity, or rewrite words to bypass safeguards.
+> Apply the actual platform rules; if they prevent the requested submission, explain the conflict.
 
 ## Eye life
 
@@ -362,7 +379,7 @@ never paste it.
 
 1. **Present characters only.** An acting paragraph only for characters actually in the shot.
    No character in frame → no paragraph.
-2. **Keep the constant core.** Identity, vocal profile, signature tics, eye life, and the
+2. **Keep the constant core.** Identity, signature tics, eye life, and the
    emotional through-line stay the same in every scene — this is what holds the character
    together across cuts. Never contradict the master.
 3. **Re-express for this scene.** Select, emphasize, modify, or drop specific behaviors to fit
@@ -376,33 +393,20 @@ never paste it.
    format's behavior, staged performance and continuity sections; this sub-block style
    does not remove the enclosing headings or detailed action prose.
 6. **Bind the character to real references** in the role map. Use the selected mode's
-   tag grammar; Seedance 2.5 action prose uses stable names, with handles in asset roles.
+   tag grammar; follow the root's direct registered @handle convention in project video prose,
+   without re-describing the asset. Unbound authoring aliases remain explicitly unbound in records.
 
 ## Voice — fixed identity, never adapted
 
-Acting is rewritten per scene; **voice is locked.** Each character gets one Voice prompt — a
-permanent vocal identity pasted **verbatim** into the audio field every time they speak, and
-never modified. If the character appears but says nothing, omit it.
+Do not output fixed timbre, register, resonance or accent profiles in character assets or video drafts. Delivery is
+scene-dependent: breath, pace, pauses, loudness and strain must follow the current action.
+A frightened whisper and a calm answer can come from the same speaker without the same delivery.
 
-> **Not even a synonym.** `[FIELD — Higgsfield Studio, ONEIRIC breakdown, 2026-08-13]`
-> "Verbatim" is stricter than it sounds, and the way it gets broken is not carelessness —
-> it is a writer improving the wording between shots and believing the meaning is
-> preserved. It is not: swapping *warm* for *rich*, or *gravelly* for *raspy*, moves the
-> generated voice. Keep every locked block in one place — a **voice bible** for the
-> production, decided once — and paste from it rather than retyping.
-
-```
-"A [origin / accent descriptor]. [Timbre and register]; [pace and delivery manner];
-[emotional character — and how it shifts under pressure]."
-```
-
-The vocal profile *inside* the acting paragraph describes how speech behaves dramatically
-(tempo shifts, breaking registers, whispers); the Voice prompt in the audio field locks the
-**sound** itself. Both must agree.
-
-Seedance holds only three or four voices per character within one tonality, so drift is real —
-stress-test the voice across generations exactly like the look, and lock it harder rather than
-"keep shooting" (`higgsfield-seedance-hell-grind.md` § The voice is not an asset).
+Use actual provided audio references or platform IDs only with verified roles and binding;
+do not turn them into invented descriptions. Full video drafts use inline speech, non-verbal
+vocalizations and scene sounds, without a fifth Audio field. Silent appearances do not need
+voice instructions; offscreen dialogue retains speaker attribution. Native audio-only tool
+settings remain in their own task scope. Actual lip-sync and audio matching require results.
 
 ## States, not transitions
 
@@ -424,9 +428,9 @@ and user-directed opening remain legible
 The wave, freeze and strong/weak contrasts below are optional dramatic patterns;
 character intent, readable distance and actual stimuli determine behavior and timing.
 
-- **Group reactions travel in a wave, never in sync.** One person gets the joke first, the
-  second half a beat later, the third not at all. Simultaneous identical reactions read as fake
-  — unless a deliberately choreographed comic sync is the point.
+- **Group reactions follow perception.** One person may get a joke first, another later,
+  another not at all; a shared sudden stimulus can also produce simultaneous responses.
+  Vary behavior where motivated, not by mandatory stagger or per-person reaction slots.
 - **Give the reaction its needed weight.** Preserve action and response together; show a
   witness's face when that viewpoint carries the event, without forcing reaction close-ups.
 - **A freeze can punctuate a threat.** A motivated change from shifting weight or business
@@ -443,9 +447,9 @@ character intent, readable distance and actual stimuli determine behavior and ti
 - **Degradation accumulates.** If a character is worn down across a story, carry it in the body
   cumulatively — greyer, heavier, slower reactions — never resetting between scenes.
 
-> **Engine ceiling:** only ≤3 characters track reliably across cuts
-> (`higgsfield-seedance-engine-rules.md` rule 5). Write the wave for the tracked pair or
-> trio; everyone else is crowd, described as a mass.
+> **Capacity is model- and mode-specific.** Older production heuristics are not a universal
+> three-character ceiling. Check actual reference/speaker limits and visible workload; do not
+> demote a plot-relevant character to an anonymous crowd solely to meet an assumed count.
 
 ---
 
@@ -460,13 +464,13 @@ Recognize the symptom, apply the prompt-level fix.
 | 1 | Indication (mugging) | The face "depicts" the emotion: arched brows, grimaces | Remove the face from the task; write the objective and give the hands business |
 | 2 | Playing the result | The character plays the scene's outcome from second one | Write only what the character knows NOW |
 | 3 | Waiting for the cue | Empty face while the partner speaks | Give the listener a task; start the response when the relevant information registers |
-| 4 | Monotactics | One color for the whole scene (all shouting / all whining) | Mark the beats; a new tactic verb for each |
+| 4 | Monotactics | One color despite changing circumstances | Check event-driven tactics; a sustained tactic is valid when justified |
 | 5 | Gesture illustration | Gesture duplicates the word ("big" — arms spread) | Gesture either precedes the thought, contradicts the words, or is absent |
 | 6 | Free emotion | Tears or rage with no build-up and no trigger | Build the ladder: restraint → break; emotion must cost something |
 | 7 | Body false to biography | A thug with a dancer's posture | Set the body profile: center of gravity, tempo, wear |
-| 8 | Speech too clean for the class | A street character speaking in literary periods | Litter the speech: interruptions, dropped endings, repeats |
+| 8 | Speech mismatches the character | Delivery lacks the established rhythm | Adjust delivery within approved words; do not add fillers, repeats or rewrite dialogue without authorization |
 | 9 | Threat signaling | "Menacing" pauses, squints, slow turns before violence | Threat is mundane; violence without wind-up |
-| 10 | Synchronized ensemble | Everyone reacts identically and at once | Stagger reactions in a wave, vary their strength |
+| 10 | Unmotivated synchronized ensemble | Different perceptions yield identical reactions | Tie each response to its stimulus; simultaneous reactions are valid when justified |
 | 11 | Dead pauses | Silence in which nothing happens | Fill with assessment or business — or cut |
 | 12 | Emotional reset | The character instantly "recovers" after a strong event | States have inertia; the trail carries into the next beat |
 | 13 | Commenting the role | The performance winks at the viewer | Full belief in the circumstances; comedy is played dead serious |
@@ -475,41 +479,72 @@ Recognize the symptom, apply the prompt-level fix.
 
 ## The performance scale
 
-A self-check on the paragraph before it ships.
+Optional descriptive diagnosis, not an acceptance score or a required arc:
 
-- **0 — Mannequin.** Text delivered, behavior absent.
-- **1 — Declaimer.** "Expressive" text, indicated emotions, illustrating body.
-- **2 — Diligent.** An objective can be guessed, but one tactic, late reactions, empty pauses.
-- **3 — Craftsman.** Objective and beats present, listens to the partner, body makes sense.
-  Missing: subtext, surprising tactics, inertia of states.
-- **4 — Alive.** Continuous behavior, contrasting tactics, subtext diverging from text, status
-  in the body, reactions ahead of lines, at least one unexpected-but-true choice.
-- **5 — Magnet.** All of 4 plus paradox. **The two-truths rule: at level 5 the character always
-  plays TWO truths simultaneously** — helps and hates it; apologizes and defends; loves and has
-  already left. One clean emotion without contradiction reads as synthetic on a close-up.
+- **0 — Mannequin:** behavior/attention absent where needed.
+- **1 — Declaimer:** labels and illustrative gestures replace an objective.
+- **2 — Diligent:** an objective is suggested, but needed reactions or continuity are missing.
+- **3 — Craftsman:** motivated, readable behavior and listening with credible body state.
+- **4 — Alive:** nuance and scene-specific responses deepen the established character.
+- **5 — Magnet:** especially compelling, coherent performance; mixed truths may help when
+  the story calls for them, but are not required.
 
-**Aim every hero shot at 4+.** A paragraph that self-checks at 2 or below gets rewritten before
-it ships.
+A pure emotion, sustained stillness or simple truthful response can pass. Do not manufacture
+contradiction, unexpected choices, extra tears or tactic changes to reach 4+. Acceptance uses
+[表演证据验收](#表演证据验收); a failed critical item cannot be averaged away.
 
 ## Pre-send checklist
 
-- [ ] Objective as a verb aimed at a partner — for every character in frame
+- [ ] Active dramatic characters have a concrete objective/attention target; sleeping or unconscious figures retain an appropriate physical state
 - [ ] Obstacle and stakes exist; the cost of failure is real
 - [ ] Beat changes follow actual events/tactics and remain visible in behavior (pause / posture / tempo / gaze); no mandatory count or equal timing
 - [ ] Reactions follow perception of the trigger, including mid-line when understood; assessment time fits the event
-- [ ] Every character has a task; physical business or a purposeful hold fits the scene, with interruption used when motivated
+- [ ] Each active character has purposeful attention; business or a held posture fits the scene, without inventing conscious tasks for sleeping/unconscious figures
 - [ ] Any distance changes are motivated and spatially clear; metres used where precision matters
 - [ ] Status is in the body, not just the words
-- [ ] All tics carry triggers; the mask has its crack ("However, when X…")
+- [ ] Any tic/mask used has a trigger; no compulsory mask, crack or contradiction
 - [ ] Attention and selected gaze/blink cues are meaningful and visible at the chosen scale; no per-second or blink quota
-- [ ] Voice prompt pasted verbatim if the character speaks; omitted if silent
+- [ ] No fixed timbre/profile prose; delivery follows current action and actual reference roles
 - [ ] Full action process, response and recovery retained; optional repair state anchors have causal handoffs
 - [ ] No wardrobe, camera, or color inside the acting paragraph
-- [ ] No age words anywhere (engine rule 1)
+- [ ] Confirmed identity/age preserved; actual platform rules checked without concealment or blanket age-word rules
 - [ ] Ensemble responses fit perception and motivation; any stagger or status contrast serves the event
-- [ ] Scale check: would this paragraph score 4+?
+- [ ] Evidence checks below passed for the applicable scope; score is not a substitute
 
 ---
+
+## 非人角色表演适配
+
+动物、奇幻生物、机器人及其他非人角色的视频，默认接入本节；通用的目标、刺激、注意与行为原则继续沿用本模块，**人类FACS不自动迁移到非人面部**。这里只适配已有设定，不重新设计角色或要求额外出图。
+
+1. **先继承结构与风格。**从已确认资产/设定取可动部位、身体比例、感知方式、能力与伤势；区分写实动物、风格化动物、已允许拟人化的角色。不能因为剧情需要悲伤就新增眉毛、人类嘴角、泪腺表现或说话能力；原稿明确的流泪/说话等照已定风格实现，不以写实默认删除。
+2. **选可观察的表达渠道。**有依据才使用头颈高低、眼睑/视线、鼻息、耳位、翼/尾姿态、重心、步幅、靠近/退避、触碰力度或声音变化。某物种没有的器官不写；机器人用已定的转向、停顿、执行力度或已有显示部件，不凭空增加脸。
+3. **保持行为动机与可见证据相连。**护物、避险、探索、依附、试探等由当前刺激引出，行为改变要有结果；不能用“它懂得全部人类意图”替代观察。写实动物行为不一一等于人类心理，奇幻角色的理解能力沿已确认剧情，不擅自推高。
+4. **拟人化与幅度按项目锁定。**克制、自然、夸张等是表现风格，不是越强越好；同一角色跨镜不从写实突然切成卡通。受伤翼、短肢、遮挡眼等能力限制不因情绪恢复；体量通过承重、步幅和接触力度体现。
+5. **按镜头筛选线索。**头部近景可写已设结构的细微变化，远景用姿态、距离、步态；只见尾部就不写可见嘴角。表演与奔跑/保护/受力并行，不让生物停步排演情绪。读不出必要信息时调整取景或行为，而非堆人类AU。
+
+验收：结构是否真实属于该角色；反应是否由可感知刺激触发；拟人化是否在授权边界；当前景别是否可读；动作/伤势/情绪是否连续。任一已知冲突为失败；结构未知且影响关键动作则标待核验，不编造生物学解释。
+
+示例是适配原则，不是新项目剧情：翼兽护住巢中物件，可通过重心移向巢侧、前肢圈拢和头颈拦截表达；不能默认追加“像人一样皱眉咬唇”。同样，已确认的卡通动物可以使用其既定拟人表演，不强制改成自然纪录片。
+
+## 表演证据验收
+
+使用已有五支柱、身体、眼神与听者规则写演出，再按下表验收；不另写一份重复的表情词库。记录到[统一验收总表](production-checks.md#统一调用与验收总表)，**不能以自评4分替代正文证据**。无人画面可注明人物表演不适用；无对白或静音不免除可见表演检查。
+
+| 检查点 | 文字通过条件 | 典型失败 |
+|---|---|---|
+| 动机与注意 | 能定位当前任务、刺激源及视线对象；主动角色的行为服务目标，听者在理解/判断 | 只有“惊恐/悲伤”，或所有人空等 |
+| 表情与情绪发展 | 适用近景写出可见变化及其触发，状态如何影响行动；没有变化也有维持该状态的理由 | 无缘由落泪、开场就演结局、每镜相同抖嘴 |
+| 听者及群体 | 反应由各自听见/看见的信息触发，可并行也可有感知延迟，背景仅写可读幅度 | 所有人同步同表情，或轮流等待自己的镜头 |
+| 景别与身体 | 脸部、手部、姿态、呼吸取舍符合取景和遮挡；受力与伤势限制持续 | 远景硬写瞳孔、背影硬写嘴角、受伤肢体突然正常 |
+| 时序与接缝 | 表情、判断与主动作可并行，情绪/气息/注意跨镜有余态 | 停下追逐演表情、切回就恢复平静、准备/命中被反应镜拉长 |
+| 声音与表情 | 不输出固定音色，语气/响度/气息随当前行动，口型需求与所选模式相容 | 奔跑后突然无喘息长句、说话者切错、听者跟口型 |
+| 风格与幅度 | 符合角色、题材和项目已定表现尺度；纯粹、克制或复杂情绪均可成立 | 为高评分硬造潜台词、反转或矛盾，擅加哭喊 |
+| 非人适配 | 非人角色符合上一节结构、感知和拟人化边界 | 直接套人类FACS或新增器官/能力 |
+
+每项引用“对象/版本/镜头时段＋演出原句”，说明通过、失败、待核验或不适用。关键项失败先修复，不能用平均分抵消；修复保持确认剧情与台词，重新核对相邻镜头。已定的年龄与身份不得因模板经验被隐去或替换，平台确有限制时明确说明并选择合规路径，而不是换词规避。
+
+生成后另用实际视频与时间码核验：表情是否可读且不过度、注意目标是否正确、反应是否及时、气息/动作是否连贯、身份和非人结构是否稳定。有静帧只验可见静态项，有视频无音频不能声称声音验收；没有生成结果时结果层待核验。
 
 # Part IV — Worked example
 
@@ -522,9 +557,8 @@ Character acting as VIKTOR. A retired night-shift taxi driver and former amateur
 thick-necked build gone soft at the middle, with a flat-nosed face and old scar tissue over
 both eyebrows; sits and stands with a low, grounded center of gravity, weight always on the
 whole foot. Runs on a single engine: decades of waiting — for fares, for rounds, for trouble —
-have made patience his weapon. Vocal profile: low, hoarse, unhurried baritone with a
-working-class rasp, short sentences delivered flat and economical, dropping to a slower,
-quieter register the more serious things get — he never speeds up. Key physical habits and
+have made patience his weapon. He answers with short economical phrases, becoming slower
+and quieter as the passenger presses him. Key physical habits and
 tics: rolls an old coin across his knuckles when sizing a situation up; a slow, audible
 nose-breath before he says no; when lying is happening in front of him, he goes completely
 still and lets a long silence do the pressing; his default face is a heavy-lidded, bored mask
@@ -535,14 +569,6 @@ short economical steps, shoulders level, hands loose and ready, never hurrying. 
 someone raises a hand near him, the sleepy mask vanishes in a half-second: the chin drops, the
 hands rise halfway, the feet find their old stance — then he catches himself and folds it away,
 embarrassed. His face only truly softens for stray dogs, which he feeds from his coat pocket.
-```
-
-**Voice (pasted verbatim when VIKTOR speaks):**
-
-```
-"A working-class city accent, roughened by decades of night shifts. Low, hoarse, unhurried
-baritone; short flat economical sentences with long comfortable pauses; calm and faintly
-amused, going quieter — never louder — as things get serious."
 ```
 
 ## Scene adaptation
@@ -557,7 +583,7 @@ passenger's hands, and the door lock in slow, quiet scans, blinks rare and delib
 settling on the mirror a beat before his head ever moves. The old coin walks across his
 knuckles on the seat-rest, unhurried; as the passenger's story falls apart, the coin stops
 mid-roll — he lets the silence sit, takes one slow, audible breath through the nose, and
-answers in his low, hoarse baritone, flatter and quieter than before, never speeding up. Only
+answers more quietly and evenly than before, without hurrying. Only
 when the passenger's voice cracks does the sleepy mask ease a fraction: a long exhale, a slow
 blink, the coin resuming its roll — patience choosing, for now, to be kind.
 ```
@@ -566,8 +592,7 @@ blink, the coin resuming its roll — patience choosing, for now, to be kind.
 the coin; the signature tics kept their triggers (coin = sizing up · stopped coin = interrupted
 action as punctuation · nose-breath = refusal · stillness plus silence = pressure on a liar);
 the eye life obeys the master but is re-targeted to mirror, hands, lock; the beat changes are
-visible (coin stops → silence → quieter voice → softening); and the voice stayed untouched —
-it will be pasted verbatim into the audio field.
+visible (coin stops → silence → quieter voice → softening); and current delivery remained tied to his listening and response, without an added voice-profile field.
 
 ---
 

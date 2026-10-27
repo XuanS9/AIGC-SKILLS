@@ -20,7 +20,7 @@ In this merged studio, ordinary narrative creation also uses this engine interna
 Keep the bespoke definitions and deletion/information/value-shift tests below intact;
 apply them to the relevant scene or sequence, not as a demand for a reversal in every
 shot. For an explicit audit, deliver the full findings and Minimal/Clean/Optional repair
-levels. For prompt creation, express the chosen causal repairs in the seven-section
+levels. For prompt creation, express the chosen causal repairs in the studio four-section
 performance draft without attaching an audit report. Preserve user-approved events and
 endings; flag a deliberate deviation rather than silently rewriting it. Pure landscape,
 product-function and other non-dramatic tasks do not need an invented conflict arc.
@@ -163,7 +163,12 @@ yours, and the third is optional. Do not collapse them into one rewrite.
 ## Where this sits before prompting
 
 Once the chain holds, apply [shared narrative planning](narrative-planning.md)
-before choosing shot counts or generation durations:
+and the single [导演决策流程](directorial-shot-design.md#导演决策流程)
+before choosing shot counts or generation durations. This engine diagnoses the scene's
+causal change; it does not prescribe a cut for every engine element. Accepted scenes
+may sustain uncertainty or pressure: preserve them and select a readable viewing scheme,
+not an invented reversal. The director chooses core/support/connective priorities and
+compares hold, in-shot handoff and cut before using any shot-type menu:
 
 1. Locate necessary events, causal turns, information reveals, and state transitions.
    These decide stages, including meaningful silence or a held reaction; do not assign a

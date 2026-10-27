@@ -8,7 +8,7 @@
 - **Seedance 2.0 `@Audio1` is a conditioning INPUT** — beat sync, the `[AUDIO: Xs]` script block, and the first-15s extraction trap [→](#audio-as-a-conditioning-input--seedance-20-audio1)
 - Scope an audio reference like an image one: name the property that rides, the property that must NOT, and where the excluded one comes from instead [→](#scope-an-audio-reference--say-which-property-rides)
 - Multi-clip assembly: one master track · cuts land on musical punctuation, never inside a sung vowel (ECU mouth-match is the one exception) · unified grain + LUT masks batch color drift [→](#cutting-to-music--assembling-separately-generated-clips-on-one-track)
-- Cinema Studio 3.0 native joint audio (SCELA): retain its Audio field in native submissions; full video drafts use the seven-section mapping below. Specific foley beats generic moods [→](#cinema-studio-30-audio-businessteam-plan)
+- Cinema Studio 3.0 native joint audio (SCELA): retain its Audio field in native submissions; full video drafts use the four-section mapping below. Specific foley beats generic moods [→](#cinema-studio-30-audio-businessteam-plan)
 - **Seed Audio 1.0** (`seed_audio`, standalone) = whole-scene audio in ONE pass — multi-speaker dialogue + music + SFX + ambience mixed [→](#scene-audio-generation--seed-audio-10)
 - Standalone Audio catalog (2026-08-01 snapshot): `seed_audio`, `qwen_audio_tts` (NEW — Qwen 3.0 TTS Flash, expressive instructions + cloned voices), `text2speech_v2` (5 engines incl. cozy_voice), plus 3 game-pipeline-only tools — distinct from in-video joint audio [→](#standalone-audio-tab--tool-catalog-2026-08-01-snapshot)
 
@@ -22,23 +22,20 @@ after those decisions. Do not preset stage counts, equal-length stages, or cuts 
 beat. A **stage is not a cut or a generation clip**: one take or continuous audio bed may
 span stages, and a stage may use several shots or calls within actual model limits.
 
-**Complete video prompts default to the visible seven-section full performance draft**,
-including a single take. Follow the root/shared contract and read the
+**Complete video prompts use the studio four-section contract**, including a single take:
+**【参考素材职责】 → 【一句话概述】 → 【具体情节】 → 【全局补充】**. Read the
 [full performance example](template-full-performance-example.md) and
-[director template](template-general-director-2-5.md) before drafting:
-**1 资产与参考锁定 → 2 一句话总合成 → 3 全局视听与空间 → 4 主体行为与节奏规则 →
-5 分段演出 → 6 结尾状态与交接 → 7 关键约束与排除**.
+[director template](template-general-director-2-5.md); apply the
+[unified acceptance table](production-checks.md#统一调用与验收总表).
 
-Bind real voice/track references and their purposes in section 1. In section 3, describe
-only sounds this generated clip can contain: scene ambience, dialogue, effects, acoustics
-and reference-audio role. Default to NO BGM. Section 5 attaches exact speaker-attributed
-dialogue, breaths and action effects to their visible causes, and tracks sound changes
-within the *same generation*; an independently generated next shot cannot inherit
-its waveform or mix. Section 6 describes the current clip's audible ending. For cross-shot
-continuity, record intended ambience and sound transitions as **editing/post-production
-notes outside each copyable prompt**, then mix the assembled film; do not tell the model
-to control the full film's sound bed. Four-layer inventories, reference-role tables and
-diagnostics are internal aids, not extra prompt sections.
+Bind real voice/track references and their roles in 【参考素材职责】. Put speaker-attributed
+dialogue in 「」 directly inside its action beat in 【具体情节】; write breaths, effects and
+ambience inline at their causes, not in separate sound rows or a fifth Audio heading.
+Use 【全局补充】 for necessary continuity and sound switches (default NO BGM), not fixed timbre or voice-profile descriptions. Delivery follows the scene; provided audio references retain their actual roles and binding. Text alone does not prove lip-sync. The tail is part of the final timed beat.
+
+Cross-clip waveforms and mixes are post-production: record intended joins outside copyable
+prompts, then inspect the actual cut. Per-clip text does not control the entire film's sound
+bed. Four audio layers remain planning aids, not four extra output sections.
 
 Explicitly concise requests, local edits, audio-only tasks, and hard-limited/native
 submissions keep their relevant inline cues, Audio fields, `[AUDIO: Xs]`, radio-drama,
@@ -214,10 +211,10 @@ plus the diegetic layer that IS heard.
 
 ## Audio Prompt Structure
 
-For a complete video prompt, use the seven-section mapping above: global strategy in
-section 3, performed dialogue and sound events in section 5 (with in-generation sound
-continuity folded in), and the tail/join in section 6. Do not append an eighth Audio section. The compact forms
-below are for requested short/local audio work or native submission fields.
+For a complete video prompt, use the four-section mapping above: reference roles in
+【参考素材职责】, timed dialogue and sound events inline in 【具体情节】, stable identity and
+sound switches in 【全局补充】. The tail belongs to the last beat; do not append an Audio heading.
+The compact examples below are only for requested short/audio-only work or explicit native fields.
 
 ### Inline method (preferred for short prompts):
 
@@ -634,7 +631,7 @@ Not every prompt needs audio direction. Skip audio cues when:
 > Apply its audio rows within the scopes established here: 3–8s is a reliability trial,
 > MP3 failures are a source-path report, and removing extra layers serves sole-source
 > preservation. Those rows do not override reference purposes, approved timing, native
-> multi-speaker support, or the full seven-section delivery.
+> multi-speaker support, or the studio four-section delivery.
 
 ---
 
@@ -653,8 +650,9 @@ Audio is generated **simultaneously** with video via a unified multimodal archit
 ### Audio as Prompt Element (SCELA)
 
 For a **native Cinema Studio SCELA submission**, keep the separate Audio field/block.
-For a full seven-section video draft, map global audio to section 3 and local cues to
-section 5 (with in-generation sound continuity folded in), and the tail in 6; do not add another top-level section.
+For a full four-section video draft, put local dialogue/effects/ambience and the tail
+inside the corresponding timed action in 【具体情节】, necessary continuity and switches in
+【全局补充】; do not add another top-level section.
 The generation engine handles three parallel audio tracks:
 
 1. **BGM** — background music, score

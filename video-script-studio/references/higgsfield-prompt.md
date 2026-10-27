@@ -9,6 +9,12 @@ in words, using real reference slots and avoiding invented attachments.
 
 Follow [sample approval](sample-approval.md) and the shared [asset registry](asset-registry.md). For end-to-end production or combined asset/video requests, organize scene-based batches: plan names and scene layout once, present coordinated samples, obtain approval for that batch, then deliver its asset prompts and matching video prompts in separate code blocks. Reuse established assets in later batches and wait before expanding the next batch. Explicit asset-only or video-only requests stay within their stated scope. A text plan is not proof of generated media or actual reference binding; preserve native output schemas.
 
+## 独立资产项目的编译规则
+
+视频使用独立创建的角色、生物、道具、场景或状态参考时，四栏均不重写资产形态与外观；直接 `@资产名`，只补本段职责、状态/年龄版本、动作、表演、空间关系、光声与连续性。尚未生成/绑定的状态留块外，不把外观档案复制回来。下文 Subject + appearance、Identity Block 和按服装描述主体仅适用于无独立资产的纯文字路径，不能覆盖本规则。
+
+【一句话概述】用一个完整句子概括本片段主要内容：谁在什么情境下，经历/做了什么，产生什么关键变化或结果；只写本段覆盖事件。风格、景别、运镜与声音进入具体情节或全局补充；逐条去掉“镜头从空间转到动作、末态落在结果”这类泛化套话。完整交付仍按四段式，概述精简不削减时间轴演出。
+
 ## QUICK FACTS
 - MCSLA = Model, Camera, Subject, Look, Action — the five layers of every prompt [→](#the-mcsla-formula)
 - For this project, images own only their assigned appearance, prop or scene attributes; retain causal motion and state handoffs in the `omni_reference` prompt. I2V below is legacy context [→](#image-to-video-i2v)
@@ -49,7 +55,7 @@ Identity/Motion blocks, fluid narrative, timestamped prose, or the chosen model'
 format. For this project, complete prose video prompts in every genre visibly follow
 [the shared full-director format](template-general-director-2-5.md):
 assets, goal, audiovisual/space, behavior, staged performance, final frame,
-and constraints (seven sections; continuity is carried inside the staged performance and constraints, not a separate section). Each stage uses a time/event heading, developed performance prose,
+and constraints compiled into four sections: 【参考素材职责】→【一句话概述】→【具体情节】→【全局补充】; continuity stays inside timed performance and global supplements. Each stage uses a time/event heading, developed performance prose,
 visual results, camera and sound inlined into the action. Explicit native-format or scoped requests retain their
 output contracts without a duplicate long-form document. Each stage has
 an initial state, primary change, visible response, and end state inherited by the next.
@@ -331,6 +337,8 @@ blocks below are the optional short-form layout; in the full director format, id
 belongs in assets/reference locks and motion in staged performance and continuity:
 
 ### Identity Block — Static visual descriptors ONLY
+
+For independently created assets, use the asset reference and necessary state/version only; do not copy the descriptors below into the video. This descriptor list is for text-only identity design without a separate asset.
 - Face features, skin tone, body type, distinguishing marks
 - Clothing, accessories, color palette
 - NO motion, NO camera, NO temporal language
