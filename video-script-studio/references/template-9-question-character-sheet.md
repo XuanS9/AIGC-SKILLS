@@ -1,47 +1,46 @@
-# Worksheet: 9-Question Character Sheet (Step 3)
+# 工作表：九问角色表（第 3 步）
 
-> The framework's flagship artifact. Vague answers are the enemy — only THIS character, in THIS
-> world, should be able to answer. If any character could say it, it's a stereotype; rewrite it.
-> Framework adapted from Higgsfield's Character Design materials by @vavavinca.
+> 这是框架的核心产物。含糊的答案是敌人：只有**这个**角色、在**这个**世界里才能这样回答。任何角色都能说的话就是刻板印象，重写。
+> 框架改编自 Higgsfield 角色设计资料（@vavavinca）。
 
-## Header
-- **Name:** __________   **Age:** ______
-- **World:** __________ (must already be locked — see `template-world-sheet.md`)
-- **Archetype:** __________
+## 表头
+- **姓名：**__________   **年龄：**______
+- **世界：**__________（必须已锁定，见 `template-world-sheet.md`）
+- **原型：**__________
 
-## The 9 questions (answer in order)
+## 九个问题（按顺序回答）
 
-**1. Thematic role** — what they prove or disprove about the premise.
+**1. 主题角色**：这个角色证明或推翻前提里的什么。
 > _______________________________________________
 
-**2. External goal** — a specific, currently-impossible want.
+**2. 外在目标**：一个具体的、眼下做不到的愿望。
 > _______________________________________________
 
-**3. Internal goal** — what reaching the external goal would mean about themselves.
+**3. 内在目标**：达成外在目标对他自己意味着什么。
 > _______________________________________________
 
-**4. Psychological need** — the flaw that hurts THEM.
+**4. 心理需求**：伤害**他自己**的缺陷。
 > _______________________________________________
 
-**5. Moral need** — the flaw that hurts OTHERS.
+**5. 道德需求**：伤害**别人**的缺陷。
 > _______________________________________________
 
-**6. Wound** — the specific past event that taught them the world hurts.
+**6. 创伤**：让他认定世界会伤人的那件具体往事。
 > _______________________________________________
 
-**7. Spark** — the specific past event that taught them what to become.
+**7. 火花**：让他知道自己要成为什么的那件具体往事。
 > _______________________________________________
 
-**8. Silhouette** — what their shape/posture says across a room, with no face visible.
+**8. 剪影**：看不到脸时，他在房间另一头的体态和姿势说明了什么。
 > _______________________________________________
 
-**9. Contradiction** — two things about them that don't match.
+**9. 矛盾**：他身上两件对不上的事。
 > _______________________________________________
 
-## Specificity drills (run if any answer feels generic)
-- **Ask "why?"** until the answer surprises you.
-- **One wound, two characters:** would a different person react to this wound the opposite way? Pick the less obvious reaction.
-- **Silhouette test:** can you recognize them from shape alone? If not, fix #8 before generating.
+## 具体化练习（有答案显得泛泛时做）
+- **一直问“为什么”**，直到答案让你意外。
+- **一个创伤，两个角色：**换一个人遇到这个创伤会不会反应相反？选不那么显然的反应。
+- **剪影测试：**只看轮廓能认出他吗？认不出就先改第 8 项再出图。
 
-## Next
-Map relationships in `template-character-web.md`, then build the **Story Spine** (`template-story-spine.md`).
+## 下一步
+在 `template-character-web.md` 里画关系，然后建**故事脊柱**（`template-story-spine.md`）。

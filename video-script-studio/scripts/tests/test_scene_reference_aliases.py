@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 spec = importlib.util.spec_from_file_location(
     "scene_alias_lint", Path(__file__).resolve().parents[1] / "seedance_lint.py")
@@ -67,6 +68,23 @@ class SceneAliasTests(unittest.TestCase):
         self.assertIn("@S01", self.load(d))
         d["assets"][0]["view_plan"][0]["generate_separate_image"] = False
         with self.assertRaises(ValueError): self.load(d)
+
+    def test_existing_short_image_ids_keep_exact_explicit_alias(self):
+        for image_id in ("S1", "S1-1", "S01-1", "S12"):
+            d = self.fixture()
+            d["assets"][0]["view_plan"][0]["image_id"] = image_id
+            d["reference_aliases"][0].update(handle="@" + image_id, image_id=image_id)
+            loaded = self.load(d)
+            self.assertIn("@" + image_id, loaded)
+            self.assertEqual(loaded["@" + image_id]["status"], "planned")
+
+    def test_invalid_image_id_syntax_is_rejected(self):
+        for image_id in ("S", "S-1", "S1-", "S1-2-3", "s1", "S1x", "S1.1"):
+            d = self.fixture()
+            d["assets"][0]["view_plan"][0]["image_id"] = image_id
+            d["reference_aliases"][0].update(handle="@" + image_id, image_id=image_id)
+            with self.assertRaises(ValueError):
+                self.load(d)
 
     def test_wrong_parent_and_handle_rejected(self):
         for patch in ({"asset_handle": "@不存在"}, {"asset_handle": []}, {"handle": "@Image1"},

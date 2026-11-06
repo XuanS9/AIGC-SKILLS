@@ -1,42 +1,41 @@
-# Worksheet: World Sheet — Six Dimensions (Step 2)
+# 工作表：世界设定表（六个维度，第 2 步）
 
-> World first, always. Fill all six before casting a single character. Every answer must be
-> specific and must NOT change once characters arrive — the world is the gravity.
-> Framework adapted from Higgsfield's Character Design materials by @vavavinca.
+> 永远先世界。选任何角色之前把六项填完。每个答案都要具体，并且角色出场后**不能改**：世界是引力。
+> 框架改编自 Higgsfield 角色设计资料（@vavavinca）。
 
-## The six dimensions
+## 六个维度
 
-**1. Physical** — look, sound, smell, climate, geography, architecture.
+**1. 物理**：外观、声音、气味、气候、地理、建筑。
 > _______________________________________________
 
-**2. Social** — who has power, how it passes, the class structure.
+**2. 社会**：谁掌权、权力怎么传递、阶层结构。
 > _______________________________________________
 
-**3. Economic** — currency, what's scarce, what people kill for.
+**3. 经济**：货币、什么稀缺、人们为什么拼命。
 > _______________________________________________
 
-**4. Ideological** — what's sacred, shameful, unspoken.
+**4. 观念**：什么神圣、什么可耻、什么不能说。
 > _______________________________________________
 
-**5. Historical** — what everyone remembers, or has agreed to forget.
+**5. 历史**：大家都记得的事，或大家约定忘掉的事。
 > _______________________________________________
 
-**6. Sensory** — the daily textures the body knows (touch, smell, sound).
+**6. 感官**：身体熟悉的日常质感（触觉、气味、声音）。
 > _______________________________________________
 
-## Hard vs soft check (3 questions)
+## 硬设定还是软设定（三个问题）
 
-- Does the story depend on the audience *mastering* the rules?  yes → **hard** / no → soft
-- Do you want the audience feeling *smart* or feeling *wonder*?  smart → hard / wonder → soft
-- Are you willing to leave things unexplained?  yes → **soft** / no → hard
+- 故事是否要求观众*掌握*规则？是 → **硬** / 否 → 软
+- 你希望观众觉得*自己聪明*，还是感到*惊奇*？聪明 → 硬 / 惊奇 → 软
+- 你愿意留下不解释的东西吗？愿意 → **软** / 不愿意 → 硬
 
-> This world is: ☐ Hard  ☐ Soft  — (affects how literal/consistent your prompts should be)
+> 这个世界是：☐ 硬  ☐ 软（影响提示词要写得多字面、多一致）
 
-## Done check
+## 完成检查
 
-- [ ] Read aloud — sounds like ONE world (no contradictions)
-- [ ] Every answer is specific, not generic
-- [ ] Nothing here will change when characters walk in
+- [ ] 读出来像**一个**世界（没有矛盾）
+- [ ] 每个答案都具体，不泛泛
+- [ ] 角色出场后这里没有一项需要改
 
-## Next
-World locked → build characters with the **9-Question Character Sheet** (`template-9-question-character-sheet.md`).
+## 下一步
+世界锁定后，用**九问角色表**建角色（`template-9-question-character-sheet.md`）。

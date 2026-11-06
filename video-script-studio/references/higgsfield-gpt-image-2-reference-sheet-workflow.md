@@ -1,47 +1,31 @@
-# Product Reference Sheet Workflow
+# 产品参考表流程（Product Reference Sheet Workflow）
 
-A reference sheet is a single studio image that documents one real product
-from many angles — front, back, sides, top, and macro close-ups of branding,
-material, and construction. Feeding a reference sheet (instead of one
-photo) into downstream generation gives the model far more identity geometry
-to hold onto, which is what keeps a product consistent across image and video
-generations.
+参考表是一张棚拍图，从很多角度记录一件真实产品：正面、背面、侧面、顶面，以及品牌标识、材质和结构的微距近景。向下游生成喂一张参考表（而不是一张照片），给模型多得多的身份几何信息，这正是让产品在图像和视频生成之间保持一致的原因。
 
-This satellite covers two Higgsfield workflows that produce that asset:
+这个附属文件覆盖产出这种资产的两个 Higgsfield 流程：
 
-1. **Automatic Product Reference Sheet** — one product image → a multi-view
-   sheet, via a ready-to-paste prompt.
-2. **Automatic Prompt Creator** — multiple product images → one
-   product-specific, identity-locked prompt → final result.
+1. **自动产品参考表**：一张产品图 → 一张多视角参考表，通过一条可直接粘贴的提示词。
+2. **自动提示词生成器**：多张产品图 → 一条针对该产品、锁定身份的提示词 → 最终结果。
 
-Translated from Higgsfield's official Reference Workflow guide plus a
-companion copy/paste prompt pack. Best run with **Nano Banana Pro, Nano Banana 2, or GPT
-Image 2.0** (see `image-models.md` for model selection).
+转写自 Higgsfield 官方的参考流程指南，加上配套的复制粘贴提示词包。最好用 **Nano Banana Pro、Nano Banana 2 或 GPT Image 2.0** 跑（模型选择见 `image-models.md`）。代码块里的提示词保留英文原文。
 
 ---
 
-## 1. Automatic Product Reference Sheet — the 3-step flow
+## 1. 自动产品参考表：三步流程（Automatic Product Reference Sheet — the 3-step flow）
 
-Turn one product image into a professional reference sheet in three steps:
+三步把一张产品图变成一张专业参考表：
 
-1. **Upload** a single clean product image.
-2. **Paste the provided prompt** (the GLOBAL IDENTITY LOCK in § 2 below),
-   keeping `@image1` pointed at the uploaded image.
-3. **Generate** — the model returns a clinical multi-view studio sheet:
-   front / back / sides / top / underside as relevant, plus macro close-ups
-   of branding, key material, and a construction detail.
+1. **上传**一张干净的产品图。
+2. **粘贴提供的提示词**（下面 § 2 的 GLOBAL IDENTITY LOCK），让 `@image1` 指向上传的图。
+3. **生成**：模型返回一张客观的多视角棚拍表：视情况包括正面 / 背面 / 侧面 / 顶面 / 底面，加上品牌标识、关键材质和一个结构细节的微距近景。
 
-The whole point is *identity preservation, not redesign* — the output must
-read as the same real physical product photographed in a studio, not a
-re-imagined or vectorized version. One image in, a reusable
-high-consistency generation asset out.
+核心是*保留身份，而不是重新设计*：输出必须读起来是同一件真实的实物在棚里拍的照片，而不是重新想象或矢量化的版本。一张图进去，出来一个可复用的高一致性生成资产。
 
 ---
 
-## 2. GLOBAL IDENTITY LOCK — paste-ready prompt
+## 2. 全局身份锁定：可直接粘贴的提示词（GLOBAL IDENTITY LOCK — paste-ready prompt）
 
-Works with any product. Keep the camera/capture and background blocks intact;
-the model adapts the view list to the product type.
+适用于任何产品。摄影/拍摄和背景两块保持不变；模型会按产品类型调整视图列表。
 
 ```text
 Use @image1 as a strict photographic reference of a real product.
@@ -117,18 +101,13 @@ A clinical, ultra-realistic product reference sheet of the exact product in
 construction, and imperfections with professional studio accuracy.
 ```
 
-**Identity-lock discipline:** if a product has no visible branding, do not
-invent any. If a detail is not visible in the source, do not hallucinate it —
-be precise about what is actually present.
+**身份锁定纪律：**产品上没有可见的品牌标识，就不要编造。源图里看不到的细节，不要臆造：只精确描述实际存在的东西。
 
 ---
 
-## 3. Automatic Prompt Creator — meta-prompt
+## 3. 自动提示词生成器：元提示（Automatic Prompt Creator — meta-prompt）
 
-When you have multiple images of one product, this meta-prompt converts the
-global template above into a tightly product-specific prompt. Paste it into
-the LLM of your choice *along with the product images*; it outputs one final
-generation prompt.
+你有同一件产品的多张图时，这条元提示把上面的全局模板转成一条紧贴该产品的提示词。把它*连同产品图*一起贴进你选的大语言模型；它输出一条最终的生成提示词。
 
 ```text
 You are a prompt-conversion assistant. Your job is to take the global
@@ -173,9 +152,9 @@ summary of changes, no multiple versions. One best final prompt.
 
 ---
 
-## 4. Worked examples (verbatim production prompts)
+## 4. 示例（原样的制作提示词）（Worked examples (verbatim production prompts)）
 
-### 4.1 — Hat reference sheet (single image)
+### 4.1 帽子参考表（单张图）（Hat reference sheet (single image)）
 
 ```text
 Use @image1 as a strict photographic reference of a real product.
@@ -213,10 +192,9 @@ RESTRICTIONS: no redesign, no stylization, no brand reinterpretation, no
 added elements, no smoothing or beautification.
 ```
 
-### 4.2 — Apparel reference sheet (two reference roles)
+### 4.2 服装参考表（两种参考职责）（Apparel reference sheet (two reference roles)）
 
-Uses `<<<image_1>>>` as the garment identity reference and `<<<image_2>>>` as
-the logo identity/placement reference:
+用 `<<<image_1>>>` 作为服装身份参考，`<<<image_2>>>` 作为标识身份/位置参考：
 
 ```text
 Use <<<image_1>>> as the strict garment identity reference. Use
@@ -259,69 +237,37 @@ no environment, no props, no lighting effects, no beauty retouching.
 
 ---
 
-## 5. Views the video will need (front / side / back — and the bottom)
+## 5. 视频会用到的视图（正 / 侧 / 背，还有底面）（Views the video will need (front / side / back — and the bottom)）
 
-The REFERENCE SHEET LAYOUT block above says "bottom/underside where relevant."
-The Seedance-4K film tutorial shows exactly when it's relevant, and it is not
-optional there [DEMO — Seedance-4K film tutorial, 2026-07]:
+上面的 REFERENCE SHEET LAYOUT 块写的是“bottom/underside where relevant”。Seedance-4K 影片教程准确展示了什么时候算“relevant”，而在那种情况下它不是可选的 [DEMO — Seedance-4K film tutorial, 2026-07]：
 
-- **Front / side / back is the working minimum** for any prop the camera will
-  move around — the tutorial's TV-remote sheet is three identical remotes on
-  one baseline (front face, true side profile, back shell).
-- **Add a BOTTOM / undercarriage view whenever the object will be flipped,
-  tumbled, or rolled in the video.** The tutorial's snow-truck sheet is a 2×2
-  grid — FRONT / SIDE / REAR / BOTTOM-UNDERCARRIAGE — built specifically
-  because the truck gets flipped onto its roof in the scene. A model cannot
-  invent an underside it has never seen; it will hallucinate one mid-tumble.
+- **正 / 侧 / 背是任何摄影机会绕着拍的道具的最低要求**：教程的电视遥控器参考表是同一基线上的三个相同遥控器（正面、真正的侧面轮廓、背壳）。
+- **只要物体在视频里会被翻转、翻滚或滚动，就加一个底面 / 底盘视图。**教程的雪地卡车参考表是 2×2 网格：FRONT / SIDE / REAR / BOTTOM-UNDERCARRIAGE，专门这样做是因为卡车在场景里会被掀得车顶着地。模型编不出它从没见过的底面；它会在翻滚中途臆造一个。
 
-Plan the views from the shot list, not from the object: whatever face of the
-prop the video will expose, the sheet must have already photographed.
+按分镜表规划视图，而不是按物体：视频会暴露道具的哪一面，参考表就必须事先拍到那一面。
 
-On background: the GLOBAL IDENTITY LOCK's solid light gray (`#DCDCDC`) sits
-inside the tutorial's tested neutral-grey rule (light-to-medium grey beats
-white or black; `#7f7f7f` for creature sheets).
+关于背景：GLOBAL IDENTITY LOCK 的纯浅灰（`#DCDCDC`）落在教程测试过的中性灰规则之内（浅到中灰胜过白或黑；生物设定表用 `#7f7f7f`）。这条是道具/产品表的规则；工作室角色组板的背景按 [角色资产交付规范](template-character-asset-delivery.md) 选。
 
-If a GPT Image 2 sheet comes back reading flat or 2D, rerun the **same prompt,
-unchanged, in Nano Banana Pro** before rewriting anything — the tutorial
-recovered its remote sheet exactly this way. The demonstrated sheet-model
-ladder is GPT Image 2 at 4K → Nano Banana Pro if the result is flat; use Soul
-Cinema for locations or characters created from scratch.
+如果 GPT Image 2 的参考表出来显得扁平或像 2D，在改任何东西之前，先把**同一条提示词原样放到 Nano Banana Pro** 重跑：教程正是这样救回了它的遥控器参考表。演示过的参考表模型顺序是：4K 的 GPT Image 2 → 结果扁平就换 Nano Banana Pro；从零创建的场景或角色用 Soul Cinema。
 
 ---
 
-## 6. Red-arrow annotation — aim the actor at the right control
+## 6. 红箭头标注：让演员对准正确的控件（Red-arrow annotation — aim the actor at the right control）
 
-A fix for a stubborn failure mode: the video actor keeps interacting with the
-**wrong part of the prop** — pressing the wrong button, gripping the wrong
-handle — no matter how the action is re-phrased
-[DEMO — Seedance-4K film tutorial, 2026-07].
+针对一个顽固失败模式的修法：不管动作怎么改写，视频里的演员总是和**道具的错误部位**互动：按错按钮、握错把手 [DEMO — Seedance-4K film tutorial, 2026-07]。
 
-The trick encodes the instruction into the reference image itself:
+这个技巧把指令编码进参考图本身：
 
-1. **Draw a red arrow on the sheet image** pointing at the exact control or
-   region the action targets (any image editor; the arrow becomes part of the
-   reference).
-2. **Have the prompt read the arrow back in words.** Tutorial verbatim, from
-   the remote-press scene: *"The reference's red arrow points precisely to the
-   CH-UP chevron (˄) directly above the 'CH' label"* — and the ACTION block
-   then places the thumb "where the red arrow points."
+1. **在参考表图上画一个红箭头**，指向动作针对的确切控件或区域（任何图像编辑器都行；箭头成为参考的一部分）。
+2. **让提示词用文字把箭头读回来。**教程原文，来自按遥控器的那场戏：*“The reference's red arrow points precisely to the CH-UP chevron (˄) directly above the 'CH' label”*：然后 ACTION 块把拇指放在“where the red arrow points”。
 
-The annotated sheet and the prompt now agree on one unambiguous target, so the
-model stops improvising the contact point. Use a copy of the sheet for this —
-keep the clean, arrow-free sheet as the identity reference for every shot that
-doesn't need the pointer.
+带标注的参考表和提示词现在指向同一个无歧义的目标，于是模型不再即兴发挥接触点。为此用参考表的一份副本：干净、没有箭头的参考表留作所有不需要指示的镜头的身份参考。
 
 ---
 
-## 7. Where reference sheets feed downstream
+## 7. 参考表流向下游的哪里（Where reference sheets feed downstream）
 
-The reference sheet is a reusable identity asset, not an end product. Feed it
-into:
+参考表是可复用的身份资产，不是最终产品。把它喂进：
 
-- **Cinematic prop continuity** — bind the sheet as an identity reference,
-  then describe only the intended action and state changes (see
-  `higgsfield-seedance.md` § Reference Roles).
-- **Soul / character work** — the same identity-lock discipline applies to
-  character turnaround sheets (see `higgsfield-soul.md`
-  § Character Sheet Creation).
-
+- **电影感道具连续性**：把参考表绑定为身份参考，然后只描述预期的动作和状态变化（见 `higgsfield-seedance.md` § Reference Roles）。工作室格式在映射块写 `道具名 对应 @道具名`。
+- **角色工作**：同样的身份锁定纪律适用于角色转面表（见 `template-character-asset-delivery.md`）。

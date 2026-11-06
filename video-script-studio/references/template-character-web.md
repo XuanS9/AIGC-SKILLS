@@ -1,31 +1,31 @@
-# Worksheet: Character Web (Step 3, companion)
+# 工作表：人物关系网（第 3 步配套）
 
-> Characters reveal themselves in friction — never alone. Map four spokes around the hero.
-> A character who only ever fits one bubble is a function; one who moves through them is a person.
-> Framework adapted from Higgsfield's Character Design materials by @vavavinca.
+> 角色在摩擦中显露自己，从不单独显露。在主角周围画出四条辐条。
+> 只符合一个气泡的角色是功能，能在几个气泡之间移动的才是人。
+> 框架改编自 Higgsfield 角色设计资料（@vavavinca）。
 
-## Hero
-> __________________ (the character whose web this is)
+## 主角
+> __________________（这张关系网属于谁）
 
-## The four spokes
+## 四条辐条
 
-**Opponent** — the primary opposite; wants the incompatible thing, or the same thing the wrong way.
-> Who: __________  ·  The friction: ____________________
+**对手**：最主要的对立面；想要不相容的东西，或用错误方式想要同一样东西。
+> 谁：__________  ·  摩擦：____________________
 
-**Ally** — who the hero leans on; tests their capacity to trust/depend.
-> Who: __________  ·  What they expose: ____________________
+**盟友**：主角依靠的人；考验主角信任与依赖的能力。
+> 谁：__________  ·  暴露了什么：____________________
 
-**Mentor** — who taught them (for good or ill); the source of their method or their wound.
-> Who: __________  ·  What they taught: ____________________
+**导师**：教过主角的人（好坏皆可）；主角方法或创伤的来源。
+> 谁：__________  ·  教了什么：____________________
 
-**Foil** — the variation that exposes the hero by contrast (same situation, different choice).
-> Who: __________  ·  The contrast: ____________________
+**陪衬**：用对比暴露主角的变体（同样处境，不同选择）。
+> 谁：__________  ·  对比：____________________
 
-## Notes
-- A single character can move *through* roles over the story (mentor → opponent, ally → foil). Note any planned movement: ____________________
+## 备注
+- 一个角色可以在故事里*穿过*几种身份（导师 → 对手，盟友 → 陪衬）。写下计划中的转变：____________________
 
-## Thinness diagnostic
-- [ ] Take one spoke away — does the hero say the same line in every scene? If yes, the web is too thin; deepen the remaining spokes or add friction.
+## 单薄诊断
+- [ ] 拿掉一条辐条后，主角是不是每场戏都说同一句话？是的话关系网太薄，加深剩下的辐条或增加摩擦。
 
-## Next
-→ **Story Spine** (`template-story-spine.md`).
+## 下一步
+→ **故事脊柱**（`template-story-spine.md`）。

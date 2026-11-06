@@ -21,7 +21,7 @@
 | 产品蒙太奇例子 | 8–10 sections，含 0.3s 微距 cuts | 可用于功能明确的快速插镜；sections 不自动等于生成调用，0.3s 不作为 API 时长 |
 | 完整无言表演弧线 | 5–7 个表演 beats 的反应例子 | 提醒保留渐进反应；不要求每次情绪变化都有固定拍数 |
 
-风格示例入口：[Style Recipes](higgsfield-style.md#style-recipes--seven-proven-shapes)。正文的同人物、同空间、连续情绪与因果单元分组方法继续有效；旧文遇换场、出入画、换机位、插镜就拆的措辞，现用于检查可读性，只有内容或模型限制需要时才拆生成。不能为匹配比例切碎悲伤、对白或同一连续动作。
+风格示例入口：[Style Recipes](higgsfield-style.md#风格配方七种验证过的形态style-recipes--seven-proven-shapes)。正文的同人物、同空间、连续情绪与因果单元分组方法继续有效；旧文遇换场、出入画、换机位、插镜就拆的措辞，现用于检查可读性，只有内容或模型限制需要时才拆生成。不能为匹配比例切碎悲伤、对白或同一连续动作。
 
 ### 原复杂度诊断与时长阶梯
 
@@ -38,7 +38,7 @@
 
 ## 按镜头类型的剪辑时长参考
 
-原始入口：[Shot duration by type](higgsfield-camera.md#shot-duration-by-type)。以下是**可选剪辑节奏范围**，不是生成参数，也不是从总时长均分镜头的公式。
+原始入口：[Shot duration by type](higgsfield-camera.md#按类型的镜头时长shot-duration-by-type)。以下是**可选剪辑节奏范围**，不是生成参数，也不是从总时长均分镜头的公式。
 
 | 镜头类型 | 历史示例范围 | 使用时关注 |
 |---|---|---|
@@ -71,7 +71,7 @@
 
 ## 语料长度校准表
 
-原文引用 [Field calibration — the 13-project production corpus](higgsfield-seedance.md#field-calibration--the-13-project-production-corpus)：13个共享项目、9名创作者、约4,000条经 API 获取并带参数的生产提示词。以下是其中英文 Seedance 提示词的历史词数中位数，**不是中文长度要求或建议目标**。
+原文引用 [Field calibration — the 13-project production corpus](higgsfield-seedance.md#实战校准13-个项目的制作语料field-calibration--the-13-project-production-corpus)：13个共享项目、9名创作者、约4,000条经 API 获取并带参数的生产提示词。以下是其中英文 Seedance 提示词的历史词数中位数，**不是中文长度要求或建议目标**。
 
 | 语料类型 | 英文词数中位数 |
 |---|---|
@@ -84,6 +84,6 @@
 
 原语料还记载：旗舰项目的1,240条 Seedance 提示词中约95%带 SHOT 标记，15秒是当时常见生成长度。它说明长块结构用于生产并经过后期选段，不说明新作品应复制其长度、词数、标记密度或参数。单镜头50–80词的旧经验与上述长稿属于不同写作情境；本项目完整演出母稿按可执行细节交付，不能为了落入任何词数区间删去因果或填充内容。
 
-原文提及的中文1,800字符上限来自旧 house-format 输出契约。当前 [`../scripts/seedance_lint.py`](../scripts/seedance_lint.py) 仍在结构检查中对所有含中文文本执行这一阈值，`--regime block` 只豁免短提示词词数检查。该结果应如实记录，不能宣称为 Seedance 2.5 官方上限；完整母稿与必要的受限提交版本按 [主指南的 preflight 说明](higgsfield-shotlist-director.md#what-makes-this-outclass-a-bare-generator) 处理。本附录不修改或绕过脚本规则。
+原文提及的中文1,800字符上限来自旧 house-format 输出契约。本工作室的块结构提示词已取消字数上限，1800 只在 `--profile bilingual-json` 下检查。该结果应如实记录，不能宣称为 Seedance 2.5 官方上限；完整母稿与必要的受限提交版本按 [主指南的 preflight 说明](higgsfield-shotlist-director.md#胜过普通生成器的地方what-makes-this-outclass-a-bare-generator) 处理。本附录不修改或绕过脚本规则。
 
 全局风格在历史语料中常逐个独立片段完整前置；当前映射为一个可编辑风格源、每份独立提交所需上下文，以及每个连贯提示词内仅一次的全局规则。分段只写变化和继承，避免重复整块风格挤占演出内容。

@@ -1,46 +1,26 @@
-# Template: Global Style Prefix (the edit-once block)
+# 模板：全局风格前缀（改一次处处生效的块）
 
-A single style block **glued verbatim to every prompt** in a connected Seedance
-2.0 shotlist. Edit it once → it changes everywhere. It locks the film's global
-look so 25 separately-generated scenes read as one piece.
+一个**原样粘在**连贯 Seedance 2.0 分镜表每条提示词前面的风格块。改一次，处处都变。它锁定全片的整体画面，让 25 个分别生成的场景读起来像同一部作品。
 
-Regime note: the verbatim prefix is the **connected-shotlist** shape
-`[FIELD — 13-project harvest]`. A *standalone* block-scaffold prompt does the
-opposite — it opens on SCENE CONTEXT and distributes style into home blocks
-(`higgsfield-seedance.md` § Distributed style — the
-standalone-block rule).
+格式说明：原样前缀是**连贯分镜表**的形态 `[FIELD — 13-project harvest]`。*独立*的块式提示词恰好相反：它从 SCENE CONTEXT 开头，把风格分散进各自归属的块（`higgsfield-seedance.md` § Distributed style — the standalone-block rule）。
 
-## When to use this template
+工作室交付时，前缀的内容编译进每条提示词的 `[视觉风格]` 与 `[保持一致]`，不在块结构前另加一段；声音策略落在 `[声音]` 末尾的 `NO BGM。`，`[保持一致]` 末尾写“无字幕、无水印”。
 
-Any multi-scene Seedance production where every clip must share a look —
-short films, music videos, narrative sequences. It is the top layer of the
-[`higgsfield-shotlist-director`](higgsfield-shotlist-director.md)
-artifact: prepended to every per-scene prompt's copy-block, and shown once in a
-collapsible block at the top of the shotlist HTML.
+## 何时使用
 
-The prefix locks the **global** look. A single scene can break it with a
-**per-scene override** (see below) — a local edit to just that prompt's prefix,
-not a change to the global block.
+任何每个片段都要共用同一画面的多场景 Seedance 制作：短片、MV、叙事段落。它是 [`higgsfield-shotlist-director`](higgsfield-shotlist-director.md) 产物的最上层：加在每个场景提示词复制块的前面，并在分镜表 HTML 顶部的可折叠块里展示一次。
 
-## Planning the connected sequence
+前缀锁定的是**全局**画面。单个场景可以用**场景覆盖**（见下文）打破它：只改那一条提示词的前缀，不改全局块。
 
-Use [shared narrative planning](narrative-planning.md) for the
-sequence: assets, goal, global audiovisual/space, behavior, stages, continuity, final
-frame, constraints. These are semantic layers. This prefix supplies shared look and
-locks; per-scene prompts carry events, behavior, spatial changes, and handoffs. Keep the
-verbatim prefix, per-scene overrides, copy-blocks, and collapsible shotlist HTML format.
+## 规划连贯段落
 
-Find event, causal, reveal, or state boundaries before choosing shots and allocating
-durations. No preset count or equal-time rule: the opening "25 scenes" and "Scene 2"
-example are illustrative, not mandatory. Preserve motivated state changes across cuts;
-identity/prop continuity does not freeze the story. A planned held pose may still include
-breath or environmental motion under the prefix's acting rules. Define the final frame
-and include transitions in the sequence budget; technical model limits remain binding.
+用 [共享叙事规划](narrative-planning.md) 规划这个段落：资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面、约束。这些是语义层。本前缀提供共用的画面和锁定；每个场景的提示词承载事件、行为、空间变化和交接。保留原样前缀、场景覆盖、复制块和可折叠分镜表 HTML 的格式。
 
-## Default prefix block (fill in the blanks, then freeze)
+先找出事件、因果、揭晓或状态的边界，再选镜头、分配时长。不预设数量，也没有等时规则：开头的“25 个场景”和“场景 2”的例子只是示意。跨切镜保留有动机的状态变化；身份与道具的连续不等于冻结剧情。计划中的停留姿势，按前缀的表演规则仍可以有呼吸或环境运动。定义结尾画面，并把转场计入段落预算；模型的技术限制仍然有约束力。
 
-Replace the bracketed fields; keep the labelled structure. Once set, do not edit
-per-prompt — edit it once and re-render the whole shotlist.
+## 默认前缀块（填空后冻结）
+
+替换方括号字段，保留带标签的结构。设定之后不要逐条改；改一次，然后重新渲染整个分镜表。
 
 ```
 Style: [IMAX cinematic look], [16:9] widescreen. Photorealistic — no 3D render, no game engine.
@@ -56,88 +36,41 @@ Technical: 24fps smooth motion. 8K detail. No jitter.
 Audio: Diegetic dialogue and environmental SFX only. No music. No subtitles.
 ```
 
-Notes on the fields:
+字段说明：
 
-- **Format / resolution** — match the deliverable's aspect ratio. Seedance 2.0
-  supports `auto/21:9/16:9/4:3/1:1/3:4/9:16` and `480p/720p/1080p/4k` (4K in
-  `mode=std` only). Keep it inside the model enum — the preflight linter catches
-  out-of-enum values.
-- **Lighting** — read the current project art direction. Carry its source logic, palette and contrast into each scene, with story time, weather, exposure and source changes specified locally. Update the project art direction when the selected style changes, then recompile affected prompts.
-- **Color `60:30:10`** — dominant / secondary / accent ratio; name the three
-  colours in the per-scene Scene block, not here.
-- **Audio: diegetic-only** — the prompt body names only real-world SFX; layer any
-  score in post. See `higgsfield-audio.md` § Seedance 2.0 and
-  the diegetic-only convention.
-- **Texture lines are look declarations, not quality pleas** — "180° shutter
-  motion blur" in the Camera line and any grain named in Color are *declared
-  registers of the film*, which is the legal form. The degradation case is the
-  same vocabulary trailing a per-scene prompt unattached to anything; the two
-  are separated in
-  `negative-constraints.md` § Whole-Frame Degradation.
-- **Declarations, not negative lists** — every line is a *declaration of the
-  state that must hold*. Short lock tails inside a declaration ("Photorealistic
-  — no 3D render", "Diegetic SFX only. No music.") are field-proven across the
-  harvest corpus and match the seedance law's own canonical example ("Consistent
-  lighting, no flicker"). What is banned is `negative:` list syntax or a bare
-  freestanding negation list — Seedance has no negative-embedding architecture
-  and parses those as scene description. See
-  `higgsfield-seedance.md` § Prompt-Craft Laws → No negative
-  prompts in the prompt body.
+- **画幅 / 分辨率**：与交付物的画幅一致。Seedance 2.0 支持 `auto/21:9/16:9/4:3/1:1/3:4/9:16` 和 `480p/720p/1080p/4k`（4K 仅 `mode=std`）。保持在模型枚举内，预检 lint 会抓出枚举外的值。
+- **光照**：读取当前项目的美术设定。把它的光源逻辑、配色和反差带进每个场景，故事时间、天气、曝光和光源变化在场景里单独写。所选风格改变时先更新项目美术设定，再重新编译受影响的提示词。
+- **色彩 `60:30:10`**：主色 / 辅色 / 点缀色的比例；三种颜色的名字写在每个场景的 Scene 块里，不写在这里。
+- **音频：只用画内声音**：提示词正文只写真实世界的音效；配乐在后期叠加。见 `higgsfield-audio.md` § Seedance 2.0 与画内声音惯例。
+- **质感行是画面声明，不是质量恳求**：Camera 行里的“180° 快门运动模糊”和 Color 里提到的颗粒，是*这部片声明的质感*，这是合法写法。退化的情况是同样的词孤零零地拖在某条场景提示词末尾、不依附任何东西；两者的区别见 `negative-constraints.md` § Whole-Frame Degradation。
+- **写声明，不写否定清单**：每一行都是*必须成立的状态的声明*。声明里短短的锁定尾巴（“Photorealistic — no 3D render”“Diegetic SFX only. No music.”）在采集的语料里经过实地验证，也与 Seedance 规则自己的标准例子（“Consistent lighting, no flicker”）一致。禁止的是 `negative:` 清单语法或独立的裸否定清单：Seedance 没有负面嵌入结构，会把它们当成场景描述来解析。见 `higgsfield-seedance.md` § Prompt-Craft Laws → No negative prompts in the prompt body。
 
-## Field specimens — what production prefixes actually lock
+## 实地样本：生产中的前缀实际锁定了什么
 
-`[FIELD — 13-project community harvest, 2026-07-18]` — every harvested
-project runs a prefix of exactly this shape: **one axis per clause, each a
-hard positive rule, always ending on continuity/no-drift + audio policy.**
-Axes observed across the corpus (pick what the project needs):
+`[FIELD — 13-project community harvest, 2026-07-18]`：采集到的每个项目都用**完全这种形态**的前缀：**每个分句一条轴，每条都是硬性的正向规则，总是以连续性/不漂移加音频策略收尾。**语料里观察到的轴（按项目需要选）：
 
-- **Format** — "4K anamorphic widescreen" / "8K cinematic photoreal"
-- **Medium negative** — "photoreal live-action — no 3D render, no game
-  engine, no animated-film aesthetic"
-- **Camera language, per world/scene when it varies** — "adventure-film
-  language: crash zooms, projectile-follows, one-take oners" · or a
-  **per-scene camera-grammar map** ("handheld operator breath in the living
-  room, chase-cam behind the dragon, locked-off super-telephoto for
-  wildlife")
-- **Lighting** — "single motivated sources — lantern practicals, hard desert
-  sun, warm apartment tungsten against monitor-green"
-- **Color + the reserved accent** — "muted period grades per world, one
-  saturated accent: the device's acid-green glow" (the plot prop owns the
-  only saturated color; a look can also be story-reserved — "golden hour is
-  reserved for the twist")
-- **Skin / acting / physics** — pore-level realism · muscle-level
-  performance, micro-pauses · "gravity and inertia respected — sand sinks,
-  cloth clings, dust settles with real particulate behavior"
-- **Continuity** — "characters, props and environments locked to references
-  across every cut. No identity drift."
-- **Audio** — "environmental SFX and dialogue only. No music." (a *project
-  choice*, not a law — 12 of 13 projects ban music and score in post; one
-  bakes its requiem into the concept)
+- **格式**：“4K 变形宽银幕” / “8K 电影级照片写实”
+- **媒介否定**：“照片写实的真人实拍：不要 3D 渲染、不要游戏引擎、不要动画电影质感”
+- **镜头语言，按世界/场景变化时分别写**：“冒险片语言：急推、跟随飞行物、一镜到底” · 或一份**按场景的镜头语法表**（“客厅里是带操作员呼吸感的手持，追逐时是龙身后的跟拍，野生动物用锁定的超长焦”）
+- **光照**：“单一有动机的光源：灯笼实景光、沙漠硬日光、暖色公寓钨丝灯对显示器的绿光”
+- **色彩加保留的点缀色**：“每个世界用低饱和的年代调色，唯一的饱和点缀：装置的酸绿色光”（剧情道具独占唯一的饱和色；画面也可以留给剧情专用：“黄金时刻只留给反转”）
+- **皮肤 / 表演 / 物理**：毛孔级写实 · 肌肉级表演、微停顿 · “遵守重力与惯性：沙会下陷，布会贴身，灰尘按真实颗粒落下”
+- **连续性**：“角色、道具和环境在每次切镜中都锁定参考。不漂移身份。”
+- **音频**：“只有环境音效和对白。没有音乐。”（这是*项目选择*，不是定律：13 个项目里 12 个禁用音乐、配乐留到后期；一个项目把挽歌做进了概念里）
 
-A **register-aware prefix** is also field-proven: one film ran a warm
-handheld "narrative" register and a clean locked-off "demo cutaway" register
-in the same prefix, with the constraint block itself scoped per register
-("no tripod, no hard studio light — reserved only for the demo cutaways").
+**按语域区分的前缀**也经过实地验证：有一部片在同一个前缀里同时用温暖手持的“叙事”语域和干净锁定机位的“演示插入”语域，约束块本身也按语域划分范围（“不用三脚架、不用硬棚光：只留给演示插入镜头”）。
 
-## Per-scene override example (Scene 2 / sunny stadium)
+## 场景覆盖示例（场景 2 / 阳光下的体育场）
 
-One scene breaks the soft global look. Replace **only the Lighting line** in that
-single prompt's prefix; every other field — and every other scene — stays on the
-global block:
+有一个场景打破了柔和的全局画面。只替换这一条提示词前缀里的 **Lighting 行**；其他字段和其他场景都留在全局块上：
 
 ```
 Lighting: Natural light only — bright, genuinely sunny midday, strong direct sunlight from high and frontal (sun in front of and above the subject, behind the camera), deep blue sky, crisp hard-edged shadows, vivid saturated colour, low haze.
 ```
 
-The override is a local edit to one prompt, not an edit to the global Style
-Prefix. If you find yourself overriding the same field in many scenes, that field
-belongs in the global block instead — fold it up and re-render.
+覆盖只是对一条提示词的局部修改，不是改全局风格前缀。如果你发现很多场景都在覆盖同一个字段，那个字段就应该归进全局块：收上去，重新渲染。
 
-## Related
+## 相关文件
 
-- `higgsfield-shotlist-director.md` — the connected shotlist
-  this prefix sits at the top of
-- `higgsfield-seedance.md` § Prompt-Craft Laws — the per-prompt
-  grammar the prefix wraps
-- `higgsfield-cinema.md` § Manual Style — project-level style
-  control for Cinema Studio (sibling concept, different surface)
+- `higgsfield-shotlist-director.md`：本前缀位于其顶部的连贯分镜表
+- `higgsfield-seedance.md` § Prompt-Craft Laws：前缀所包裹的单条提示词语法

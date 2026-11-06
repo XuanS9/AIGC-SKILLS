@@ -1,97 +1,70 @@
-# Template: Sci-Fi / VFX Spectacle
+# 模板：科幻 / 视效奇观
 
-## Genre/Use-Case
-Science fiction environments, zero-gravity sequences, cyberpunk streets, futuristic technology reveals, energy effects, portal/transformation moments, and any prompt involving VFX-heavy visuals.
+## 题材与用途
+科幻环境、零重力段落、赛博朋克街道、未来科技揭示、能量特效、传送门/变形时刻，以及任何视效为主的画面。
 
-## When to use this template
-User asks for sci-fi, cyberpunk, futuristic, space, zero gravity, energy effects, transformation, portal, or any prompt requiring VFX motion presets in a speculative setting.
+## 何时使用
+用户要科幻、赛博朋克、未来、太空、零重力、能量特效、变形、传送门，或任何在虚构设定里需要视效的提示词。
 
-## Recommended model
-**Sora 2** for large-scale environments and physics-heavy spectacle. **Kling 3.0** for character-driven sci-fi with audio. **Wan 2.5** for stylized/artistic sci-fi.
+## 推荐模型
+带音频的科幻戏用 **Seedance 2.5** `omni_reference`。交付需要 4K，或要做视频到视频的视效变换（`higgsfield-seedance-vfx.md`）时用 **Seedance 2.0**。
 
-## Narrative planning
+## 叙事规划
 
-Use [shared narrative planning](narrative-planning.md). Cover assets,
-goal, global audiovisual/space, behavior, stages, continuity, final frame, and constraints
-semantically in the existing short prompt or Identity/Motion blocks. Let a trigger,
-physical response, reveal, or transformation-state change define stages; then allocate
-time for cause, effect, and readable aftermath. No preset count or equal durations.
-Stages need not be cuts. Preserve the one-action/one-preset generation limits below;
-carry damage, debris, lighting response, and subject state into the final frame or next
-clip. Example durations and counts are illustrative, not mandatory; actual model limits apply.
+使用 [共享叙事规划](narrative-planning.md)。在本页的短提示词或工作室块结构里，从语义上覆盖资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面和约束。由触发、物理反应、揭晓或变形状态的改变决定阶段；再为起因、效果和可读的余波分配时间。不预设数量，不平均分时。阶段不一定是切镜。守住下面的一条一动作、一条一个主特效的限制；把损伤、碎片、光照反应和主体状态带进结尾画面或下一条。示例时长和数量只是示意，以实际模型限制为准。
 
-## Example prompt
+## 示例提示词
 
 ```
-Model: Sora 2
-Aspect: 16:9 | Duration: 10s | Style: Cinematic
+模型：Seedance 2.5（omni_reference）
+画幅：16:9｜时长：10 秒｜风格：电影感
 
-A battle-worn space station corridor, emergency lighting, debris floating in zero gravity.
-A soldier in heavy tactical armor pulls herself along a handrail, rifle raised.
-Ahead — a sealed blast door, sparking at the seams. She plants a charge and pushes back.
-Camera: FPV Drone drifting just ahead of her through the corridor as the charge detonates.
-Style: Cinematic, cold steel blue, high contrast. 2.35:1 anamorphic.
-Apply Plasma Explosion preset at the detonation moment.
+一条战损的空间站走廊，应急灯亮着，碎片在零重力中漂浮。
+一名穿重型战术护甲的士兵抓着扶手把自己拉向前，步枪举起。
+前方是一扇密封的防爆门，门缝在冒火花。她贴上炸药，向后推开。
+运镜：FPV Drone 在她身前不远处穿过走廊漂移，炸药在此时引爆。
+风格：电影感，冷钢蓝，高反差。2.35:1 变形宽银幕。
+引爆瞬间，门缝喷出一团等离子火球，向走廊两端膨胀，把漂浮的碎片推开。
 ```
 
-## Annotation
+## 注释
 
-| Prompt element | Why it works |
+| 提示词元素 | 为什么有效 |
 |---------------|-------------|
-| "battle-worn space station corridor" | Specific environment — not "a spaceship" generically |
-| "emergency lighting" | Establishes color palette (red/amber warning lights) naturally |
-| "debris floating in zero gravity" | Atmospheric detail the model renders well — adds life to the scene |
-| "pulls herself along a handrail, rifle raised" | Physics-specific action in zero-G — tells the model HOW she moves |
-| "a sealed blast door, sparking at the seams" | Visual tension — something dangerous behind the door |
-| "She plants a charge and pushes back" | One clear action beat leading to the VFX payoff |
-| "FPV Drone drifting just ahead of her" | Camera position relative to subject — immersive but clear |
-| "cold steel blue, high contrast" | Sci-fi's signature palette — measurable color direction |
-| "Apply Plasma Explosion preset at the detonation moment" | VFX preset named exactly, timed to a specific moment in the action |
+| “战损的空间站走廊” | 具体环境，不是泛泛的“一艘飞船” |
+| “应急灯亮着” | 自然地建立配色（红/琥珀色警示灯） |
+| “碎片在零重力中漂浮” | 模型擅长渲染的氛围细节，让画面有生气 |
+| “抓着扶手把自己拉向前，步枪举起” | 零重力下的物理动作，告诉模型她怎么移动 |
+| “门缝在冒火花的密封防爆门” | 视觉张力：门后有危险 |
+| “贴上炸药，向后推开” | 一个清楚的动作节拍，通向视效兑现 |
+| “FPV Drone 在她身前不远处漂移” | 摄影机相对主体的位置：有沉浸感又清楚 |
+| “冷钢蓝，高反差” | 科幻的标志配色，可测量的色彩方向 |
+| “引爆瞬间，门缝喷出一团等离子火球……” | 特效写清形态、方向和对环境的作用，并卡在动作的具体时刻 |
 
-## Negative constraints to include
-- **Body/Motion**: One action per clip. "She fights aliens while the station explodes and a portal opens" = model breakdown.
-- **Temporal/Consistency**: Place VFX preset instruction at the END of the prompt, clearly timed to an action beat.
-- **Texture/Lighting**: Commit to one visual style — don't mix "gritty realism" with "neon cyberpunk."
+## 要加入的约束
+- **身体/动作：**一条一个动作。“她和外星人打斗，同时空间站爆炸、传送门打开”会让模型崩掉。
+- **时间/一致性：**特效描述放在提示词末尾，明确卡在某个动作节拍上。
+- **质感/光照：**只选一种视觉风格，不要把“粗粝写实”和“霓虹赛博朋克”混在一起。
 
-## Common mistakes
-1. **Stacking VFX presets** — "Apply Plasma Explosion + Portal + Glitch" in one clip overwhelms the model. One preset per generation.
-2. **Contradictory physics** — "zero gravity" + "falls to the ground" confuses the model. Pick one physics environment.
+## 常见错误
+1. **叠加多个特效**：一条里同时要爆炸、传送门、故障效果会压垮模型。一次生成一个主特效。
+2. **物理矛盾**：“零重力”加“摔到地上”会让模型困惑。只选一种物理环境。
 
-## Variations
-- **Cyberpunk street**: Ground-level, neon magenta/cyan palette, Dolly Out camera, add Glitch preset
-- **Portal/dimensional**: Use Portal preset, Crane Up camera, "energy builds in a ring of light"
-- **Transformation**: Use Cyborg or Turning Metal preset, Crash Zoom In on the transformation point
-- **Space exterior**: Sora 2 + Super Dolly Out, "vast starfield, tiny ship approaching a planet"
+## 变体
+- **赛博朋克街道：**地面视角，霓虹品红/青色配色，Dolly Out 运镜，加画面故障闪烁
+- **传送门/维度：**Crane Up 运镜，“能量汇成一圈光环”
+- **变形：**皮肤逐块变成金属，Crash Zoom In 推到变形起点
+- **太空外景：**Seedance 2.5 加 Super Dolly Out，“浩瀚星空，一艘小船飞近行星”
 
-### Identity Block (if using Soul ID character)
+### 身份（写进资产参考）
 ```
-The Soul ID character — scarred face, shaved head, tactical body armor with shoulder-mounted
-flashlight, dark under-eye fatigue, determined expression.
-```
-
-### Motion Block
-```
-She pulls herself along a handrail in zero gravity, rifle raised.
-Plants a charge on the blast door. Pushes back.
-Camera: FPV Drone drifting ahead through the corridor.
-Apply Plasma Explosion preset at detonation.
+脸上有疤，剃光头，战术护甲肩部装着手电，眼下疲惫发黑，表情坚定。
 ```
 
-## Cinema Studio 3.0 (Business/Team Plan)
-
-**Genre mapping:** Epic (for large-scale) or Action (for combat)
-**Prompt length target:** 50–90 words (Anime/Artistic range — lead with Style)
-**Speed Ramp:** Hero Moment for reveals, Bullet Time for zero-gravity
-
-**@reference workflow:**
+### 动作
 ```
-@Image1 as the environment concept. A spacecraft descends through storm clouds,
-hull glowing from atmospheric friction. Debris scatters. Lightning illuminates the landing zone.
-Camera: crane down tracking the descent. Style: anamorphic, teal and orange grade.
-Audio: deep engine rumble, crackling electricity, wind shear.
+她在零重力中抓着扶手把自己拉向前，步枪举起。
+在防爆门上贴好炸药，向后推开。
+运镜：FPV Drone 在她身前穿过走廊漂移。
+引爆瞬间，门缝喷出一团等离子火球。
 ```
-
-## See also
-
-A Seedance 2.0 worked example for this genre (Reference-Based mode) ships in
-`prompt-examples.md` § Sci-Fi → Derelict Station Approach.

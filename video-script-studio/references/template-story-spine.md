@@ -1,53 +1,43 @@
-# Worksheet: Story Spine (Step 4)
+# 工作表：故事脊柱（第 4 步）
 
-> Number the necessary beats. Connect them with "therefore" or "but" — never "and then".
-> The source's 10–20 beats are illustrative, not a mandatory range. Stop when the
-> premise and confirmed ending are resolved; don't pad or truncate to hit a count.
-> Framework adapted from Higgsfield's Character Design materials by @vavavinca.
+> 给必要的节拍编号。用“所以”或“但是”连接，绝不用“然后”。
+> 原资料里的 10–20 个节拍只是示意，不是必须的范围。前提和已确认的结局都落地了就停，不为凑数注水或删减。
+> 框架改编自 Higgsfield 角色设计资料（@vavavinca）。
 
-## Planning and video handoff
+## 规划与视频交接
 
-Use [shared narrative planning](narrative-planning.md). Its eight
-semantic layers — assets, goal, global audiovisual/space, behavior, stages, continuity,
-final frame, constraints — organize the eventual video; keep this causal-beat worksheet
-as the current output. Define beats from events, causality, reveals, or state changes,
-then choose camera coverage and allocate time for actions, responses, dialogue, and
-transitions. No preset stage count or equal durations. Preserve the midpoint-turn check,
-confirmed story, and ending; carry each result into the next beat and final visible state.
+使用 [共享叙事规划](narrative-planning.md)。它的八个语义层（资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面、约束）用于组织后续视频；本工作表的因果节拍仍是当前产出。节拍由事件、因果、揭晓或状态变化决定，再选镜头覆盖，为动作、反应、对白和转场分配时间。不预设阶段数，不平均分时。保留中点转折检查、已确认的故事与结局；每个结果带进下一个节拍和最终可见状态。
 
-## Beat format
+## 节拍格式
 ```
-Beat N: [character] [does / discovers / loses] [thing]. Result: [the next problem].
+节拍 N：[角色] [做了 / 发现 / 失去] [什么]。结果：[下一个问题]。
 ```
 
-## Beats
+## 节拍
 
-The blank rows below are an illustrative worksheet capacity, not a required count;
-add or remove rows according to the causal chain.
+下面的空行只是示意容量，不是规定数量；按因果链增删。
 
-- **Beat 1:** ____________________________________  Result: ______________
-- **Beat 2:** ____________________________________  Result: ______________
-- **Beat 3:** ____________________________________  Result: ______________
-- **Beat 4:** ____________________________________  Result: ______________
-- **Beat 5:** ____________________________________  Result: ______________
-- **Beat 6:** ____________________________________  Result: ______________
-- **Beat 7:** ____________________________________  Result: ______________
-- **Beat 8:** ____________________________________  Result: ______________
-- **Beat 9:** ____________________________________  Result: ______________
-- **Beat 10:** ___________________________________  Result: ______________
-- *(continue only while the causal chain and confirmed ending require more beats)*
+- **节拍 1：**____________________________________  结果：______________
+- **节拍 2：**____________________________________  结果：______________
+- **节拍 3：**____________________________________  结果：______________
+- **节拍 4：**____________________________________  结果：______________
+- **节拍 5：**____________________________________  结果：______________
+- **节拍 6：**____________________________________  结果：______________
+- **节拍 7：**____________________________________  结果：______________
+- **节拍 8：**____________________________________  结果：______________
+- **节拍 9：**____________________________________  结果：______________
+- **节拍 10：**___________________________________  结果：______________
+- *（只有因果链和已确认结局还需要时才继续加）*
 
-## Midpoint Turn (if present)
-- **Which beat #, or not applicable:** ______
-- **What flips:** the moment the premise turns against the lead.
+## 中点转折（如有）
+- **在第几个节拍，或不适用：**______
+- **翻转了什么：**前提开始反过来对付主角的那一刻。
 > _______________________________________________
 
-## Check
-- [ ] Beats connect with "therefore" / "but", not "and then"
-- [ ] The midpoint turn is marked, or explicitly not applicable; no reversal was invented to fill this field
-- [ ] The final beat proves (or disproves) the Premise's claim
+## 检查
+- [ ] 节拍用“所以”/“但是”连接，不用“然后”
+- [ ] 标出了中点转折，或明确写不适用；没有为填这一栏硬造反转
+- [ ] 最后一个节拍证明（或推翻）了前提的主张
 
-## Next
-→ Lock the look in the **Style Sheet** (`template-style-sheet.md`). At handoff to `higgsfield-cinema`,
-choose shots for viewing purpose and generations for mode/runtime limits. A shot may span
-beats, and a beat may need several shots; the worksheet rows do not set the shot count.
+## 下一步
+→ 在**项目美术设定表**（`template-style-sheet.md`）里锁定画面。交接到视频时，按观看目的选镜头，按模式和时长上限分生成。一个镜头可以跨多个节拍，一个节拍也可能需要几个镜头；工作表的行数不决定镜头数。

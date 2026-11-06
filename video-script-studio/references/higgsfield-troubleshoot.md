@@ -1,365 +1,267 @@
-# Higgsfield Troubleshooting Guide
+# Higgsfield 故障排查指南（Higgsfield Troubleshooting Guide）
 
-For video timing, over-packing or continuity defects, compare the result to [shared director planning](narrative-planning.md): locate the failed event, response, state handoff or duration budget before changing a variable. Repair/split at a meaningful join while preserving fixed plot and dialogue; do not impose a standard number of stages or a 15-second envelope as a universal fix. Use the triage, attempt budget and single-variable retakes below.
+视频的时间、塞得过满或连续性缺陷，先对照 [共享导演规划](narrative-planning.md)：在改变任何变量之前，找到失败的事件、反应、状态交接或时长预算。在有意义的接点修复/拆分，同时保留确定的剧情和对白；不要把标准阶段数或 15 秒时长当作通用的修法。使用下面的分诊、尝试预算和单变量重拍。
 
-## QUICK FACTS
-- Face inconsistency, dead camera moves, ignored prompts, static i2v, blocked dark content — the per-problem fix list [→](#common-problems--fixes)
-- Kling 3.0 Motion Control failures are almost always upstream of the prompt: reference clip, character image, or orientation/scene-source settings [→](#motion-control-failures-kling-30)
-- Pre-generation checklist: subject, action, named camera preset, style, grade, aspect, <200 words (short-form regime) [→](#pre-generation-checklist)
-- Seedance/Cinema Studio symptom table + diagnostic flowchart: blurry = overspecified; chaotic camera = One-Move Rule violated; wrong character = prompt re-describes the reference [→](#cinema-studio-30--seedance-20-diagnostic-tree)
-- Every delivered take gets ONE of five verdicts before anything re-fires: keep / fix-in-post / edit / re-roll / rewrite [→](#take-triage--five-verdicts-for-a-delivered-take)
-- Two takes with the same flaw = rewrite, by rule; different flaws per roll = stochastic → batch-and-cull, not rewrite [→](#take-triage--five-verdicts-for-a-delivered-take)
-- Re-roll = same prompt again, unchanged — no seed parameter on this surface; every roll is a fresh sample [→](#take-triage--five-verdicts-for-a-delivered-take)
-- Change exactly one variable between takes so causality stays readable [→](#one-variable-per-retake)
-- Declare the take budget AND a written "good enough" bar before take one; half-budget with no progress forces a strategy change [→](#attempt-budget--declared-before-take-one-heuristic)
-- Continuation/extension defects: 12-row symptom → cause → single-repair-variable atlas (planned-vs-observed opening, motion-vector drop, prop contradictions, chain-depth drift…) [→](#sequence--continuation-failure-atlas)
-- Retry Ladder: 4 terminating rungs — re-run once verbatim → treat 2nd failure as over-packing → switch model for that shot → stop after 3 paid attempts with named options [→](#retry-ladder--a-failed-take-edits-the-plan-not-just-the-dice)
-- Vision-grounded diagnosis (stills only): compare visible evidence with the reference and explain uncertainty [→](#vision-grounded-diagnosis--classify-the-rejected-still-dont-guess)
+## 速查（QUICK FACTS）
+- 脸不一致、运镜不起作用、提示被忽略、静态 i2v、黑暗内容被拦：逐个问题的修法清单 [→](#常见问题与修法common-problems--fixes)
+- 生成前检查：主体、动作、运镜、风格、调色、画幅、<200 词（只限短格式）[→](#生成前检查pre-generation-checklist)
+- Seedance 症状表 + 诊断流程图：模糊 = 过度指定；运镜混乱 = 违反单一运动规则；角色不对 = 提示词与参考冲突 [→](#seedance-诊断树seedance-diagnostic-tree)
+- 每条交付的素材在重新生成之前，都先得到五种判定之一：保留 / 后期修 / 编辑 / 重掷 / 重写 [→](#素材分诊交付素材的五种判定take-triage--five-verdicts-for-a-delivered-take)
+- 两条素材出现同一个缺陷 = 按规则重写；每次缺陷都不同 = 随机性 → 批量生成再筛选，不重写 [→](#素材分诊交付素材的五种判定take-triage--five-verdicts-for-a-delivered-take)
+- 重掷 = 原样再跑同一条提示词：这个平台没有 seed 参数；每次都是新的采样 [→](#素材分诊交付素材的五种判定take-triage--five-verdicts-for-a-delivered-take)
+- 两次生成之间只改一个变量，让因果可读 [→](#每次重拍只改一个变量one-variable-per-retake)
+- 第一次生成之前就写下尝试预算**和**“够好”的标准；预算用掉一半仍无进展，必须换策略 [→](#尝试预算第一次生成前就定下经验法则attempt-budget--declared-before-take-one-heuristic)
+- 续接/延伸缺陷：12 行“症状 → 原因 → 单一修复变量”图谱（按计划而非实际的开场、运动向量丢失、道具矛盾、链深漂移……）[→](#段落与续接失败图谱sequence--continuation-failure-atlas)
+- 重试阶梯：4 级、每级有终点：原样重跑一次 → 第二次失败当作塞得过满 → 这个镜头换模型 → 付费 3 次后停下并给出具名选项 [→](#重试阶梯失败的素材修改的是计划而不只是骰子retry-ladder--a-failed-take-edits-the-plan-not-just-the-dice)
+- 基于画面的诊断（只限静帧）：拿可见证据对照参考，并说明不确定的地方 [→](#基于画面的诊断给被拒的静帧归类别靠猜vision-grounded-diagnosis--classify-the-rejected-still-dont-guess)
 
-## Common Problems & Fixes
+## 常见问题与修法（Common Problems & Fixes）
 
-### Problem: Character face is inconsistent or morphing
-**Cause:** No Soul ID reference; prompt has conflicting appearance descriptions
-**Fix:**
-- Create a Soul ID reference and use it in subsequent generations
-- Remove any appearance descriptions that contradict each other
-- For image-to-video: don't re-describe the face — let the input image carry it
-- Use Kling 3.0 for best character consistency (or Kling 2.6 if no audio needed)
-
----
-
-### Problem: Camera movement isn't working / is generic
-**Cause:** Camera described vaguely, not using exact preset names
-**Fix:**
-- Replace generic descriptions with exact preset names: "Dolly In", "FPV Drone", "360 Orbit"
-- Put the camera instruction on its own line or clearly labeled: "Camera: [name]"
-- Don't describe what the camera is doing in prose — name the control directly
+### 问题：角色的脸不一致或在变形
+**原因：**没有身份参考；提示词里有相互冲突的外貌描述
+**修法：**
+- 按 [角色资产交付规范](template-character-asset-delivery.md) 做角色参考图，并在后续生成里绑定
+- 删掉相互矛盾的外貌描述
+- 图生视频：不要重新描述脸，让输入图承载它
+- 用 Seedance 2.5 `omni_reference` 加按职责限定的角色参考，一致性最好；映射块写 `名字 对应 @名字。本段状态：…`，不重写基础外观
 
 ---
 
-### Problem: Prompt is ignored / output doesn't match
-**Cause:** Prompt too long, conflicting instructions, over-specified
-**Fix:**
-- Cut prompt to under 200 words — trim the least essential details (short-form prompts only; block-scaffold production briefs are a different regime — `higgsfield-guide.md` HARD RULE 8)
-- Remove any contradictory elements (don't say both "moving fast" and "frozen in place")
-- Lead with the most important element: Subject → Action → Camera → Style
-- Split complex scenes into multiple separate generations
+### 问题：运镜不起作用 / 很泛泛
+**原因：**运镜描述含糊，没写清路径和终点
+**修法：**
+- 写出起始视图、跟随的主体、路径和结尾构图；使用平台预设时用准确的预设名：“Dolly In”“FPV Drone”“360 Orbit”
+- 工作室格式：段头写运镜简称，`运镜：` 行写方式＋角度＋起止景别＋距离或时长＋跟谁
+- 运镜幅度越大段落要越长；`director_contract_lint.py` 对没写量或时长不足给 WARN
 
 ---
 
-### Problem: Visual style looks wrong / generic
-**Cause:** No style specified, or style description too vague
-**Fix:**
-- Add one of the named styles: Cinematic / VHS / Super 8MM / Anamorphic / Abstract
-- Add a specific color grade description: "cold teal and orange", "warm golden amber"
-- Specify aspect ratio: 16:9 / 9:16 / 2.35:1
-- Add lighting: "golden hour", "neon", "practical only", "overcast"
+### 问题：提示被忽略 / 输出对不上
+**原因：**相互冲突的指令、过度指定，或（短格式）提示词太长
+**修法：**
+- 短格式提示词：砍到 200 词以内，删掉最不重要的细节。块结构制作稿是另一种格式（`higgsfield-guide.md` HARD RULE 8），不设字数上限，改为收紧结构：每件事只说一次
+- 删掉相互矛盾的元素（不要同时说“快速移动”和“定在原地”）
+- 短格式里最重要的元素放前面：主体 → 动作 → 运镜 → 风格
+- 把复杂场景拆成几次独立生成，按 [Clip 边界隔离](narrative-planning.md#clip-边界隔离强制) 收尾和开场
 
 ---
 
-### Problem: Motion preset effect isn't visible
-**Cause:** Preset not explicitly named, or scene context doesn't support the effect
-**Fix:**
-- Name the preset exactly as it appears in the library: "Apply Explosion preset"
-- Place the preset instruction at the end of the prompt, clearly labeled
-- Make sure the scene context supports the preset — e.g., Animalization needs a subject
-  who can logically transform
+### 问题：视觉风格不对 / 很泛泛
+**原因：**没写风格，或风格描述太含糊
+**修法：**
+- 加一个具名风格：Cinematic / VHS / Super 8MM / Anamorphic / Abstract；或按项目视觉总纲写媒介、材质和光色
+- 加具体的调色描述：“冷青与橙”“温暖的金琥珀色”
+- 画幅在平台设置里设（16:9 / 9:16），2.35:1 这类写成风格要求
+- 加光照：“黄金时刻”“霓虹”“只有实景光源”“阴天”
 
 ---
 
-### Problem: Image-to-video barely moves / is static
-**Cause:** Prompt re-describes the static elements instead of what should animate
-**Fix:**
-- Only describe what **changes or moves** — not what is already visible in the image
-- Add an explicit camera movement: "Camera: Dolly In" or "Camera: slow Arc"
-- Specify the motion type: "hair gently lifts", "eyes blink", "she turns slowly left"
-- Add atmospheric motion: "dust floats upward", "light flickers", "steam rises"
+### 问题：图生视频几乎不动 / 是静态的
+**原因：**提示词重新描述了静态元素，而不是该动起来的东西
+**修法：**
+- 只描述**变化或运动**的东西，不写图里已经看得见的
+- 加明确的运镜：“Camera: Dolly In”或“Camera: slow Arc”
+- 写明运动类型：“头发轻轻扬起”“眼睛眨动”“她慢慢向左转”
+- 加氛围运动：“灰尘向上漂浮”“光在闪烁”“蒸汽升起”
 
 ---
 
-### Problem: VFX preset looks too artificial / cartoonish
-**Cause:** Wrong model for the preset, or prompt style conflicts with effect
-**Fix:**
-- For grounded presets (Explosion, Freezing): use Kling 3.0 or 2.6 for realism
-- For stylized presets (Animalization, Multiverse): use Wan 2.5 — leans into the style
-- Add "photorealistic", "physically accurate", "cinematic quality" to the prompt
+### 问题：特效看起来太假 / 太卡通
+**原因：**模型不适合，或提示词风格与特效冲突
+**修法：**
+- 写实类特效（爆炸、冰冻）：描述物理后果来增加真实感，写清形态、尺度、材质、运动和残留
+- 风格化特效：明确写出风格化的媒介
+- 写实方向加“照片写实”“物理准确”
 
 ---
 
-### Problem: Product shots look cheap or over-lit
-**Cause:** No lighting specification, background too plain
-**Fix:**
-- Specify the background surface: "raw concrete", "warm wood grain", "black velvet"
-- Add specific lighting: "soft side-light", "overhead product lighting", "practical only"
-- Add texture cues: "camera reveals material grain", "surface catches light on edges"
-- Use Nano Banana Pro for maximum image sharpness on product images
+### 问题：产品镜头显得廉价或过曝
+**原因：**没写光照，背景太平
+**修法：**
+- 写明背景表面：“粗糙的混凝土”“暖色木纹”“黑丝绒”
+- 加具体光照：“柔和侧光”“顶部产品光”“只有实景光源”
+- 加质感线索：“镜头显出材质纹理”“表面边缘接住光”
+- 产品静帧要最高锐度时用 Nano Banana Pro
 
 ---
 
-### Problem: Horror/dark content getting blocked
-**Cause:** Platform safety filters triggering on explicit content
-**Fix:**
-- Describe outcomes rather than explicit acts: "aftermath", "tension", "dread"
-- Use atmosphere language: "unsettling", "wrong", "something is off"
-- Use the motion presets for horror effects rather than explicit descriptions
-- Avoid direct descriptions of injury, gore, or explicit threat
+### 问题：恐怖/黑暗内容被拦截
+**原因：**平台安全过滤被露骨内容触发
+**修法：**
+- 写结果而不是露骨的行为：“余波”“紧张”“恐惧”
+- 用氛围语言：“令人不安”“不对劲”“有什么不对”
+- 特效写形态与可见结果，而不是露骨描述
+- 避免直接描写伤口、血腥或露骨的威胁
+- 已确认的对白、身份和动作不能被 lint 建议自动改写；有真实政策冲突时报告范围与依据
 
 ---
 
-## Motion Control Failures (Kling 3.0)
+## 生成前检查（Pre-Generation Checklist）
 
-When a Kling 3.0 Motion Control generation comes back wrong, the cause is almost
-always upstream of the prompt — the motion reference clip, the character image,
-or the orientation/scene-source settings. Walk this list before you regenerate.
+生成之前核对：
 
-| Symptom | Root cause | Fix |
-|---------|-----------|-----|
-| Output suddenly jumps or snaps mid-clip | The motion reference contains a hidden cut, dissolve, or hard transition | Re-trim the reference to a single continuous shot. If the source clip can't be cleaned up, reshoot or pick a different reference |
-| Output is shorter than the reference clip | The source motion is too fast or too dense for clean transfer | Slow the source (50–75% playback baked in), reshoot at a calmer pace, or pick a reference with simpler motion |
-| Character face drifts or warps across the clip | The character image doesn't have a clearly readable face — bad framing, low light, or the face is too small in frame | Re-shoot or re-generate the character image with closer framing, even lighting, and a neutral or slight expression |
-| Body motion looks correct but the face is dead or frozen | Wrong orientation mode for the shot — Image Orientation when you needed Video Orientation, or vice versa | Switch modes: Video Orientation for full-body movement (dance, action); Image Orientation for camera-driven shots with a mostly static body. Regenerate |
-| Generated character feels detached from the environment | Scene source is set incorrectly — pulling the wrong background | Decide whether the environment should come from the motion video or the character image, then set Scene source accordingly |
-| Motion transfers but identity drifts across the clip | The character image isn't full enough — head or body is cut off, or framing is too tight to anchor identity | Re-upload a character image that shows both head AND body fully; this is what Element Binding needs to keep the face stable through movement |
-
-> For the full Motion Control workflow and pre-flight input checklist, see `higgsfield-motion.md` → "Kling 3.0 Motion Control — When and How to Run It" and "Motion Reference Input Checklist".
-
----
-
-### Problem: Audio/lip-sync not working or out of sync
-**Cause:** Head motion tokens competing with lip engine, non-MP3 format, clip too long
-**Fix:**
-- Remove all head/face motion tokens (nodding, turning head, looking around)
-- Keep dialogue clips 3–8s (not 15s — accuracy degrades)
-- Use MP3 format only for Seedance 2.0 (when available) (WAV/AAC fail silently)
-- Lock camera: medium close-up, static or slow Dolly In only
-- One face per shot — multiple faces break audio routing
-- For detailed audio guidance → `higgsfield-audio` skill
+- [ ] 主体写清楚了（谁/什么）
+- [ ] 动作写具体了（发生什么）
+- [ ] 运镜写明路径和终点（用预设时写准确名称）
+- [ ] 写了视觉风格
+- [ ] 提到了调色或光照
+- [ ] 画幅在平台设置里
+- [ ] 选了模型（工作室默认 Seedance 2.5）
+- [ ] 提示词在 200 词以内（只限短格式；块结构稿跳过）
+- [ ] 没有相互冲突的指令
+- [ ] 需要角色一致时绑定了已登记的角色参考
+- [ ] 身份写在映射块，动作写在 `[具体情节]`
+- [ ] 块结构稿跑过 `director_contract_lint.py` 和 `seedance_lint.py --preflight`
 
 ---
 
-### Problem: Background music overrides uploaded dialogue
-**Cause:** Ambient/music tokens in prompt invite generative audio engine to replace your audio
-**Fix:**
-- Add timestamp anchoring: "Audio @Audio1 plays exactly as uploaded from 0s to end"
-- Remove ALL ambient/SFX/music tokens from the prompt
-- Keep the prompt focused on visual description + dialogue only
+> **完整的约束参考：**全部生成瑕疵的分类清单及预防措辞，见 `negative-constraints.md`。本排查指南管诊断和修法；共享约束文件管预防。
 
 ---
 
-## Pre-Generation Checklist
+## Seedance 诊断树（Seedance Diagnostic Tree）
 
-Before generating, verify:
+> 这些诊断适用于 Seedance 2.0 / 2.5 视频生成。
 
-- [ ] Subject described clearly (who/what)
-- [ ] Action described specifically (what happens)
-- [ ] Camera named with exact preset name
-- [ ] Visual style specified (Cinematic / VHS / etc.)
-- [ ] Color grade or lighting mentioned
-- [ ] Aspect ratio included
-- [ ] Model selected (or let Higgsfield default)
-- [ ] Prompt is under 200 words (short-form regime — skip for block-scaffold briefs)
-- [ ] No conflicting instructions
-- [ ] Soul ID referenced if character consistency needed
-- [ ] Motion preset named at end if using one
-- [ ] Identity Block separated from Motion Block (if Soul ID active)
+### 快速诊断（Quick Diagnostic）
 
----
-
-> **Full negative constraints reference:** For a comprehensive, categorized list of all
-> generation artifacts and the prompt phrasing to prevent them, see
-> `negative-constraints.md`. This troubleshooting guide covers diagnosis and fixes;
-> the shared constraints file covers prevention.
-
----
-
-## Cinema Studio 3.0 / Seedance 2.0 Diagnostic Tree
-
-> These diagnostics apply to Cinema Studio 3.0's generation engine (Business/Team plan only). For Cinema Studio 2.5 issues, see the general troubleshooting section above.
-
-### Quick Diagnostic
-
-| Symptom | Likely Cause | Fix |
+| 症状 | 可能原因 | 修法 |
 |---------|-------------|-----|
-| Output blurry, jittery, or morphing | Overspecification — prompt too long or too detailed | Short-form: cut to 30–100 words; use @reference images/videos instead of 50+ words of description. Block-scaffold briefs: don't shorten — tighten structure instead (one axis per clause, HARD RULE 8 regime) |
-| Camera chaotic, spinning, or jittering | Violated the One-Move Rule — multiple camera moves in one shot | Rewrite to ONE primary camera move per shot. Use Cinema Studio 3.0's Smart mode, or split into multi-shot |
-| Character doesn't match reference | Prompt is re-describing the character's appearance | Delete ALL physical descriptions. Describe ONLY action and emotion. The @reference carries identity |
-| Action stiff or lacking impact | Missing intent/physics language | Add degree adverbs (`violently`, `gently`, `explosively`) and physics consequences (`dust erupts`, `sparks fly`, `fabric tears`) |
-| Output "not what I wanted" (vague) | Ambiguous prompt with subjective language | Run Anti-Slop Check: replace `beautiful`, `stunning`, `epic`, `amazing`, `dynamic` with observable, measurable details |
-| Audio not matching video | Audio description conflicting with visual description, or uploaded audio being overridden | Use timestamp anchoring for uploaded audio. Remove ambient/SFX tokens when using @Audio references |
+| 输出模糊、抖动或变形 | 过度指定：提示词太长或太细 | 短格式：砍到 30–100 词；用 @ 参考图/视频代替 50 多个词的描述。块结构稿：不要缩短，改为收紧结构（每句一条轴，HARD RULE 8 的格式） |
+| 运镜混乱、旋转或抖动 | 违反单一运动规则：一个镜头里有多个运镜 | 改写成每个镜头**一个**主运动，或拆成几个镜头 |
+| 角色与参考对不上 | 提示词文字与参考冲突（图里没有的颜色、特征或服装），或镜头之间有差异 | **先删掉与参考冲突的文字**：任何情况都适用。然后分情况：**首帧**：图就是第一帧；只描述运动、动作和运镜。**没有身份参考**：保留完整描述，逐字不变；这是模型唯一拿到的身份。**附了角色参考作为身份、多镜头**：一致的描述是帮助还是妨碍没有测量过，篇幅没有默认值；工作室视频已经用已登记的 `@中文名` 映射，不重复基础外观。保留下来的都是来自同一来源的固定措辞，镜头之间绝不改动 |
+| 动作僵硬或缺少冲击 | 缺少意图/物理语言 | 加程度副词（`violently`、`gently`、`explosively`）和物理后果（`dust erupts`、`sparks fly`、`fabric tears`） |
+| 输出“不是我想要的”（含糊） | 含主观语言的模糊提示 | 做空话检查：把 `beautiful`、`stunning`、`epic`、`amazing`、`dynamic` 换成可观察、可测量的细节 |
+| 音频与画面对不上 | 音频描述与画面描述冲突，或上传的音频被覆盖 | 上传音频用时间码锚定。使用 @Audio 参考时去掉环境声/音效词 |
 
-### Diagnostic Flowchart
+### 诊断流程图（Diagnostic Flowchart）
 
 ```
-Output bad?
-├── Blurry/morphing → Is it a short-form prompt > 100 words?
-│   ├── Yes → Cut to 30–100 words, use @reference
-│   │        (block-scaffold briefs: tighten structure, never truncate)
-│   └── No → Too many action beats? (>2 per 5s) → Split into multi-shot
-├── Camera wrong → How many camera moves specified?
-│   ├── Multiple → Reduce to ONE move (One-Move Rule)
-│   └── One → Try Smart mode instead, or use @Video camera transfer
-├── Character wrong → Does prompt describe character appearance?
-│   ├── Yes → Delete appearance, keep only action/emotion
-│   └── No → Use better reference (frontal + 3/4 + profile shots)
-├── Action weak → Does prompt have physics language?
-│   ├── No → Add degree adverbs + physical consequences
-│   └── Yes → Reduce beat density (1–2 beats per 5s)
-└── Just bad → Run Anti-Slop Check
-    ├── Found slop words → Replace with specific observables
-    └── Clean → Try different genre setting, or use @reference
+输出不好？
+├── 模糊/变形 → 是不是超过 100 词的短格式提示词？
+│   ├── 是 → 砍到 30–100 词，用 @ 参考
+│   │        （块结构稿：收紧结构，绝不截断）
+│   └── 否 → 动作节拍太多？（每 5 秒 >2 个）→ 拆成多镜头
+├── 运镜不对 → 写了几个运镜？
+│   ├── 多个 → 减到一个（单一运动规则）
+│   └── 一个 → 用 @Video 迁移运镜
+├── 角色不对 → 提示词有没有描述角色外貌？
+│   ├── 有 → 删掉外貌，只留动作/情绪
+│   └── 没有 → 用更好的参考（正面 + 3/4 侧 + 侧面）
+├── 动作无力 → 提示词有没有物理语言？
+│   ├── 没有 → 加程度副词 + 物理后果
+│   └── 有 → 降低节拍密度（每 5 秒 1–2 个节拍）
+└── 就是不好 → 做空话检查
+    ├── 找到空话 → 换成具体的可观察细节
+    └── 干净 → 用 @ 参考
 ```
 
-### Success Rate Note
+### 成功率说明（Success Rate Note）
 
-Cinema Studio 3.0's generation engine produces ~90% usable output. If outputs are **consistently** bad across multiple attempts, the prompt is almost certainly the problem — not the model. Apply the diagnostic tree systematically before regenerating.
+如果多次尝试的输出**一贯**都不好，几乎可以肯定问题在提示词，而不在模型。重新生成之前，系统地走一遍诊断树。
 
 ---
 
-## Take Triage — Five Verdicts for a Delivered Take
+## 素材分诊：交付素材的五种判定（Take Triage — Five Verdicts for a Delivered Take）
 
-`[FIELD — community, Emily2040/seedance-2.0 skill (MIT), re-derived 2026-08-09]`
-The sections above repair outright failure. Most real takes land in between —
-partially good — and the expensive habit is treating every flaw as a
-regeneration. Before anything re-fires, every delivered take gets exactly one
-of five verdicts:
+`[FIELD — community, Emily2040/seedance-2.0 skill (MIT), re-derived 2026-08-09]` 上面几节修的是彻底的失败。大多数真实素材落在中间：部分是好的，而昂贵的习惯是把每个缺陷都当作重新生成的理由。在任何重新生成之前，每条交付的素材都只得到五种判定之一：
 
-| Verdict | When | Next move |
+| 判定 | 何时 | 下一步 |
 |---------|------|-----------|
-| **Keep** | The thing this shot is FOR is delivered and nothing is fatal | Lock it and move on. Perfection in secondary details is post's job |
-| **Fix in post** | The flaw lives in the editor's domain: color, on-screen text, sound mix, trim, a few unstable frames at the ends | Never burn takes on what an edit fixes in minutes |
-| **Edit, don't regenerate** | Composition and timing are right; exactly one layer is wrong and an edit surface supports it | Repair only the failing layer — the editor-not-regenerator mindset (`higgsfield-seedance.md` § Keyframe Workflow; `higgsfield-pipeline.md` Pipeline E Stage 2) |
-| **Re-roll** | The prompt is right; the sample was unlucky | Same prompt again, unchanged — every roll is fresh on this surface (no seed parameter; `higgsfield-seedance.md` § Drafts Validate the Prompt, Not the Take). |
-| **Rewrite** | The same flaw appears in two takes | Systematic, not luck — **two takes with the same flaw = rewrite, by rule**. Diagnose (tables above; `higgsfield-seedance-failure-modes.md`), change the prompt |
+| **保留** | 这个镜头**为之存在**的东西交付了，没有致命问题 | 锁定，继续。次要细节的完美是后期的事 |
+| **后期修** | 缺陷在剪辑的领域里：调色、画面文字、混音、裁剪、两端几帧不稳 | 剪辑几分钟就能修的东西，绝不浪费生成次数 |
+| **编辑，不重新生成** | 构图和时间是对的；只有一层不对，且有编辑工具支持 | 只修失败的那一层：编辑者而非重新生成者的思路（`higgsfield-seedance.md` § Keyframe Workflow） |
+| **重掷** | 提示词是对的；这次采样运气不好 | 原样再跑同一条提示词：这个平台每次都是新的采样（没有 seed 参数；`higgsfield-seedance.md` § Drafts Validate the Prompt, Not the Take） |
+| **重写** | 同一个缺陷在两条素材里出现 | 是系统性的，不是运气：**两条素材同一缺陷 = 按规则重写**。诊断（上面的表；`higgsfield-seedance-failure-modes.md`），修改提示词 |
 
-The rewrite tripwire cuts both ways: the same flaw twice means stop re-rolling
-into the same wall, but *different* flaws on every roll mean the miss is
-stochastic — that's batch-and-cull territory, not a rewrite
-(`higgsfield-prompt.md` § Before You Iterate). When the verdict is
-re-roll or rewrite and the failure keeps recurring, escalation is governed by
-the Retry Ladder below.
+重写的触发线是双向的：同一缺陷出现两次，意味着别再往同一堵墙上重掷；但每次缺陷都*不同*，说明失误是随机的：那是批量生成再筛选的范围，不是重写（`higgsfield-prompt.md` § Before You Iterate）。判定是重掷或重写、而失败反复出现时，按下面的重试阶梯升级。
 
-### One variable per retake
+### 每次重拍只改一个变量（One variable per retake）
 
-Whatever the verdict changes — one prompt clause, OR the mode, OR one
-reference — change exactly one thing between takes so causality stays
-readable. Full mechanics: `higgsfield-prompt.md` § The Iteration
-Rule — Change One Variable at a Time (and `production-checks.md` § Single-Variable
-Iteration). Compare each retake directly with the preceding result.
+无论判定改变的是什么（一个提示词分句，或模式，或一个参考），两次生成之间只改一样，让因果保持可读。完整机制：`higgsfield-prompt.md` § The Iteration Rule — Change One Variable at a Time（以及 `production-checks.md` § Single-Variable Iteration）。每次重拍都直接与上一次结果比较。
 
-### Attempt budget — declared before take one [heuristic]
+### 尝试预算：第一次生成前就定下（经验法则）（Attempt budget — declared before take one [heuristic]）
 
-Write two things down before the first fire:
+第一次生成之前写下两件事：
 
-- **A take budget** — a number, sized against the acceptance-rate reality in
-  `production-benchmarks.md` (draft-tier exploration stretches it —
-  § Drafts Validate the Prompt, Not the Take).
-- **A written "good enough" bar** — the primary thing delivered, secondary
-  flaws postable. Without it written down, the bar silently becomes
-  "perfect," and no budget survives that.
+- **一个生成次数预算**：一个数字，按 `production-benchmarks.md` 里采用率的现实来定（草稿档的探索可以拉长它，见 § Drafts Validate the Prompt, Not the Take）。
+- **一个写下来的“够好”标准**：主要的东西交付了，次要缺陷可以后期处理。不写下来，标准会悄悄变成“完美”，没有任何预算撑得住。
 
-At half the budget with no progress on the same flaw, stop iterating and
-change strategy: a different mode, a shot split, or the Retry Ladder's rung-4
-named options. Iteration without a stop condition is how a cheap shot becomes
-an expensive one. The budget is not a promise of success — it is the tripwire
-that forces the strategy change.
+预算用掉一半、同一个缺陷仍无进展时，停止迭代，换策略：换模式、拆镜头，或重试阶梯第 4 级的具名选项。没有停止条件的迭代，就是便宜的镜头变贵的原因。预算不是成功的承诺：它是逼你换策略的触发线。
 
 ---
 
-## Sequence & Continuation Failure Atlas
+## 段落与续接失败图谱（Sequence & Continuation Failure Atlas）
 
-`[FIELD — community, Emily2040/seedance-2.0 skill (MIT), re-derived 2026-08-09]`
-Symptom → likely cause → single repair variable for chained work:
-continuations, extensions, and start-frame-pinned handoffs. One repair
-variable per retake — the one-variable rule applied to sequences. Handoff
-mechanics live in `higgsfield-pipeline.md` § Continuation & Extension
-Handoff; prompt templates in `higgsfield-seedance.md` § Continuation
-Prompt Formula. This table is the symptom-side index into both.
+`[FIELD — community, Emily2040/seedance-2.0 skill (MIT), re-derived 2026-08-09]` 链式工作（续接、延伸、首帧钉住的交接）的“症状 → 可能原因 → 单一修复变量”。每次重拍一个修复变量：单变量规则用在段落上。提示词模板见 `higgsfield-seedance.md` § Continuation Prompt Formula。这张表是两者在症状一侧的索引。
 
-| Symptom | Likely cause | Repair variable (change this one thing) |
+工作室默认把独立生成的 Clip 按剪辑点隔离（[Clip 边界隔离](narrative-planning.md#clip-边界隔离强制)），不做首尾无缝衔接；下表主要用于真正的续接/延伸模式，或排查边界状态交接的错误。
+
+| 症状 | 可能原因 | 修复变量（只改这一样） |
 |---------|-------------|------------------------------------------|
-| Continuation opens from the *planned* ending, not the delivered one | Prompt written from the shot plan; the accepted take's actual end state was never reviewed | Rewrite the opening from what the parent clip actually shows — the source carries state, the prompt carries only the delta (`higgsfield-pipeline` § Source-carries-state rule) |
-| Action restarts from the top | Completed beat never marked as already done | State the beat as completed ("the door already stands open") and prompt only what happens next |
-| A later beat shows up early | Future-beat material leaked into this clip's prompt | Strip every future beat from prompt and endpoint — one clip owns one beat |
-| Identity drifts across extensions | The chain tail displaced the canonical identity reference | Re-anchor from the ORIGINAL character refs, never a frame from the drifted tail (`higgsfield-pipeline` § Chain management) |
-| Screen direction flips at the join | Axis never locked, or reset unintentionally | State the direction ("walks screen-left to screen-right") or declare the axis change as intentional coverage |
-| Mid-flight motion stops dead | Open motion vector not carried across a still-frame handoff | Carry subject/camera speed and direction in prose — one of the three things a frame cannot carry (`higgsfield-pipeline` § Source-carries-state rule) |
-| Camera move restarts from rest | Parent's camera-move phase missing from the prompt | Open from the observed camera phase ("mid-dolly, continuing in") |
-| Prop contradicts the prior clip | Prop owner / position / condition not tracked across the handoff | Add a prop-state line (who holds it, where it sits, what condition); prop sheet for recurring props (`higgsfield-pipeline` Pipeline E Stage 3) |
-| Dialogue repeats a delivered line | Audio phase not carried at the cut point | Mark the line as delivered and continue from the audio phase — a frame cannot carry it |
-| Each extension looks worse than the last | Expected chain-depth drift — each generation re-ingests the previous one's artifacts | Re-anchor from canonical refs or cut intentionally; cap chains at 2 extensions, hard ceiling 3 (`higgsfield-pipeline` § Chain management) |
-| A reference bleeds into the wrong role | Transfer / ignore clauses absent | Split the roles: per-image role line plus explicit exclusions (`higgsfield-seedance` § Reference Roles) |
-| Too much happens; nothing lands | Several beats compiled into one prompt | Reassign future beats to later clips (`higgsfield-seedance` § Single-vs-multi-shot decision) |
+| 续接从*计划的*结尾开场，而不是实际交付的结尾 | 提示词按镜头计划写，从没看过采用素材的实际结束状态 | 按上一条片段实际显示的东西重写开场：源素材承载状态，提示词只承载变化量 |
+| 动作从头重来 | 已完成的节拍没有标为已完成 | 把节拍写成已完成（“门已经开着”），只提示接下来发生什么 |
+| 后面的节拍提前出现 | 未来节拍的内容漏进了这条片段的提示词 | 从提示词和终点里去掉所有未来节拍：一条片段只拥有一个节拍 |
+| 身份在延伸中漂移 | 链的尾部取代了标准身份参考 | 从**原始**角色参考重新锚定，绝不用漂移后尾部的一帧 |
+| 接点处画面方向翻转 | 轴线从没锁定，或被无意重置 | 写明方向（“从画面左走向画面右”），或把轴线变化声明为有意的覆盖 |
+| 运动中途突然停死 | 开放的运动向量没有跨静帧交接带过来 | 用文字带上主体/摄影机的速度和方向：这是一帧带不过去的三样东西之一 |
+| 运镜从静止重新开始 | 提示词里缺少上一条的运镜相位 | 从观察到的运镜相位开场（“推轨中途，继续向前”） |
+| 道具与上一条矛盾 | 交接时没追踪道具的归属 / 位置 / 状态 | 加一句道具状态（谁拿着、放在哪、什么状态）；反复出现的道具做道具参考图 |
+| 对白重复了已说过的台词 | 切点处的音频相位没带过来 | 把这句标为已说过，从音频相位继续：一帧带不过去 |
+| 每次延伸都比上一次更差 | 预期中的链深漂移：每次生成都会重新吸收上一次的瑕疵 | 从标准参考重新锚定，或有意切开；链最多延伸 2 次，硬上限 3 次 |
+| 参考串到了错的职责里 | 缺少迁移 / 忽略的说明 | 拆开职责：每张图一行职责加明确的排除（`higgsfield-seedance` § Reference Roles） |
+| 发生的事太多，什么都没落地 | 几个节拍编进了一条提示词 | 把未来节拍重新分到后面的片段（`higgsfield-seedance` § Single-vs-multi-shot decision） |
 
-Two takes failing on the SAME row is the rewrite tripwire in § Take Triage —
-change the failing instruction before another attempt.
-
----
-
-## Retry Ladder — a failed take edits the plan, not just the dice
-
-`[EMPIRICAL — MiniMax H3 skill corpus, re-derived]` When a take fails or drifts and the
-diagnostic tree confirms the references and mappings were right, escalate in this order.
-Each rung terminates — never loop on one rung:
-
-1. **Re-run once, quoting the reference map verbatim.** The original role + exclusion
-   lines, unedited. If the mapping was right, one clean re-roll is legitimate variance.
-2. **Treat the second failure as evidence the shot is over-packed.** Shorten the
-   envelope and/or split the surplus beats into a new adjacent prompt (the shotlist
-   density split triggers apply), then re-run the preflight linter on **both** halves
-   before firing either. A second identical re-roll pays twice for the same overload.
-3. **Switch models for that one shot.** One shot on a different engine beats bending
-   the whole piece around a shot the current engine won't hold.
-4. **Stop after three paid attempts and present named options** — accept the best
-   take, re-scope the shot, defer it, or ship with an explicit `placeholder: missing
-   clip` note in the deliverable. Silent omission is never one of the options.
+两条素材在**同一行**上失败，就是 § Take Triage 的重写触发线：再试之前先改掉失败的那条指令。
 
 ---
 
-## Vision-Grounded Diagnosis — Classify the Rejected Still, Don't Guess
+## 重试阶梯：失败的素材修改的是计划，而不只是骰子（Retry Ladder — a failed take edits the plan, not just the dice）
 
-When the user asks to diagnose a rejected output, compare the visible frame
-with the intended shot and its references. Explain the observed defect and
-any uncertainty; use that evidence to choose the next repair.
+`[EMPIRICAL — third-party skill corpus, re-derived]` 一条素材失败或漂移、且诊断树确认参考和映射是对的时，按这个顺序升级。每一级都有终点：绝不在同一级上循环：
 
-**Scope (v1): stills only** — an image, or a single representative frame the user
-picks from a video. Full-clip motion failures (FPS drift, temporal de-dup,
-multi-motion) are out of scope here; they need frame-by-frame review
-(`higgsfield-seedance-failure-modes.md`), not a single-frame classify.
+1. **原样重跑一次，逐字引用参考映射。**原来的职责 + 排除行，不改。映射是对的话，一次干净的重掷是合理的随机波动。
+2. **把第二次失败当作镜头塞得过满的证据。**缩短时长和/或把多出的节拍拆进一条相邻的新提示词（分镜表的密度拆分触发条件适用），然后在发出任何一条之前，对**两半**都重跑预检 lint。第二次完全相同的重掷，等于为同一个过载付两次钱。
+3. **这一个镜头换模型。**一个镜头换个引擎，胜过为一个当前引擎撑不住的镜头扭曲整部作品。视频只在 Seedance 系列内换（2.5 ↔ 2.0 / 2.0 Mini / 1.5 Pro）。
+4. **付费 3 次后停下，给出具名选项**：接受最好的素材、重新界定这个镜头、推迟它，或者在交付物里写明 `placeholder: missing clip` 照常交付。悄悄省略永远不是选项之一。
 
-**The chain:**
+---
 
-1. **Capture.** Get the still in hand. Local image → read it directly. Web URL →
-   `media_import_url` (never pass a raw URL). Cowork local file → the upload
-   widget. Outputs are not auto-saved, so capture is an explicit step.
-2. **Classify the visible defect** using the table below. Describe the evidence
-   in one line, including where it appears in the frame.
-3. **Keep uncertain cases explicit.** Do not force a defect into a category
-   that the frame cannot support; inspect more frames for temporal failures.
-4. **Choose one repair variable** from the relevant diagnostic table, then
-   compare the next take against the same reference and acceptance criteria.
+## 基于画面的诊断：给被拒的静帧归类，别靠猜（Vision-Grounded Diagnosis — Classify the Rejected Still, Don't Guess）
 
-**Mapping table — visible evidence → failure category:**
+用户要求诊断一个被拒的输出时，拿可见的画面对照预定的镜头和它的参考。说明观察到的缺陷和任何不确定之处；用这些证据选择下一个修复。
 
-| Vision observes | Failure category |
+**范围（v1）：只限静帧**：一张图，或用户从视频里挑的一帧有代表性的画面。整段片段的运动失败（帧率漂移、时间去重、多重运动）不在这里的范围；它们需要逐帧复看（`higgsfield-seedance-failure-modes.md`），不是单帧归类。
+
+**流程：**
+
+1. **拿到画面。**本地图像 → 直接读取。网页 URL → `media_import_url`（绝不直接传原始 URL）。输出不会自动保存，所以拿到画面是一个明确的步骤。
+2. **按下表给可见缺陷归类。**用一行描述证据，包括它出现在画面的哪个位置。
+3. **不确定的情况明确写出。**不要把画面支撑不了的缺陷硬塞进某个类别；时间性的失败要多看几帧。
+4. **从相关诊断表里选一个修复变量**，然后拿下一条素材对照同样的参考和验收标准比较。
+
+**对照表：可见证据 → 失败类别：**
+
+| 画面里看到的 | 失败类别 |
 |---|---|
-| face / identity changed vs reference | `identity-drift` |
-| wardrobe or colour shifted vs reference | `wardrobe-contamination` |
-| extra cuts / unwanted scene breaks | `extra-cuts` |
-| staging or blocking broken | `blocking-broken` |
-| flat / wrong performance | `performance` |
-| wrong camera move | `camera-wrong` |
-| physics or anatomy violation (incl. warped hand) | `physics` |
-| garbled on-screen text | `text-render` |
-| provider content-filter block | `filter-flagged` |
-| bad framing / composition | `composition` |
-| FPS drift, temporal de-dup, or **no clean home** | `other` + evidence note |
+| 脸 / 身份与参考不同 | `identity-drift` |
+| 服装或颜色与参考相比变了 | `wardrobe-contamination` |
+| 多出的切镜 / 不想要的场景中断 | `extra-cuts` |
+| 站位或调度乱了 | `blocking-broken` |
+| 表演平淡 / 不对 | `performance` |
+| 运镜不对 | `camera-wrong` |
+| 物理或解剖违背（包括扭曲的手） | `physics` |
+| 画面文字乱码 | `text-render` |
+| 平台内容过滤拦截 | `filter-flagged` |
+| 构图 / 取景不好 | `composition` |
+| 帧率漂移、时间去重，或**无处可归** | `other` + 证据说明 |
+
+结论按 [统一验收总表](production-checks.md#统一调用与验收总表) 的四态记录；未生成写“未生成，视觉未验收”。
 
 ---
 
-## Related skills
-- `higgsfield-prompt` — MCSLA formula, prompt structure, Identity/Motion separation
-- `higgsfield-models` — Model selection (wrong model = many quality issues)
-- `higgsfield-audio` — Audio-specific failures and fixes
-- `higgsfield-cinema` — Cinema Studio–specific issues (512 char limit, @ Element bugs)
-- `higgsfield-pipeline` — Continuation & Extension Handoff mechanics (workflow side of the Sequence & Continuation Failure Atlas)
-- `negative-constraints.md` — Prevention-focused constraint reference
+## 相关模块（Related skills）
+- `higgsfield-prompt`：MCSLA 公式、提示词结构、身份与动作分离
+- `higgsfield-models`：模型选择（选错模型 = 很多质量问题）
+- `higgsfield-audio`：音频相关的失败和修法
+- `negative-constraints.md`：以预防为主的约束参考

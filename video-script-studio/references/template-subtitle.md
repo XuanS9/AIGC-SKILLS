@@ -1,21 +1,12 @@
-# Template: Subtitle Text Overlay
+# 模板：字幕文字叠加
 
-Paste-ready Seedance text-overlay template for subtitles — spoken-line
-text synchronized to dialogue audio. Use for foreign-language scenes,
-accessibility subtitles, dialogue-prominent moments.
+可直接粘贴的 Seedance 字幕叠加模板：与对白音频同步的台词文字。用于外语场景、无障碍字幕、对白突出的时刻。仅在用户明确要求字幕时使用；默认视频无字幕、`[保持一致]` 写“无字幕、无水印”。
 
-## Timing within the video
+## 在视频中的时间安排
 
-Use [shared narrative planning](narrative-planning.md) for the parent
-video's eight semantic layers: assets, goal, global audiovisual/space, behavior, stages,
-continuity, final frame, constraints. This helper retains its short subtitle instruction.
-Identify spoken lines and semantic boundaries first, then time captions to actual speech
-and reading needs; no preset caption/stage count or equal-time split. Preserve verbatim
-dialogue and existing source timing. Caption boundaries do not require camera cuts.
-Carry speaker attribution across cuts and specify the last caption's clearing/hold state;
-check audio sync and legibility on the rendered result.
+用 [共享叙事规划](narrative-planning.md) 规划所属视频的八个语义层：资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面、约束。本页保留简短的字幕指令。先找出说出的台词和语义边界，再按实际说话和阅读需要给字幕定时；不预设字幕数或阶段数，不平均分时。逐字保留对白和已有的源时间线。字幕边界不要求切镜。跨切镜保持说话人归属，并写明最后一条字幕是消失还是停留；在渲染结果上检查音画同步和可读性。
 
-## Prompt template
+## 提示词模板
 
 ```
 Display clean subtitles at the bottom-center of the frame. The
@@ -24,26 +15,18 @@ the spoken line, using simple white sans-serif text with a subtle
 black shadow for readability.
 ```
 
-## Field fills
+## 字段填写
 
-- **`[TEXT]`** — the spoken line, verbatim. One subtitle per line of
-  dialogue; multi-line dialogue uses multiple subtitle prompts cut by
-  timestamp.
+- **`[TEXT]`**：逐字写出说出的台词。每句对白一条字幕；多句对白用多条字幕提示，按时间码切开。
 
-## Why these defaults
+## 为什么用这些默认值
 
-- **Bottom-center** is the convention viewers parse fastest.
-- **White sans-serif with black shadow** is the readability default
-  for video subtitles across lighting conditions — light backgrounds
-  read against the shadow; dark backgrounds read against the white.
-- **Synchronized to the spoken line** matches the timing the user
-  expects; offset subtitles read as a different speaker.
+- **底部居中**是观众解读最快的惯例位置。
+- **白色无衬线字加黑色阴影**是各种光线下视频字幕的可读性默认：亮背景靠阴影读出，暗背景靠白字读出。
+- **与台词同步**符合用户预期的时机；错位的字幕会被读成另一个人在说。
 
-Customize only when the scene's design system requires it (period
-piece with handwritten subtitle style; on-screen text already at
-bottom-center forcing the subtitle to upper-third; etc.).
+只有场景的设计体系要求时才改（比如年代戏用手写字幕风格；底部居中已有画面文字，迫使字幕移到上三分之一等）。
 
-## See also
+## 另见
 
-- `template-speech-bubble.md` (sibling template) — for character-attributed
-  dialogue text inside the frame
+- `template-speech-bubble.md`（同类模板）：画面内归属于角色的对白文字

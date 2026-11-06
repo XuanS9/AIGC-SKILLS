@@ -1,128 +1,80 @@
-# Hell Grind — the Feature-Film Pipeline
+# Hell Grind：长片制作流程（Hell Grind — the Feature-Film Pipeline）
 
-`[OFFICIAL — Higgsfield "Hell Grind" open-source brief]` — Higgsfield open-sourced the
-production system behind their **95-minute AI feature film**, including the CINEDANCE prompt
-skill it ships with. This file is the part of that system the repo did not already have.
+`[OFFICIAL — Higgsfield "Hell Grind" open-source brief]`：Higgsfield 开源了他们 **95 分钟 AI 长片**背后的制作系统，包括随附的 CINEDANCE 提示词技能。本文件是那个系统里本仓库原本没有的部分。本文件属于 Seedance 2.0 历史资料；其中被工作室采纳的规则（第一秒定位、对白只放音频块、无头全身格）已写进当前模块，见各处说明。
 
-**What this file is not.** The CINEDANCE prompt doctrine — block scaffold, FOV degrees,
-optics decision tree, positive locks, cut vocabulary, context isolation, tag naming — is
-already the `[OFFICIAL]` doctrine in `higgsfield-seedance.md` § Official Prompt Architecture, harvested
-from the same source family. It is not restated here. Neither are the engine rules
-(`higgsfield-seedance-engine-rules.md`) or the tutorial patterns (`higgsfield-seedance-production-patterns.md`).
+**本文件不是什么。**CINEDANCE 的提示词方法（块骨架、视场角度数、光学决策树、正向锁定、切镜词汇、上下文隔离、标签命名）已经是 `higgsfield-seedance.md` § Official Prompt Architecture 里的 `[OFFICIAL]` 方法，采集自同一来源系列。这里不重复。引擎规则（`higgsfield-seedance-engine-rules.md`）和教程模式（`higgsfield-seedance-production-patterns.md`）也不重复。
 
-What *is* here is the layer above the prompt: how the assets are built before anything is
-generated, how a scene's geography is locked across every shot in it, how dialogue is
-constructed, and how the iteration loop is run so a shot converges instead of burning
-credits. Every rule in the source brief exists because a shot failed without it.
+这里*有*的是提示词之上的那一层：生成任何东西之前资产怎么构建，一场戏的地理怎么在它的每个镜头里锁定，对白怎么构建，以及迭代循环怎么跑，让一个镜头收敛而不是烧额度。来源说明里的每一条规则都存在，是因为某个镜头没有它就失败了。
 
-> **Read with:** `higgsfield-seedance.md` (the prompt grammar), `higgsfield-seedance-engine-rules.md` (the hard constraints),
-> `higgsfield-acting.md` (the performance layer this pipeline assumes), and
-> `template-global-style-prefix.md` (the Style Prefix this pipeline glues to
-> every prompt).
+> **配合阅读：**`higgsfield-seedance.md`（提示词语法）、`higgsfield-seedance-engine-rules.md`（硬约束）、`higgsfield-acting.md`（这个流程默认的表演层），以及 `template-global-style-prefix.md`（这个流程粘到每条提示词上的风格前缀）。
 
 ---
 
-## The core problem: the model has no memory
+## 核心问题：模型没有记忆（The core problem: the model has no memory）
 
-A video model remembers nothing between generations. If a character is not fully described
-in *every* prompt, the next shot gives them a different face and a different jacket. Every
-technique below is a consequence of that single fact.
+视频模型在两次生成之间什么都不记得。如果一个角色没有在*每一条*提示词里被完整描述，下一个镜头就会给他一张不同的脸和一件不同的夹克。下面每一项技法都是这个事实的推论。
 
-**Describe everything, every time.** The descriptor goes into every prompt **word for word,
-never shortened.** Consistency is not a setting; it is repetition.
+**每次都描述一切。**描述词**一字不差地**进入每条提示词，**绝不缩短**。一致性不是一个设置；它是重复。
 
 ---
 
-## Pre-production: assets
+## 前期：资产（Pre-production: assets）
 
-An **asset** is a pair: **text + image**. The text is a full description — the *descriptor* —
-that is pasted verbatim into every prompt. The image is the reference the model anchors to.
-Neither works alone.
+**资产**是一对东西：**文字 + 图像**。文字是完整的描述（*描述词*），一字不差地粘进每条提示词。图像是模型锚定的参考。两者单独都不起作用。
 
-References are **assets only**: characters and locations. Everything else is prompt text.
+参考**只用于资产**：角色和场景。其他一切都是提示词文字。
 
-### The character sheet is three images — and one of them has no head
+### 角色设定表是三张图，其中一张没有头（The character sheet is three images — and one of them has no head）
 
-| Panel | Content |
+| 格 | 内容 |
 |---|---|
-| 1 | Close-up of the face |
-| 2 | Full body, front — **headless** |
-| 3 | Full body, back |
+| 1 | 脸部近景 |
+| 2 | 全身正面：**无头** |
+| 3 | 全身背面 |
 
-**Why the front figure loses its head.** On wide shots the model kept sourcing the face from
-the small full-body figure on the sheet, where the face is tiny and blurry. Remove that head
-and the model has exactly one place to take the face from: the close-up. This sounds absurd
-and it fixed a whole class of broken shots.
+**为什么正面的人形没有头。**在远景里，模型总是从设定表上那个小的全身人形取脸，而那里的脸又小又糊。去掉那个头，模型就只有一个地方可以取脸：近景。这听起来很荒唐，但它修好了一整类坏镜头。
 
-**Keep the sheet deliberately boring.** Neutral grey background, flat light, real skin with
-visible pores, no retouch. The cinema look lives in the locations and the video prompts — bake
-film grain and a cinematic lens into the sheet and the character carries that look into every
-scene and stops reacting to new light.
+**刻意让设定表保持无聊。**中性灰背景、平光、看得见毛孔的真实皮肤、不修图。电影感在场景和视频提示词里：把胶片颗粒和电影镜头烤进设定表，角色就会把那种画面带进每一场戏，并且不再对新的光做出反应。
 
-**Sheets read best with a large portrait in 3/4 view** — face turned slightly, not straight-on.
+**设定表用一张 3/4 角度的大肖像效果最好**：脸微微转开，不是正对。
 
-> Complements `higgsfield-soul.md` § Character Sheet Creation (the Soul-ID route to
-> the same goal). The headless front panel and the boring-on-purpose rule are
-> the Hell Grind additions.
+> 补充工作室的 [角色资产交付规范](template-character-asset-delivery.md)。无头的正面格和刻意无聊的规则是 Hell Grind 的补充；工作室组板的背景按服装明度选浅暖白灰或中灰。
 
-### Point changes go on with masks, never with a second full pass
+### 局部修改用遮罩加上去，绝不再完整跑一遍（Point changes go on with masks, never with a second full pass）
 
-Clothes, scars, and blood are **point changes**. Make the change on the original sheet in Nano
-Banana Pro or Seedream, then bring it back onto the original **by hand, with a mask** in any
-graphics editor: the mask places only the changed part — the jacket, the scar, the blood — on
-top of the original, and everything else stays untouched.
+衣服、伤疤和血是**局部修改**。在 Nano Banana Pro 或 Seedream 里对原设定表做修改，然后在任何图形编辑器里**手工用遮罩**把它放回原图上：遮罩只把改动的部分（夹克、伤疤、血）放在原图上面，其他一切保持不动。
 
-**The rule that protects quality: an image never runs through a model twice in full.** Every
-extra pass destroys texture and drifts color. After two passes the face turns symmetrical,
-plastic, and lifeless — and that dead texture later damages the character's *acting* in video.
-The model makes the point edit; the final is always assembled with masks on top of the
-original.
+**保护质量的规则：一张图绝不完整地经过模型两次。**每多一遍都会破坏质感、让颜色漂移。两遍之后，脸会变得对称、塑料、没有生气：而那种死掉的质感之后会损害角色在视频里的*表演*。模型做局部编辑；最终版永远是在原图上用遮罩组装出来的。
 
-### The voice is not an asset — it is a locked descriptor
+### 音色不是资产：它是一个锁定的描述词（The voice is not an asset — it is a locked descriptor）
 
-Actual speaker/reference support depends on the selected model and mode, not an inferred fixed voice count. Studio character/video drafts do not carry timbre, register, resonance or accent descriptors, nor copy a fixed Voice field on every appearance. Write current delivery inline: breath, pace, loudness, pauses and strain. Actual provided audio references or IDs remain input mappings, not invented descriptions.
+实际的说话人/参考支持取决于所选模式，而不是推断出来的固定音色数量。工作室角色资产可以在图像提示词之外带一份登记的音色描述（音色、音域、共鸣、口音），视频稿可以在 `[角色]` 里为说话的角色引用它。当前交付仍然在行内写：气息、语速、音量、停顿和用力。实际提供的音频参考或 ID 优先于文字描述。
 
 ```
 Delivery: short measured phrases, quieter when pressing the partner.
 ```
 
-Inspect actual audio matching between generations when available. Text wording alone does not prove stable generated speech.
+有条件时，在两次生成之间检查实际的音频匹配。光靠文字措辞不能证明生成的语音稳定。
 
-### The acting is locked the same way as the look and the voice
+### 表演和外观、音色一样锁定（The acting is locked the same way as the look and the voice）
 
-Every character gets one behavior paragraph written before any shooting — movement, hands,
-habits, nervous gestures, eye behavior, and exactly how they break under pressure. That
-paragraph is the source of truth; each scene adapts it to the moment's posture and action,
-but the core never changes.
+每个角色在开拍之前都有一段写好的行为段落：动作、手、习惯、紧张时的小动作、眼神，以及在压力下究竟怎么崩。这一段是真相来源；每场戏按当时的姿态和动作改写它，但核心永远不变。
 
-**A behavior that is physically impossible in a scene is transferred, not deleted.** A
-character who paces the room, sat down on a sofa, does not calm down — the same energy moves
-into swaying, finger-tapping, and jagged gestures.
+**一场戏里身体上做不到的行为是转移，而不是删除。**一个会在房间里踱步的角色，坐到沙发上并不会平静下来：同样的能量转移到摇晃、敲手指和不连贯的手势上。
 
-Full system: `higgsfield-acting.md`.
+完整系统：`higgsfield-acting.md`。
 
-### Location sheets
+### 场景设定表（Location sheets）
 
-- **Shoot the location sheet in 3/4, not frontal.** A frontal "pretty picture" becomes flat
-  wallpaper on wides, and past its edges the model invents new surroundings every time. A 3/4
-  view gives the model depth to read — it places characters correctly and covers close to a
-  full circle of angles.
-- **Leave an anchor in every location** — a column, a lamp, a sofa — and tie the staging to it.
-  "The character at the lamp, facing the door" works. "The character in the room" is a lottery.
-- **Keep one light logic**: one source, one direction of shadows, never two suns. Otherwise
-  every new angle re-invents the lighting.
-- **Reverse angles, route 1:** generate a corner of the same room in GPT Image 2 or Nano
-  Banana, matching the soft focus of the original.
-- **Reverse angles, route 2** (found late in production): generate a **video of the empty
-  location** where the camera slowly walks through the space — Seedance draws the other sides
-  consistently with the sheet. Screenshot the angle you need, take it to Seedream or Nano
-  Banana Pro, and prompt a texture/lighting improvement. A full location sheet out of a single
-  image.
+- **场景设定表拍 3/4 角度，不拍正面。**正面的“漂亮图”在远景里会变成平的墙纸，而在它的边缘之外，模型每次都会编出新的周边环境。3/4 视角给模型可以读的纵深：它能正确摆放角色，并覆盖接近一整圈的角度。
+- **每个场景都留一个锚点**：一根柱子、一盏灯、一张沙发：并把站位绑在它上面。“角色在灯旁，面朝门”有效。“角色在房间里”是抽奖。
+- **保持一套光照逻辑**：一个光源、一个阴影方向，绝不两个太阳。否则每个新角度都会重新发明光照。
+- **反打角度，路线 1：**在 GPT Image 2 或 Nano Banana 里生成同一个房间的一个角落，匹配原图的柔焦。
+- **反打角度，路线 2**（制作后期才发现）：生成一段**空场景的视频**，镜头在空间里慢慢走一遍：Seedance 会按设定表一致地画出其他几面。截下你需要的角度，拿到 Seedream 或 Nano Banana Pro 里，提示一次质感/光照改进。一张图就得到一整套场景设定表。
 
-### Name the role of every reference — and ban location inheritance
+### 写明每张参考的职责，并禁止场景继承（Name the role of every reference — and ban location inheritance）
 
-The model decides for itself if you do not, and it decides wrong: it copies the composition
-instead of the face, or the face instead of the color palette.
+你不写，模型就自己决定，而且会决定错：它复制构图而不是脸，或者复制脸而不是色板。
 
 ```
 @roco for character reference
@@ -132,26 +84,17 @@ black rock walls. Do not use as a starting frame, do not inherit the composition
 or the grade.
 ```
 
-**Location references get an explicit ban on inheritance.** This is the Environment role in
-`higgsfield-seedance.md` § Reference Roles, stated in the model's own working vocabulary.
+**场景参考要明确禁止继承。**这就是 `higgsfield-seedance.md` § Reference Roles 里的环境职责，用模型自己的工作词汇说出来。
 
-**One dictionary of names for the whole project.** All assets live under tags — `@roco`,
-`@loc_cave_front` — and the same tags are used everywhere: in documents, in prompts, in the
-interface.
+**整个项目一本名字词典。**所有资产都放在标签下（`@roco`、`@loc_cave_front`），同样的标签到处使用：文档里、提示词里、界面里。（工作室项目的调用名是 `@` + 纯中文名，以资产总表为准。）
 
 ---
 
-## The GEO SPATIAL LAYOUT block
+## GEO SPATIAL LAYOUT 块（The GEO SPATIAL LAYOUT block）
 
-**The most expensive problem in early takes:** characters teleport, swap places, and the
-camera jumps to the wrong side. The reason is simple — the model does not remember who stood
-where in the previous shot.
+**早期素材里最贵的问题：**角色瞬移、互换位置，镜头跳到错的一边。原因很简单：模型不记得上一个镜头里谁站在哪里。
 
-The cure is a **floor plan of the place in a few lines**: landmark objects, what is on the
-right, what is on the left, where the camera stands. **No characters, no action — only the
-place itself.** Write it once per scene and paste it into every shot of that scene *without
-changes*. The model gets the same room in every shot, and there is nowhere left to lose the
-people.
+解药是**用几行写出这个地方的平面图**：地标物件、右边是什么、左边是什么、摄影机站在哪里。**没有角色，没有动作：只有地方本身。**每场戏写一次，*不加改动地*粘进那场戏的每个镜头。模型在每个镜头里得到同一个房间，就没有地方再把人弄丢。
 
 ```
 GEO SPATIAL LAYOUT (locked across every shot — pure spatial map):
@@ -163,41 +106,27 @@ GEO SPATIAL LAYOUT (locked across every shot — pure spatial map):
   silhouettes from camera's perspective.
 ```
 
-Rules for reading and writing the map:
+读写这张地图的规则：
 
-- **GEO is only the map.** The *look* of the place still comes from the location asset — its
-  descriptor and reference go into the prompt next to the map.
-- **Sides exist only from the camera.** "frame-left" and "frame-right" — the model does not
-  understand "to the left of the character."
-- **Positions are set from landmarks and in metres** — "at the altar", "three metres away".
-- **State which side the camera stands on and which line it never crosses.** This keeps every
-  cut on one axis.
-- **After every cut, name again who stands where and where they look.** The model does not
-  remember the previous shot.
-- **Give a static dialogue a corner of the room, not the whole room.** The less space the
-  model has, the less choice it has about where to put the characters.
+- **GEO 只是地图。**地方的*样子*仍然来自场景资产：它的描述词和参考和地图并排放进提示词。
+- **左右只以摄影机为准。**“画面左”和“画面右”：模型不懂“在角色的左边”。
+- **位置从地标出发、用米来定**：“在祭坛旁”、“三米远”。
+- **写明摄影机站在哪一侧、永远不越过哪条线。**这让每次切镜保持在一条轴线上。
+- **每次切镜之后，重新说明谁站在哪里、看向哪里。**模型不记得上一个镜头。
+- **静态对白给房间的一个角落，而不是整个房间。**模型拥有的空间越少，它在把角色放在哪里这件事上的选择就越少。
 
-> **Relationship to the Spatial Layout Block** (`higgsfield-seedance.md` § Spatial Layout Block): that block
-> is per-shot and *includes the people* — screen position, occupancy, orientation, contact
-> points. GEO is per-**scene**, excludes the people, and is pasted unchanged across every shot
-> in the scene. Use both: GEO fixes the room, the Spatial Layout Block fixes who is standing
-> in it this shot.
+> **与空间布局块的关系**（`higgsfield-seedance.md` § Spatial Layout Block）：那个块是逐镜头的，并且*包括人*：画面位置、占比、朝向、接触点。GEO 是逐**场**的，不包括人，并且原封不动地粘进这场戏的每个镜头。两个都用：GEO 固定房间，空间布局块固定这个镜头里谁站在里面。工作室格式里，房间地理写进场景资产和 `[保持一致]`，人物位置写进第一段定位秒的 `画面：` 行（见 [空间布局](spatial-layout.md)）。
 
 ---
 
-## The first second is always a wide
+## 第一秒永远是远景（The first second is always a wide）
 
-One second at the start of a scene, **no lines and no action**: the model "photographs" the
-arrangement — who stands where, what lies where, where the light comes from — and holds it
-through every following shot. Remove that second and characters start swapping places.
+一场戏开头的一秒，**没有台词、没有动作**：模型“拍下”这个布置（谁站在哪里、什么东西在哪里、光从哪里来），并在后面的每个镜头里保持它。去掉这一秒，角色就开始互换位置。
 
-Two refinements from production:
+制作中的两个改进：
 
-- **The "hm" trick.** Have someone say one short word — "hm" — during that second. It makes it
-  easier for Seedance to treat the wide as a separate shot.
-- **The wide does not have to be silent.** If the shot answers the previous one, feed the
-  **tail of the previous clip's line** into that first second — the actor then answers the
-  right thing in the right tone, and the two clips glue at the seam.
+- **“hm”技巧。**让某人在那一秒里说一个短词：“hm”。这让 Seedance 更容易把那个远景当作一个独立的镜头。
+- **远景不一定要安静。**如果这个镜头是在回应上一个，把**上一段片子台词的尾巴**喂进第一秒：演员就会用对的语气回应对的内容，两段片子在接缝处粘起来。
 
 ```
 FIRST FRAME AND SPATIAL BLOCKING
@@ -213,46 +142,42 @@ ACTION TIMING
 1.0s onward — ROCO answers into the same rhythm, dry and worn: "You're late."
 ```
 
-> This is a *deliberate exception* to the Non-Empty Opening Frame pattern in
-> `higgsfield-seedance-production-patterns.md`, not a contradiction of it. That rule bans an **empty** opening
-> frame — a frame with nobody in it while the model "arrives". The Hell Grind wide is
-> **fully populated from frame one**; what it withholds is *action*, for exactly one second,
-> to buy positional lock across the whole scene.
+> 工作室采纳了这条规则：每个 Clip 有 `恰好 N≥1 人` 时，`[声音]` 必须有一行 `0s-<第一段结束>s｜<名字>轻声：{Hm.}`，由 `director_contract_lint.py` 检查（格式归属：[跨类型导演模板](template-general-director-2-5.md)）。
+>
+> 这是 `higgsfield-seedance-production-patterns.md` 里“开场画面不空”模式的*刻意例外*，而不是和它矛盾。那条规则禁止的是**空的**开场画面：模型“到场”时画面里没有人。Hell Grind 的远景**从第一帧起就站满了人**；它扣住的是*动作*，只扣一秒，换来整场戏的位置锁定。
 
 ---
 
-## The character-count header
+## 角色数量头（The character-count header）
 
-The SCENE CONTEXT block opens with a count header, not a description:
+SCENE CONTEXT 块用一个数量头开场，而不是一段描述：
 
 ```
 EXACT 3 CHARACTERS — NO DUPLICATES: ROCO, JAX, REIN.
 ```
 
-**This is not a formality.** The model loves to add extra people and to clone furniture. Only
-those whose references are in the prompt exist in the frame — and repeated set dressing gets a
-direct ban with a count:
+**这不是形式。**模型喜欢加多余的人，也喜欢克隆家具。只有参考在提示词里的人才存在于画面里：重复的布景陈设要直接加一句带数量的禁止：
 
 ```
 Exactly ONE mannequin, NEVER render a second one.
 FIVE smashed mannequins, never re-rendered as intact, never multiplied. Two trays, never more.
 ```
 
-Counted objects belong in POSITIVE LOCKS, phrased as what **is** in the frame.
+计数的物件属于 POSITIVE LOCKS，写成画面里**有**什么。（工作室格式的对应写法是 `[角色]` 块的 `恰好 N 人`，以及 `[保持一致]` 里的物件数量。）
 
 ---
 
-## Two extra blocks in the skeleton
+## 骨架里多出的两个块（Two extra blocks in the skeleton）
 
-The Hell Grind skeleton is `higgsfield-seedance.md` § Block order plus three blocks it names explicitly:
+Hell Grind 的骨架是 `higgsfield-seedance.md` § Block order，加上它明确点名的三个块：
 
-| Block | Contents |
+| 块 | 内容 |
 |---|---|
-| **CHARACTER ACTING** | Per character: emotional state · what they want in this moment · what they are hiding · dominant body rhythm · visible habits in this beat · what changes across the shot |
-| **STYLE** | The Style Prefix, pasted word for word (`template-global-style-prefix.md`) |
-| **QUALITY** | Detail and stability requirements — "8K detail, pore-level skin, no jitter, no flicker; the faces stay exactly their references at every distance" |
+| **CHARACTER ACTING** | 每个角色：情绪状态 · 此刻想要什么 · 在隐藏什么 · 主导的身体节奏 · 这个节拍里可见的习惯 · 镜头过程中什么在变 |
+| **STYLE** | 风格前缀，一字不差地粘贴（`template-global-style-prefix.md`） |
+| **QUALITY** | 细节和稳定性要求：“8K detail, pore-level skin, no jitter, no flicker; the faces stay exactly their references at every distance” |
 
-CHARACTER ACTING is the PERFORMANCE block's production form. Worked example:
+CHARACTER ACTING 是 PERFORMANCE 块的制作形式。示例：
 
 ```
 CHARACTER ACTING
@@ -265,84 +190,53 @@ people second. What changes across the shot: the second the door opens he re-arm
 the exhaustion folds back behind a dry half-smile before he says a word.
 ```
 
-**The closing technical tag tail.** Production prompts end on a short tag row after the Style
-Prefix:
+**收尾的技术标签尾巴。**制作提示词在风格前缀之后以一行短标签结尾：
 
 ```
 Photoreal. NON-IP. 16:9. 12s. SFX only. NO CGI. Cinematic.
 ```
 
-`SFX only. No music.` is treated as mandatory in this pipeline — music belongs to
-post-production, and a generated soundtrack only gets in the way of the edit. (A *project*
-choice, consistent with the harvest corpus's 12-of-13 music ban; see
-`template-global-style-prefix.md` § Field specimens.)
+`SFX only. No music.` 在这个流程里被视为必须：音乐属于后期，生成的配乐只会妨碍剪辑。（这是*项目*的选择，与采集语料里 13 个项目中 12 个禁止音乐一致；见 `template-global-style-prefix.md` § Field specimens。）
 
-> `[HOUSE]` The prefix above is quoted as this production shipped it. When writing a
-> **new** prefix, prefer **`NO BGM`** over `No music` — the production term reads as a
-> hard spec where the bare negation reads as a stylistic preference the model can
-> override. See `higgsfield-audio.md` § Suppressing music.
+> `[HOUSE]` 上面的前缀按这次制作交付的样子引用。写**新**前缀时，优先用 **`NO BGM`** 而不是 `No music`：这个制作术语读作硬性规格，而光秃秃的否定读作模型可以推翻的风格偏好。见 `higgsfield-audio.md` § Suppressing music。
 
 ---
 
-## Wording rules
+## 措辞规则（Wording rules）
 
-- **Present tense. Short sentences.**
-- **The camera is written inside the action**, not as a separate aesthetic paragraph.
-- **Keep each beat light: up to three sentences per beat.** Overload a beat and the model
-  smears it.
-- **Length is not the enemy — an overloaded beat is.** Hell Grind's prompts ran **3,000–4,000
-  words**. This sits at the top of the harvest corpus's register ladder (`higgsfield-seedance.md` § Field
-  calibration) and confirms it: structure replaces the word cap in the block-scaffold regime.
-- **Actions only in positive form.** The model ignores "does NOT fall on his back" — or does
-  the opposite. Write "falls on his stomach."
-- **The character is in frame from the first frame, and never looks into the camera** unless
-  you ask for it.
-- **Never write age, in any language.** The content filter becomes markedly stricter the
-  moment it reads a minor. Give the **role, the clothes, the action** instead. This is the
-  production reason behind engine rule 1 (`higgsfield-seedance-engine-rules.md`) — and it **overrides** the
-  `@TAG:` line's `age + role/build` form in `higgsfield-seedance.md` § Tag naming: write role and build,
-  drop the age.
-- **Keep a ban dictionary** of words the model punishes, and grow it as you find them:
+- **现在时。短句。**
+- **运镜写在动作里**，而不是单独一段美学段落。
+- **每个节拍保持轻：每个节拍最多三句。**节拍过载，模型就会把它抹糊。
+- **长度不是敌人，过载的节拍才是。**Hell Grind 的提示词有 **3,000–4,000 词**。这位于采集语料语域阶梯的顶端（`higgsfield-seedance.md` § Field calibration）并印证了它：在块骨架模式里，结构取代了字数上限。
+- **动作只用正向形式。**模型会忽略“does NOT fall on his back”，或者做反。写“falls on his stomach.”
+- **角色从第一帧起就在画面里，并且不看镜头**，除非你要求。
+- **任何语言都绝不写年龄。**内容过滤器一读到未成年人就会明显变严。改为给出**职责、衣服、动作**。这是引擎规则 1（`higgsfield-seedance-engine-rules.md`）背后的制作原因：而且它**覆盖** `higgsfield-seedance.md` § Tag naming 里 `@TAG:` 行的 `age + role/build` 形式：写职责和体型，去掉年龄。
+- **保留一本禁用词词典**，收录会被模型惩罚的词，发现一个就加一个：
 
-| Instead of | Write |
+| 不写 | 改写 |
 |---|---|
 | dark | low key |
 | jolting | rapid motion |
 
-  Same mechanism as the homograph trap in `higgsfield-seedance.md` § Ambiguous verbs — a word the model
-  reads as something other than what you meant. Log the substitution when you find one, the
-  same way you log a homograph.
+  和 `higgsfield-seedance.md` § Ambiguous verbs 里的同形词陷阱是同一个机制：一个被模型读成别的意思的词。发现一个替换就记下来，和记同形词一样。
 
 ---
 
-## Dialogue construction
+## 对白构建（Dialogue construction）
 
-**A dialogue line in the prompt is always built the same way:**
+**提示词里的一句台词永远用同样的方式构建：**
 
 ```
 The voice and its emotion → the line in quotes → the physical action → the facial reaction
 ```
 
-- **Lines live only in the audio section.** Not one word of speech inside the action block.
-- **Seedance adds its own "uhms", chuckles, and whole phrases**, so the prompt carries a hard
-  block: everyone speaks **only** the line in quotes; whoever has no line stays completely
-  silent; a "half-laugh" written in the action is a facial expression, **with no sound**.
-  `[HOUSE — the rest of this bullet is ours, not the brief's]` "Stays silent" settles the
-  *sound*; the **picture** needs its own fact, so every other visible face also carries a
-  positive at-rest mouth state — "lips at rest", "jaw closed, listening" — an unmarked mouth
-  in frame being one the model may decide is talking. The risk direction is the **short**
-  line: one that ends well before the shot does leaves audio air the model fills with
-  invented mumble (`higgsfield-seedance-failure-modes.md` § Filler-babble on a short dialogue line — measured at
-  ≤6 words on a 4-second shot; the at-rest mouth fact itself is not yet live-fired here).
-- **Write the mix too**: voices clean and close to the microphone, ambience under them,
-  ambience dips when someone speaks.
-- **Rare names get a transcription**, or the model breaks them.
-- **Two seam tricks:** on the wide shots of a dialogue, feed the tail of the previous line into
-  the prompt — it helps the lips and the rhythm; and **open every new generation with the line
-  that closed the previous one**, so the emotion crosses the seam together with the text.
+- **台词只放在音频部分。**动作块里一个说话的字都没有。（工作室格式：台词只作为计时行写进 `[声音]`。）
+- **Seedance 会加它自己的“嗯呃”、轻笑和整句话**，所以提示词要带一条硬性限制：每个人**只**说引号里的那句；没有台词的人保持完全安静；动作里写的“半笑”是一个面部表情，**没有声音**。`[HOUSE — the rest of this bullet is ours, not the brief's]`“保持安静”解决的是*声音*；**画面**需要它自己的事实，所以画面里其他每张可见的脸也要带一个正向的静止嘴部状态（“嘴唇放松”、“下颌闭合，在听”）：画面里没标注的嘴，模型可能会认为它在说话。风险方向是**短**台词：一句远早于镜头结束就说完的台词，会留下模型用编出来的嘀咕填满的音频空白（`higgsfield-seedance-failure-modes.md` § Filler-babble on a short dialogue line：在 4 秒镜头上 ≤6 个词时测到；静止嘴部这条事实本身还没在这里实测过）。
+- **把混音也写上**：人声干净、贴近话筒，环境声在下面，有人说话时环境声压低。
+- **罕见的名字给一个注音**，否则模型会念错。
+- **两个接缝技巧：**在对白的远景上，把上一句台词的尾巴喂进提示词：有助于口型和节奏；以及**每次新的生成都用上一段结尾的那句台词开场**，让情绪和文字一起跨过接缝。
 
-Worked example — the action lives in the timing block, the speech lives in the audio block,
-and the two never mix:
+示例：动作在计时块里，说话在音频块里，两者从不混在一起：
 
 ```
 ACTION TIMING
@@ -365,29 +259,20 @@ expression, with no sound. No music.
 
 ---
 
-## Physics, not adjectives
+## 写物理，不写形容词（Physics, not adjectives）
 
-On emotion words — "sad", "angry", "shocked" — the model improvises and returns something
-shallow. For deeper emotion, describe the **work of muscles and body**: a tremble, a jaw
-clenched with rage and flexing, cheekbones drawn tight, a light exhale through the nose.
+遇到情绪词（“sad”、“angry”、“shocked”），模型会即兴发挥，交回一些浅薄的东西。要更深的情绪，描述**肌肉和身体的工作**：颤抖、因愤怒而咬紧并抽动的下颌、绷紧的颧骨、从鼻子轻轻呼出一口气。
 
-Four additions that live in the timing block:
+放在计时块里的四项补充：
 
-- **INNER (unspoken).** One line of inner monologue per stretch of action — what the character
-  thinks and wants — marked `INNER (unspoken)` so it is never voiced.
-- **Phased blinking.** "one lazy blink → a quick DOUBLE-BLINK → one HARD reset-blink" — the
-  cheapest sign of a living face.
-- **A clear gaze direction, or darting eyes.** Constantly working micro-expressions give the
-  face life; a fixed stare reads dead.
-- **The micro-life rule.** Against frozen faces in static shots: **one visible micro-event
-  every one or two seconds** — the breath lifts the chest, a nostril moves, a brow tenses and
-  relaxes.
+- **INNER (unspoken)。**每段动作写一句内心独白（角色在想什么、想要什么），标为 `INNER (unspoken)`，让它永远不被说出来。
+- **分阶段的眨眼。**“one lazy blink → a quick DOUBLE-BLINK → one HARD reset-blink”：一张活着的脸最便宜的标志。
+- **清楚的视线方向，或者游移的眼睛。**不停工作的微表情给脸生命；固定的凝视读起来是死的。
+- **微生命规则。**对付静态镜头里冻住的脸：**每一到两秒一个可见的微事件**：呼吸抬起胸口、鼻翼动一下、眉头紧一下再松开。
 
-**Describe stillness as held tension, never as a freeze.** Calming phrases like "nobody moves"
-freeze the frame themselves.
+**把静止写成被压住的张力，绝不写成定格。**“nobody moves”这类让人平静的短语本身就会冻住画面。
 
-Worked example — the words "exhausted" and "angry" appear nowhere; the state is built out of
-muscle in the timing and out of intention in the acting block:
+示例：“exhausted”和“angry”这两个词一次都没出现；状态在计时块里由肌肉构建，在表演块里由意图构建：
 
 ```
 ACTION TIMING
@@ -400,57 +285,33 @@ lip and he lets it run; one lazy blink, a quick DOUBLE-BLINK, one HARD reset-bli
 lifts to the door as it opens — the eyes reach the door before the head turns.
 ```
 
-Three more that separate a living shot from a dead one:
+另外三条区分活镜头和死镜头：
 
-1. **The reaction starts before the other line ends.** A listener gets the point mid-sentence
-   and their face already answers. After an important event, give the character a fraction of a
-   second to take it in before speaking.
-2. **Emotion does not switch off instantly.** After a heavy moment the breath is still uneven,
-   the hands still unsteady — that tail carries into the next clip and stitches the cuts.
-3. **Keep the hands busy.** A character does not "have a conversation" — they fix, count, pour,
-   and talk over it. **The strongest accent of a scene is the moment they stop that work**
-   because of what they just heard.
+1. **反应在对方台词结束之前就开始。**听的人在句子中途就明白了，脸已经在回答。重要事件之后，给角色几分之一秒消化，再开口。
+2. **情绪不会瞬间关掉。**沉重的时刻之后，呼吸仍然不匀，手仍然不稳：这条尾巴带进下一段片子，把切点缝起来。
+3. **让手忙着。**角色不是在“进行一场对话”：他们在修、在数、在倒水，一边做一边说。**一场戏最强的重音，是他们因为刚听到的话而停下手里的活的那一刻。**
 
-Muscle-level control beyond this: `higgsfield-facs.md`. The craft layer:
-`higgsfield-acting.md`.
+更细的肌肉级控制：`higgsfield-facs.md`。表演的手艺层：`higgsfield-acting.md`。
 
 ---
 
-## The iteration loop
+## 迭代循环（The iteration loop）
 
-Generate in **batches, scene by scene**.
+**按场批量**生成。
 
-- **Every iteration is surgical: one line changes, everything else stays word for word.** A
-  prompt is a working mechanism — rewrite it fully and you lose the parts that worked.
-- **The ten-to-fifteen rule.** If a shot has not come together in 10–15 iterations, **the
-  problem is not the wording.** Simplify the *shot*: split it in two, remove an action, change
-  the angle.
+- **每次迭代都是外科手术式的：改一行，其他一切一字不动。**一条提示词是一个运转的机制：整个重写，你就丢掉了起作用的部分。
+- **十到十五规则。**一个镜头在 10–15 次迭代里还没成形，**问题就不在措辞。**简化*镜头*：拆成两个、去掉一个动作、换角度。
 
-> Consistent with the iteration economics in `production-benchmarks.md` (65–100
-> generations per kept shot across a project) — the 10–15 rule governs a *single prompt's*
-> convergence before it must be restructured, not the project's total take count.
+> 与 `production-benchmarks.md` 里的迭代经济学一致（整个项目每个留下的镜头 65–100 次生成）：10–15 规则管的是*单条提示词*在必须重构之前的收敛，不是项目的总素材数。
 
 ---
 
-## Solutions born under deadline
+## 赶工期时诞生的办法（Solutions born under deadline）
 
-- **Complex action never sits in the middle of the timing.** A door that would not break — the
-  character shuffled next to it and froze. The fix: **the action opens the prompt** — "he is
-  ALREADY mid-swing, the door ALREADY cracking" — and the approach to the door becomes a
-  separate shot. (The production form of the states-not-transitions rule; see
-  `higgsfield-acting.md` § States, not transitions.)
-- **A crowd is one "character" asset** with a range of heights and clothes. One or two lead
-  extras get their own assets for close-ups. On medium shots, **state the number directly** —
-  "20+" — otherwise the model gives you three people in one take and a hundred in the next.
-  (Pairs with the VARIETY reference pattern in `higgsfield-seedance-production-patterns.md` and the ≤3-tracked-
-  characters engine rule.)
-- **Transitions between two spaces hold on a threshold.** Both location assets in one prompt,
-  and the seam is a doorway with a **light contrast across it** — "a warm amber room, a cold
-  blue corridor beyond the arch." The contrast explains the palette change and forgives small
-  geometry mistakes.
-- **Giants live on scale anchors.** A size comparison in every prompt, **plus a human figure in
-  frame to measure against**. Without both, the model quietly shrinks the giant back toward
-  human height. State the failure condition too:
+- **复杂动作绝不放在计时的中间。**一扇撞不开的门：角色挪到门边就僵住了。修法：**动作作为提示词的开头**：“他已经在挥臂中途，门已经在裂开”：走向门口改成一个单独的镜头。（“写状态不写过渡”规则的制作形式；见 `higgsfield-acting.md` § States, not transitions。工作室格式下，动作在 `{Hm.}` 定位秒之后的第二段开始。）
+- **人群是一个“角色”资产**，有一系列身高和衣服。一两个领头的群演有自己的资产用于近景。中景里**直接写出人数**：“20+”：否则模型这一条给你三个人，下一条给你一百个。（与 `higgsfield-seedance-production-patterns.md` 里的 VARIETY 参考模式，以及“跨切镜追踪 ≤3 个角色”的引擎规则配合。）
+- **两个空间之间的转场停在门槛上。**两个场景资产放在一条提示词里，接缝是一个门口，**两边光照对比**：“暖琥珀色的房间，拱门外冷蓝色的走廊。”对比解释了色板的变化，也原谅了小的几何错误。
+- **巨物靠尺度锚点活着。**每条提示词都写一个尺寸比较，**再加一个画面里可以用来量的人形**。两者缺一，模型就会悄悄把巨物缩回接近人的高度。也写明失败的条件：
 
 ```
 POSITIVE CONSTRAINTS
@@ -462,37 +323,27 @@ feet and his head at once. A guardian that reads as a large man, or fits comfort
 next to a standing human = failed shot.
 ```
 
-  This is the concrete form of the human-height-comparison rule in `higgsfield-seedance.md` § Measurable-
-  language rules — with two additions: the human anchor must be **in the frame**, and the
-  prompt names what a **failed** shot looks like.
+  这是 `higgsfield-seedance.md` § Measurable-language rules 里人身高比较规则的具体形式，另有两点补充：人形锚点必须**在画面里**，并且提示词写明一个**失败**的镜头长什么样。
 
 ---
 
-## The five rules, compressed
+## 五条规则，压缩版（The five rules, compressed）
 
-1. **Assets first.** Do not generate a single shot until every character, location, and prop is
-   locked and stress-tested. This one rule saves more money than everything else combined.
-2. **Describe everything, every time.** The model has no memory. The descriptor goes into every
-   prompt, word for word, never shortened.
-3. **Change one thing at a time.** Rewrite a prompt fully and you lose the parts that worked.
-   One line per iteration; compare the result before changing another variable.
-4. **Give the model less freedom.** A corner instead of a room, an anchor instead of an open
-   space, a map instead of guesswork, one action per shot.
-5. **If a shot will not come together — simplify the shot, not the words.** Split it in two,
-   remove an action, change the angle.
+1. **先做资产。**在每个角色、场景和道具都锁定并经过压力测试之前，一个镜头都不要生成。这一条省下的钱比其他所有加起来都多。
+2. **每次都描述一切。**模型没有记忆。描述词一字不差地进入每条提示词，绝不缩短。
+3. **一次只改一样东西。**整个重写提示词，你就丢掉了起作用的部分。每次迭代改一行；比较结果之后再改另一个变量。
+4. **给模型更少的自由。**一个角落而不是一个房间，一个锚点而不是开阔空间，一张地图而不是猜测，每个镜头一个动作。
+5. **镜头成不了形时，简化镜头，而不是措辞。**拆成两个、去掉一个动作、换角度。
 
-The pipeline does not need fifteen people to work — it needs the rules followed. It scales
-down to a team of one.
+这个流程不需要十五个人才能运转：它需要的是遵守规则。它可以缩到一个人的团队。
 
 ---
 
-## Related
+## 相关（Related）
 
-- `higgsfield-seedance.md` — the prompt grammar this pipeline fills in
-- `higgsfield-seedance-engine-rules.md` — the hard rendering constraints
-- `higgsfield-seedance-production-patterns.md` — tutorial-demonstrated patterns from the same source family
-- `higgsfield-acting.md` — the performance system the CHARACTER ACTING block encodes
-- `higgsfield-soul.md` — Soul ID character sheets and multi-character consistency
-- `higgsfield-shotlist-director.md` — the connected-shotlist form of "one dictionary
-  of names for the whole project"
-- `template-global-style-prefix.md` — the Style Prefix pasted into every prompt
+- `higgsfield-seedance.md`：这个流程填充的提示词语法
+- `higgsfield-seedance-engine-rules.md`：硬性渲染约束
+- `higgsfield-seedance-production-patterns.md`：来自同一来源系列的教程演示模式
+- `higgsfield-acting.md`：CHARACTER ACTING 块编码的表演系统
+- `higgsfield-shotlist-director.md`：“整个项目一本名字词典”的相连分镜表形式
+- `template-global-style-prefix.md`：粘进每条提示词的风格前缀

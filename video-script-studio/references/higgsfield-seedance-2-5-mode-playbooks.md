@@ -1,78 +1,46 @@
-# Seedance 2.5 — Mode Playbooks
+# Seedance 2.5 模式手册（Seedance 2.5 — Mode Playbooks）
 
-Current project generation uses `omni_reference` for image/video/audio inputs. The
-legacy first/last-frame and keyframe recipes below are retained for historical model
-context and must not be selected for this project's video prompts. For edit/extension
-requests, use a source video as a reference when a re-render is acceptable; use native
-edit/extension mode only after checking the user's timeline-preservation needs and
-current platform schema. Do not promise pixel-accurate preservation from a reference.
+> **Studio form（工作室格式）。**下面的英文块骨架是 Higgsfield 的原版模板。工作室提示词用中文块结构，对白作为计时行写进 `[声音]`；格式归属：[跨类型导演模板 §1](template-general-director-2-5.md#1-块结构higgsfield--dreamina-seedance-25-标准)。
 
-The long-form templates for the modes and techniques that `higgsfield-seedance-2-5.md` routes to. Every
-template here is `[OFFICIAL — Dreamina]` (ByteDance's *Seedance 2.5 Prompt Guide* and
-*User Guide*), normalized to this repo's house conventions: positive phrasing, no age
-words, reference roles always paired with exclusions.
+当前项目的生成对图像/视频/音频输入一律用 `omni_reference`。下面旧的首/尾帧和关键帧写法只作为历史模型背景保留，本项目的视频提示词不得选用。编辑/延伸请求：可以接受重新渲染时，把源视频作为参考；只有在核对了用户对保留时间线的要求和当前平台 schema 之后，才用原生的编辑/延伸模式。不要承诺参考能做到像素级保留。
 
-Read [shared narrative planning](narrative-planning.md), then the section the
-task needs. Its eight layers — assets/references, goal, global audiovisual and space,
-behavior/rhythm, stages, continuity, final frame/handoff, constraints — are semantic
-planning. Compile them into each mode's native edit order, extension brief, shot list,
-material sequence, or transition instruction; do not impose eight output headings.
+`higgsfield-seedance-2-5.md` 路由到的各种模式和技法的长模板。这里每个模板都是 `[OFFICIAL — Dreamina]`（字节跳动的 *Seedance 2.5 Prompt Guide* 和 *User Guide*），并按本仓库的约定规范化：正向表述、不用年龄词、参考职责总是配上排除项。
 
-Find necessary events, causal turns, reveals, and state changes before allocating durations.
-A stage need not be a cut or a generation. No preset count or equal-time rule; confirmed
-story, dialogue, ending, source timing obligations, and platform limits remain binding.
-Worked-example times and counts below are illustrative, not mandatory; parameter limits,
-reference limits, and explicit subject-count locks retain their original force.
+先读 [共享叙事规划](narrative-planning.md)，再读任务需要的章节。它的八层（资产/参考、目标、全局视听与空间、行为/节奏、阶段、连续性、结尾画面/交接、约束）是语义规划。把它们编译进每种模式原生的编辑指令、延伸说明、分镜表、素材顺序或转场指令；不要强加八个输出标题。
 
-| Task | Section |
+分配时长之前，先找出必要的事件、因果转折、揭晓和状态变化。一个阶段不一定是一次切镜或一次生成。不预设数量，不平均分时；已确认的故事、对白、结局、源素材的时间义务和平台限制仍然有约束力。下面示例里的时间和数量只是示意；参数限制、参考数量限制和明确的主体数量锁定保持原有效力。
+
+| 任务 | 章节 |
 |---|---|
-| Change something inside an existing video | § Video editing |
-| Add footage after (or before) an existing video | § Video extension |
-| Character/prop/scene images, reference video/audio | `template-omni-reference-2-5.md` (role maps, exclusions, scene stages) |
-| A storyboard grid drives shot order | § Storyboard grids |
-| A 3D previz / white-model drives the shot | § Blockout references |
-| A batch of stills becomes one edited video | § One-click video |
-| Bridge content between two finished clips | § Seamless transitions |
+| 改已有视频里面的某样东西 | § Video editing |
+| 在已有视频之后（或之前）加素材 | § Video extension |
+| 角色/道具/场景图，参考视频/音频 | `template-omni-reference-2-5.md`（职责映射、排除项、场景阶段） |
+| 用分镜网格决定镜头顺序 | § Storyboard grids |
+| 用三维预演 / 白模决定镜头 | § Blockout references |
+| 把一批静帧变成一条剪好的视频 | § One-click video |
+| 在两段完成的片段之间搭桥 | § Seamless transitions |
 
 ---
 
-## Auto-locked parameters
+## 自动锁定的参数（Auto-locked parameters）
 
-Current `omni_reference` generation takes its ratio and duration from the verified
-platform settings; reference image order does not set the opening frame or ratio.
-The frame-anchor row below is retained only as historical model guidance and is not
-a current-project route. Native edit/extension modes have different locks and must
-be verified before a strict source-preserving job.
+当前的 `omni_reference` 生成从核实过的平台设置取画幅和时长；参考图的顺序不决定开场画面或画幅。下面的帧锚点一行只作为历史模型指导保留，不是当前项目的路线。原生的编辑/延伸模式有不同的锁定，在严格保留源素材的任务之前必须核实。
 
-| Task | Aspect ratio | Duration |
+| 任务 | 画幅 | 时长 |
 |---|---|---|
-| Video editing | Locked to the input video's ratio | Locked to ~the input's duration (±~0.3s from frame processing) |
-| First-frame / first-and-last-frame | Locked to the **first image's** ratio (first and last should match, or the last frame stretches) | Settable |
-| Video extension | Locked to the input video's ratio | Settable |
+| 视频编辑 | 锁定为输入视频的画幅 | 锁定为约等于输入的时长（帧处理带来 ±约 0.3 秒） |
+| 首帧 / 首尾帧 | 锁定为**第一张图**的画幅（首尾应一致，否则尾帧会被拉伸） | 可设置 |
+| 视频延伸 | 锁定为输入视频的画幅 | 可设置 |
 
-On the Higgsfield surface, `video_edit` additionally **bills by the source video's
-duration** and ignores the `duration` and `aspect_ratio` parameters entirely
-(`model-specs.json`, snapshot 2026-08-07).
+在 Higgsfield 上，`video_edit` 还**按源视频的时长计费**，并完全忽略 `duration` 和 `aspect_ratio` 参数（`model-specs.json`，快照 2026-08-07）。
 
 ---
 
-## Video editing
+## 视频编辑（Video editing）
 
-> **Check the lane before writing an edit order.** `video_edit` is for a **scoped change
-> inside a master whose timeline must survive untouched** — a wall's light colour from
-> 4–7 s, one prop swapped, the music removed. It ignores `duration`, ignores
-> `aspect_ratio`, and bills by the master's full length. A *footage-transformation* job —
-> replace the subject, inherit the plate's performance frame for frame, keep every other
-> pixel — is the **`omni_reference` v2v lane** instead, where duration is settable and must
-> equal the source (which is why the source has to be ≥ 4 s): `higgsfield-seedance-2-5-vfx-pipeline.md` § Stage 4.
+> **写编辑指令之前先确认通道。**`video_edit` 用于**在一条时间线必须原封不动保留的母片里做限定范围的改动**：4–7 秒墙上的光色、换掉一个道具、去掉音乐。它忽略 `duration`，忽略 `aspect_ratio`，按母片全长计费。*素材变换*任务（替换主体，逐帧继承底片的表演，保留其他每个像素）改走 **`omni_reference` 视频到视频通道**，那里时长可以设置，并且必须等于源素材（这就是为什么源素材必须 ≥ 4 秒）：`higgsfield-seedance-2-5-vfx-pipeline.md` § Stage 4。
 
-Define the source as the **sole editing master**, then state the edit target, the scope, the
-target material, and what must not change. Inspect the source's actual events and use
-source-time coordinates for every edit window. Preserve its timing, cuts, event order,
-action phases, and unaffected start/end states; do not repartition or retime the master
-into newly planned stages. Narrative planning identifies the edit's purpose and causal
-placement within the existing timeline. For v2v transformation, keep the settable runtime
-equal to the source as required by that lane.
+把源素材定义为**唯一的编辑母片**，然后写明编辑目标、范围、目标素材和不能改变的内容。检查源素材的实际事件，每个编辑窗口都用源时间坐标。保留它的时间、切点、事件顺序、动作相位和未受影响的起止状态；不要把母片重新切分或重新定时成新规划的阶段。叙事规划确定这次编辑的目的，以及它在已有时间线里的因果位置。视频到视频变换按那个通道的要求，让可设置的时长等于源素材。
 
 ```
 [Edit Goal]
@@ -94,7 +62,7 @@ Keep <visual content, motion, audio, and timing relationships that must not chan
 Preserve the source duration, cuts, event order, action timing, and unaffected boundary states.
 ```
 
-**Worked example (4–7 seconds is an illustrative source-time window, not a default):**
+**示例（4–7 秒是示意性的源时间窗口，不是默认）：**
 
 ```
 [Edit Goal]
@@ -114,10 +82,9 @@ Keep the character's identity, clothing, expression, position, motion, room stru
 movement, dialogue, and ambience from @Video 1.
 ```
 
-### Subject replacement — the Timeline Inheritance clause
+### 主体替换：时间线继承条款（Subject replacement — the Timeline Inheritance clause）
 
-A replaced object must inherit the original's *timeline*, not just its look. Without this
-clause the new object appears, moves, and exits on its own schedule.
+被替换的物体必须继承原物体的*时间线*，而不只是外观。没有这一条，新物体会按自己的节奏出现、移动和离开。
 
 ```
 [Edit Scope]
@@ -131,10 +98,9 @@ Except for the object or area explicitly modified above, keep all other people, 
 content, camera movements, cuts, and event order from @Video 1 unchanged.
 ```
 
-State the **target count** explicitly ("Keep exactly one white folding desk lamp throughout
-the video") — this is the 2.5 form of the duplicate-object lock.
+明确写出**目标数量**（“Keep exactly one white folding desk lamp throughout the video”）：这是防重复物体锁定在 2.5 里的写法。
 
-### Background replacement — scope by silhouette
+### 背景替换：按轮廓限定范围（Background replacement — scope by silhouette）
 
 ```
 [Target Reference Role]
@@ -149,10 +115,9 @@ facial features, hairstyle, clothing, expression, position, size, or motion>.
 Keep the character actions and occlusion relationships from @Video 1.
 ```
 
-### Audio editing
+### 音频编辑（Audio editing）
 
-Dialogue, spoken language, voice, background music, and sound effects edit independently.
-Name the category, the change, and what stays untouched.
+对白、说话语言、音色、背景音乐和音效可以分别编辑。写出类别、改动和保持不动的部分。
 
 ```
 Edit @Video 1. Remove only the original background music. Keep the character dialogue, lip
@@ -166,10 +131,9 @@ preserving the dialogue content and speaking times. Keep all other character voi
 background music, ambience, and visuals from @Video 1.
 ```
 
-### Written-scope editing (the annotation substitute)
+### 用文字限定范围的编辑（标注的替代）（Written-scope editing (the annotation substitute)）
 
-Dreamina's mark-based editor is not on the Higgsfield surface (`higgsfield-seedance-2-5.md` § Dreamina-Only),
-so precision comes from the sentence instead. The vendor's own written form is:
+Dreamina 基于标记的编辑器不在 Higgsfield 上（`higgsfield-seedance-2-5.md` § Dreamina-Only），所以精度要靠句子来给。厂商自己的文字写法是：
 
 ```
 [Specific modification object / what] + [action and change description] + [effective time range]
@@ -180,28 +144,19 @@ In the first 8 seconds of the video, replace the courier's jeans with dark black
 trousers, and keep that change consistent for the rest of the clip.
 ```
 
-Say whether the change exists for the **whole clip** or only inside a stated window — an
-unscoped edit is where mid-clip reversions come from.
+写明改动是作用于**整段片子**，还是只在一个写明的窗口内：没限定范围的编辑，就是片子中途回退的来源。
 
 ---
 
-## Video extension
+## 视频延伸（Video extension）
 
-**Align the boundary frame before describing any new content.** This is the rule the mode
-lives or dies on. A forward extension's first frame continues from the source's last frame;
-a backward extension's last frame lands *on* the source's first frame.
+**描述任何新内容之前，先对齐边界帧。**这个模式成败全在这条规则上。向后延伸的第一帧接着源素材的最后一帧；向前延伸的最后一帧*落在*源素材的第一帧上。
 
-On the Higgsfield surface this mode requires `extension_mode: forward | backward`, and the
-aspect ratio follows the source.
+在 Higgsfield 上，这个模式需要 `extension_mode: forward | backward`，画幅跟随源素材。
 
-Plan only the added material: establish the required join state, identify preceding or
-following events, then allocate the mode's legal extension duration. Keep the original
-clip's timeline intact. Label extension-local time separately from source and assembled
-film time. For a source of length S and extension of length E, forward local 0 joins source
-S; backward local E joins source 0 (the source begins at assembled time E). Count any
-seam overlap once. Do not divide the combined runtime into equal stages.
+只规划新增的素材：确定需要的接点状态，找出之前或之后的事件，然后分配这个模式合法的延伸时长。保持原片的时间线完整。把延伸段的局部时间和源时间、组装后的成片时间分开标注。源长 S、延伸长 E 时：向后延伸的局部 0 接源的 S；向前延伸的局部 E 接源的 0（源素材从组装时间 E 开始）。接缝重叠只算一次。不要把合并后的时长平均分成阶段。
 
-### Forward extension (after the source)
+### 向后延伸（在源素材之后）（Forward extension (after the source)）
 
 ```
 @Video 1 is the source video to extend forward.
@@ -220,11 +175,9 @@ and keep the person's appearance or the object's number of parts stable.
 End the added segment on <planned final event, visible state, composition, and audio handoff>.
 ```
 
-### Backward extension (before the source)
+### 向前延伸（在源素材之前）（Backward extension (before the source)）
 
-The trap: writing "then connect to the source video". That phrasing lets later elements leak
-into the preceding footage, and lets the image keep drifting after it has already reached the
-target state. Land the source's first frame explicitly, as the extension's end state.
+陷阱：写成“then connect to the source video”。这种写法会让后面的元素漏进前面的素材里，也会让画面在已经到达目标状态之后继续漂移。明确地把源素材的第一帧写成延伸段的结束状态。
 
 ```
 @Video 1 is the source video to extend backward.
@@ -243,44 +196,29 @@ Throughout the extension, maintain continuity in <character identity and clothin
 props>, <background layout>, and <axis of action>.
 ```
 
-### With additional reference materials
+### 带额外的参考素材（With additional reference materials）
 
-Define every new material's role **first**, then state that the source video still controls
-the boundary image. New materials supplement; they never override the boundary.
+**先**定义每个新素材的职责，然后写明源视频仍然控制边界画面。新素材是补充；它们绝不推翻边界。
 
-For a backward extension, additionally say which materials belong to the preceding segment
-and which must appear **only after** the source begins — otherwise later characters, props,
-and effects show up early.
+向前延伸时，还要写明哪些素材属于前面那段，哪些必须**只在**源素材开始之后出现：否则后面的角色、道具和特效会提前出现。
 
 ```
 <Materials that should appear only after the source video begins> must not appear early in
 the backward extension.
 ```
 
-### Extension house rules
+### 延伸的约定（Extension house rules）
 
-- **Boundary frames connect naturally, not identically.** Review both sides of the seam plus
-  the full extended segment before accepting the take.
-- **A cut extension is a different order than a continuous one.** For a continuous extension,
-  ask for natural extension and smooth movement connection with no rigid cut and no objects
-  appearing out of thin air. For a deliberate transition, use the cut-setting formula:
-  `[transition type guide] + [basic constraint requirements] + [cut logic requirements]`,
-  naming shot A, the transition, and shot B.
-- **Extended-segment audio volume may differ slightly** from the source.
-- **Chain economics:** a source within 30s extends by 4–30s per operation — 60 seconds is a
-  single chain's ceiling. Past that, re-anchor from the original references rather than
-  extending an extension.
+- **边界帧要自然衔接，而不是完全相同。**采用之前，检查接缝两侧和整个延伸段。
+- **带切镜的延伸和连续延伸是不同的指令。**连续延伸：要求自然延伸、运动顺滑衔接，不要生硬切镜，不要凭空出现物体。刻意的转场：用切镜设定公式 `[transition type guide] + [basic constraint requirements] + [cut logic requirements]`，写明镜头 A、转场和镜头 B。
+- **延伸段的音量可能和源素材略有不同。**
+- **链条的经济学：**30 秒以内的源素材每次操作延伸 4–30 秒：60 秒是一条链的上限。超过之后，从原始参考重新锚定，而不是延伸一段延伸。
 
 ---
 
-## Storyboard grids
+## 分镜网格（Storyboard grids）
 
-A grid communicates **story, shot order, and approximate composition** — not strict per-panel
-reproduction. Prefer ≤15 panels, clean line art or simple diagrams, minimal text labels.
-Choose panels for event/reveal coverage and spatial readability; this preference is a
-reference-complexity limit, not a target shot count. Preserve a supplied board's order and
-content. Allocate time from each panel's action and response after planning; a panel,
-shot, and narrative stage need not correspond one-to-one.
+网格传达的是**故事、镜头顺序和大致构图**，不是严格的逐格复现。最好 ≤15 格，干净的线稿或简单图示，文字标签尽量少。按事件/揭示的覆盖和空间可读性选格；这个偏好是参考复杂度的限制，不是目标镜头数。保留用户提供的分镜板的顺序和内容。规划之后按每格的动作和反应分配时间；格、镜头和叙事阶段不必一一对应。
 
 ```
 @Image 1 provides an <N-panel storyboard grid> for shot order and approximate composition.
@@ -298,66 +236,45 @@ The final video uses <visual style>. Audio includes <dialogue, ambience, action 
 or music>.
 ```
 
-State the reading order explicitly, and state what to **ignore** from the grid itself — the
-line-art style and placeholder figures are the two things that leak.
+明确写出阅读顺序，并写明要**忽略**网格本身的什么：线稿风格和占位人形是两样会串进去的东西。
 
-When the board is monochrome and the film is not, say so in its own sentence: *"Do not
-render in pencil, ink, or monochrome — the board's drawing style is not the film's
-style."* The generic exclusion covers borders and labels; it does not stop the board's
-*medium* from being read as the film's look, and the failure is unmistakable — the render
-comes back gray and sketchy. `[EMPIRICAL — third-party Seedance 2.5 field skill,
-2026-08-09 evaluation; vendor-consistent]`
+分镜板是单色而成片不是时，单独用一句话说明：*“Do not render in pencil, ink, or monochrome — the board's drawing style is not the film's style.”* 通用的排除项覆盖边框和标签；它挡不住分镜板的*媒介*被读成成片的画面，而这种失败一眼就能认出：渲染出来是灰色的、草图感的。工作室中文稿把这句转成正向：“分镜板只提供镜头顺序和大致构图，成片按项目美术设定渲染。”`[EMPIRICAL — third-party Seedance 2.5 field skill, 2026-08-09 evaluation; vendor-consistent]`
 
-### Panel-to-timestamp mapping — the optional adherence raiser
+### 画格到时间码的映射：可选的遵循度提升（Panel-to-timestamp mapping — the optional adherence raiser）
 
-`[MEASURED — 2026-08-09 A/B, (2.5, Ark), 480p, one pair]` Adding an explicit
-panel→time mapping to the grid's role line changes *when* the cuts land, not whether
-the shots come in order. The three panels and timestamps below are illustrative values
-from that experiment, not mandatory counts or time allocations:
+`[MEASURED — 2026-08-09 A/B, (2.5, Ark), 480p, one pair]` 在网格的职责行里加一个明确的画格→时间映射，改变的是切镜*何时*落下，而不是镜头是否按顺序出现。下面的三格和时间码是那次实验的示意值，不是必须的数量或时间分配：
 
 ```
 Panel 1 (left) is 0-1.5s, panel 2 (middle) is 1.5-2.5s, panel 3 (right) is 2.5-4s.
 Do not reorder the shots. Do not invent shots that are not on the board.
 ```
 
-What the A/B showed on a clean 3-panel board: **order was followed in both arms** —
-order alone doesn't need the mapping. The mapping arm's cuts landed on the declared
-stamps and each panel's contents stayed in its own shot; the unmapped arm chose its own
-pacing (the middle shot swallowed half the runtime) and let a shot-3 prop leak into
-shot 1. Use the mapping when the *time budget* per panel matters or when props/actors
-must not bleed across panels.
+A/B 在一张干净的三格分镜板上显示：**两臂都遵守了顺序**：只要顺序就不需要映射。有映射的那一臂，切镜落在声明的时间点上，每格的内容留在自己的镜头里；没有映射的那一臂自己选节奏（中间那个镜头吃掉了一半时长），还让镜头 3 的一个道具漏进了镜头 1。每格的*时间预算*重要，或者道具/演员不能跨格串时，用映射。
 
-Two boundaries hold: the vendor disclaims strict storyboard alignment — the grid stays
-a "high-level plot reference", and the mapping raises adherence rather than
-guaranteeing it (timestamps allocate a budget; they are not frame-accurate edit
-points). When true per-panel strictness is required, that is the **multi-keyframe
-channel** (`higgsfield-seedance-2-5.md` § First/last frame and multi-keyframe control), not a grid.
-Slot position, by contrast, is not worth fighting over: the same A/B day measured
-board-first vs board-last with identical order adherence — upload order is a
-tie-breaker, not semantics (SD25-PE confirmed).
+两条边界成立：厂商不承诺严格的分镜对齐：网格仍是“高层的情节参考”，映射提高遵循度而不是保证它（时间码分配的是预算；它们不是帧级精确的剪辑点）。需要真正逐格严格时，那是**多关键帧通道**（`higgsfield-seedance-2-5.md` § First/last frame and multi-keyframe control），而不是网格。相比之下，槽位位置不值得争：同一天的 A/B 测了分镜板放第一和放最后，顺序遵循度相同：上传顺序是打破平局的因素，不是语义（SD25-PE 已确认）。
 
 ---
 
-## Blockout references
+## 白模参考（Blockout references）
 
-Decide **coarse vs fine first** — it changes the whole prompt structure.
+**先决定粗模还是精模**：它会改变整个提示词结构。
 
-| Type | Best for | Material needs | Prompt focus |
+| 类型 | 最适合 | 素材要求 | 提示词重点 |
 |---|---|---|---|
-| **Coarse** | Simple geometry previewing action, paths, blocking, camera movement, cuts | Clear shape relationships + a complete action sequence; character/prop/scene images added separately | Map every blockout subject; state which temporal and spatial information to inherit |
-| **Fine** | A complete model needing new materials, colors, characters, scene, or style | Complete, clean model — no path lines, coordinate axes, controllers, or camera frustums | Preserve structure, action, and camera; define what to re-render |
+| **粗模** | 用简单几何预演动作、路径、站位、运镜、切镜 | 清楚的形体关系 + 完整的动作序列；角色/道具/场景图另外添加 | 映射每个白模主体；写明要继承哪些时间和空间信息 |
+| **精模** | 完整的模型，需要新的材质、颜色、角色、场景或风格 | 完整、干净的模型：没有路径线、坐标轴、控制器或摄影机视锥 | 保留结构、动作和运镜；定义要重新渲染什么 |
 
-### Coarse blockout
+### 粗模（Coarse blockout）
 
-What a coarse blockout can carry, and what the prompt must say about each:
+粗模能承载什么，以及提示词对每一项必须说什么：
 
-| Blockout information | State in the prompt |
+| 白模信息 | 在提示词里写明 |
 |---|---|
-| Path | Action trajectory, motion direction, subject blocking, entrance/exit order |
-| Camera movement | Camera position, path, direction, speed changes |
-| Lighting | Light direction, brightness changes, and when they occur |
-| Cuts | Cut positions, and the subject/composition before and after each |
-| Audio | Whether to inherit dialogue, music, ambience, or action SFX |
+| 路径 | 动作轨迹、运动方向、主体站位、入画/出画顺序 |
+| 运镜 | 摄影机位置、路径、方向、速度变化 |
+| 光照 | 光的方向、亮度变化，以及何时发生 |
+| 切镜 | 切点位置，以及每个切点前后的主体/构图 |
+| 音频 | 是否继承对白、音乐、环境声或动作音效 |
 
 ```
 @Video 1 is a coarse blockout reference. It provides only <motion paths, subject blocking,
@@ -374,12 +291,9 @@ The final video uses <characters, scene, materials, and visual style>. Audio inc
 <dialogue, ambience, or action sound effects>.
 ```
 
-**Appendage warning.** Arms, wings, and similar appendages should appear in a coarse blockout
-only when their action sequence is *complete*; a partial appendage sequence renders stiff or
-gets misread structurally. The vendor's own best practice is to leave limbs and wings out of
-the coarse model entirely.
+**附肢警告。**手臂、翅膀和类似的附肢，只有在它们的动作序列*完整*时才应该出现在粗模里；不完整的附肢序列会渲染得僵硬，或者在结构上被误读。厂商自己的最佳做法是在粗模里完全不放四肢和翅膀。
 
-### Fine blockout
+### 精模（Fine blockout）
 
 ```
 @Video 1 is a fine blockout reference. Preserve <subject structure, action, spatial layout,
@@ -393,15 +307,11 @@ Keep <structure, action, camera treatment, and spatial relationships> from @Vide
 Use <materials, colors, and style>. Audio includes <ambience, sound effects, or music>.
 ```
 
-Clean the source first: remove trajectory lines, coordinate axes, controllers, and camera
-frustums, or they render as scene content.
+先清理源素材：去掉轨迹线、坐标轴、控制器和摄影机视锥，否则它们会被渲染成场景内容。
 
-**Segmented render form** — when the render treatment changes partway through:
+**分段渲染写法**：渲染处理在中途改变时：
 
-Choose the boundary at the source event or authorized treatment change, preserving all
-inherited action, camera, cut, and audio timing. Fill `<N>` from that boundary rather than
-splitting the source evenly. The 20–25 second partial-reference window below is illustrative;
-use the actual referenced interval.
+在源事件或经授权的处理改变处选择边界，保留所有继承的动作、运镜、切镜和音频时间。`<N>` 从那个边界填，而不是把源素材平均切开。下面 20–25 秒的部分参考窗口是示意；用实际引用的区间。
 
 ```
 Render the blockout animation of @Video 1 into the final film.
@@ -410,25 +320,17 @@ At <N>s, <transition trigger point and method>: <rendering description of the ne
 Character rendering <remains unchanged / changes with the scene>.
 ```
 
-**Partial-reference discipline.** A blockout used for only part of a clip must say so, or it
-expands into a whole-film reference: "@Video 2 is the action reference for the 20-25 second
-counterattack only; do not use it for other segments, and do not bring its gray scene or
-original texture into the final footage."
+**部分参考的纪律。**只用于片子一部分的白模必须说明这一点，否则它会扩展成整片的参考：“@Video 2 is the action reference for the 20-25 second counterattack only; do not use it for other segments, and do not bring its gray scene or original texture into the final footage.”
 
 ---
 
-## One-click video
+## 一键成片（One-click video）
 
-Turning a batch of images — optionally plus a style-reference video — into one video with
-consistent pacing. **"Turn these materials into a video" is never enough.**
+把一批图片（可选再加一段风格参考视频）变成一条节奏一致的视频。**“把这些素材做成一个视频”永远不够。**
 
-Order: `Material Roles → Image Order → Motion Amount → Editing Style → Visual Treatment → Audio`
+顺序：`Material Roles → Image Order → Motion Amount → Editing Style → Visual Treatment → Audio`
 
-First establish the goal and final image/state. Group materials around events, process
-steps, or reveals, then budget motion, reading time, dialogue, and transitions. Keep
-required image order and relationships; the three image slots below are illustrative,
-not a required count. Give each view the time it needs, carrying product/character state
-and audio into the next; do not assign every image an equal duration by default.
+先确定目标和最终画面/状态。围绕事件、流程步骤或揭示给素材分组，然后为运动、阅读时间、对白和转场做预算。保留要求的图片顺序和关系；下面三个图片槽位是示意，不是必须的数量。给每个画面它需要的时间，把产品/角色状态和音频带进下一个；不要默认给每张图分配相等的时长。
 
 ```
 [Material Roles]
@@ -454,18 +356,15 @@ Use <editing rhythm, transition style, subtitle or graphic treatment, and color 
 Include <dialogue, ambience, sound effects, or music>.
 ```
 
-If image order matters, state the exact sequence — the model will not infer it. If it does
-not, say the model may arrange by theme. With several characters or products, keep naming and
-binding each one separately.
+图片顺序重要时，写明确切的顺序：模型不会推断。不重要时，说明模型可以按主题安排。有多个角色或产品时，继续分别为每一个命名和绑定。
 
 ---
 
-## Seamless transitions
+## 无缝转场（Seamless transitions）
 
-Generates continuous **bridge content** between two videos.
+在两段视频之间生成连续的**桥接内容**。
 
-Order: `Before Video → After Video → Trigger Action → Camera Movement → Visual Transformation
-→ Arrival State → Audio`
+顺序：`Before Video → After Video → Trigger Action → Camera Movement → Visual Transformation → Arrival State → Audio`
 
 ```
 @Video 1 is the before-transition clip. Use its <ending subject, action, composition, camera
@@ -483,89 +382,65 @@ The transition ends naturally at @Video 2's opening composition, preserving cont
 Audio transitions smoothly from <before audio> to <after audio>.
 ```
 
-### Transition methods and what each one needs
+### 转场方法及各自需要什么（Transition methods and what each one needs）
 
-| Method | Specify |
+| 方法 | 需要写明 |
 |---|---|
-| Dive / reverse movement | Camera direction, speed change, when the next scene begins |
-| Character rotation | Pose, rotation direction, how clothing and background change continuously |
-| Foreground occlusion | When the foreground object fills the frame, and the composition that follows |
-| Object morph | Corresponding shapes and materials, and the transformation process |
-| Push / pull or focus change | Camera movement, focus target, continuous spatial relationship |
+| 俯冲 / 反向运动 | 运镜方向、速度变化、下一场何时开始 |
+| 角色旋转 | 姿势、旋转方向、服装和背景如何连续变化 |
+| 前景遮挡 | 前景物体何时填满画面，以及之后的构图 |
+| 物体变形 | 对应的形状和材质，以及变形过程 |
+| 推 / 拉或焦点变化 | 运镜、对焦目标、连续的空间关系 |
 
-### Named transition vocabulary
+### 具名转场词汇（Named transition vocabulary）
 
-`[OFFICIAL — Dreamina]` Each is written as `[transition type guide] + [basic constraint
-requirements] + [cut logic requirements]`, and each guide clause carries the same two
-prohibitions: no rigid cut, and no objects appearing out of thin air.
+`[OFFICIAL — Dreamina]` 每一种都写成 `[transition type guide] + [basic constraint requirements] + [cut logic requirements]`，每个引导句都带同样的两条禁止：不要生硬切镜，不要凭空出现物体。
 
-| Transition | What it does |
+| 转场 | 作用 |
 |---|---|
-| **Natural shot switching** | Hard-cut-like with no effect — but named explicitly so the seam reads as a shot change, not a glitch |
-| **Fade in / fade out** | Shot A darkens to black, shot B lifts out of it |
-| **Stacking** | Shot A becomes transparent while shot B emerges; the two overlap for a stated duration |
-| **White flash / black flash** | An impact beat erupts into a flash, then cuts straight to the next scene |
-| **Erase** | The frame wipes like a sliding door in a stated direction, uncovering shot B |
-| **Mask transition** | An object or wall fills the frame to black; the camera pulls through into shot B |
-| **Similar-object transition** | Shape similarity carries the cut — a coin becomes a ruler's end |
-| **Action transition** | The camera follows a violent movement into blur; shot B enters from the same blur direction |
-| **Dynamic relay** | A subject exits the frame in one scene and enters the next holding the same posture, against a new background |
-| **Zoom in / zoom out** | Magnify into a detail (a pupil) until the next scene unfolds inside it |
-| **Ink-wash** | Shot A diffuses like ink in water while shot B emerges from the dispersal |
+| **自然切镜** | 类似硬切、没有特效：但明确点名，让接缝读作一次镜头切换，而不是故障 |
+| **淡入 / 淡出** | 镜头 A 变暗到黑，镜头 B 从黑里亮起 |
+| **叠化** | 镜头 A 变透明，同时镜头 B 浮现；两者重叠一段写明的时长 |
+| **闪白 / 闪黑** | 一个冲击节拍爆发成闪光，然后直接切到下一场 |
+| **擦除** | 画面像推拉门一样朝写明的方向擦过，露出镜头 B |
+| **遮罩转场** | 一个物体或一面墙填满画面到黑；镜头穿过去进入镜头 B |
+| **相似物转场** | 形状的相似承载切镜：一枚硬币变成尺子的末端 |
+| **动作转场** | 镜头跟着一个剧烈动作进入模糊；镜头 B 从同一个模糊方向进入 |
+| **动态接力** | 一个主体在一个场景里出画，以同样的姿势进入下一个场景，背景是新的 |
+| **推近 / 拉远** | 放大进一个细节（瞳孔），直到下一场在里面展开 |
+| **水墨** | 镜头 A 像墨在水里一样晕开，同时镜头 B 从晕散中浮现 |
 
-You may also hand the model a shortlist and let it choose: "From natural shot switching, mask
-transition, ink-wash transition, or similar-object transition, use the one that suits this
-film's style."
+也可以给模型一个短名单，让它自己选：“From natural shot switching, mask transition, ink-wash transition, or similar-object transition, use the one that suits this film's style.”
 
-**The ceiling:** a transition targets visual and audio continuity. It is a generated bridge,
-not a pixel-identical edit splice of both sources.
+**上限：**转场的目标是视觉和音频的连续。它是一段生成的桥，不是把两段源素材像素级一致地剪接起来。
 
-### Give the bridge a deadline
+### 给桥一个截止时间（Give the bridge a deadline）
 
-`[HOUSE — re-derived from the nutllwhy/seedance-tvc-director evaluation, MIT, 2026-08-09.
-UNPROVEN HERE: the durations below are that source's practitioner figures, not measured on
-our material.]`
+`[HOUSE — re-derived from the nutllwhy/seedance-tvc-director evaluation, MIT, 2026-08-09. UNPROVEN HERE: the durations below are that source's practitioner figures, not measured on our material.]`
 
-A transition written without an arrival keeps going. The vocabulary above is safe because
-every entry names a finish; the failure is in the freehand wording around it — **"drifts
-through", "floats across", "travels into", "gradually becomes"** name a passage and no
-endpoint, so the bridge eats the segment after it and the next scene arrives late.
+没写到达点的转场会一直进行下去。上面的词汇安全，是因为每一条都点明了终点；失败出在它周围的自由措辞上：**“drifts through”、“floats across”、“travels into”、“gradually becomes”**说的是一个过程而没有终点，于是桥吃掉了后面的段落，下一场来晚了。
 
-Describe the outgoing state, bridging action, and arrival state, then set a clock from
-the required transformation and readability. These describe a causal connection, not
-three required shots or equal-duration stages:
+描述离开的状态、桥接动作和到达状态，然后按需要的变化和可读性设定时钟。这些描述的是一个因果连接，不是三个必须的镜头或等长的阶段：
 
 ```
 Last state of the outgoing scene → one bridging action → target scene fully established at <time>.
 ```
 
-Four guardrails, using illustrative source figures rather than measured limits or
-mandatory counts/durations:
+四条护栏，用的是来源里的示意数字，不是测量过的限制或必须的数量/时长：
 
-- **Budget an ordinary bridge for its connection** — the source illustrates roughly
-  0.2–0.8s. Actual time follows the trigger, transformation, and readable arrival.
-- **A hero transition may need longer** — the source illustrates one at ~1.2s. That
-  count and duration are optional editorial choices, not a per-piece quota or ceiling.
-- **No empty frame inside it.** A bridge that passes through a near-solid or subject-less
-  frame for more than a beat reads as a dropout; the target scene should be establishing
-  itself before the bridging element clears.
-- **Say when the target is established**, not just that it arrives: *"the whip begins at
-  9.0s; the living room is fully readable by 9.5s"*. A named arrival time is what stops the
-  passage from expanding into the next segment's runtime.
+- **普通的桥按它的连接来做预算**：来源示意的是大约 0.2–0.8 秒。实际时间取决于触发、变化和可读的到达。
+- **主打转场可能需要更长**：来源示意了一个约 1.2 秒的。这个数量和时长是可选的剪辑选择，不是每条片子的配额或上限。
+- **转场里不要有空画面。**桥经过一个接近纯色或没有主体的画面超过一个节拍，就会读成掉帧；在桥接元素消失之前，目标场景就应该开始建立。
+- **写明目标何时建立完成**，而不只是说它到达了：*“甩镜在 9.0 秒开始；客厅在 9.5 秒完全可读”*。一个具名的到达时间，才能阻止这段过程扩张进下一段的时长。
 
-The source's ~2.5s total transition budget in a 30s piece is illustrative, not mandatory.
-Allocate transitions after their events are planned; include them in the declared runtime
-and count overlaps once. Preserve both source clips' boundary states and original portions.
+来源里 30 秒片子共约 2.5 秒的转场预算是示意，不是必须的。在事件规划好之后再分配转场；把它们算进声明的时长，重叠只算一次。保留两段源片段的边界状态和原有部分。
 
-Reach for a morph only when the concept itself is the transformation. Otherwise a hard cut,
-an action match or a short whip is both cheaper and more reliable — and each one has a
-finish written into its own name.
+只有当概念本身就是变形时才用变形转场。否则硬切、动作匹配或一次短甩镜既便宜又可靠：而且每一种的名字里就写着它的终点。
 
 ---
 
-## Related
+## 相关（Related）
 
-- `higgsfield-seedance-2-5.md` — the mode router, reference-role grammar, staging, limits
-- `higgsfield-seedance.md` — Seedance 2.0 director and the shared prompt-craft laws
-- `higgsfield-seedance-engine-rules.md` — hard rendering constraints shared across the family
-- `higgsfield-pipeline.md` — assembling generated pieces into a longer cut
+- `higgsfield-seedance-2-5.md`：模式路由、参考职责语法、分阶段、限制
+- `higgsfield-seedance.md`：Seedance 2.0 导演和共享的提示词写作规律
+- `higgsfield-seedance-engine-rules.md`：整个系列共享的硬性渲染约束

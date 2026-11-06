@@ -1,211 +1,132 @@
-# Higgsfield Scene Engine — is this scene worth generating?
+# Higgsfield 场景引擎：这场戏值得生成吗？（Higgsfield Scene Engine — is this scene worth generating?）
 
-`[DEMO — Tigran (tig-scene-engine), 2026-06-26]` `[UNPROVEN HERE]` **These definitions are
-bespoke and deliberately not the textbook ones.** Apply them as written; do not substitute
-standard screenwriting glosses, which are looser and will pass scenes this engine fails.
+`[DEMO — Tigran (tig-scene-engine), 2026-06-26]` `[UNPROVEN HERE]` **这些定义是专门定制的，刻意不是教科书上的那一套。**照写下的用；不要换成标准的编剧解释，那些更宽松，会放过本引擎判为失败的戏。
 
-**Why a prompter carries this.** Every shot costs credits and iterations. A structurally
-dead scene generates just as cleanly as a live one — the model has no opinion about whether
-a beat earns its place — so the failure surfaces only after the footage exists and the cut
-does not build. This skill is the cheapest pass in the repo: it runs on text, before any
-generation, and its whole job is to stop you paying to render a scene that cannot work.
+**为什么写提示词的人要带着它。**每个镜头都花额度和迭代。一场结构上已经死掉的戏，生成得和活的戏一样干净：模型对一个节拍是否配得上它的位置毫无意见，所以失败只在素材已经存在、剪辑立不起来之后才显现。本模块是仓库里最便宜的一道检查：它在文字上运行、在任何生成之前，它的全部工作就是阻止你花钱渲染一场不可能成立的戏。
 
-It decides **which** shots deserve the spend. `higgsfield-shotlist-director` turns the
-settled scene into shots; `higgsfield-acting` writes the performance inside them.
-Use [shared narrative planning](narrative-planning.md) for that handoff and
-throughout the audit. The five engine elements are diagnostic questions, not five
-required stages, shots, or equal-duration sections.
+它决定**哪些**镜头值得花钱。`higgsfield-shotlist-director` 把定下来的戏变成镜头；`higgsfield-acting` 写镜头里的表演。交接和整个审查过程都使用 [共享叙事规划](narrative-planning.md)。五个引擎要素是诊断问题，不是五个必须的阶段、镜头或等长段落。
 
-In this merged studio, ordinary narrative creation also uses this engine internally.
-Keep the bespoke definitions and deletion/information/value-shift tests below intact;
-apply them to the relevant scene or sequence, not as a demand for a reversal in every
-shot. For an explicit audit, deliver the full findings and Minimal/Clean/Optional repair
-levels. For prompt creation, express the chosen causal repairs in the studio four-section
-performance draft without attaching an audit report. Preserve user-approved events and
-endings; flag a deliberate deviation rather than silently rewriting it. Pure landscape,
-product-function and other non-dramatic tasks do not need an invented conflict arc.
+在这个合并后的工作室里，普通的叙事创作也在内部使用这个引擎。保持下面定制的定义和删除/信息/价值转变测试不变；把它们用在相关的场景或段落上，而不是要求每个镜头都有反转。明确要求审查时，交付完整的发现和最小/干净/可选三级修复。写提示词时，把选定的因果修复体现在工作室块结构演出稿里，不附审查报告。保留用户批准的事件和结局；刻意偏离时标出来，而不是悄悄改写。纯风景、产品功能和其他非戏剧任务，不需要编造冲突弧线。
 
 ---
 
-## The five-element engine
+## 五要素引擎（The five-element engine）
 
-### 1. Goal
+### 1. 目标（Goal）
 
-The single, unchanging thing the hero is fighting for: to fix what has already been
-established and reach, as fast as possible, the result that resolves it. "Already
-established" means *anything* set up earlier — deep backstory, a few scenes ago, or one
-minute ago.
+主角为之奋斗的那个唯一、不变的东西：修正已经确立的东西，并尽快达到解决它的结果。“已经确立”指*任何*之前设下的东西：深层前史、几场戏之前，或一分钟之前。
 
-- **The major goal never changes**, and the hero is never wrong about it. He can be wrong
-  about **tactics**, never about the goal.
-- **Every scene goal must be a causal link toward the story goal.** *Test:* if you can
-  remove the scene and the chain still holds, the scene fails. No orphan scenes.
-- "What he *ought* to do" is not a separate thing to test — the right move is dictated by
-  **Obstacle + Stakes**. A hero taking a tactic the stakes would not justify (showering
-  while the building burns) is a flaggable inconsistency: name it as bad writing or as
-  deliberate self-sabotage.
+- **主目标永远不变**，主角在目标上永远不会错。他可以在**策略**上错，绝不在目标上错。
+- **每个场景目标都必须是通向故事目标的因果环节。***检验：*如果能拿掉这场戏而链条仍然成立，这场戏就失败了。不要孤儿场景。
+- “他*应该*做什么”不是单独要检验的东西：正确的做法由**障碍 + 利害**决定。主角采取利害撑不起的策略（大楼着火时去洗澡），是一个应该标出的不一致：指出它是糟糕的写作，还是刻意的自我破坏。
 
-### 2. Obstacle
+### 2. 障碍（Obstacle）
 
-A strong circumstance that **jeopardizes** either one stage of the path or the whole goal.
-It *threatens*; it does not merely *cost*.
+一个**危及**路径上某个阶段或整个目标的强烈情境。它是*威胁*，不只是*代价*。
 
-- It can be a **branching search space** (many places to look, limited time) or a **single
-  hard wall** (a dead battery — you cannot search a dead machine). A wall typically spawns
-  a fresh sub-goal with its own terrain.
-- Name its **scale**: *local* (threatens the current stage) or *global* (threatens the whole
-  goal).
-- The obstacle is **what forces the hero to choose or change a tactic.** No jeopardy → no
-  tactic needed → no scene.
-- *Audit test:* name what is at risk, and at what scale. If nothing genuinely is, the
-  obstacle is fake and the scene goes slack.
+- 它可以是一个**分叉的搜索空间**（很多地方要找，时间有限），也可以是**一堵硬墙**（电池没电了：你没法在一台死机器里搜索）。一堵墙通常会催生一个带着自己地形的新子目标。
+- 写出它的**尺度**：*局部*（威胁当前阶段）或*全局*（威胁整个目标）。
+- 障碍是**迫使主角选择或改变策略的东西。**没有危险 → 不需要策略 → 没有戏。
+- *审查检验：*说出什么处于危险之中、在什么尺度上。如果真的什么都没有，障碍就是假的，这场戏会松掉。
 
-### 3. Tactic
+### 3. 策略（Tactic）
 
-The move the threat **forces** the hero to choose — a reasonable guess on his current,
-often incomplete, knowledge. This is **search under uncertainty, not error-as-stupidity.**
+威胁**迫使**主角选择的那一步：基于他当前、常常不完整的认知做出的合理猜测。这是**不确定下的搜索，不是因为愚蠢而犯错。**
 
-- A "wrong" tactic is not dumbness; it is a plausible probe of a space he cannot fully see.
-  The engine is a **knowledge gap**: the distance between what he believes and what is.
-- **Each failed tactic must return information** that narrows the search and reshapes the
-  next move. The drama is the narrowing, not the punishment.
-- ✅ good: the tactic is a reasonable bet on current info, **and** its failure teaches
-  something new.
-- ❌ weak: a tactic he had no reason to try, or a failure that returns **zero information** —
-  a wheel-spin. A failing tactic is only a weakness when the failure teaches nothing.
+- “错误”的策略不是笨；它是对一个他看不全的空间的合理试探。引擎是一个**认知差**：他相信的和实际的之间的距离。
+- **每个失败的策略都必须带回信息**，缩小搜索范围并重塑下一步。戏剧性在于缩小，而不在于惩罚。
+- ✅ 好：策略是基于当前信息的合理押注，**并且**它的失败教会了新东西。
+- ❌ 弱：他没有理由尝试的策略，或一个**带回零信息**的失败：空转。失败的策略只有在失败什么都没教时才是弱点。
 
-### 4. Reversal
+### 4. 反转（Reversal）
 
-A turn against expectation. Three forms:
+一次违背预期的转折。三种形式：
 
-1. **My own action flips on me** — what I did *for* something starts working *against* it
-   (I shower to make the pitch; the shower makes me late and I miss it).
-2. **Hidden agency revealed** — the thing or person I thought I was acting *on* was acting
-   *on me* all along. The thriller move; it often fires exactly when the knowledge gap closes.
-3. The general case: the situation turns opposite to what the tactic intended.
+1. **我自己的行动反过来对付我**：我*为*某件事做的事，开始*与*它作对（我为了提案去洗澡；洗澡让我迟到，错过了提案）。
+2. **隐藏的主动方被揭露**：我以为我在*作用于*的那个东西或人，一直在*作用于我*。惊悚片的招数；它常常正好在认知差闭合时触发。
+3. 一般情况：局势转向与策略本意相反的方向。
 
-**Placement:** at least one reversal **per sequence**. A single scene may be pure
-escalation, but a *resolved sequence* with zero reversals **fails**.
+**位置：每个段落至少一次反转。**单场戏可以是纯粹的升级，但一个**已解决的段落**如果没有反转，就**失败**。
 
-A **sequence** is the run of scenes from when a specific jeopardy opens to when it resolves —
-overcome, or it defeats him and forces a new path. Sequences **nest**, and each resolving
-unit needs its own reversal. Flag which scale you are auditing.
+一个**段落**是从某个具体危险出现到它被解决（被克服，或者它击败主角、迫使他走新路）为止的一串场景。段落可以**嵌套**，每个得到解决的单元都需要自己的反转。标明你在审查哪个尺度。
 
-### 5. Value Shift
+### 5. 价值转变（Value Shift）
 
-**The change in the AUDIENCE'S read of a character, triggered by a reversal.** The keystone,
-and the most misunderstood element: it does not happen on the page, it happens in the
-viewer's mind. Each reversal forces the audience to **re-judge** the character — a moving
-verdict they keep revising (*nice → experienced → cunning → no, he's desperate → devoted son
-→ what a man*).
+**由反转触发的、观众对一个角色看法的改变。**这是拱顶石，也是最被误解的要素：它不发生在纸面上，而发生在观众心里。每次反转都迫使观众**重新评判**这个角色：一个他们不断修改的动态结论（*人不错 → 有经验 → 狡猾 → 不，他是走投无路 → 孝顺的儿子 → 真是条汉子*）。
 
-> **THE CORE RULE: a reversal with no value shift is inert.** A structural turn is not a
-> reversal unless it moves the audience's verdict. If you cannot name a **before-verdict**
-> and an **after-verdict** the audience would hold, the turn is dead weight no matter how
-> much plot flipped.
+> **核心规则：没有价值转变的反转是无效的。**一个结构上的转折，只有在改变了观众的结论时才算反转。如果你说不出观众会持有的**之前的结论**和**之后的结论**，这个转折就是死重，不管剧情翻了多少。
 
-Audit the **trajectory**, not just presence: are the revaluations building a deepening
-portrait, or just oscillating?
+审查的是**轨迹**，而不只是有没有：这些重新评价是在构建一幅越来越深的画像，还是只在来回摆动？
 
 ---
 
-## The causal chain
+## 因果链（The causal chain）
 
-> **Goal** (fixed; every scene a causal link toward it)
-> → **Obstacle** (jeopardizes a stage or the whole goal; name what is at risk + scale)
-> → **Tactic** (forced by the threat; a reasonable guess; its outcome must return information)
-> → **Reversal** (turn against expectation; ≥1 per resolved sequence)
-> → **Value Shift** (the audience re-judges the character; no shift → the reversal is useless)
+> **目标**（固定；每场戏都是通向它的因果环节）
+> → **障碍**（危及一个阶段或整个目标；说出什么处于危险之中 + 尺度）
+> → **策略**（被威胁所迫；一个合理的猜测；结果必须带回信息）
+> → **反转**（违背预期的转折；每个已解决的段落 ≥1 次）
+> → **价值转变**（观众重新评判角色；没有转变 → 反转无用）
 
 ---
 
-## Audit procedure
+## 审查流程（Audit procedure）
 
-Work the chain in order. Reversal and Value Shift are judged at the **sequence** level, not
-the scene. Preserve the user's settled events and ending while testing their causal links;
-do not manufacture extra events or reversals merely to fill a timing template.
+按顺序走这条链。反转和价值转变在**段落**层面评判，而不是单场戏。检验因果环节的同时，保留用户定下的事件和结局；不要只为了填满时间模板而制造额外的事件或反转。
 
-1. **Goal** — state the scene goal in one line. Is it a causal link to the story goal? Apply
-   the removal test. If you do not know the story goal, ask — you cannot fully audit Goal
-   without it.
-2. **Obstacle** — name the circumstance, exactly what it jeopardizes, and the scale.
-3. **Tactic** — is each forced by the jeopardy, reasonable on current knowledge, and does
-   each outcome return information? Flag wheel-spins and unmotivated tactics.
-4. **Reversal** — locate them, name the form, confirm ≥1 per resolved sequence.
-5. **Value Shift** — for **each** reversal, name before-verdict → after-verdict. If you
-   cannot, mark it **INERT** and make it the priority fix. Then assess the trajectory.
+1. **目标**：用一行写出场景目标。它是通向故事目标的因果环节吗？做删除检验。如果不知道故事目标，就问：不知道它，你没法完整审查目标。
+2. **障碍**：说出情境、它具体危及什么，以及尺度。
+3. **策略**：每个策略是否被危险所迫、基于当前认知是否合理、每个结果是否带回信息？标出空转和无动机的策略。
+4. **反转**：找到它们，说出形式，确认每个已解决的段落 ≥1 次。
+5. **价值转变**：对**每一次**反转，说出之前的结论 → 之后的结论。说不出来，就标为 **INERT（无效）**，并把它作为优先修复。然后评估轨迹。
 
-### Audit output
+### 审查输出（Audit output）
 
 ```
-SCENE/SEQUENCE: <one-line identification>
+场景/段落：<一行识别>
 
-CHAIN CHECK
-• Goal — <verdict + one line>
-• Obstacle — <what's jeopardized + scale + verdict>
-• Tactic — <forced? reasonable? returns info? verdict>
-• Reversal — <form + present? ≥1 in sequence? verdict>
-• Value Shift — <before-verdict → after-verdict per reversal, or INERT; trajectory note>
+链条检查
+• 目标：<结论 + 一行>
+• 障碍：<危及什么 + 尺度 + 结论>
+• 策略：<被迫的？合理的？带回信息？结论>
+• 反转：<形式 + 是否存在？段落内 ≥1？结论>
+• 价值转变：<每次反转的之前结论 → 之后结论，或 INERT；轨迹说明>
 
-WEAKEST POINT: <the single element that, if fixed, recovers the most>
+最弱点：<修好它就能挽回最多的那一个要素>
 
-WHAT IF…
-1. (Minimal) <change ONLY the weakest point so the rest of their scene still works>
-2. (Clean) <a version that fully works, even if it departs further from the original>
-3. (Optional) <only if it genuinely adds something>
+如果……
+1.（最小）<只改最弱点，让他们这场戏的其余部分仍然成立>
+2.（干净）<一个完全成立的版本，即使离原稿更远>
+3.（可选）<只有真的有所增益时才写>
 ```
 
-The three tiers matter in that order: **minimal preserves the user's version**, clean is
-yours, and the third is optional. Do not collapse them into one rewrite.
+三级的顺序很重要：**最小保留用户的版本**，干净是你的版本，第三级是可选的。不要把它们合成一次改写。
 
 ---
 
-## Where this sits before prompting
+## 在写提示词之前的位置（Where this sits before prompting）
 
-Once the chain holds, apply [shared narrative planning](narrative-planning.md)
-and the single [导演决策流程](directorial-shot-design.md#导演决策流程)
-before choosing shot counts or generation durations. This engine diagnoses the scene's
-causal change; it does not prescribe a cut for every engine element. Accepted scenes
-may sustain uncertainty or pressure: preserve them and select a readable viewing scheme,
-not an invented reversal. The director chooses core/support/connective priorities and
-compares hold, in-shot handoff and cut before using any shot-type menu:
+链条成立之后，在选择镜头数或生成时长之前，应用 [共享叙事规划](narrative-planning.md) 和唯一的 [导演决策流程](directorial-shot-design.md#导演决策流程)。本引擎诊断的是场景的因果变化；它不给每个引擎要素都规定一次切镜。被接受的场景可以持续保持不确定或压力：保留它们，选择一个可读的观看方案，而不是编造一次反转。在使用任何镜头类型菜单之前，导演先选择核心/支撑/连接的主次，并比较停留、镜内交接和切镜：
 
-1. Locate necessary events, causal turns, information reveals, and state transitions.
-   These decide stages, including meaningful silence or a held reaction; do not assign a
-   preset count, equal lengths, or one stage to each engine element.
-2. Give each stage an inherited starting state, a primary change, a visible response, and
-   an end state. Trace how that result enables the next event and the settled ending.
-3. Decide what the viewer needs to see, then estimate action, dialogue, reaction, reading,
-   and transition time. A **stage is not a cut or a generation clip**: a continuous shot
-   may span stages, a stage may use multiple shots, and generation splits follow actual
-   model/mode limits and complexity. A model cap does not set a narrative-stage length.
-4. Hand off the eight director semantics: **assets/reference locks; overall goal; global
-   sight/sound/space; subject behavior and pacing; stages; continuity/state inheritance;
-   final frame/join; scoped constraints**. Keep the audit's native CHAIN CHECK, WEAKEST
-   POINT, and WHAT IF tiers; weave relevant findings into them and the downstream brief
-   rather than replacing the audit with eight production headings. Unknown assets remain
-   planning notes, not invented upload handles.
-5. Include transitions and the final frame within the runtime. If auditing an edit, mark
-   findings against source timestamps and preserve source duration and cuts outside the
-   requested scope. For extensions, inherit pose, motion phase/direction/speed, camera,
-   lighting, props, emotion, and sound at the join: forward starts at the source tail;
-   reverse extension ends at its **first-frame state**. Budget new material separately.
+1. 找出必要的事件、因果转折、信息揭示和状态转变。它们决定阶段，包括有意义的沉默或停住的反应；不分配预设数量、等长，或每个引擎要素一个阶段。
+2. 给每个阶段一个继承的起始状态、一个主要变化、一个可见反应和一个结束状态。追踪这个结果怎样促成下一个事件和定下的结局。
+3. 决定观众需要看到什么，再估算动作、对白、反应、阅读和转场的时间。**阶段不是一次切镜，也不是一个生成片段**：一个连续镜头可以跨几个阶段，一个阶段可以用几个镜头，生成的拆分遵循实际的模型/模式限制和复杂度。模型上限不决定叙事阶段的长度。
+4. 交接八个导演语义：**资产/参考锁定；整体目标；全局视听与空间；主体行为与节奏；阶段；连续性/状态继承；结尾画面/接点；有范围的约束**。保留审查原生的链条检查、最弱点和“如果……”三级；把相关发现编进它们和下游的说明里，而不是用八个制作标题替换审查。未知的资产仍是规划备注，不编造上传调用名。
+5. 把转场和结尾画面计入时长。审查编辑稿时，对照源时间码标出发现，在要求的范围之外保留源时长和切点。延伸时，在接点继承姿势、动作相位/方向/速度、摄影机、光照、道具、情绪和声音：向前延伸从源的结尾开始；反向延伸结束在它的**首帧状态**。新素材单独做预算。
 
-The next skills retain their own outputs and mode-specific workflows:
+后续模块保留各自的输出和模式流程：
 
-| Next | Skill |
+| 下一步 | 模块 |
 |---|---|
-| Who these people are, and their bible | `higgsfield-character-design.md` |
-| The shared scene direction and each character's fuel | `higgsfield-acting.md` § The layer above the pillars |
-| Breaking the settled scene into shots | `higgsfield-shotlist-director.md` |
-| Writing the shot itself | `higgsfield-seedance.md` · `higgsfield-seedance-2-5.md` |
+| 这些人是谁，以及他们的圣经 | `higgsfield-character-design.md` |
+| 共享的场景方向和每个角色的燃料 | `higgsfield-acting.md` § The layer above the pillars |
+| 把定下的戏拆成镜头 | `higgsfield-shotlist-director.md` |
+| 写镜头本身 | `higgsfield-seedance.md` · `higgsfield-seedance-2-5.md` |
 
-**The most common real failure to hunt for first:** a reversal that turns the plot but does
-not move the audience's verdict. Surface it before anything else — it is the one that
-survives a read-through, generates beautifully, and still lands flat in the cut.
+**最先要找的、最常见的真实失败：**一次翻转了剧情、却没有改变观众结论的反转。在任何其他问题之前先把它摆出来：它能通过通读，生成得很漂亮，到了剪辑里仍然平平落地。
 
-## Related Skills
+## 相关模块（Related Skills）
 
-- `higgsfield-character-design.md` — premise, world, character, story bible
-- `higgsfield-acting.md` — the performance layer inside a settled scene
-- `higgsfield-shotlist-director.md` — scene → shot list
+- `higgsfield-character-design.md`：前提、世界、角色、故事圣经
+- `higgsfield-acting.md`：定下的戏里的表演层
+- `higgsfield-shotlist-director.md`：场景 → 分镜表

@@ -3,6 +3,8 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 SCRIPT = Path(__file__).resolve().parents[1] / 'proofread_manifest.py'
 spec = importlib.util.spec_from_file_location('proofread_manifest', SCRIPT)

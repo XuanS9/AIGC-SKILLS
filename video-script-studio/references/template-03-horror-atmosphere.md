@@ -1,96 +1,73 @@
-# Template: Horror / Atmospheric Dread
+# 模板：恐怖 / 氛围性恐惧
 
-## Genre/Use-Case
-Horror scenes, supernatural tension, psychological dread, jump-scare setups, uncanny valley moments, and any prompt where the goal is to unsettle the viewer.
+## 题材与用途
+恐怖戏、超自然紧张、心理恐惧、惊吓铺垫、恐怖谷时刻，以及任何目的是让观众不安的提示词。
 
-## When to use this template
-User asks for horror, scary, creepy, unsettling, supernatural, haunted, psychological thriller, or anything where the mood is dread rather than action.
+## 何时使用
+用户要恐怖、吓人、诡异、不安、超自然、闹鬼、心理惊悚，或任何情绪是恐惧而非动作的内容。
 
-## Recommended model
-**Kling 3.0** for character horror (face control matters). **Wan 2.5** for stylized/supernatural horror (leans into surreal aesthetic). Use **VHS** or **Cinematic low key** style.
+## 推荐模型
+人物与超自然恐怖用 **Seedance 2.5** `omni_reference`。风格用 **VHS** 或 **Cinematic low key**。
 
-## Narrative planning
+## 叙事规划
 
-Use [shared narrative planning](narrative-planning.md). Its eight
-semantic layers — assets, goal, global audiovisual/space, behavior, stages, continuity,
-final frame, constraints — map into this short prompt and optional Identity/Motion blocks.
-Define stages by the unsettling clue, its reveal, and the character's changed awareness;
-then budget suspense, recognition, and response. No preset count or equal-time rule.
-A continuous shot may span these changes. Carry reflection state, eyeline, lighting,
-and sound into the final image while keeping the one-scare-per-generation limit.
-All example durations and counts are illustrative, not mandatory, including the jump-scare
-variation; allocate its build/reveal timing after planning the actual event.
+使用 [共享叙事规划](narrative-planning.md)。它的八个语义层（资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面、约束）映射到本页的短提示词或工作室块结构。阶段由令人不安的线索、它的揭晓和人物认知的改变来决定；然后为悬念、察觉和反应分配时间。不预设数量，不平均分时。一个连续镜头可以跨过这些变化。把倒影状态、视线、光照和声音带到最后的画面，同时守住每次生成一个惊吓点的限制。所有示例时长和数量都只是示意，包括惊吓变体；先规划实际事件，再分配铺垫和揭晓的时间。
 
-## Example prompt
+## 示例提示词
 
 ```
-Model: Kling 3.0
-Aspect: 4:3 | Duration: 8s | Style: VHS
+模型：Seedance 2.5（omni_reference）
+画幅：4:3｜时长：8 秒｜风格：VHS
 
-A woman unlocks the door to her apartment. Steps inside. Everything looks normal.
-She sets down her keys. Turns toward the kitchen.
-Camera: slow Dolly In toward the hallway mirror at the end.
-The mirror shows the room — but the couch is against the wrong wall.
-She hasn't moved. The reflection has.
-Camera: Dutch Angle as she realizes.
-Style: VHS. Desaturated greens, practical light only, slight scan lines. 4:3.
-Apply Horror Face preset in the mirror reflection.
+一个女人打开公寓门，走进去。一切看起来都正常。
+她放下钥匙，转向厨房。
+运镜：缓慢 Dolly In，推向走廊尽头的镜子。
+镜子里映出房间，但沙发靠在了错的那面墙上。
+她没有动，倒影却动了。
+运镜：她意识到的那一刻转为 Dutch Angle。
+风格：VHS。去饱和的绿色调，只有现场光源，轻微扫描线。4:3。
+镜中倒影里，她的脸缓慢扭曲成一张陌生的、过于平静的面孔。
 ```
 
-## Annotation
+## 注释
 
-| Prompt element | Why it works |
+| 提示词元素 | 为什么有效 |
 |---------------|-------------|
-| "unlocks the door... Steps inside. Everything looks normal." | False calm — establishes normalcy before breaking it |
-| "Sets down her keys. Turns toward the kitchen." | Small, mundane actions create real-world grounding |
-| "slow Dolly In toward the hallway mirror" | Slow movement builds dread — the viewer knows something is wrong before the character does |
-| "the couch is against the wrong wall" | The "wrong detail" — something subtle and deeply unsettling, not gore |
-| "She hasn't moved. The reflection has." | Payoff: the specific violation of reality that creates horror |
-| "Dutch Angle as she realizes" | Camera tilt = psychological instability in the character |
-| "VHS. Desaturated greens, practical light only" | VHS grain + sickly color = analog horror aesthetic that triggers unease |
-| "4:3" | Narrow aspect ratio increases claustrophobia |
-| "Apply Horror Face preset" | Motion preset handles the VFX scare — don't try to describe face distortion manually |
+| “打开公寓门……走进去。一切看起来都正常。” | 虚假的平静：先建立正常，再打破它 |
+| “放下钥匙，转向厨房。” | 细小的日常动作让画面落地 |
+| “缓慢 Dolly In，推向走廊镜子” | 慢速运动累积恐惧，观众比人物先知道不对劲 |
+| “沙发靠在了错的那面墙上” | “错的细节”：微妙而深深不安，不靠血腥 |
+| “她没有动，倒影却动了。” | 兑现：对现实的具体违背制造恐怖 |
+| “意识到的那一刻转为 Dutch Angle” | 倾斜镜头等于人物心理失衡 |
+| “VHS。去饱和的绿色调，只有现场光源” | VHS 颗粒加病态色调，是引发不安的模拟恐怖质感 |
+| “4:3” | 窄画幅增加幽闭感 |
+| “她的脸缓慢扭曲成……面孔” | 把惊吓效果写成可见变化：写清是谁、在哪里、变成什么 |
 
-## Negative constraints to include
-- **Content Filter/Safety**: Describe atmosphere ("dread", "unsettling", "something is wrong") not explicit gore. Use motion presets for horror VFX.
-- **Face/Identity**: If using Soul ID, keep face description clean and separate from the horror effect.
-- **Temporal/Consistency**: Slow camera movements work best for horror — fast cuts break the tension build.
+## 要加入的约束
+- **内容过滤/安全：**写氛围（恐惧、不安、有什么不对），不写露骨血腥。
+- **面部/身份：**人物身份放在资产参考里，和恐怖效果分开。
+- **时间/一致性：**恐怖戏最适合慢速运镜，快切会打断紧张的累积。
 
-## Common mistakes
-1. **Describing explicit gore/injury** — gets blocked by content filters. Describe the dread and atmosphere, let the viewer's imagination do the work.
-2. **Too many scares in one clip** — one "wrong detail" per generation. Stack them across a sequence, not in a single shot.
+## 常见错误
+1. **描写露骨血腥或伤口**：会被内容过滤拦下。写恐惧和氛围，让观众自己想象。
+2. **一条里放太多惊吓**：每次生成一个“错的细节”。在一个段落里分多条叠加，不要塞进一个镜头。
 
-> **Identity/Motion separation:** When this horror scene features a Soul ID character, use the following block structure.
+> **身份与动作分离：**人物身份交给资产参考，本段只写动作。
 
-### Identity Block (if using Soul ID character)
+### 身份（写进资产参考，不进本段）
 ```
-The Soul ID character — pale complexion, dark circles under eyes, wearing
-a grey oversized sweater, dark hair loose.
-```
-
-### Motion Block
-```
-She steps inside, sets down her keys. Turns toward the kitchen.
-Camera: slow Dolly In toward the hallway mirror.
-Dutch Angle as she freezes.
+苍白的肤色，眼下有黑眼圈，穿灰色宽大毛衣，深色头发披散。
 ```
 
-## Variations
-- **Found footage style**: Handheld camera, VHS style, 4:3, "camera glitches occasionally"
-- **Psychological (no supernatural)**: Remove Horror Face preset, rely on Dutch Angle + slow Dolly In + "wrong detail"
-- **Body horror**: Use Monstrosity or Gas Transformation preset instead of Horror Face
-- **Jump scare setup**: Slow Dolly In through the suspense build, then Crash Zoom In on the reveal; a 6s build + 2s reveal is illustrative, not a required split
-
-## Cinema Studio 3.0 (Business/Team Plan)
-
-**Genre mapping:** Horror
-**Prompt length target:** 60–100 words (Drama/Narrative range — lead with Scene)
-**Speed Ramp:** Flash In for jump scares, Slow-mo for dread
-
-**@reference workflow:**
+### 动作
 ```
-@Image1 as the corridor environment. A figure appears at the far end, barely visible.
-Floorboards creak. The lights flicker once, twice. Camera: slow dolly push.
-Style: desaturated, single practical light source, deep shadows.
-Audio: distant dripping, wood creaking, a breath that isn't the viewer's.
+她走进去，放下钥匙，转向厨房。
+运镜：缓慢 Dolly In，推向走廊镜子。
+她僵住时转为 Dutch Angle。
 ```
+
+## 变体
+- **伪纪录片风格：**手持运镜、VHS 风格、4:3，“镜头偶尔出现故障”
+- **心理恐怖（无超自然）：**去掉倒影里的变形，只靠 Dutch Angle、缓慢 Dolly In 和“错的细节”
+- **身体恐怖：**把倒影变形换成身体局部缓慢变形，写清部位、方向和速度
+- **惊吓铺垫：**悬念段用缓慢 Dolly In，揭晓时 Crash Zoom In；6 秒铺垫加 2 秒揭晓只是示意，不是必须的切分

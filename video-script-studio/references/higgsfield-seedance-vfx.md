@@ -1,111 +1,58 @@
-# Higgsfield Seedance VFX — Footage Transformation
+# Higgsfield Seedance 视效：素材变换（Higgsfield Seedance VFX — Footage Transformation）
 
-**Legacy Seedance 2.0 lane.** Current studio video work defaults to Seedance 2.5
-`omni_reference` with the existing clip as a role-scoped video reference. The
-start/end-frame recipes in this file are historical platform instructions and are not
-a requirement or route for the current project. If a user explicitly selects a different
-model, verify its actual inputs separately and follow that request.
+**旧的 Seedance 2.0 通道。**当前工作室的视频工作默认用 Seedance 2.5 `omni_reference`，把已有片段作为限定职责的视频参考。本文件里的首/尾帧写法是历史平台说明，不是当前项目的要求或路线。如果用户明确选了别的模型，单独核实它的实际输入并按请求执行。
 
-This skill is for **editing a clip the user already has**: keep a real subject and the
-real camera move, change only what they ask for. It is the video-to-video sibling of
-`higgsfield-seedance.md` (the general Seedance director). It **reuses that skill's
-grammar verbatim** — the six-slot formula, the Prompt-Craft Laws, the preflight linter —
-and adds the transformation layer below. Do not contradict the parent skill; when a shot
-needs filter-safety, mode selection, or engine rules, defer to it.
+这个模块用于**编辑用户已有的片段**：保留真实的主体和真实的镜头运动，只改他们要求改的东西。它是 `higgsfield-seedance.md`（通用 Seedance 导演）的视频到视频兄弟模块。它**原样复用那个模块的语法**（六槽公式、提示词写作规律、预检 lint），再加上下面的变换层。不要和上层模块矛盾；镜头需要过滤安全、模式选择或引擎规则时，以它为准。
 
-> **This file is the Seedance 2.0 v2v lane.** It stays the right choice when the job needs
-> **4K**, `mode=std`, a platform start/end frame, or a `genre` hint. If the plate job is
-> running on **Seedance 2.5** — 720p ceiling, up to 30 s, many references — the lane is
-> `omni_reference` with the clip attached as a video reference, and its production doctrine
-> (source ≥ 4 s, duration = source, the four-batch rule, the performance-inheritance clause)
-> lives in `higgsfield-seedance-2-5-vfx-pipeline.md`.
+> **本文件是 Seedance 2.0 的视频到视频通道。**任务需要 **4K**、`mode=std` 或 `genre` 提示时，它仍是正确的选择。如果底片任务跑在 **Seedance 2.5** 上（最高 1080p、最长 30 秒、很多参考），通道是把片段作为视频参考附上的 `omni_reference`，它的制作方法（源素材 ≥ 4 秒、时长 = 源素材、四批规则、表演继承条款）在 `higgsfield-seedance-2-5-vfx-pipeline.md`。
 
-> **This skill is a video-to-video layer on top of `higgsfield-seedance.md`.**
-> Every VFX transform is still a Seedance prompt. This skill only changes the *starting
-> point*: a real source clip whose subject, performance, and camera move must survive the
-> edit. `higgsfield-seedance` § Seedance 2.0 Prompt Modes / Transformation covers the
-> *in-clip morph* (a character visibly becoming something else in one take); **this** skill
-> covers *preservation-VFX* — lock the real plate, layer the effect in.
+> **这个模块是 `higgsfield-seedance.md` 之上的视频到视频层。**每一次视效变换仍然是一条 Seedance 提示词。这个模块只改变*起点*：一段真实的源片段，它的主体、表演和镜头运动必须在编辑后保留下来。`higgsfield-seedance` § Seedance 2.0 Prompt Modes / Transformation 覆盖*片内变形*（一个角色在一个镜头里可见地变成别的东西）；**这个**模块覆盖*保留型视效*：锁定真实底片，把特效叠进去。
 
-## QUICK FACTS
-*Routing aids — read the linked sections for the actual rules.*
-- The one job: **preserve** everything that makes the source recognizable, **change** only the named element; repeat the fragile guardrail ("face and identity unchanged") at the end [→](#the-core-idea-preserve-then-change-one-thing)
-- Run it in **Seedance 2.0, mode std, 4K** — faces, lip-sync and fine detail hold at 4K where they warp at 1080p (`fast` can't do 4K; Cinema Studio caps at 1080p) [→](#resolution-run-it-in-4k)
-- `@source` declares the clip as the base (not a style ref); add `@creature`/`@element` only when a real texture keeps getting faked [→](#prompt-anatomy-transform-variant)
-- **Three levels** of difficulty: L1 swap the world · L2 change an element in-frame · L3 full handheld cinematic [→](#three-levels)
-- Two modes: **add an element** to the plate, or **replace the environment** around a preserved subject [→](#two-transformation-modes)
-- **Color matching alone looks pasted-in** — match key direction, bounce, optics/haze, edges/grounding [→](#lighting-integration-the-part-that-makes-or-breaks-it)
-- Photoreal creatures need **biological accuracy** (wrinkled, cracked, asymmetric, matte — never smooth/glossy/inflated) + a real contact shadow; a reference image beats a description [→](#photoreal-creature--element-integration)
-- Timed zoom synced to a line: anchor it **twice** — semantic (`On the line "…"`) + numeric (`At about Ts`); see `higgsfield-seedance-vfx-dialogue-timing.md` [→](#timed-camera-moves-synced-to-dialogue)
-- Prepended-intro budget: `total − intro = surviving window` for the source performance; recompute on every change [→](#duration-discipline)
-- Generate the transformed **start frame** first to lock the look before spending video credits; see `higgsfield-seedance-vfx-first-frame.md` [→](#first--start-frame-workflow)
-- Output is **plain-text English**, no markdown inside the prompt, easy to copy [→](#output-format)
+## 速查（QUICK FACTS）
+*路由辅助：实际规则读链接的章节。*
+- 唯一的任务：**保留**让源素材可辨认的一切，只**改变**点名的元素；在结尾重复最脆弱的护栏（“face and identity unchanged”）[→](#核心思路保留然后只改一样东西the-core-idea-preserve-then-change-one-thing)
+- 用 **Seedance 2.0、mode std、4K** 跑：脸、口型和细节在 4K 下保得住，在 1080p 下会变形（`fast` 做不了 4K）[→](#分辨率用-4k-跑resolution-run-it-in-4k)
+- `@source` 把片段声明为底（不是风格参考）；只在某种真实质感总被做假时才加 `@creature`/`@element` [→](#提示词结构变换版prompt-anatomy-transform-variant)
+- **三个难度级别**：L1 换掉世界 · L2 改画面里的一个元素 · L3 全程手持的电影镜头 [→](#三个级别three-levels)
+- 两种模式：往底片里**加一个元素**，或者在保留的主体周围**替换环境** [→](#两种变换模式two-transformation-modes)
+- **只匹配颜色看起来像贴上去的**：要匹配主光方向、反射光、光学/雾气、边缘/落地 [→](#光照融合成败在此lighting-integration-the-part-that-makes-or-breaks-it)
+- 照片写实的生物需要**生物学准确**（有褶皱、有裂纹、不对称、哑光：绝不光滑/有光泽/像充气）+ 真实的接触阴影；参考图胜过描述 [→](#照片写实的生物--元素融合photoreal-creature--element-integration)
+- 与台词同步的计时变焦：锚定**两次**：语义（`On the line "…"`）+ 数字（`At about Ts`）；见 `higgsfield-seedance-vfx-dialogue-timing.md` [→](#与台词同步的计时运镜timed-camera-moves-synced-to-dialogue)
+- 加在前面的开场的预算：源表演的 `总长 − 开场 = 保留窗口`；每次改动都重算 [→](#时长纪律duration-discipline)
+- 先生成一张变换后的画面开发静帧，作为场景/风格参考传入 [→](#首帧--起始帧流程first--start-frame-workflow)
+- 输出是**纯文本英文**，提示词里不用 markdown，便于复制 [→](#输出格式output-format)
 
 ---
 
-## Narrative planning on the source timeline
+## 在源时间线上做叙事规划（Narrative planning on the source timeline）
 
-Apply [shared narrative planning](narrative-planning.md) before drafting either
-transformation mode or any difficulty level. Inspect the source first, identify the
-requested effect's goal and final state, then locate its triggering events, causes,
-reveals, and state transitions on the source timeline. These determine stages; allocate
-any new effect timing only after that. Never preselect a stage count or evenly divide the
-plate. A **stage is not a cut or a generation clip**: effects can develop through several
-stages inside a preserved take, and existing source cuts keep their original timing.
+起草任何一种变换模式或任何难度级别之前，应用 [共享叙事规划](narrative-planning.md)。先检查源素材，确定要求的特效的目标和最终状态，然后在源时间线上找到它的触发事件、原因、揭示和状态转换。这些决定阶段；之后才分配任何新特效的时间。绝不预选阶段数，也不平均切分底片。**阶段不是切镜或一段生成片段**：特效可以在一个保留的镜头里经过几个阶段发展，已有的源切点保持原来的时间。
 
-Plan all eight director layers semantically: **assets** (`@source`, optional element
-references); **goal** (the scoped transform); **global sight/sound/space** (plate geometry,
-lighting, optics, and audio); **behavior/pacing** (preserved performance and effect physics);
-**stages** (trigger → change → visible response → resulting state); **continuity** (identity,
-props, contact, and accumulated effects); **final frame/join**; **constraints** (preserve
-list and allowed changes). Compile into the existing plain-text English source declaration,
-specs, continuous-action prose, lock-down clause, and SFX line. Do not add eight headers.
+从语义上规划全部八个导演层：**资产**（`@source`、可选的元素参考）；**目标**（限定范围的变换）；**全局视觉/声音/空间**（底片几何、光照、光学和音频）；**行为/节奏**（保留的表演和特效物理）；**阶段**（触发 → 变化 → 可见的反应 → 结果状态）；**连续性**（身份、道具、接触和累积的特效）；**最后一帧/接点**；**约束**（保留清单和允许的改动）。编译进已有的纯文本英文源声明、规格行、连续动作描述、锁定句和 SFX 行。不要加八个标题。
 
-A preservation edit inherits the source's timestamps, duration, cuts, camera trajectory,
-and dialogue timing except for the explicitly requested change. Effect stages annotate
-those events; they do not retime them. A requested intro or extension is a separate timing
-change: keep an explicit source-to-output time mapping, retain the source performance
-window, and follow the duration arithmetic below. Forward extension starts from the
-source tail's pose, motion phase/direction/speed, framing, light, props, and audio state;
-a reverse/prepended extension ends at the source's **first-frame state** with those same
-join properties. Budget only the new material. The actual 4–15s generation and 15s input
-limits remain in force; use separate compatible clips when the combined output cannot fit.
+保留型编辑继承源素材的时间码、时长、切点、运镜轨迹和对白时间，明确要求的改动除外。特效阶段标注这些事件；它们不重新定时。要求的开场或延伸是另一种时间改动：保留明确的源时间到输出时间映射，保留源表演窗口，并遵循下面的时长算术。向后延伸从源素材结尾的姿势、运动相位/方向/速度、构图、光、道具和音频状态开始；向前/加在前面的延伸以源素材的**第一帧状态**结束，接点属性相同。只为新素材做预算。实际 4–15 秒的生成限制和 15 秒的输入限制仍然有效；合并后的输出放不下时，用分开的兼容片段。
 
-## The core idea: preserve, then change one thing
+## 核心思路：保留，然后只改一样东西（The core idea: preserve, then change one thing）
 
-A transformation prompt has two jobs that pull against each other: **lock** everything that
-makes the source recognizable (the person's identity, face, wardrobe, performance, framing,
-lens, and camera motion), and **change** only the named element. If you under-specify the
-lock, Seedance re-rolls the face or the camera and the edit stops matching the original. So
-every prompt states both halves explicitly, and repeats the most fragile guardrail — usually
-**"face and identity unchanged"** — at the end of the action.
+变换提示词有两个互相拉扯的任务：**锁定**让源素材可辨认的一切（人的身份、脸、服装、表演、构图、镜头和摄影机运动），以及只**改变**点名的元素。锁定写得不够，Seedance 会重抽脸或镜头，编辑就和原片对不上了。所以每条提示词都明确写出两半，并在动作结尾重复最脆弱的护栏：通常是 **“face and identity unchanged”**。
 
-This is the whole blueprint: real footage goes in, the exact same shot comes back — same
-subject, same movement — with only the one requested change applied.
+这就是整个蓝图：真实素材进去，出来完全相同的镜头（同样的主体、同样的运动），只应用了那一个要求的改动。
 
 ---
 
-## Resolution: run it in 4K
+## 分辨率：用 4K 跑（Resolution: run it in 4K）
 
-Run everything in **Seedance 2.0, `mode=std`, 4K**. The 4K matters: faces, lip-sync and fine
-detail hold at 4K where they warp and fall apart at 1080p — and a footage transform lives or
-dies on the preserved face reading as the *same* face. The `4k` resolution enum is
-model-verified (`model-specs.json` → `seedance_2_0`); the "detail holds at 4K"
-observation is a **practitioner claim**, strong but not a spec guarantee.
+一律用 **Seedance 2.0、`mode=std`、4K** 跑。4K 很重要：脸、口型和细节在 4K 下保得住，在 1080p 下会变形崩坏：而素材变换的成败，就在于保留的脸读起来是不是*同一张*脸。`4k` 分辨率枚举经过模型核实（`model-specs.json` → `seedance_2_0`）；“细节在 4K 下保得住”的观察是**实践者的说法**，很可信但不是规格保证。
 
-Two model constraints to respect (from `higgsfield-seedance.md` § Pre-flight Linter):
-native 4K is available in **`mode=std` only** — `mode=fast` (Seedance 2.0 Fast) caps at
-480p/720p, and inside **Cinema Studio** the model is still capped at 1080p. So a 4K footage
-transform must run in std mode, on the standard Seedance 2.0 surface. If the user is on fast
-mode or in Cinema Studio and asks for 4K, flag the cap before they generate.
+要遵守的模型约束（来自 `higgsfield-seedance.md` § Pre-flight Linter）：原生 4K **只在 `mode=std` 下**可用：`mode=fast`（Seedance 2.0 Fast）最高 480p/720p。所以 4K 素材变换必须用 std 模式，在标准的 Seedance 2.0 入口上跑。用户在 fast 模式下要 4K 时，生成之前先指出这个上限。
 
 ---
 
-## Prompt anatomy (transform variant)
+## 提示词结构（变换版）（Prompt anatomy (transform variant)）
 
-### 1. The `@source` declaration
+### 1. `@source` 声明（The `@source` declaration）
 
-The source clip is the base, not a style reference. One line:
+源片段是底，不是风格参考。一行：
 
 ```
 @source: Original <clip name> — <who/what is in it: subject, wardrobe, setting, action>. Preserve
@@ -113,8 +60,7 @@ The source clip is the base, not a style reference. One line:
 e.g. enhance only the environment / add the creature on the tower / transform only the right arm>.
 ```
 
-If a transformation needs a real texture the model keeps faking (an animal's fur, a specific
-face), add a **second input** as a texture reference and declare it:
+如果变换需要一种模型总在做假的真实质感（动物的毛、一张特定的脸），加一个**第二输入**作为质感参考并声明它：
 
 ```
 @creature: Reference photo of a real <animal> — <fur / face / anatomy notes>. Appearance and
@@ -122,21 +68,13 @@ fur/skin texture reference only; ignore the photo's background and lighting, do 
 environment.
 ```
 
-The user supplies their own descriptions of what is in their files — use the tags correctly,
-don't invent what the clip contains. But before writing `@source` for a clip you can open,
-**inspect it**: read its duration / fps / aspect and extract a few frames. Build `@source` and
-the specs runtime from what the footage actually shows — subject, wardrobe, framing, camera
-move, time of day, key direction — not from the user's one-line summary. Set the specs duration
-to the probed runtime by default. If no source clip is described, ask what footage they're
-starting from before writing.
+用户提供自己对文件里有什么的描述：正确使用标签，不要编造片段里有什么。但对能打开的片段，写 `@source` 之前**先检查它**：读它的时长 / 帧率 / 画幅，抽几帧。按素材实际显示的内容（主体、服装、构图、运镜、时间、主光方向）构建 `@source` 和规格行的时长，而不是按用户的一句话概述。默认把规格时长设为探测到的时长。没有描述源片段时，写之前先问他们从什么素材开始。
 
-> Seedance reads an uploaded video as a set of frames, not as a watched clip — so the frame
-> content (subject, walk, light) is the context it has. Same principle as the screenshot →
-> Claude workflow in `higgsfield-seedance.md` § Load-Bearing Rule.
+> Seedance 把上传的视频读作一组帧，而不是看一段片子：所以帧的内容（主体、走路、光）就是它拥有的语境。和 `higgsfield-seedance.md` § Load-Bearing Rule 里“截图 → Claude”流程是同一个原理。
 
-### 2. Specs line
+### 2. 规格行（Specs line）
 
-One compact line. Always include the source-matching constraints:
+一行紧凑的规格。永远包括匹配源素材的约束：
 
 ```
 Photoreal. <aspect, default 16:9>. <duration — match the source clip>s. 4K. <look / grade>.
@@ -144,277 +82,149 @@ NON-IP — generic <creature/design>, not based on any brand or character. <SFX 
 source dialogue only>.
 ```
 
-- **Match the source runtime by default.** If the clip is 6s, the prompt is 6s. If a payoff
-  needs more room (a slow creature turning to camera), identify the required timing change
-  explicitly; extend only within the requested scope and actual model limits. Do not retime
-  preserved speech or action to make evenly sized stages.
-- **NON-IP guardrail** belongs in the specs line whenever a creature, armor, vehicle, or
-  character design is added — generic, never a branded character. Keeps outputs clean and tends
-  to generate more reliably than a trademarked design. (Same filter logic as
-  `higgsfield-seedance.md` § The Rewrite Playbook / Brand · IP.)
-- **Audio:** `SFX only` for added effects; `SFX and source dialogue only` when the source talk
-  track must survive (e.g. a zoom synced to a spoken line — see
-  `higgsfield-seedance-vfx-dialogue-timing.md`).
+- **默认与源时长一致。**片段 6 秒，提示词就是 6 秒。如果回报需要更多空间（一个生物慢慢转向镜头），明确指出需要的时间改动；只在要求的范围和实际模型限制内延长。不要为了做出等长的阶段而重新定时保留的台词或动作。
+- 每当加了生物、盔甲、载具或角色设计，**NON-IP 护栏**就放进规格行：通用的，绝不是品牌角色。让输出干净，而且往往比商标设计生成得更可靠。（和 `higgsfield-seedance.md` § The Rewrite Playbook / Brand · IP 的过滤逻辑相同。）
+- **音频：**加特效用 `SFX only`；源对白轨必须保留时用 `SFX and source dialogue only`（例如与一句台词同步的变焦：见 `higgsfield-seedance-vfx-dialogue-timing.md`）。
 
-### 3. Scene action — one continuous shot
+### 3. 场景动作：一个连续镜头（Scene action — one continuous shot）
 
-For a single-take source, describe **continuous camera movement**, not new cuts. If the
-source already contains cuts, preserve their timestamps unless the requested edit changes
-them. Lead with the shot/lens and "same framing as the source," then the preserved performance,
-then the transformation's event-driven stages, then any requested timed camera move. A new
-effect stage does not imply a cut. Close with the final visible state and lock-down clause.
+对单镜头的源素材，描述**连续的镜头运动**，而不是新的切镜。如果源素材已经有切点，保留它们的时间码，除非要求的编辑改变了它们。先写镜头/镜头焦段和“same framing as the source”，然后是保留的表演，然后是变换的事件驱动阶段，然后是要求的计时运镜。新的特效阶段不意味着切镜。以最后的可见状态和锁定句收尾。
 
-### 4. SFX line
+### 4. SFX 行（SFX line）
 
-End with a specific, ordered SFX note, exactly as the parent grammar requires. For added effects
-be behavioral: not "fire" but "a soft whoomph as it catches, then a low steady flame roar and
-crackle, occasional ember pop." Sync every effect (footsteps, impacts, wind, creature calls,
-servo whirs) to the visible action.
+以一句具体、有顺序的 SFX 说明结尾，完全按上层语法的要求。加特效时写行为：不是“fire”，而是“a soft whoomph as it catches, then a low steady flame roar and crackle, occasional ember pop.”每个音效（脚步、撞击、风、生物叫声、伺服电机声）都和可见的动作同步。
 
 ---
 
-## Three levels
+## 三个级别（Three levels）
 
-The workflow scales in difficulty. The steps are identical at every level — inspect the clip,
-name the one change, lock the rest — but the harder the camera moves, the harder the effect has
-to track:
+这个流程的难度可以递增。每个级别的步骤都一样（检查片段、点名那一个改动、锁定其余），但镜头动得越厉害，特效就越难跟住：
 
-- **Level 1 — swap the world around you.** Keep the subject exactly as shot; replace the
-  environment. Easiest on slow/steady moves; a driving shot raises the bar because the new world
-  has to stream past at the right speed and relight the subject as it goes (§ Two transformation
-  modes / B).
-- **Level 2 — change an element in the frame.** Add or morph one specific thing: set a head of
-  hair on fire, morph a hand into something unexpected, add a creature climbing a building. The
-  plate stays; the effect is layered in and lit into it (§ Two transformation modes / A).
-- **Level 3 — full handheld cinematic.** The camera is in-hand and moving the whole time — angle,
-  parallax and shake all changing — and the effect (creature, environment, weather) must track to
-  all of it without falling apart. This is the hardest case; preserve the handheld move
-  frame-for-frame and lean on § Photoreal creature / element integration and § Lighting
-  integration hardest here.
+- **级别 1：换掉你周围的世界。**主体完全按拍摄的样子保留；替换环境。慢/稳的运动最容易；开车镜头会提高门槛，因为新世界必须以正确的速度掠过，并一路重新照亮主体（§ Two transformation modes / B）。
+- **级别 2：改画面里的一个元素。**加入或变形一样具体的东西：让一头头发着火、把一只手变成意想不到的东西、加一只爬楼的生物。底片保留；特效叠进去并被照进画面里（§ Two transformation modes / A）。
+- **级别 3：全程手持的电影镜头。**摄影机在手里，全程在动（角度、视差和晃动都在变），特效（生物、环境、天气）必须跟上所有这些而不散架。这是最难的情况；逐帧保留手持运动，并在这里最大程度地依靠 § Photoreal creature / element integration 和 § Lighting integration。
 
-Locked-off shots are easy — the frame barely changes, so the model just paints the effect in.
-The difficulty is entirely in how much the camera moves.
+固定机位的镜头很容易：画面几乎不变，模型只要把特效画进去。难度完全取决于镜头动得有多厉害。
 
 ---
 
-## Two transformation modes
+## 两种变换模式（Two transformation modes）
 
-### A. Add an element to the footage
+### A. 往素材里加一个元素（Add an element to the footage）
 
-Set a head on fire, transform a hand, make a limb invisible, perch a creature on a landmark. Keep
-the whole plate; layer the effect in.
+让头着火、变换一只手、让一条肢体隐形、让一只生物蹲在地标上。保留整个底片；把特效叠进去。
 
-- Describe the effect's **physics and behavior over time**, not just its presence: where it
-  starts, how it spreads, how it moves, what light it throws. Use directional "creep" for
-  transformations ("starts at the tattoo, fine seams split one at a time and peel back, a servo
-  seats, a cable plugs in, the next plate locks…") and ignition-then-build for fire.
-- Make the effect **interact with the plate**: firelight flickering on a face and spilling onto a
-  car's paint; a glassy invisible arm refracting the background; a giant creature casting a real
-  soft-edged contact shadow on the structure it grips. (The model spills an added fire's orange
-  glow onto skin, shirt and car on its own — but naming the interaction makes it reliable.)
-- **Scale must be explicit** for giant creatures, or the model renders them life-size. Say
-  "enormous, its massive body dwarfing the structure, clearly colossal relative to the mast."
-- The subject usually stays **oblivious / unfazed**, mid-delivery — that contrast is the joke.
-  State it.
+- 描述特效**随时间的物理和行为**，而不只是它的存在：从哪里开始、怎么扩散、怎么运动、投出什么光。变形用有方向的“蔓延”（“starts at the tattoo, fine seams split one at a time and peel back, a servo seats, a cable plugs in, the next plate locks…”），火用先点燃再变大。
+- 让特效**和底片互动**：火光在脸上闪烁并溢到车漆上；玻璃般的隐形手臂折射背景；巨型生物在它抓住的结构上投下真实的柔边接触阴影。（模型会自己把加进去的火的橙色光溢到皮肤、衬衫和车上：但点名互动能让它可靠。）
+- 巨型生物**必须明确写尺度**，否则模型会按真实大小渲染。写“enormous, its massive body dwarfing the structure, clearly colossal relative to the mast.”
+- 主体通常保持**毫不知情 / 毫不在意**，继续说话：这种反差就是笑点。写明它。
 
-### B. Replace the environment around a preserved subject
+### B. 替换保留主体周围的环境（Replace the environment around a preserved subject）
 
-Keep the person, their vehicle, the seatbelt, the camera rig and its move; swap the whole world.
+保留人、他们的车、安全带、摄影机装置及其运动；换掉整个世界。
 
-- The new world must **stream past with parallax** consistent with the original motion. If the car
-  was driving, the replacement must give it a surface to drive on and things that rush past at
-  speed. On a fast move the environment can't just sit behind the subject — it has to move with the
-  subject at the right speed and change the lighting as it goes.
-- The bigger the move, the **longer the lock list**: it's not just the face anymore — it's the car,
-  the seatbelt, the rig framing, the whole driving motion, all held while only the environment
-  changes.
-- **Warm, directional daylight worlds are safer** for face/identity consistency than night or neon
-  — those force a full relight of the subject and raise drift risk. Flag this tradeoff and bake the
-  relight instruction in when the user wants night/neon anyway. (Seedance will pull light from the
-  generated world and bounce it onto the subject — neon sliding across a car, lava glowing under a
-  chin — without being asked; naming it makes it dependable.)
+- 新世界必须带着与原运动一致的**视差掠过**。如果车在开，替换的世界必须给它一个可以开的路面，以及高速掠过的东西。在快速运动上，环境不能只是待在主体后面：它必须以正确的速度和主体一起动，并一路改变光照。
+- 运动越大，**锁定清单越长**：不再只是脸：还有车、安全带、装置构图、整个开车的运动，全都保持住，只有环境在变。
+- **温暖、有方向的日光世界**对脸/身份一致性比夜景或霓虹更安全：后者迫使主体全面重新打光，提高漂移风险。用户还是想要夜景/霓虹时，指出这个取舍，并把重新打光的指示写进去。（Seedance 会从生成的世界里取光，反射到主体身上：霓虹滑过车身、岩浆在下巴下面发光：不用要求；点名它能让它可靠。）
 
 ---
 
-## Lighting integration (the part that makes or breaks it)
+## 光照融合（成败在此）（Lighting integration (the part that makes or breaks it)）
 
-First decide the fork with the user — it changes everything:
+先和用户确定分岔：它改变一切：
 
-- **Preserve the subject's lighting, grade only the new elements.** Lock the subject's original
-  light; light and grade the added creature/environment to match the existing key on the subject so
-  they integrate. Lowest identity risk.
-- **Relight the whole frame under one look.** Subject included. Use this for a unified cinematic /
-  commercial grade. Higher risk to the face, so keep identity/expression/wardrobe explicitly locked
-  while only lighting and grade change.
+- **保留主体的光照，只给新元素调色。**锁定主体原来的光；按主体身上已有的主光给加入的生物/环境打光和调色，让它们融合。身份风险最低。
+- **用一种画面重新照亮整个画面。**包括主体。用于统一的电影 / 商业调色。对脸的风险更高，所以在只改光照和调色时，明确锁定身份/表情/服装。
 
-Color matching alone is **not enough** to make a preserved subject sit in a new world — that's the
-most common "looks pasted in" failure. When integrating a subject (or a creature) into a plate, go
-beyond color with this recipe:
+只匹配颜色**不足以**让保留的主体坐进一个新世界：这是最常见的“看起来像贴上去的”失败。把一个主体（或生物）融进底片时，用这个配方超越颜色：
 
-- **Light:** same key direction (name it — screen-left or screen-right), same softness, same shadow
-  density and direction across the subject. ("Keep the sun as the key from screen-left exactly as
-  before so the face and the light on it barely change.")
-- **Environmental bounce:** let the world spill onto the subject — cool skylight from above, a warm
-  bounce from sunlit ground/foliage, subtle ambient occlusion where forms meet.
-- **Optics & atmosphere:** match lens character and micro-contrast; add a touch of the scene's
-  atmospheric haze and aerial perspective over the subject so they aren't unnaturally crisp against
-  a hazy background; match depth of field, focus falloff and film grain to the rest of the frame.
-- **Edges & grounding:** remove hard cut-out edges, halos and mismatched rims; ground the subject
-  with believable depth so they occupy the same space.
+- **光：**同样的主光方向（写出来：画面左或画面右）、同样的柔度、主体上同样的阴影密度和方向。（“Keep the sun as the key from screen-left exactly as before so the face and the light on it barely change.”）
+- **环境反射光：**让世界溢到主体身上：上方冷的天光、阳光照亮的地面/植被反上来的暖光、形体相接处细微的环境光遮蔽。
+- **光学与氛围：**匹配镜头特性和微对比度；在主体上加一点场景的大气雾和空气透视，让他们在朦胧背景前不会不自然地锐利；把景深、焦外衰减和胶片颗粒匹配到画面其余部分。
+- **边缘与落地：**去掉硬抠的边缘、光晕和不匹配的轮廓光；用可信的纵深让主体落地，让他们占据同一个空间。
 
-State the time of day and key direction concretely ("soft, diffused midday daylight with the key
-coming from screen-right"). "Softer" means a larger, more diffuse source: gentle soft-edged
-shadows, low contrast, smooth highlight rolloff, light haze. Full cinematic-lighting vocabulary is
-in `vocab.md` § Lighting.
+具体写出时间和主光方向（“soft, diffused midday daylight with the key coming from screen-right”）。“更柔”指更大、更散的光源：柔和的柔边阴影、低对比度、平滑的高光过渡、淡淡的雾。完整的电影照明词汇在 `vocab.md` § Lighting。
 
 ---
 
-## Photoreal creature / element integration
+## 照片写实的生物 / 元素融合（Photoreal creature / element integration）
 
-When a creature or hard-surface element is added and must read as real:
+加入一只生物或硬表面元素、并且它必须读起来是真的时：
 
-- Demand wildlife-documentary / practical realism explicitly: "fully photoreal, real fur with depth
-  and individual strands (or true scale detail / brushed metal), true anatomy, **never CG, plastic
-  or cartoonish**."
-- **Biological accuracy** is what separates a living thing from a cheap render. Specify real
-  anatomical detail — "pebbled scaly skin, long claws, heavy tail, true reptile anatomy" — and
-  demand **imperfection**: deeply wrinkled, cracked, sagging, **asymmetric**, mud-caked and matte.
-  Avoid smooth, glossy or inflated surfaces; real animals are uneven. Match behavior to the species
-  (a sloth shifts slow heavy weight; a chimp is alert and twitchy; a snake's coils tighten and a
-  forked tongue tastes the air — and snakes don't blink, so use an unblinking stare, not a blink,
-  for a reptile payoff).
-- **Sell the scale.** Use on-screen reference objects (trees, buildings, crew, the subject) to
-  establish true size, and use a **telephoto-lens illusion** with shallow depth of field to veil a
-  giant creature partly behind foreground elements — plus a little motion blur and handheld softness
-  so it integrates rather than floats.
-- Tie it into the plate: same sun direction and color temperature as the subject, a real
-  soft-edged contact shadow on what it touches, the same hazy atmosphere and depth as the far
-  background.
-- If it still reads as CG after a take, the reliable fix is a **second input** — a reference photo
-  of the real animal/material, declared as a texture-only reference (see `@creature` above). When
-  you already know exactly what you want, it's better to *show* the model than to describe it;
-  generate the reference in `higgsfield-gpt-image-2.md` (GPT Image 2) or Nano Banana Pro,
-  then point the prompt at it.
+- 明确要求野生动物纪录片 / 实拍的真实感：“fully photoreal, real fur with depth and individual strands (or true scale detail / brushed metal), true anatomy, **never CG, plastic or cartoonish**.”（工作室中文稿写成正向：“完全照片写实，真实的毛发层次、真实的解剖结构”。）
+- **生物学准确**是区分活物和廉价渲染的关键。写出真实的解剖细节（“pebbled scaly skin, long claws, heavy tail, true reptile anatomy”），并要求**不完美**：深深的褶皱、裂纹、下垂、**不对称**、沾满泥、哑光。避免光滑、有光泽或像充气的表面；真实的动物是不均匀的。让行为符合物种（树懒挪动缓慢沉重的重心；黑猩猩警觉、抽动；蛇的身体收紧、分叉的舌头探着空气：蛇不眨眼，所以爬行动物的回报镜头用不眨眼的凝视，而不是眨眼）。
+- **把尺度做实。**用画面里的参照物（树、楼、剧组、主体）建立真实大小，用浅景深的**长焦镜头错觉**把巨型生物部分遮在前景元素后面：再加一点动态模糊和手持的柔软感，让它融入而不是飘着。
+- 把它绑进底片：和主体同样的太阳方向和色温，在它接触的东西上有真实的柔边接触阴影，和远处背景同样的朦胧大气和纵深。
+- 如果一条素材之后它看起来还是 CG，可靠的修法是**第二输入**：一张真实动物/材料的参考照片，声明为只取质感的参考（见上面的 `@creature`）。当你已经确切知道想要什么时，*展示*给模型比描述好；在 `higgsfield-gpt-image-2.md`（GPT Image 2）或 Nano Banana Pro 里生成参考，然后让提示词指向它。
 
 ---
 
-## Timed camera moves synced to dialogue
+## 与台词同步的计时运镜（Timed camera moves synced to dialogue）
 
-A crash zoom or smooth push-in landing on a beat is a recurring payoff. Anchor it **two ways at
-once** so it lands even if Seedance's internal timing drifts: a semantic cue and a numeric cue.
-The full measurement procedure — how to read `T` off the source audio and convert a timecode —
-is in **`higgsfield-seedance-vfx-dialogue-timing.md`**.
+落在一个节拍上的急推或平滑推近是反复出现的回报。**同时用两种方式**锚定它，让它在 Seedance 内部计时漂移时也能落下：一个语义提示和一个数字提示。完整的测量步骤（怎么从源音频读出 `T`、怎么换算时间码）在 **`higgsfield-seedance-vfx-dialogue-timing.md`**。
 
-- Semantic: `On the line "<exact words>," the camera <snaps into a hard crash zoom | begins a
-  smooth, steady push-in> …`. Requires `SFX and source dialogue only` in the specs so the talk
-  track survives.
-- Numeric: `At about <T> seconds … the camera …`. Get `T` from the source audio (or a visible
-  action beat — "at about 2.2s, on his finger snap").
-- **Crash zoom** = fast hard punch-in; **smooth push-in** = slow steady glide, no snap. Match the
-  user's word.
-- If a landmark or subject must stay visible **through** the move, say so explicitly ("the tower
-  stays in frame throughout, never cropped").
-- Leave enough tail after the trigger for the payoff to play (a creature slowly turning to camera
-  needs ~2–3s). If the clip is short, fire the zoom on the first word of the line rather than
-  after it.
+- 语义：`On the line "<exact words>," the camera <snaps into a hard crash zoom | begins a smooth, steady push-in> …`。规格行需要 `SFX and source dialogue only`，让对白轨保留下来。
+- 数字：`At about <T> seconds … the camera …`。从源音频得到 `T`（或者一个可见的动作节拍：“at about 2.2s, on his finger snap”）。
+- **急推（crash zoom）** = 快速猛烈的推入；**平滑推近（smooth push-in）** = 缓慢稳定的滑行，不猛。按用户的用词来。
+- 如果一个地标或主体必须在运动**全程**保持可见，明确写出来（“the tower stays in frame throughout, never cropped”）。
+- 触发之后留足尾巴让回报展开（一个生物慢慢转向镜头需要约 2–3 秒）。片段短的话，在台词的第一个词上触发变焦，而不是在台词之后。
 
-### Reveal pull-back (the outward move)
+### 揭示后拉（向外的运动）（Reveal pull-back (the outward move)）
 
-The mirror of the push-in: open tight on the *added* element in isolation — a long-telephoto,
-compressed framing of the creature/effect with the subject out of frame — then move outward to
-land on the real plate. Two flavors, match the user's word:
+推近的镜像：开场紧贴单独的*新增*元素（生物/特效的长焦压缩构图，主体在画外），然后向外运动，落到真实底片上。两种风格，按用户的用词来：
 
-- **Hard / snap zoom-out** = a fast punch outward, abrupt.
-- **Smooth pull-back** = a slow steady decompression, no snap.
+- **硬 / 猛的拉远** = 快速向外猛拉，突然。
+- **平滑后拉** = 缓慢稳定的展开，不猛。
 
-Anchor the landing the same two ways as a timed zoom, and demand a **100% match of the source
-composition** at the landing: name the matched attributes — same angle, headroom, horizon, lens
-character — or the model lands on a near-miss framing that no longer cuts against the original.
-After the landing, hand off to the preserved take and keep the source's own camera motion running.
+用和计时变焦同样的两种方式锚定落点，并要求落点处**与源构图 100% 一致**：写出匹配的属性（同样的角度、头顶空间、地平线、镜头特性），否则模型会落到一个差一点的构图上，再也接不上原片。落点之后交接给保留的镜头，并保持源素材自己的运镜继续。
 
-### Preserving lip-sync to a known line
+### 保留对已知台词的口型同步（Preserving lip-sync to a known line）
 
-When the payoff is the subject's mouth matching a specific line, quote it **verbatim** and anchor
-it twice: once inside the action ("…lips matching the source exactly, saying clearly: '<line>'…")
-and once in the SFX/dialogue line. Require `SFX and source dialogue only` in the specs so the talk
-track survives, and add "lips matching the source exactly" to the lock-down clause. Then check the
-line against the surviving dialogue window (see § Duration discipline / Prepended-intro budget) —
-a line that runs ~6s cannot sit in a 5s tail. If it doesn't fit, resolve the runtime before
-delivering; don't ship a prompt that can't lip-sync. Dialogue + `[AUDIO: Xs]` mechanics live in
-`higgsfield-audio.md`.
+回报是主体的嘴对上一句特定的台词时，**一字不改**地引用它并锚定两次：一次在动作里（“…lips matching the source exactly, saying clearly: '<line>'…”），一次在 SFX/对白行里。规格行要求 `SFX and source dialogue only`，让对白轨保留下来，并把“lips matching the source exactly”加进锁定句。然后对照保留下来的对白窗口检查台词（见 § Duration discipline / Prepended-intro budget）：一句约 6 秒的台词放不进 5 秒的尾巴。放不下的话，交付之前先解决时长；不要交出一条没法对口型的提示词。对白 + `[AUDIO: Xs]` 的机制在 `higgsfield-audio.md`。
 
 ---
 
-## Duration discipline
+## 时长纪律（Duration discipline）
 
-Default to the source clip's exact runtime and event timestamps. When the user changes the
-runtime, **recompute** numeric zoom timing from the source-to-output mapping and tell them the
-new mark; do not proportionally stretch source dialogue. Count transitions and final-frame
-holds inside the budget. When a long hold lands on a static creature, add appropriate small
-"living" micro-movements (a slow blink, jaw shift, steady breath) so it doesn't look frozen.
+默认采用源片段的精确时长和事件时间码。用户改变时长时，从源时间到输出时间的映射**重算**数字化的变焦时间，并告诉他们新的标记；不要按比例拉伸源对白。转场和最后一帧的停留都算进预算。长时间停在一只静止的生物上时，加上适当的小“活着”的微动作（一次缓慢的眨眼、下颌移动、平稳的呼吸），让它不显得冻住。
 
-### Prepended-intro budget: intro + remaining = total
+### 加在前面的开场的预算：开场 + 剩余 = 总长（Prepended-intro budget: intro + remaining = total）
 
-When you prepend a beat (a reveal, a telephoto hold, an establishing creature shot) to footage you
-must preserve, the preserved take does not get longer — it gets *pushed back*. State the arithmetic
-every time and flag what falls off:
+当你在必须保留的素材前面加一个节拍（一次揭示、一个长焦停留、一个建立性的生物镜头）时，保留的镜头不会变长：它会被*往后推*。每次都写出算术，并标出被截掉的部分：
 
-`total runtime − intro length = surviving window for the source performance`
+`总时长 − 开场长度 = 源表演的保留窗口`
 
-If the source take is longer than that surviving window, some of it cannot play. Say so explicitly
-and offer the three resolutions, in order of fidelity:
+如果源镜头比保留窗口长，它的一部分就播不出来。明确说出来，并按保真度从高到低给出三种解决办法：
 
-1. **Extend the total** so the full source fits (intro + full source). Highest fidelity, longest
-   clip; if it exceeds the model's single-generation limit, generate the intro separately and
-   join it to the preserved source at its first-frame state.
-2. **Start the source earlier** — sacrifice the clip's own quiet lead-in so the dialogue still
-   lands in the window. Keeps total fixed, keeps the words, loses pre-roll.
-3. **Accept truncation** — the first N seconds of the source won't appear. Only safe if the dropped
-   head has no dialogue.
+1. **延长总长**，让完整的源素材放得下（开场 + 完整源素材）。保真度最高，片子最长；超过模型单次生成的限制时，单独生成开场，在源素材的第一帧状态处把它和保留的源素材接起来。
+2. **让源素材更早开始**：牺牲片段自己安静的开头，让对白仍然落在窗口里。总长不变，台词保留，损失预备段。
+3. **接受截断**：源素材的前 N 秒不会出现。只有被丢掉的开头没有对白时才安全。
 
-These are explicit timing-edit options, not automatic changes to a preservation edit. For a
-full-source prepend, source time `t` maps to output time `intro + t`; if trimming is requested,
-state the exact retained source interval and its offset. Never promise "100% lip-sync" and a
-prepended intro on a fixed total without doing this subtraction first. Recompute and re-flag it
-on *every* change to either number.
+这些是明确的时间编辑选项，不是对保留型编辑的自动改动。完整源素材前加开场时，源时间 `t` 映射到输出时间 `开场 + t`；如果要求裁剪，写明保留的确切源区间和它的偏移。没先做这个减法，绝不同时承诺“100% 口型同步”和固定总长下的前置开场。两个数字中任何一个改变时，都重算并重新标出。
 
 ---
 
-## First / start-frame workflow
+## 首帧 / 起始帧流程（First / start-frame workflow）
 
-Before spending video credits, it's often worth generating the **transformed opening still** as an
-image, locking the look, then animating from it. **See `higgsfield-seedance-vfx-first-frame.md`** for the full
-procedure (model, settings, inputs, upload mechanics, and how to hand the still back to Seedance
-as a `start_image`). This pairs with `higgsfield-seedance.md` § Drafts Validate the Prompt
-— pin the frame, not the roll.
+花视频额度之前，常常值得先把**变换后的开场静帧**作为图像生成出来，锁定画面，再从它开始做动画。在本工作室里，这张静帧是 `omni_reference` 里的场景/风格参考，绝不是必须的开场画面；历史流程（模型、设置、输入、上传机制，以及怎么把静帧作为 `start_image` 交回给 Seedance）只适用于明确选择 2.0 的任务。这与 `higgsfield-seedance.md` § Drafts Validate the Prompt 配套：钉住画面，而不是抽签。
 
 ---
 
-## Iterating
+## 迭代（Iterating）
 
-The user iterates fast and in small steps ("softer light," "from the right," "bigger snowier
-mountains," "make the chimp huge," "a beat before the zoom," "keep the original runtime"). Change
-**only the named thing** and keep the rest of the prompt stable — re-rolling the whole prompt loses
-what already worked. When refining a generated still, edit the chosen result (pass it back as the
-base) and fix only what's off rather than starting over. This is the footage-transform case of
-`higgsfield-prompt.md` § The Iteration Rule.
+用户迭代得快、步子小（“光柔一点”“从右边来”“山更大、雪更多”“把黑猩猩弄得巨大”“变焦前停一拍”“保持原时长”）。**只改点名的东西**，提示词其余部分保持稳定：重抽整条提示词会丢掉已经有效的部分。精修一张生成的静帧时，编辑选中的结果（把它作为底传回去），只修不对的地方，而不是从头开始。这是 `higgsfield-prompt.md` § The Iteration Rule 在素材变换上的情况。
 
 ---
 
-## Output format
+## 输出格式（Output format）
 
-Output in **English first**, plain text — no bold, no headers, no bullets inside the prompt, not in
-a code block. Easy to copy as-is. Chinese translation only if asked, after the English, same
-format.
+**先输出英文**，纯文本：提示词里不加粗、不加标题、不加列表，不放在代码块里。方便原样复制。只有要求时才给中文翻译，放在英文之后，格式相同。（这是 2.0 原生英文格式；工作室当前交付用中文块结构。）
 
-A short label above each prompt (e.g. `Hook_2 · Variant 1 — Through the clouds`) is fine and helps
-when you deliver several variants; the prompt body itself stays plain text.
+每条提示词上方一个简短标签（例如 `Hook_2 · Variant 1 — Through the clouds`）没问题，交付多个变体时有帮助；提示词正文本身保持纯文本。
 
-Compile the shared plan into this native skeleton; stages stay in action prose and do not
-require new headings, cuts, or generation calls. Preserve the source timeline and specify the
-final effect state before the closing lock.
+把共享规划编译进这个原生骨架；阶段留在动作描述里，不需要新的标题、切镜或生成调用。保留源时间线，并在收尾锁定之前写明最终的特效状态。
 
-Skeleton:
+骨架：
 
 ```
 @source: ...
@@ -429,57 +239,30 @@ and identity unchanged; everything else identical to the source.>
 SFX [and source dialogue] only: <specific, ordered sounds>.
 ```
 
-## Voice (match the user)
+## 语气（匹配用户）（Voice (match the user)）
 
-Terse and kinetic; physically precise (exact materials, behaviors, scale); director-minded (lenses,
-angles, moves); non-generic (no "beautiful / stunning / amazing" — texture words instead);
-emotionally controlled. Don't inflate, don't soften, don't explain what things "represent." Same
-anti-slop discipline as `higgsfield-seedance.md` § Voice Rewrite.
+简洁、有动感；物理上精确（确切的材料、行为、尺度）；导演思维（镜头、角度、运动）；不泛泛（不用“beautiful / stunning / amazing”，改用质感词）；情绪克制。不夸大、不软化、不解释东西“代表”什么。和 `higgsfield-seedance.md` § Voice Rewrite 同样的反套话纪律。
 
-## Seedance 2.0 input limits (reference)
+## Seedance 2.0 输入限制（参考）（Seedance 2.0 input limits (reference)）
 
-Images ≤ 9; videos ≤ 3 items, total ≤ 15s; audio ≤ 3 MP3s, total ≤ 15s; total mixed inputs ≤ 12;
-generation duration 4–15s. A source clip plus a texture-reference photo fits easily. If a request
-needs more inputs than allowed, flag it and say what to prioritize. (Verified against
-`model-specs.json` → `seedance_2_0`: `media_roles` include `video`, `image`, `audio`,
-`start_image`, `end_image`; `4k` is a legal resolution in `mode=std`.)
+图像 ≤ 9；视频 ≤ 3 个，合计 ≤ 15 秒；音频 ≤ 3 个 MP3，合计 ≤ 15 秒；混合输入合计 ≤ 12；生成时长 4–15 秒。一段源片段加一张质感参考照片轻松放得下。如果请求需要的输入超过允许的数量，指出来并说明优先放什么。（已对照 `model-specs.json` → `seedance_2_0` 核实：`media_roles` 包括 `video`、`image`、`audio`、`start_image`、`end_image`；`4k` 在 `mode=std` 下是合法分辨率。）
 
-## Structure patterns to internalize (style reference only — do not reproduce)
+## 要内化的结构模式（只作风格参考，不要照搬）（Structure patterns to internalize (style reference only — do not reproduce)）
 
-- **Add-element:** `@source (preserve all, add effect)` → `specs + 4K + NON-IP + SFX only` →
-  `continuous shot, preserved performance, effect igniting/creeping with plate interaction, subject
-  unfazed` → `lock-down clause` → `SFX`.
-- **Environment-swap:** `@source (preserve subject + vehicle + rig + motion, replace world)` →
-  `specs + 4K + grade for the new world` → `continuous shot from the same rig, new world streaming
-  past with parallax, relight to match or relight-all` → `lock-down` → `SFX`.
-- **Creature-on-landmark with timed zoom:** `@source` + `@creature (texture ref)` → `specs + 4K +
-  NON-IP + SFX and source dialogue only` → `continuous locked shot, giant photoreal creature
-  integrated on the landmark, subject delivering to camera` → `at ~T / on the line "…", smooth
-  push-in keeping the landmark in frame, creature turns to camera` → `lock-down` → `SFX and
-  dialogue`.
-- **Prepended reveal intro (transform + outward move + preserved performance):** `@source (preserve
-  subject + performance + lip-sync + framing, add element, prepend a telephoto intro)` + `@creature
-  (texture ref)` → `specs + 4K + NON-IP + SFX and source dialogue only` → `open tight/telephoto on
-  the added element in isolation for the intro beat, hard or smooth zoom-out at ~T landing on a 100%
-  match of the source composition, then the preserved take plays with exact lip-sync to the quoted
-  line while the added element continues behind` → `budget check (intro + remaining = total)` →
-  `lock-down` → `SFX and dialogue`.
+- **加元素：**`@source (preserve all, add effect)` → `specs + 4K + NON-IP + SFX only` → `continuous shot, preserved performance, effect igniting/creeping with plate interaction, subject unfazed` → `lock-down clause` → `SFX`。
+- **换环境：**`@source (preserve subject + vehicle + rig + motion, replace world)` → `specs + 4K + grade for the new world` → `continuous shot from the same rig, new world streaming past with parallax, relight to match or relight-all` → `lock-down` → `SFX`。
+- **地标上的生物加计时变焦：**`@source` + `@creature (texture ref)` → `specs + 4K + NON-IP + SFX and source dialogue only` → `continuous locked shot, giant photoreal creature integrated on the landmark, subject delivering to camera` → `at ~T / on the line "…", smooth push-in keeping the landmark in frame, creature turns to camera` → `lock-down` → `SFX and dialogue`。
+- **加在前面的揭示开场（变换 + 向外运动 + 保留的表演）：**`@source (preserve subject + performance + lip-sync + framing, add element, prepend a telephoto intro)` + `@creature (texture ref)` → `specs + 4K + NON-IP + SFX and source dialogue only` → `open tight/telephoto on the added element in isolation for the intro beat, hard or smooth zoom-out at ~T landing on a 100% match of the source composition, then the preserved take plays with exact lip-sync to the quoted line while the added element continues behind` → `budget check (intro + remaining = total)` → `lock-down` → `SFX and dialogue`。
 
-A ready-to-fill skeleton plus worked variants live in
-`template-footage-vfx-transform.md`.
+可直接填写的骨架和示例变体在 `template-footage-vfx-transform.md`。
 
 ---
 
-## Related Skills
+## 相关模块（Related Skills）
 
-- `higgsfield-seedance.md` — the parent Seedance director: six-slot formula, Prompt-Craft
-  Laws, engine rules, content-filter preflight linter, and the in-clip Transformation prompt mode
-- `higgsfield-audio.md` — audio-as-conditioning, `[AUDIO: Xs]` dialogue/SFX, lip-sync (the
-  timed-zoom-to-dialogue and source-dialogue-preservation cases)
-- `higgsfield-camera.md` — video reference, the Load-Bearing Rule, camera-move vocabulary
-  (handheld preservation + moves you never filmed)
-- `higgsfield-gpt-image-2.md` — generate the creature/texture reference image and the
-  transformed start frame
-- `higgsfield-facs.md` — muscle-level facial control when a dialogue-preserving transform
-  also needs an exact expression
-- `higgsfield-seedance-vfx-dialogue-timing.md` · `higgsfield-seedance-vfx-first-frame.md` — the two procedures this skill leans on
+- `higgsfield-seedance.md`：上层 Seedance 导演：六槽公式、提示词写作规律、引擎规则、内容过滤预检 lint，以及片内变形提示词模式
+- `higgsfield-audio.md`：音频作为条件输入、`[AUDIO: Xs]` 对白/音效、口型同步（计时变焦对台词和保留源对白的情况）
+- `higgsfield-camera.md`：视频参考、Load-Bearing Rule、运镜词汇（保留手持 + 你从没拍过的运动）
+- `higgsfield-gpt-image-2.md`：生成生物/质感参考图和变换后的起始画面
+- `higgsfield-facs.md`：保留对白的变换还需要精确表情时，肌肉级的面部控制
+- `higgsfield-seedance-vfx-dialogue-timing.md`：本模块依赖的计时步骤

@@ -1,92 +1,68 @@
-# Template: Fashion / Editorial
+# 模板：时尚 / 大片
 
-## Genre/Use-Case
-Fashion lookbook content, editorial-style portraits, outfit studies, runway aesthetics, and style-forward character introductions.
+## 题材与用途
+时尚 lookbook、杂志风人像、服装研究、秀场质感，以及以造型为主的人物登场。
 
-## When to use this template
-User asks for fashion content, editorial, lookbook, costume study, model portrait, or any prompt where clothing/aesthetic is the hero.
+## 何时使用
+用户要时尚内容、大片、lookbook、服装设计研究、模特肖像，或任何服装与造型是主角的提示词。
 
-## Recommended model
-**Soul 2.0** for portrait-first fashion (best with Moodboard + Color Transfer). **Nano Banana Pro** for maximum sharpness and detail. **Kling 3.0** for video with slow, deliberate camera movement.
+## 推荐模型
+人像为主的时尚静帧用 **Soul 2.0**。要最高锐度和细节用 **Nano Banana Pro**。视频用 **Seedance 2.5** `omni_reference`，配缓慢、克制的运镜。
 
-## Narrative planning
+## 叙事规划
 
-For video, use [shared narrative planning](narrative-planning.md).
-Assets, goal, global audiovisual/space, behavior, stages, continuity, final frame, and
-constraints are semantic planning layers; retain the short and Identity/Motion formats.
-Let a garment reveal, turn, or settled pose define a stage, then allocate readable time
-for fabric motion and response. No preset stage count or equal durations; a single
-continuous walk may suffice. Carry outfit, pose, direction, and lighting into the intended
-final composition. Example timings and shot counts are illustrative, not mandatory.
-Static portraits and lookbook grids retain their asset formats and layout options.
+视频按 [共享叙事规划](narrative-planning.md) 规划。资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面和约束是语义规划层；短提示词与工作室块结构都保留。由一次服装展示、一次转身或一个定住的姿势决定阶段，再为面料运动和反应分配可读的时间。不预设阶段数，不平均分时；一段连续行走也可能就够了。服装、姿势、方向和光照一直带到预定的结尾构图。示例时长和镜头数只是示意。静态肖像和 lookbook 网格保留各自的资产格式与版式选项。
 
-## Example prompt
+## 示例提示词
 
-### Identity Block
+### 身份（写进资产参考）
 ```
-The Soul ID character — angular jawline, dark skin, close-cropped natural hair.
-Wearing a structured black wool overcoat, wide-leg trousers, white minimalist sneakers.
-Silver chain necklace. Hands in pockets.
+棱角分明的下颌，深色皮肤，贴头皮的短自然卷发。
+穿一件挺括的黑色羊毛大衣、阔腿裤、白色极简球鞋。
+银色链条项链。双手插在口袋里。
 ```
 
-### Motion Block
+### 动作
 ```
-She walks slowly toward camera down an empty concrete corridor.
-Camera: Dolly Out — retreating as she advances, never quite letting her fill the frame.
-Style: Cinematic. High contrast, desaturated cool tones, single overhead strip light
-casting a hard shadow. 2.35:1 anamorphic.
-```
-
-### Combined prompt (for non-Soul ID use)
-```
-Model: Kling 3.0
-Aspect: 16:9 | Duration: 8s | Style: Cinematic
-
-A woman with angular jawline, dark skin, and close-cropped natural hair walks slowly
-toward camera down an empty concrete corridor. She wears a structured black wool overcoat,
-wide-leg trousers, white minimalist sneakers. Silver chain necklace. Hands in pockets.
-Camera: Dolly Out — retreating as she advances.
-Style: Cinematic. High contrast, desaturated cool tones, single overhead strip light. 2.35:1.
+她沿着空荡的水泥走廊缓慢走向镜头。
+运镜：Dolly Out，她前进时镜头后退，始终不让她占满画面。
+风格：电影感。高反差，去饱和的冷色调，头顶一条灯带打出硬阴影。2.35:1 变形宽银幕。
 ```
 
-## Annotation
+### 合并写法（无资产参考时）
+```
+模型：Seedance 2.5（omni_reference）
+画幅：16:9｜时长：8 秒｜风格：电影感
 
-| Prompt element | Why it works |
+一个下颌棱角分明、深色皮肤、贴头皮短自然卷发的女人，沿着空荡的水泥走廊缓慢走向镜头。她穿挺括的黑色羊毛大衣、阔腿裤、白色极简球鞋，戴银色链条项链，双手插在口袋里。
+运镜：Dolly Out，她前进时镜头后退。
+风格：电影感。高反差，去饱和的冷色调，头顶一条灯带。2.35:1。
+```
+
+## 注释
+
+| 提示词元素 | 为什么有效 |
 |---------------|-------------|
-| "angular jawline, dark skin, close-cropped natural hair" | Specific face descriptors — not "beautiful model" |
-| "structured black wool overcoat" | Material + color + silhouette — the model renders fabric better with material names |
-| "wide-leg trousers, white minimalist sneakers" | Full outfit top-to-bottom grounds the character |
-| "Silver chain necklace" | One accessory detail adds realism without over-specifying |
-| "walks slowly toward camera" | Deliberate pace = editorial energy, not action energy |
-| "Dolly Out — retreating as she advances" | Creates visual tension — subject and camera in opposition |
-| "single overhead strip light casting a hard shadow" | Fashion-specific lighting — creates drama with minimal setup |
-| "2.35:1 anamorphic" | Ultra-wide = editorial cinema feel, horizontal bokeh |
+| “棱角分明的下颌，深色皮肤，贴头皮的短自然卷发” | 具体的面部描述，不是“漂亮的模特” |
+| “挺括的黑色羊毛大衣” | 材质加颜色加廓形，写出材质名模型面料渲染更好 |
+| “阔腿裤、白色极简球鞋” | 从头到脚的完整造型让角色落地 |
+| “银色链条项链” | 一个配饰细节增加真实感，又不过度指定 |
+| “缓慢走向镜头” | 克制的步速是大片的能量，不是动作戏的能量 |
+| “Dolly Out，她前进时镜头后退” | 主体与镜头相向，制造视觉张力 |
+| “头顶一条灯带打出硬阴影” | 时尚类灯光：最少的布置制造戏剧感 |
+| “2.35:1 变形宽银幕” | 超宽画幅带来杂志电影感和横向焦外 |
 
-## Negative constraints to include
-- **Face/Identity**: Separate Identity Block (appearance, clothing) from Motion Block (walk, camera). This prevents face drift during camera movement.
-- **Texture/Lighting**: Name the light source specifically. "Good lighting" produces nothing.
-- **Temporal/Consistency**: For a series, copy-paste exact clothing/appearance description across all prompts.
+## 要加入的约束
+- **面部/身份：**外观与服装放资产参考，行走与运镜放本段，避免运镜时脸漂移。
+- **质感/光照：**具体写出光源。“好的灯光”什么也生成不出来。
+- **时间/一致性：**做系列时，所有提示词原样复用同一套服装与外观描述。
 
-## Common mistakes
-1. **"Beautiful model in stylish outfit"** — every word is unmeasurable. Name the clothing items, describe the face, specify the light.
-2. **Too much motion for editorial** — fashion is about deliberate, minimal movement. Walk, turn, stop. Not run, jump, spin.
+## 常见错误
+1. **“穿时髦衣服的漂亮模特”**：每个词都无法测量。写出单品名称、描述脸、指定光。
+2. **大片里动作太多**：时尚靠克制、极少的动作。走、转、停，不是跑、跳、旋转。
 
-## Variations
-- **Street style**: Handheld camera, natural light, urban environment, J-Magazine Mixed Media preset
-- **High-fashion surreal**: Abstract style, Creative Tilt Lens in Cinema Studio, unusual environment
-- **Lookbook grid**: Cinema Studio Grid Generation (2×2 or 4×4) with different outfit variations
-- **Social/vertical**: 9:16, Arc camera slowly around subject, warm golden light
-
-## Cinema Studio 3.0 (Business/Team Plan)
-
-**Genre mapping:** Drama (for editorial narrative) or General (for lookbook)
-**Prompt length target:** 40–60 words (Lifestyle/Social — lead with Action)
-**Speed Ramp:** Slow-mo for fabric movement, Auto for walk sequences
-
-**@reference workflow:**
-```
-@Image1 as the model's character reference. She turns slowly on a rooftop at golden hour,
-silk jacket catching the wind. Camera: smooth 180-degree orbit.
-Style: warm tones, shallow depth of field, anamorphic.
-Audio: fabric rustling, distant city ambience.
-```
+## 变体
+- **街拍：**手持运镜，自然光，城市环境，杂志拼贴感的色彩与排版
+- **超现实高定：**抽象风格，倾斜移轴镜头感，不寻常的环境
+- **Lookbook 网格：**用图像模型的多格输出（2×2 或 4×4）做不同造型变体
+- **社媒竖屏：**9:16，Arc 运镜缓慢绕主体，暖金色光

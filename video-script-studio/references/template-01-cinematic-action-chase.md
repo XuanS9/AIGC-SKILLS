@@ -1,85 +1,57 @@
-# Template: Cinematic Action Chase
+# 模板：电影感动作追逐
 
-## Genre/Use-Case
-High-energy pursuit sequences — foot chases, vehicle pursuits, rooftop escapes, anything with sustained kinetic movement and urgency.
+## 题材与用途
+高能量追逐段落：徒步追逐、载具追逐、屋顶逃跑，以及任何持续高速运动、带紧迫感的戏。
 
-## When to use this template
-User asks for a chase scene, pursuit, escape, running sequence, parkour, or any prompt where the primary energy is "someone moving fast through a space while something is at stake."
+## 何时使用
+用户要追逐戏、追捕、逃跑、奔跑段落、跑酷，或任何核心能量是“有人带着利害关系高速穿过一个空间”的提示词。
 
-## Recommended model
-**Kling 3.0** for character-focused chases (face stays consistent, native audio for footsteps/impacts). **Sora 2** for large-scale or vehicle chases where environment physics matter more than character fidelity.
+## 推荐模型
+**Seedance 2.5** `omni_reference`（默认；单条最长 30 秒，角色/场景参考按职责绑定）。2.5 最高 1080p；只有交付需要 4K 时才用 **Seedance 2.0**。
 
-## Narrative planning
+## 叙事规划
 
-Use [shared narrative planning](narrative-planning.md). Plan assets,
-goal, global audiovisual/space, behavior, stages, continuity, final frame, and constraints
-as semantic layers, then express them in this short prompt or Identity/Motion format.
-For a chase, let obstacles, responses, and changed escape routes define stages; allocate
-time afterward for readable motion and consequences. No preset stage count or equal time.
-Carry direction, speed, obstacle state, and identity to the final escape/held-danger frame.
-A stage need not be a cut; retain the action-load and one-camera-per-shot limits below.
-Example durations and event counts are illustrative, not mandatory; platform limits apply.
+使用 [共享叙事规划](narrative-planning.md)。资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面和约束作为语义层规划，再表达成本页的短提示词或工作室块结构。追逐戏由障碍、反应和改变后的逃跑路线决定阶段；之后再为可读的运动和后果分配时间。不预设阶段数，不平均分时。方向、速度、障碍状态和身份一直带到最后的脱身或险境画面。阶段不一定是切镜；下面的动作负荷和一镜一运动限制仍然适用。示例时长和事件数只是示意，平台限制照常适用。
 
-## Example prompt
+## 示例提示词
 
 ```
-Model: Kling 3.0
-Aspect: 16:9 | Duration: 10s | Style: Cinematic
+模型：Seedance 2.5（omni_reference）
+画幅：16:9｜时长：10 秒｜风格：电影感
 
-A woman in a tactical jacket sprints through a rain-soaked night market,
-weaving between stalls and startled vendors. Steam rises from food carts.
-Neon signs fracture in every puddle.
-Camera: Action Run — low behind her, matching pace.
-A metal gate drops ahead. She slides under it without breaking stride.
-Style: Cinematic. Cold blue shadows, warm amber market light, high contrast. 16:9.
+一名穿战术夹克的女人冲过被雨浇透的夜市，在摊位和受惊的摊贩之间穿行。小吃车冒着蒸汽，霓虹招牌在每个水洼里碎成光斑。
+运镜：Action Run，低机位跟在她身后，速度一致。
+前方一扇铁闸落下，她不减速，从闸下滑过。
+风格：电影感。冷蓝阴影，暖琥珀色的市场灯光，高反差。16:9。
 ```
 
-## Annotation
+## 注释
 
-| Prompt element | Why it works |
+| 提示词元素 | 为什么有效 |
 |---------------|-------------|
-| "tactical jacket" | Specific clothing grounds the character — not "a woman running" |
-| "rain-soaked night market" | Wet surfaces + neon = visual complexity the model renders well |
-| "weaving between stalls and startled vendors" | Active verbs (weaving, startled) give the model motion direction |
-| "Steam rises from food carts" | Atmospheric motion fills dead space in the frame |
-| "Neon signs fracture in every puddle" | Reflection cue — models respond to reflective surface prompts |
-| "Camera: Action Run" | Exact preset name — model knows this movement pattern |
-| "low behind her, matching pace" | Clarifies the camera's spatial relationship to the subject |
-| "A metal gate drops ahead. She slides under it" | One clear obstacle + one clear response = clean action beat |
-| "Cold blue shadows, warm amber market light" | Dual-color grade gives the model a specific palette, not "cinematic" generically |
+| “战术夹克” | 具体服装让角色落地，而不是“一个奔跑的女人” |
+| “被雨浇透的夜市” | 湿表面加霓虹，是模型擅长渲染的画面复杂度 |
+| “在摊位和受惊的摊贩之间穿行” | 主动动词（穿行、受惊）给模型运动方向 |
+| “小吃车冒着蒸汽” | 氛围运动填满画面里的空白处 |
+| “霓虹招牌在每个水洼里碎成光斑” | 反射线索，模型对反光表面的提示反应好 |
+| “Action Run” | 准确的运镜预设名，见 `higgsfield-camera.md` |
+| “低机位跟在她身后，速度一致” | 说清摄影机与主体的空间关系 |
+| “铁闸落下，她从闸下滑过” | 一个清楚的障碍加一个清楚的应对，就是干净的动作节拍 |
+| “冷蓝阴影，暖琥珀色的市场灯光” | 双色调给模型具体配色，而不是泛泛的“电影感” |
 
-## Negative constraints to include
-- **Body/Motion**: Limit to 1 primary action + 1 secondary. Don't ask for a chase + fight + explosion in one clip.
-- **Temporal/Consistency**: Use one camera movement per shot. Don't combine Action Run + Bullet Time in a single generation — chain them as separate clips.
-- **Face/Identity**: If using Soul ID, separate identity description from motion description.
+## 要加入的约束
+- **身体/动作：**限 1 个主动作加 1 个次动作。不要在一条里同时要追逐、打斗和爆炸。
+- **时间/一致性：**一镜一个运镜。不要在一次生成里把 Action Run 和 Bullet Time 叠在一起，拆成两条再接。
+- **面部/身份：**人物身份放在资产参考里，本段只写动作。
 
-> **Identity/Motion separation:** If a person appears in this shot and you're using Soul ID, split the prompt into Identity Block and Motion Block per the rule in `higgsfield-soul`. See template 06 (Portrait/Character Intro) for the full pattern.
+> **身份与动作分离：**画面里有人物时，身份交给资产参考，这里只写动作。完整写法见模板 06（人物登场）。
 
-## Common mistakes
-1. **Too many camera switches in one prompt** — "Action Run then Whip Pan then Bullet Time" creates visual soup. One camera per clip, chain in post.
-2. **Generic camera language** — "camera follows dramatically" does nothing. Name the exact preset.
+## 常见错误
+1. **一条提示词里切太多次运镜**：“先 Action Run 再 Whip Pan 再 Bullet Time”会变成画面杂烩。一条一个运镜，后期再接。
+2. **运镜语言太泛**：“镜头戏剧性地跟随”没有任何作用。写出准确的预设名。
 
-## Variations
-- **Grittier/handheld feel**: Swap camera to Handheld, add "shaky, documentary urgency" to style
-- **Vehicle chase**: Use Sora 2 + Car Chasing camera preset, describe the vehicles specifically
-- **Vertical/social format**: Change to 9:16, keep Action Run but note "close framing, face visible"
-- **Sci-fi chase**: Add zero gravity or corridor environment, swap to FPV Drone camera
-
-## Cinema Studio 3.0 (Business/Team Plan)
-
-**Genre mapping:** Action
-**Prompt length target:** 60–100 words (Drama/Narrative range — lead with Scene)
-**Speed Ramp:** Bullet Time for impact moments, Ramp Up for acceleration
-
-**@reference workflow:**
-```
-Reference @Video1 for chase choreography and pacing.
-A woman sprints through a rain-soaked night market, sliding under a metal gate.
-Gravel sprays, steam scatters from food carts. Camera: tracking, low angle.
-Style: cold blue shadows, warm amber market light.
-```
-
-## See also
-
-A Seedance 2.0 worked example for this genre (Reference-Based mode) ships in
-`prompt-examples.md` § Action → Underground Parking Pursuit.
+## 变体
+- **更粗粝的手持感：**运镜换成 Handheld，风格加“晃动的纪实紧迫感”
+- **载具追逐：**Seedance 2.5 加 Car Chasing 运镜语言，具体描述车辆
+- **竖屏/社媒：**改 9:16，保留 Action Run，注明“近景构图，露出脸”
+- **科幻追逐：**加零重力或走廊环境，运镜换成 FPV Drone

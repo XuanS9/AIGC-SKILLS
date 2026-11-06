@@ -1,65 +1,45 @@
-# Template: Seedance 2.5 Omni-Reference Brief
+# 模板：Seedance 2.5 多参考（omni_reference）提示词
 
-The paste-ready skeleton for a **Seedance 2.5 `omni_reference`** generation — several
-characters, props, scenes, motion, and audio references combined into one staged clip.
+> **工作室格式（Studio form）。**本文件记录 Higgsfield 原版英文块模板，代码块里的英文骨架与示例保留原文作对照。工作室交付用同样的块顺序、中文块标签与字段：`[角色]` `[道具]` `[场景]` `[动作与声音参考]` `[生成目标]` `[具体情节]`（段头 `起s-止s｜景别｜视场角N°｜运镜`，分项 `画面/运镜/动作/表情/听者/声音/→ 结束`）`[视觉风格]` `[镜头]` `[声音]`（对白为计时行，第一秒定位 `{Hm.}`）`[保持一致]`，只有对白原句用英文。英文块标签在 `director_contract_lint.py` 中报 FAIL。格式归属：[跨类型导演模板 §1](template-general-director-2-5.md#1-块结构higgsfield--dreamina-seedance-25-标准)。
 
-Doctrine: `higgsfield-seedance-2-5.md`. Long-form mode templates
-(editing, extension, one-click, transitions, blockouts): the same directory's
-`higgsfield-seedance-2-5-mode-playbooks.md`.
+这是 **Seedance 2.5 `omni_reference`** 生成的可粘贴骨架：把多个角色、道具、场景、动作与音频参考合进一条分阶段的片段。
 
-## When to use this template
+规则来源：`higgsfield-seedance-2-5.md`。各模式的长模板（编辑、延伸、一键、转场、白模）见同目录的 `higgsfield-seedance-2-5-mode-playbooks.md`。
 
-- For every current-project Seedance 2.5 video generation: zero, one or multiple reference materials. One image remains an attribute reference, never a starting frame.
-- Two or more named subjects must not swap appearance, clothing, or props
-- The clip runs longer than a single continuous beat (stage it)
-- For editing or extension, use the source as a video reference when the task permits regeneration; if preserving the original timeline exactly is essential, verify the native editing/extension capability separately.
+## 何时使用
 
-When the user selects a different model, check its supported media roles before using this
-Seedance 2.5 template. For zero references, describe the subject and space in words
-without inventing slots. For a
-single reference, use a compact version of the same role map; do not convert it to a
-frame-driven workflow. Declare only actual materials and real bound slots.
+- 本项目每一次 Seedance 2.5 视频生成：零个、一个或多个参考素材都适用。单张图仍只作属性参考，从不当起始帧。
+- 两个及以上有名字的主体不能互换外观、服装或道具。
+- 片段长于一个连续节拍（需要分阶段）。
+- 编辑或延伸：任务允许重新生成时，把源视频作为视频参考；必须精确保留原时间线时，另行核实原生编辑/延伸能力。
 
-## Platform settings (not prompt text)
+用户选了其他模型时，先核对该模型支持的媒体职责再用本模板。零参考时用文字描述主体与空间，不虚构槽位。单参考时用同一职责映射的精简版，不改成首帧驱动流程。只声明真实素材和真实绑定的槽位。
 
-`[OFFICIAL — platform, snapshot 2026-08-07]` Set these in the UI / API, never in the prose:
+## 平台设置（不写进提示词）
 
-| Setting | Value |
+`[OFFICIAL — platform, snapshot 2026-08-07]` 在界面或 API 里设置，正文不写：
+
+| 设置 | 取值 |
 |---|---|
 | `mode` | `omni_reference` |
-| `duration` | 4–30 s |
-| `resolution` | `480p` (drafts) or `720p` (2.5 has no 1080p/4K lane) |
-| aspect ratio | `auto` · `21:9` · `16:9` · `4:3` · `1:1` · `3:4` · `9:16` |
-| `generate_audio` | `true` unless the deliverable is silent |
+| `duration` | 4–30 秒 |
+| `resolution` | `480p`（草稿）、`720p` 或 `1080p`（2.5 没有 4K） |
+| 画幅 | `auto` · `21:9` · `16:9` · `4:3` · `1:1` · `3:4` · `9:16` |
+| `generate_audio` | 除非成片要求静音，否则为 `true` |
 
-Preflight before spending: `python3 scripts/seedance_lint.py --preflight --model seedance_2_5 "<prompt>"`
+花额度前先预检：`python3 scripts/seedance_lint.py --preflight --model seedance_2_5 "<prompt>"`
 
 ---
 
-## The skeleton
+## 骨架
 
-Use [shared narrative planning](narrative-planning.md) before filling
-this native block format. The eight layers are semantic planning: assets/references,
-goal, global audiovisual and space, behavior/rhythm, stages, continuity, final frame,
-and constraints. Map them to the fields below; short prompts need no extra headings.
+填写这个原生块格式前，先按 [共享叙事规划](narrative-planning.md) 规划。八层是语义规划：资产/参考、目标、全局视听与空间、行为/节奏、阶段、连续性、结尾画面、约束。把它们映射到下面的字段；短提示词不需要额外标题。
 
-Determine stages from events, causality, reveals, or state changes, then choose camera
-coverage and allocate time for actions, responses, dialogue, and transitions. No preset
-stage count or equal time. A stage is not automatically a cut or a generation. Preserve
-confirmed story/ending and inherited states; check the total against the legal runtime.
+阶段由事件、因果、揭晓或状态变化决定，再选镜头覆盖，为动作、反应、对白和转场分配时间。不预设阶段数，也不平均分时。阶段不自动等于一次切镜或一次生成。保留已确认的剧情、结局和继承状态，并对照合法时长核对总长。
 
-The `@Image 1`, `@Video 1` and `@Audio 1` tokens below are **syntax examples only**.
-If the user says they have references but no actual files or platform slots can be
-inspected, use descriptive role labels in the copyable prompt (e.g. “人物参考图”,
-“动作参考视频”, “环境声参考音频”) and keep exact slot mapping outside as pending.
-Never infer `@Image 1` merely because the user mentioned one picture. Only write
-an `@` token after checking its real attachment and current clip's slot mapping.
-A source video may show several subjects: it supplies only the requested motion or
-camera property, not extra actors or animals in the output. Unknown assets stay
-“待核验/待绑定”; do not state that they are bound in prose or the prompt.
+下面的 `@Image 1`、`@Video 1`、`@Audio 1` 只是**语法示例**。用户说有参考，但实际文件或平台槽位无法查看时，复制正文里用描述性职责名（如“人物参考图”“动作参考视频”“环境声参考音频”），确切的槽位映射写在块外并标待核。不能因为用户提到一张图就推定 `@Image 1`。只有核实了真实附件和本片段的槽位映射，才写 `@` 记号。源视频可能有多个主体：它只提供所需的动作或运镜属性，不在成片里多出演员或动物。未知素材保持“待核验/待绑定”，正文和提示词里不说已绑定。
 
-Fill the bracketed fields. **Delete any block the shot does not need** — an empty block is
-noise, not structure. Repeat the stage block only as required by the planned changes.
+填写方括号字段。**镜头用不到的块直接删掉**，空块是噪音，不是结构。阶段块只按规划的变化重复。
 
 ```
 [Characters]
@@ -121,14 +101,13 @@ and audio relationships> consistent throughout; name the event that authorizes a
 <Task-specific reference exclusions and deviation prevention; keep platform settings separate>.
 ```
 
+原版字段与工作室块的对应：`[Characters]`→`[角色]`，`[Props]`→`[道具]`，`[Scenes]`→`[场景]`，`[Motion and Audio]`→`[动作与声音参考]`，`[Generation Goal]`→`[生成目标]`，`[Stage n]` 与 `[Behavior and Rhythm]`→`[具体情节]` 的计时段，`[Visual Style]`→`[视觉风格]`，`[Camera]`→`[镜头]`，`[Audio]`→`[声音]`，`[Maintain Consistency]`、`[Final Frame]`、`[Key Constraints]`→`[保持一致]` 与最后一段的 `→ 结束：`。`[Subject Profile]` 在工作室格式里不单列，跨场景的固定信息归资产总表。
+
 ---
 
-## Filled example
+## 填写示例
 
-Two characters, one prop, one location, one motion reference, three stages — illustrative
-counts for this example, not mandatory. Here the event boundaries are preparation,
-wrapping, and handoff. Estimate time for each performance after planning; three stages
-neither imply equal durations nor a fixed runtime.
+两个角色、一个道具、一个场景、一个动作参考、三个阶段，这些数量只属于本例，不是要求。本例的事件边界是准备、包装、交接。规划后再为每段表演估时；三个阶段既不意味着等长，也不意味着固定时长。
 
 ```
 [Characters]
@@ -191,31 +170,33 @@ scissors' position, and bouquet state consistent throughout. The bouquet remains
 <Assistant> in Stage 3 before being placed on the shelf; preserve this explicit handoff.
 ```
 
+本例按工作室格式改写时：两人各写身高，第一段是约 1 秒的定位全景，`[声音]` 写 `0s-1s｜花店老板轻声：{Hm.}`，`(no music)` 改为末尾 `NO BGM。`。
+
 ---
 
-## Checks before sending
+## 发送前检查
 
-- [ ] Every material has a role **and** an exclusion
-- [ ] No `@Images 1 through N define N characters` — one line per subject
-- [ ] Every prop has an explicit owner or resting location; handoffs have named events
-- [ ] Each stage has **one** primary change, visible response, and explicit inherited/end state
-- [ ] Stages follow events, causality, reveals, or state changes; cuts have a viewing purpose
-- [ ] Timing follows performance needs, covers the declared runtime, and includes transitions
-- [ ] No copied stage count or equal-time quota; the final frame matches the confirmed ending
-- [ ] No age words anywhere (`higgsfield-seedance-engine-rules.md` rule 1)
-- [ ] Positive phrasing only — no `negative:` list, no bare negation stack
-- [ ] Dialogue lives in the `[Audio]` block, in `{}`, and nowhere else
-- [ ] Resolution is 480p or 720p — 2.5 has no higher lane
-- [ ] `seedance_lint.py --preflight --model seedance_2_5` clean
+- [ ] 每份素材都有职责**和**排除项
+- [ ] 不写 `@Images 1 through N define N characters`，每个主体一行
+- [ ] 每个道具都有明确归属或放置位置；交接有具名事件
+- [ ] 每个阶段只有**一个**主要变化、可见反应和明确的继承/结束状态
+- [ ] 阶段跟随事件、因果、揭晓或状态变化；每次切镜有观看目的
+- [ ] 时间按表演需要分配，覆盖声明时长，并计入转场
+- [ ] 不照搬阶段数或等时配额；结尾画面与已确认结局一致
+- [ ] 全文不写年龄词（`higgsfield-seedance-engine-rules.md` 第 1 条）
+- [ ] 只用正向表述：不写 `negative:` 清单，不堆裸否定
+- [ ] 对白只在音频块里、写在 `{}` 中（工作室格式：`[声音]` 的计时对白行）
+- [ ] 分辨率为 480p、720p 或 1080p，2.5 没有 4K
+- [ ] `seedance_lint.py --preflight --model seedance_2_5` 无问题
 
-## Related
+## 相关文件
 
-- `higgsfield-seedance-2-5.md` — the dialect this template implements
-- `higgsfield-seedance-2-5-mode-playbooks.md` — edit / extend / one-click / transitions
-- `template-multi-character-anchor.md` — the 2.0 form of cross-character anchoring
-- `template-global-style-prefix.md` — the connected-shotlist style prefix
-- `higgsfield-acting.md` — what to write when a stage needs performance
+- `higgsfield-seedance-2-5.md`：本模板实现的写法规则
+- `higgsfield-seedance-2-5-mode-playbooks.md`：编辑、延伸、一键、转场
+- `template-multi-character-anchor.md`：跨角色锚定的 2.0 写法
+- `template-global-style-prefix.md`：连贯分镜表的风格前缀
+- `higgsfield-acting.md`：阶段需要表演时写什么
 
-## Project convention — cross-genre composition
+## 项目约定：跨类型编排
 
-For this project's staged Seedance 2.5 prompts, also read [跨类型导演模板](template-general-director-2-5.md) alongside [shared narrative planning](narrative-planning.md). Its eight layers organize meaning; use the Chinese scaffold when that is the requested deliverable, or map them into this native omni-reference format. Existing material roles, fidelity grades, mode routing, and platform checks remain applicable. Determine events and state changes before stage count and timing; six five-second stages and continuous high-speed effects are illustrative choices, not universal requirements.
+本项目的分阶段 Seedance 2.5 提示词，同时读 [跨类型导演模板](template-general-director-2-5.md) 与 [共享叙事规划](narrative-planning.md)。八层用于组织含义；交付按中文块结构，或在用户指定时映射进本原生多参考格式。已有的素材职责、保真等级、模式路由和平台检查继续适用。先定事件与状态变化，再定阶段数和时长；六个五秒阶段和持续高速特效只是示例选择，不是通用要求。

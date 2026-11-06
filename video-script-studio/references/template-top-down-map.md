@@ -1,48 +1,22 @@
-# Template: Top-Down Floor Plan Pre-Visualization
+# 模板：俯视平面图预可视化
 
-Meta-prompt template for **Claude** (not Seedance). Generates a top-down
-floor plan + paste-ready Seedance blocking note in one pass — locks
-spatial geometry before any Seedance generation begins.
+写给**助手**（不是 Seedance）的元提示词模板。一次生成一张俯视平面图和一段可直接粘贴的 Seedance 站位说明，在任何 Seedance 生成开始前锁定空间几何。
 
-> **The map is for YOU. The prose is for the model.** The HTML artifact this
-> template renders is an authoring aid — you read it, you check the geometry
-> against your intent, and what travels into the Seedance prompt is the
-> **blocking note**. Never attach the floor plan itself as a reference image.
+> **地图是给你看的，文字是给模型看的。**本模板渲染的 HTML 只是写作辅助：你看它，对照意图检查几何关系，真正进入 Seedance 提示词的是**站位说明**。永远不要把平面图本身当参考图附上。
 >
-> That is not a style preference, it is the one thing the diagram method is
-> agreed on across sources: a staging reference shown to a video model is drawn
-> **front-on, from the camera's side, never top-down** — video models think in
-> frames, not floor plans, and a floor plan handed to one is geometry it has no
-> way to map onto a shot. Top-down is the right shape for *reasoning* about a
-> space and the wrong shape for *showing* one. Both facts are true at once, and
-> this template lives entirely on the reasoning side.
+> 这不是风格偏好，而是各个来源对图示法唯一一致的结论：给视频模型看的站位参考图要**从摄影机一侧正面画，绝不俯视**。视频模型按画面思考，不按平面图思考；交给它一张平面图，它没办法把这套几何映射到镜头上。俯视是*推理*空间的正确形态，却是*展示*空间的错误形态。两件事同时成立，本模板完全站在推理这一侧。
 >
-> **The showing side is `template-staging-reference.md`** — the front-on, colour-coded outline
-> drawing that IS attached to the generation, with the three-layer anti-bleed
-> architecture that makes it safe to attach. Read its measured caveat before promising
-> anyone it will pin positions.
+> **展示这一侧是 `template-staging-reference.md`**：正面视角、按颜色区分的轮廓线稿，确实会附在生成里，并配有让它安全可附的三层防串染结构。在向任何人承诺它能钉住位置之前，先读它的实测说明。
 
-## When to use this template
+## 何时使用
 
-Any multi-character or geometrically-complex shot where Seedance has
-historically picked the wrong spatial reassembly — door-entry shots,
-hallway-direction shots, two-character blocking that needs to hold
-across cuts. See `higgsfield-seedance-failure-modes.md`
-§ Spatial-awareness failures for the failure class this template
-prevents.
+任何多人或几何复杂的镜头，只要 Seedance 历来容易把空间拼错：进门镜头、走廊方向镜头、需要跨切镜保持的双人站位。本模板防止的失败类型见 `higgsfield-seedance-failure-modes.md` § Spatial-awareness failures。
 
-## Narrative handoff
+## 叙事交接
 
-Use [shared narrative planning](narrative-planning.md) when this
-map supports video. The eight semantic layers — assets, goal, global audiovisual/space,
-behavior, stages, continuity, final frame, constraints — inform the scene; this tool
-continues to output HTML plus blocking prose, supplying the spatial part of that plan.
-For moving blocking, identify event, causal, reveal, or state-change boundaries before
-allocating time; no preset stage count or equal durations. Show only the needed spatial
-states, with paths, triggers, contact, and final positions. A map state is not automatically
-a cut. Keep static floor-plan and scale functions intact, and send only prose to Seedance.
+这张地图服务视频时，用 [共享叙事规划](narrative-planning.md)。八个语义层（资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面、约束）为场景提供信息；本工具继续输出 HTML 加站位文字，提供规划里空间的那一部分。移动的站位要先找出事件、因果、揭晓或状态变化的边界，再分配时间；不预设阶段数，不平均分时。只画需要的空间状态，标出路径、触发、接触和最终位置。地图上的一个状态不自动等于一次切镜。保留静态平面图和比例尺功能，只把文字交给 Seedance。工作室交付时，站位说明编译进 `[具体情节]` 首段（定位秒）的 `画面：` 行和 `[保持一致]`。
 
-## Claude prompt template (paste-ready)
+## 助手提示词模板（可直接粘贴）
 
 ```
 Build a top-down floor plan for [SCENE]. Mark every character with
@@ -61,62 +35,34 @@ Render as an HTML artifact.
 Scene: [DESCRIPTION]
 ```
 
-Fill `[SCENE]` with the one-line scene title (e.g., "diner standoff").
-Fill `[DESCRIPTION]` with the full scene description — characters,
-location, action, mood. The richer the description, the better the
-spatial reassembly.
+`[SCENE]` 填一行场景标题（如“餐馆对峙”）。`[DESCRIPTION]` 填完整场景描述：角色、地点、动作、氛围。描述越丰富，空间拼合越准确。
 
-## What you get back
+## 你会得到什么
 
-- An HTML artifact rendering the top-down floor plan visually
-- A paste-ready blocking note formatted for direct copy into the
-  Seedance prompt body's Spatial Layout Block (see
-  `higgsfield-seedance.md` § Spatial Layout Block
-  for the block structure that consumes this output)
+- 一份把俯视平面图可视化渲染出来的 HTML
+- 一段可直接粘贴的站位说明，格式适合直接复制进 Seedance 提示词正文的空间布局块（接收这段输出的块结构见 `higgsfield-seedance.md` § Spatial Layout Block）
 
-## BAD / GOOD / GREAT
+## 差 / 好 / 很好
 
-**BAD:** Skipping pre-visualization. Write the Seedance prompt
-directly from the scene description; let Seedance pick the spatial
-reassembly. Result on multi-character shots: characters end up on the
-wrong sides of frame, walk through furniture, face the wrong direction.
+**差：**跳过预可视化。直接从场景描述写 Seedance 提示词，让 Seedance 自己拼空间。多人镜头的结果：角色站到画面错的一边、穿过家具、朝向不对。
 
-**GOOD:** Use this template, get the top-down map, eyeball the
-geometry, transcribe the relevant placement into the Seedance prompt
-manually. Spatial accuracy improves significantly. The transcription
-step introduces errors when geometry is complex.
+**好：**用本模板拿到俯视图，目测几何关系，再手动把相关位置抄进 Seedance 提示词。空间准确度明显提高。几何复杂时，抄写这一步会引入错误。
 
-**GREAT:** Use this template AND paste the blocking note Claude
-generates directly into the Seedance prompt's Spatial Layout Block.
-Zero transcription. The geometry Claude reasoned about and the
-geometry Seedance receives are identical. Iterate the floor plan in
-the Claude chat before locking — adjust positions, gaze lines, contact
-points until the map matches intent, then copy the blocking note over.
+**很好：**用本模板，**并且**把助手生成的站位说明直接贴进 Seedance 提示词的空间布局块。零抄写：助手推理的几何和 Seedance 收到的几何完全一致。锁定前在对话里反复调整平面图：改位置、视线、接触点，直到地图符合意图，再复制站位说明。
 
-## Locking prop scale to a landmark
+## 把道具尺度锁到地标上
 
-The map also locks a prop's **size and position relative to a fixed landmark**,
-so a large set-piece stays the same scale take after take. Pin the prop to a
-named landmark with an explicit size multiple and a shared sight-line:
+这张地图还能把道具的**尺寸和位置锁定在一个固定地标上**，让大型布景道具每次生成都保持同样的尺度。用明确的尺寸倍数和共同视线，把道具钉在一个具名地标上：
 
 ```
-Mark the fire hydrant. Lock the skydancer to its right — two times a person's
-height, standing on the same line as the hydrant.
+标出消防栓。把充气人偶锁在它右侧，高度是一个人身高的两倍，和消防栓站在同一条线上。
 ```
 
-The landmark (hydrant) is something Seedance renders consistently; tying the prop
-to it — *2× a person's height, same line* — gives the model a relative anchor
-instead of an absolute size it would otherwise re-guess each generation. Use this
-for any oversized or position-critical prop (inflatable figures, vehicles,
-signage) that must hold scale across cuts.
+地标（消防栓）是 Seedance 渲染稳定的东西；把道具绑在它上面（*两倍人高，同一条线*），给模型一个相对锚点，而不是一个它每次生成都会重新猜的绝对尺寸。任何超大或位置关键、必须跨切镜保持尺度的道具（充气人偶、车辆、招牌）都这样做。
 
-## See also
+## 另见
 
-- `higgsfield-seedance.md` § Frame Coordinate System
-  — coordinate vocabulary the blocking note uses
-- `higgsfield-seedance.md` § Spatial Layout Block —
-  the prompt-body block that consumes the blocking note
-- `higgsfield-seedance-failure-modes.md` § Spatial-
-  awareness failures — failure class this template prevents
-- `template-multi-character-anchor.md` (sibling template) — paste-ready
-  multi-character Seedance prompt that consumes the blocking note
+- `higgsfield-seedance.md` § Frame Coordinate System：站位说明用到的坐标词汇
+- `higgsfield-seedance.md` § Spatial Layout Block：接收站位说明的提示词正文块
+- `higgsfield-seedance-failure-modes.md` § Spatial-awareness failures：本模板防止的失败类型
+- `template-multi-character-anchor.md`（同类模板）：接收站位说明的多人 Seedance 提示词

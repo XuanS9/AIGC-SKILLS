@@ -1,108 +1,67 @@
-# Higgsfield Audio Prompting Guide
+# Higgsfield 音频提示指南（Higgsfield Audio Prompting Guide）
 
-## QUICK FACTS
-*Routing aids — read the linked sections for the full rules.*
-- Native-joint audio models covered here: Kling 3.0, Seedance 2.0 / 1.5 Pro, Veo 3/3.1, Grok — models without native audio add it in post [→](#which-models-support-audio)
-- Four layers to consider per prompt: Dialogue / SFX / Ambient / BGM [→](#the-four-audio-layers)
-- Lip-sync reliability: 3–8s is a trial window, not a duration rule; clear mouths and restrained motion help. Speaker count depends on model/mode; per-language sync-word budgets are FIELD-reported [→](#lip-sync-rules)
-- **Seedance 2.0 `@Audio1` is a conditioning INPUT** — beat sync, the `[AUDIO: Xs]` script block, and the first-15s extraction trap [→](#audio-as-a-conditioning-input--seedance-20-audio1)
-- Scope an audio reference like an image one: name the property that rides, the property that must NOT, and where the excluded one comes from instead [→](#scope-an-audio-reference--say-which-property-rides)
-- Multi-clip assembly: one master track · cuts land on musical punctuation, never inside a sung vowel (ECU mouth-match is the one exception) · unified grain + LUT masks batch color drift [→](#cutting-to-music--assembling-separately-generated-clips-on-one-track)
-- Cinema Studio 3.0 native joint audio (SCELA): retain its Audio field in native submissions; full video drafts use the four-section mapping below. Specific foley beats generic moods [→](#cinema-studio-30-audio-businessteam-plan)
-- **Seed Audio 1.0** (`seed_audio`, standalone) = whole-scene audio in ONE pass — multi-speaker dialogue + music + SFX + ambience mixed [→](#scene-audio-generation--seed-audio-10)
-- Standalone Audio catalog (2026-08-01 snapshot): `seed_audio`, `qwen_audio_tts` (NEW — Qwen 3.0 TTS Flash, expressive instructions + cloned voices), `text2speech_v2` (5 engines incl. cozy_voice), plus 3 game-pipeline-only tools — distinct from in-video joint audio [→](#standalone-audio-tab--tool-catalog-2026-08-01-snapshot)
+## 速查（QUICK FACTS）
+*路由辅助：完整规则见链接的章节。*
+- 这里的视频音频只覆盖 Seedance 系列（2.5、2.0 / 2.0 Mini、1.5 Pro），全部是原生联合生成 [→](#哪些模型支持音频which-models-support-audio)
+- 每条提示词要考虑的四层：对白 / 音效 / 环境声 / BGM [→](#四个音频层the-four-audio-layers)
+- 对口型可靠性：3–8 秒是试验窗口，不是时长规则；嘴部清楚、动作克制有帮助。说话人数取决于模型/模式；各语言的同步词数预算来自实地报告 [→](#对口型规则lip-sync-rules)
+- **Seedance 2.0 的 `@Audio1` 是条件输入**：节拍同步、`[AUDIO: Xs]` 脚本块，以及前 15 秒截取陷阱 [→](#音频作为条件输入seedance-20audio1audio-as-a-conditioning-input--seedance-20-audio1)
+- 像图像参考一样给音频参考限定范围：写明要迁移的属性、**不能**迁移的属性，以及被排除的属性改从哪里来 [→](#给音频参考限定范围说清迁移哪个属性scope-an-audio-reference--say-which-property-rides)
+- 多片段组装：一条主音轨 · 切点落在音乐的标点上，绝不切在唱出的元音中间（大特写口型匹配是唯一例外）· 统一颗粒加 LUT 掩盖批次色差 [→](#按音乐剪辑把分别生成的片段组装到一条音轨上cutting-to-music--assembling-separately-generated-clips-on-one-track)
+- **Seed Audio 1.0**（`seed_audio`，独立）= 一次生成整场音频：多人对白 + 音乐 + 音效 + 环境声混好 [→](#场景音频生成seed-audio-10scene-audio-generation--seed-audio-10)
+- 独立音频目录（2026-08-01 快照）：`seed_audio`、`qwen_audio_tts`（新：Qwen 3.0 TTS Flash，表现力指令 + 克隆音色）、`text2speech_v2`（5 个引擎，含 cozy_voice），另有 3 个仅限游戏管线的工具；与视频内联合音频不同 [→](#独立音频标签页工具目录2026-08-01-快照standalone-audio-tab--tool-catalog-2026-08-01-snapshot)
 
-## Narrative planning for sound and picture
+## 声画的叙事规划（Narrative planning for sound and picture）
 
-Apply [shared narrative planning](narrative-planning.md) before cue writing,
-beat sync, lip-sync, multi-clip assembly, or standalone scene audio. Story events,
-causality, reveals, and state transitions decide stages; speech meaning, breaths,
-reactions, silence, and musical phrases help locate their boundaries. Estimate durations
-after those decisions. Do not preset stage counts, equal-length stages, or cuts on every
-beat. A **stage is not a cut or a generation clip**: one take or continuous audio bed may
-span stages, and a stage may use several shots or calls within actual model limits.
+写提示、节拍同步、对口型、多片段组装或独立场景音频之前，先应用 [共享叙事规划](narrative-planning.md)。剧情事件、因果、揭晓和状态转变决定阶段；说话的含义、气口、反应、沉默和乐句帮助确定它们的边界。做完这些决定后再估算时长。不预设阶段数、等长阶段，也不在每个节拍上切镜。**阶段不是一次切镜，也不是一个生成片段**：一个镜头或一段连续的音频底可以跨多个阶段，一个阶段在实际模型限制内可以用几个镜头或几次调用。
 
-**Complete video prompts use the studio four-section contract**, including a single take:
-**【参考素材职责】 → 【一句话概述】 → 【具体情节】 → 【全局补充】**. Read the
-[full performance example](template-full-performance-example.md) and
-[director template](template-general-director-2-5.md); apply the
-[unified acceptance table](production-checks.md#统一调用与验收总表).
+**完整视频提示词使用工作室块结构契约（block-structure）**，单镜头也一样：工作室的 Higgsfield 块结构（`[角色]` … `[生成目标]` → `[具体情节]` → `[视觉风格]` → `[镜头]` → `[声音]` → `[保持一致]`）。先读 [完整演出范本](template-full-performance-example.md) 和 [导演模板](template-general-director-2-5.md)；按 [统一调用与验收总表](production-checks.md#统一调用与验收总表) 验收。
 
-Bind real voice/track references and their roles in 【参考素材职责】. Put speaker-attributed
-dialogue in 「」 directly inside its action beat in 【具体情节】; write breaths, effects and
-ambience inline at their causes, not in separate sound rows or a fifth Audio heading.
-Use 【全局补充】 for necessary continuity and sound switches (default NO BGM), not fixed timbre or voice-profile descriptions. Delivery follows the scene; provided audio references retain their actual roles and binding. Text alone does not prove lip-sync. The tail is part of the final timed beat.
+真实的音色/音轨参考绑定在 `[动作与声音参考]`，音色描述写在 `[角色]`。所有对白写在 `[声音]`（Higgsfield 写法）：先写 `对白语言：英语。`，然后每句台词一行计时行 `起s-止s｜说话人＋状态＋说：{line}`，落在说出它的那一段之内。有人物的 Clip 在定位秒开头写 `0s-1s｜<名字>轻声：{Hm.}`。接触音效 `<…>` 写在各段的 `声音：` 行；音乐只在用户要求时用 `(…)`；无对白写 `本段无对白（设计）。`；最后写 `NO BGM。`。`[具体情节]` 各段只描述看得见的说话动作（嘴、气息、姿态）；写进动作描述的台词会被读成行为并演出来（Higgsfield / Dreamina 规则）。演绎跟随场景；提供的音频参考保持其实际职责和绑定。文字本身不能证明口型同步。尾声计入最后一个计时节拍。
 
-Cross-clip waveforms and mixes are post-production: record intended joins outside copyable
-prompts, then inspect the actual cut. Per-clip text does not control the entire film's sound
-bed. Four audio layers remain planning aids, not four extra output sections.
+跨片段的波形和混音属于后期：在可复制的提示词之外记录预定的接点，然后检查实际剪辑。单个片段的文字控制不了整部片的声音底。四个音频层仍是规划辅助，不是四个额外的输出栏目。
 
-Explicitly concise requests, local edits, audio-only tasks, and hard-limited/native
-submissions keep their relevant inline cues, Audio fields, `[AUDIO: Xs]`, radio-drama,
-TTS, voice-change, or translation formats. Compile full video work from the complete
-performance draft without forcing a duplicate long draft into a requested native format.
-Do not add visual instructions or eight video headings to standalone audio.
+明确的精简请求、局部编辑、纯音频任务（audio-only tasks）和有硬限制/原生格式的提交，保留它们相关的内联提示、Audio 字段、`[AUDIO: Xs]`、广播剧、TTS、变声或翻译格式。完整视频工作从完整演出稿编译，不把重复的长稿硬塞进要求的原生格式。不给独立音频加视觉指令或视频标题。
 
-Preserve source timestamps and duration in edits, translations, and voice changes except
-for an explicitly requested timing edit; match new delivery to the existing windows.
-A sole-source audio track keeps its internal timing. For extensions, inherit voice,
-acoustics, loudness, phrase/phoneme phase, and any visual pose, motion phase/direction/speed,
-framing, and light at the join. Forward starts from the source tail; reverse extension
-ends at the **source first-frame and audio state**. Only new material receives a new budget.
-Transitions, pauses, and the final hold/decay count within the total. For multiple clips,
-distinguish source, final-timeline, and clip-local timestamps; count overlaps/crossfades
-once in the final edit; a prompt for an independently generated shot cannot enforce
-this continuity. The Seedance 2.0
-15s reference/extraction limit, Cinema Studio's ≤15s combined input limit, and each
-other model's actual limits below remain intact; none sets narrative-stage length.
+编辑、翻译和变声时保留源时间码和时长，除非明确要求改时间；新的演绎对齐已有的时间窗口。唯一来源的音轨保留其内部时间。延伸时，在接点继承音色、声学环境、响度、乐句/音素相位，以及画面上的姿势、动作相位/方向/速度、构图和光。向前延伸从源的结尾开始；反向延伸结束在**源的首帧与音频状态**。只有新素材获得新预算。转场、停顿和最后的停留/衰减都计入总长。多个片段时，区分源时间码、成片时间线和片段内时间码；重叠/交叉淡化在最终剪辑里只计一次；独立生成的镜头的提示词无法强制这种连续性。Seedance 2.0 的 15 秒参考/截取限制和各 Seedance 模型的实际限制（见下文）保持不变；它们都不决定叙事阶段的长度。
 
-## Which Models Support Audio?
+## 哪些模型支持音频？（Which Models Support Audio?）
 
-| Model | Audio type | Dialogue | SFX | Ambient | BGM | Lip-sync |
+| 模型 | 音频类型 | 对白 | 音效 | 环境声 | BGM | 对口型 |
 |-------|-----------|----------|-----|---------|-----|----------|
-| Kling 3.0 / Omni | Native joint | ✅ | ✅ | ✅ | ✅ | ✅ Multi-language |
-| Seedance 2.0 | Native joint | ✅ | ✅ | ✅ | ✅ | ✅ Multi-language |
-| Seedance 1.5 Pro | Native joint | ✅ | ✅ | ✅ | ✅ | ✅ Best lip-sync |
-| Veo 3 / 3.1 | Native joint | ✅ | ✅ | ✅ | ✅ | ✅ English best |
-| Grok Imagine Video | Native joint | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Models confirmed to lack native audio in the selected mode | ❌ | — | — | — | — | — |
+| Seedance 2.5 | 原生联合 | ✅ | ✅ | ✅ | ✅ | ✅ 多语言 |
+| Seedance 2.0 | 原生联合 | ✅ | ✅ | ✅ | ✅ | ✅ 多语言 |
+| Seedance 1.5 Pro | 原生联合 | ✅ | ✅ | ✅ | ✅ | ✅ 对口型最好 |
+| 在所选模式下确认没有原生音频的模型 | ❌ | — | — | — | — | — |
 
-**"Native joint"** means audio and video are generated simultaneously in one pass —
-not layered on after. This produces natural synchronization without post-production.
+**“原生联合”**指音频和视频在一次生成中同时产生，而不是之后叠上去。这能在不做后期的情况下得到自然的同步。
 
-Models without native audio: add audio in post with Lipsync Studio or external tools.
-This table is not exhaustive; an unlisted model is not automatically audio-incapable.
-Capabilities and upload limits below apply to the named model, mode, surface, and dated
-source. Input formats and output formats are separate; do not generalize one surface's
-MP3 restriction to Cinema Studio, Seed Audio, TTS, or other Seedance versions.
+所选模式下原生音频失败时，用外部工具在后期加音频。这张表不完整；没列出的模型不自动等于没有音频能力。下面的能力和上传限制适用于指明的模型、模式、平台和日期来源。输入格式与输出格式分开；不要把某个平台的 MP3 限制推广到 Seed Audio、TTS 或其他 Seedance 版本。
 
 ---
 
-## The Four Audio Layers
+## 四个音频层（The Four Audio Layers）
 
-Every audio-capable prompt should consider four layers. You don't need all four
-in every prompt, but knowing which to include gives the model clear direction.
+每条带音频的提示词都要考虑四层。不是每条都需要四层全写，但知道该写哪几层，能给模型清楚的方向。
 
-### 1. Dialogue — What characters say
+### 1. 对白：角色说什么（Dialogue — What characters say）
 
-Put dialogue in quotes. Be explicit about who speaks, their tone, and language.
+台词用引号括起来。明确写出谁说、什么语气、什么语言。工作室格式里，台词写在 `[声音]` 的计时行里，用 `{}`。
 
 ```
 She says: "We need to leave. Now."
 He whispers: "Not yet."
 ```
 
-**Best practices:**
-- Keep dialogue focused — 1–2 sentences per character per shot is a short-shot example;
-  preserve complete meaning and approved lines, then budget delivery and reaction time
-- Specify emotional tone: "says urgently", "whispers", "shouts across the room"
-- For non-English: specify language and dialect → `She speaks in Cantonese: "走啦"`
-- For Seedance 1.5 Pro: supports English, Chinese (incl. Sichuanese, Cantonese,
-  Taiwanese Mandarin, Shanghainese), Japanese, Korean, Spanish, Indonesian
+**最佳实践：**
+- 对白保持聚焦：每个镜头每个角色 1–2 句是短镜头示例；保留完整的含义和已批准的台词，再为演绎和反应留时间
+- 写明情绪语气：“says urgently”“whispers”“shouts across the room”
+- 非英语：写明语言和方言 → `She speaks in Cantonese: "走啦"`
+- Seedance 1.5 Pro 支持：英语、中文（含四川话、粤语、台湾国语、上海话）、日语、韩语、西班牙语、印尼语
 
-### 2. SFX — Specific sound events tied to action
+### 2. 音效：与动作绑定的具体声音事件（SFX — Specific sound events tied to action）
 
-Describe SFX at the point they happen. Tie them to visible actions.
+在声音发生的那一刻描述它。把音效绑到可见的动作上。
 
 ```
 The glass shatters on the floor — sharp crack, then settling tinkle.
@@ -110,16 +69,14 @@ Footsteps on wet concrete — splashing, rhythmic.
 A door slams shut — heavy metal, echoing.
 ```
 
-**Best practices:**
-- Tie SFX to the action that causes them; one concise description per beat is a clarity
-  heuristic, not a quota or a requirement to add sound to every stage
-- Use onomatopoeia sparingly — descriptive phrases work better than "BANG" or "CRASH"
-- Tie timing to action: "as she sets the cup down"; retain source timestamps or native
-  `[AUDIO: Xs]` markers when timing is specified, alongside the causal cue
+**最佳实践：**
+- 把音效绑到引起它的动作上；每个节拍一句简洁描述是为了清楚的经验法则，不是配额，也不要求每个阶段都加声音
+- 少用拟声词：描述性短语比“BANG”或“CRASH”效果好
+- 时机绑定到动作：“as she sets the cup down”；已指定时间时，保留源时间码或原生 `[AUDIO: Xs]` 标记，同时写上因果线索
 
-### 3. Ambient — Background soundscape
+### 3. 环境声：背景声景（Ambient — Background soundscape）
 
-Set the acoustic environment. This is the continuous sound bed.
+设定声学环境。这是连续的声音底。
 
 ```
 Ambient: quiet café murmur, espresso machine, rain against windows.
@@ -127,15 +84,14 @@ Ambient: forest at night — crickets, distant owl, gentle wind through leaves.
 Ambient: busy intersection — traffic, horns, construction in the distance.
 ```
 
-**Best practices:**
-- Start with a few distinct ambient elements (for example 2–3); prioritize intelligibility
-  rather than treating the count as a limit or adding sound to fill a quota
-- Describe the *space* acoustics: "reverberant church hall", "tight car interior"
-- Contrast silence with sound for impact: "Dead silence. Then — a single footstep."
+**最佳实践：**
+- 从几个不同的环境元素开始（例如 2–3 个）；优先清晰可辨，不要把数量当上限，也不要为凑数加声音
+- 描述*空间*的声学：“reverberant church hall”“tight car interior”
+- 用沉默对比声音制造冲击：“Dead silence. Then — a single footstep.”
 
-### 4. BGM — Background music mood
+### 4. BGM：背景音乐情绪（BGM — Background music mood）
 
-Don't name songs or artists (content filter). Describe the musical texture.
+不写歌名或艺人名（内容过滤）。描述音乐的质感。本工作室默认 `NO BGM`，只有用户要求音乐时才写。
 
 ```
 BGM: slow piano, minor key, melancholic.
@@ -143,58 +99,30 @@ BGM: tense orchestral build — low strings, rising.
 BGM: lo-fi hip-hop beat, warm vinyl crackle, relaxed.
 ```
 
-**Best practices:**
-- Describe instrumentation, tempo, mood — not genre labels alone
-- "Tense strings, building" works better than "suspenseful music"
-- Specify when music enters/exits: "Piano enters at the midpoint, builds to the end"
-- For beat-sync content: "Cuts match the downbeat" or "Movement peaks on the drop"
+**最佳实践：**
+- 描述配器、速度、情绪，而不只是题材标签
+- “Tense strings, building”比“suspenseful music”效果好
+- 写明音乐何时进入/退出：“Piano enters at the midpoint, builds to the end”
+- 卡节拍的内容：“Cuts match the downbeat”或“Movement peaks on the drop”
 
-### Suppressing music — `NO BGM` is a spec, `no music` is a preference
+### 压制音乐：`NO BGM` 是规格，`no music` 是偏好（Suppressing music — `NO BGM` is a spec, `no music` is a preference）
 
-`[DEMO — Joey cinema-director-v3, 2026-08-16]` `[UNPROVEN HERE]` When a piece must
-carry no score, the phrase matters. **`no music` reads as a weak stylistic preference**
-and loses to the model's strong prior that generated video wants a bed under it.
-**`NO BGM` reads as a production term** — a hard spec — and is the form to write.
-Expand it once on first use so the abbreviation is unambiguous, then let it carry.
+`[DEMO — Joey cinema-director-v3, 2026-08-16]` `[UNPROVEN HERE]` 一段内容必须没有配乐时，措辞很重要。**`no music` 读起来是一个弱的风格偏好**，会输给模型“生成视频底下要有一层音乐”的强先验。**`NO BGM` 读起来是制作术语**，是硬规格，应该这样写。第一次使用时展开一次，让缩写不产生歧义，之后就让它沿用。
 
-**Lead positive, then negate.** Name what the audio *is* before naming what it is not —
-diegetic sources tied to surfaces and materials, plus room tone. A suppression clause
-with nothing positive in it leaves the model to decide what "silence" sounds like, and
-it decides in favour of a pad.
+**先写正向，再写否定。**先说音频*是*什么，再说它不是什么：与表面和材质绑定的画内声源，加上房间底噪。一句里只有压制、没有任何正向内容，就是让模型自己决定“安静”听起来是什么样，而它会选择一层铺底。
 
 ```
 Audio: diegetic sound only — footsteps on wet stone, fabric shift, breath, room tone.
 NO BGM — no background music.
 ```
 
-**For each independently generated shot, default to NO BGM in that shot's audio field.**
-Within one model generation containing multiple stages, state it once in section 3.
-Section 5 then describes only permitted sound events. `NO BGM` excludes score, not all sound. For a requested native short prompt,
-place the policy in its audio field. This is demo wording, not a universal guarantee;
-use positive source/mix wording where the selected mode requires it.
+**每个独立生成的镜头，默认在该镜头的音频字段写 NO BGM。**一次包含多个阶段的生成里，只写一次（工作室格式：`[声音]` 末尾）。各段只描述允许的声音事件。`NO BGM` 排除的是配乐，不是所有声音。要求原生短提示词时，把这条策略放进它的音频字段。这是演示用的措辞，不是通用保证；所选模式需要时，用正向的声源/混音措辞。
 
-> **Enumerate with care — this cuts against the house rule on negation.**
-> `negative-constraints.md` and the repo's staging-reference doctrine both
-> hold that **naming a thing under a negation ships the token anyway** and can prime
-> the very output you are refusing. The source's long list (score, soundtrack,
-> instrumental, underscore, ambient pad, drone, tone bed, swell, sting, humming,
-> whistling, lyrics) is its answer to a real failure — a bare negation lets the model
-> supply an "ambient texture" and consider the instruction honoured — but it is one
-> practitioner's fix and is **not measured here**. Default to the short form above;
-> reach for the full enumeration only when a short form has already failed on the
-> shot in front of you, and expect the enumeration itself to carry some priming risk.
+> **列举要小心：这和关于否定的内部规则相抵触。**`negative-constraints.md` 和本仓库的站位参考规则都认为，**在否定下点名一样东西，等于还是把这个 token 送了进去**，可能反而引出你要拒绝的输出。原资料里那串长清单（score、soundtrack、instrumental、underscore、ambient pad、drone、tone bed、swell、sting、humming、whistling、lyrics）是它对一个真实失败的回答：裸否定会让模型补上一层“环境质感”、并认为指令已被满足；但这只是一个实践者的修法，**这里没有测量过**。默认用上面的短写法；只有短写法已经在眼前这个镜头上失败时，才用完整的列举，并预期列举本身会带来一些引导风险。
 
-**Discriminate reference purposes before applying an attached-track lock.** An attachment
-alone does not make its sound the output. Classify each audio/video reference as preserved
-original soundtrack, visual rhythm driver, performance-property reference, or voice identity
-reference. State whether it is audible and which generated layers are allowed. A video
-used only for camera/visual reference does not donate its soundtrack. A reference may have
-explicitly compatible roles; an audible music layer plus new dialogue is a mix, not a
-sole-source lock.
+**应用附加音轨锁定之前，先区分参考的用途。**光是附上一个素材，并不会让它的声音成为输出。把每个音频/视频参考归类为：保留的原始音轨、视觉节奏驱动、表演属性参考，或音色身份参考。写明它是否可听，以及允许哪些生成层。只用作镜头/画面参考的视频不提供它的音轨。一个参考可以有明确相容的多个职责；可听的音乐层加新对白是混音，不是唯一来源锁定。
 
-**Attached-track lock applies only when the task designates that track as the sole and
-complete soundtrack.** Preserve its internal timing; do not impose new per-beat speech
-windows on the lip-sync take. For this mode only:
+**附加音轨锁定只在任务指定该音轨为唯一且完整的音轨时适用。**保留其内部时间；不要给对口型的镜头强加新的逐拍说话窗口。仅限这种模式：
 
 ```
 AUDIO: the attached clip @Video1 is the sole and complete soundtrack for this
@@ -202,21 +130,15 @@ sequence, preserved with all existing speech, music, and sounds at their origina
 times. Generate no additional audio.
 ```
 
-**The unheard-track technique** lets bodies perform to music that is not in the mix —
-useful when the score is added in post: state that the track is inaudible, then describe
-the performance against it (*"singing roughly in time to the unheard 87 BPM beat"*),
-plus the diegetic layer that IS heard.
+**“听不见的音轨”技巧**让身体跟着混音里没有的音乐表演，适合配乐后期再加的情况：写明音轨听不见，然后描述对着它的表演（*“singing roughly in time to the unheard 87 BPM beat”*），加上确实能听到的画内声音层。
 
 ---
 
-## Audio Prompt Structure
+## 音频提示词结构（Audio Prompt Structure）
 
-For a complete video prompt, use the four-section mapping above: reference roles in
-【参考素材职责】, timed dialogue and sound events inline in 【具体情节】, stable identity and
-sound switches in 【全局补充】. The tail belongs to the last beat; do not append an Audio heading.
-The compact examples below are only for requested short/audio-only work or explicit native fields.
+完整视频提示词用上面的块结构映射：参考职责写在映射块，计时对白行写在 `[声音]`，接触音效写在各段的 `声音：` 行，稳定的身份写在 `[保持一致]`。下面的紧凑示例只用于要求的短格式/纯音频工作或明确的原生字段。
 
-### Inline method (preferred for short prompts):
+### 内联写法（Inline method (preferred for short prompts)）：
 
 ```
 A woman walks into a quiet library. Her heels click on the marble floor — each step
@@ -224,7 +146,7 @@ echoing. She whispers to the librarian: "Do you have the Collected Letters?"
 Distant page turns. A clock ticks somewhere above.
 ```
 
-### Dedicated block method (better for complex audio):
+### 独立音频块写法（Dedicated block method (better for complex audio)）：
 
 ```
 [Scene description — visual content, action, camera]
@@ -238,122 +160,71 @@ Audio:
 
 ---
 
-## Lip-Sync Rules
+## 对口型规则（Lip-Sync Rules）
 
-Lip-sync is the most failure-prone audio feature. The framing and short-window practices
-below are reliability heuristics, not stage-length rules or model duration limits.
-Preserve source speech and complete phrases; use shorter generated coverage only when it
-can join cleanly without truncating or retiming the line:
+对口型是最容易失败的音频功能。下面的构图和短窗口做法是可靠性经验，不是阶段长度规则，也不是模型时长限制。保留源台词和完整的短语；只有能干净衔接、不截断也不重新定时台词时，才用更短的生成覆盖：
 
-> **Expressive facial acting *around* the words** — forced smiles, leaking fear,
-> mixed emotions during a spoken line — is driven separately by FACS Action Unit
-> codes per beat. Let lip-sync shape the phonemes; schedule the brow/eye/cheek
-> AUs for the performance. See `higgsfield-facs.md` § Dialogue &
-> Monologue Facial Acting.
+> **台词*周围*的面部表演**（勉强的笑、漏出来的恐惧、说话时的混合情绪）由每个节拍的 FACS 动作单元代码单独驱动。让对口型负责音素；为表演安排眉、眼、脸颊的 AU。见 `higgsfield-facs.md` § Dialogue & Monologue Facial Acting。
 
-### Do:
-- 3–8 seconds is an empirical accuracy sweet spot for a dialogue take, not a required
-  segment length; let the actual utterance and reaction determine the window
-- Use medium close-up or closer framing — model needs to see the mouth clearly
-- For single-face modes or unreliable speaker routing, isolate one speaking face;
-  supported multi-speaker modes use explicit speaker attribution instead
-- A `locked-off static camera` or `slow Dolly In` is a useful reliability baseline;
-  retain other camera work when the selected mode and performance support it
-- Reduce competing head-motion cues such as `nodding` or `turning head` during speech
-  if they cause desync; retain motivated eye/brow/cheek reactions and listener behavior
+### 要做（Do）：
+- 3–8 秒是对白镜头准确度的经验最佳区间，不是必须的段长；让实际的说话和反应决定窗口
+- 用中近景或更近的构图：模型需要清楚看到嘴
+- 单脸模式或说话人路由不可靠时，隔离出一张说话的脸；支持多说话人的模式改用明确的说话人归属
+- `locked-off static camera` 或 `slow Dolly In` 是有用的可靠性基线；所选模式和表演支持时，保留其他运镜
+- 如果说话时的头部动作（`nodding`、`turning head`）导致不同步，减少这些竞争线索；保留有动机的眼、眉、脸颊反应和听者行为
 
-### Don't:
-- Don't combine dialogue with vigorous head movement in the same prompt
-- A 15s Seedance 2.0 dialogue take can have weaker sync than a shorter take; test the
-  needed performance rather than automatically splitting at 8s. Other models keep their
-  own duration limits
-- For a sole-source speech recording, omit requests for additional generated audio.
-  For native dialogue with SFX/ambience/music, prioritize intelligibility and simplify
-  competing layers only as needed; their presence is not a universal lip-sync prohibition
-- The source guide reports non-MP3 failures on its Seedance 2.0 upload path; see the
-  scoped format note under § Seedance 2.0, not a format ban for every model/surface
+### 不要做（Don't）：
+- 不要在同一条提示词里把对白和剧烈的头部动作放在一起
+- Seedance 2.0 的 15 秒对白镜头同步可能比短镜头弱；测试需要的表演，而不是自动在 8 秒处拆开。其他模型保留各自的时长限制
+- 唯一来源的语音录音，去掉额外生成音频的请求。原生对白配音效/环境声/音乐时，优先保证可懂度，只在需要时简化竞争层；它们的存在不是通用的对口型禁令
+- 原指南报告其 Seedance 2.0 上传路径上非 MP3 文件失败；见 § Seedance 2.0 下限定范围的格式说明，这不是对所有模型/平台的格式禁令
 
-### Multi-character dialogue workaround:
-Speaker routing depends on model and mode. The Kling 3.0 / Omni path below supports
-3+ characters with attribution and Voice Binding; the documented Cinema Studio 3.0
-experimental lip-sync path is single-face. Seed Audio supports multiple audible speakers
-without generating mouths. Do not turn one path's limitation into an all-model ban.
-If the selected video mode lacks multi-speaker lip-sync or the take fails attribution:
-1. Generate each character separately with their own audio segment
-2. Composite in CapCut/Premiere using picture-in-picture + linear mask (15% feather)
-3. Use generated listener reactions when needed; a static listener plate is an optional
-   compositing shortcut only when the performance calls for stillness
+### 多角色对白的变通（Multi-character dialogue workaround）：
+说话人路由取决于 Seedance 模型和模式。Seed Audio 支持多个可听的说话人，但不生成嘴。不要把某条路径的限制变成所有模型的禁令。所选视频模式缺少多说话人口型，或镜头的说话人归属失败时：
+1. 每个角色用自己的音频片段单独生成
+2. 在 CapCut/Premiere 里用画中画加线性蒙版（15% 羽化）合成
+3. 需要时用生成的听者反应；只有表演需要静止时，静态听者画面才是一个可选的合成捷径
 
-### Per-language dialogue-sync budgets [FIELD — community, seedance-2.0 repo v6.6.0]
+### 各语言的对白同步预算（Per-language dialogue-sync budgets）[FIELD — community, seedance-2.0 repo v6.6.0]
 
-Field-observed word budgets for **reliable lip-sync** in a ~15s in-video Seedance
-dialogue clip — not official limits, and not the same as how many words the model
-can *voice*. The **acoustic budget ≠ reliable-sync budget**: the model will happily
-speak more words than it can keep synced to the mouth.
+约 15 秒的视频内 Seedance 对白片段里，实地观察到的**可靠对口型**词数预算：不是官方限制，也不等于模型能*念*出多少词。**声学预算 ≠ 可靠同步预算**：模型很乐意说出比它能和嘴对上的更多的词。
 
-| Language | Reliable-sync budget (~15s clip) | Notes |
+| 语言 | 可靠同步预算（约 15 秒片段） | 备注 |
 |----------|----------------------------------|-------|
-| English | ~16–20 words (5–10 per line) | Strongest Western language |
-| Mandarin | — | Strongest sync overall |
-| Russian | ~10–15 words | Weak — budget conservatively |
-| Japanese / Korean | Under-tested | No reliable field numbers yet |
+| 英语 | 约 16–20 词（每句 5–10 词） | 西方语言里最强 |
+| 普通话 | — | 整体同步最强 |
+| 俄语 | 约 10–15 词 | 弱，保守预算 |
+| 日语 / 韩语 | 测试不足 | 还没有可靠的实地数字 |
 
-Cross-language sizing unit: **"one short sentence ≈ one breath."** Write dialogue
-in breath-sized sentences and count breaths, not seconds.
+跨语言的计量单位：**“一句短句 ≈ 一口气。”**按一口气长的句子写对白，数气口而不是数秒。
 
-### Voice-reference lip-sync path [FIELD — community, seedance-2.0 repo v6.6.0]
+### 音色参考对口型路径（Voice-reference lip-sync path）[FIELD — community, seedance-2.0 repo v6.6.0]
 
-On surfaces that accept a spoken-voice reference, an attached **rights-cleared
-voice recording drives lip-sync directly** — the model syncs the mouth to your
-recording instead of synthesizing a voice first. This is the most reliable
-field-reported path for **non-English dialogue** (it sidesteps the weak-language
-sync budgets above). **Rights-sensitive:** only use recordings you have clear
-rights to; unauthorized cloned or scraped recordings are excluded. Supported,
-authorized cloned voices remain available through the standalone TTS paths below.
+在接受语音参考的平台上，附上的**已获授权的录音会直接驱动对口型**：模型把嘴对齐你的录音，而不是先合成一个声音。这是实地报告中**非英语对白**最可靠的路径（它绕开了上面较弱语言的同步预算）。**涉及权利：**只用你有明确权利的录音；未经授权克隆或抓取的录音不在此列。下面的独立 TTS 路径仍可使用受支持的、经授权的克隆音色。
 
 ---
 
-## Audio as a Conditioning Input — Seedance 2.0 (`@Audio1`)
+## 音频作为条件输入：Seedance 2.0（`@Audio1`）（Audio as a Conditioning Input — Seedance 2.0 (`@Audio1`)）
 
-The most under-used Seedance 2.0 capability: an uploaded audio file is a
-**conditioning input**, not just an output track. The model spec lists `audio`
-as a reference media role alongside `image` / `video`, and `generate_audio`
-(native sound output) is documented as *independent of the audio reference
-medias* — i.e. the uploaded file conditions the **generation**, and whether the
-clip also gets generated sound is a separate switch.
+Seedance 2.0 最被低估的能力：上传的音频文件是**条件输入**，不只是输出音轨。模型规格把 `audio` 和 `image` / `video` 并列为参考媒体职责，而 `generate_audio`（原生声音输出）被记录为*独立于音频参考媒体*：也就是说，上传的文件约束的是**生成**，片段是否另外生成声音是另一个开关。
 
-This means `@Audio1` has **three distinct uses** below. Declare its purpose and audible
-output policy first; combine compatible uses only explicitly. Voice identity can also be
-scoped separately (§ Voice-reference lip-sync and § Scope an audio reference).
+这意味着 `@Audio1` 有下面**三种不同用法**。先声明它的用途和可听输出策略；只有明确时才组合相容的用法。音色身份也可以单独限定范围（§ Voice-reference lip-sync 和 § Scope an audio reference）。
 
-| Use | What `@Audio1` does | Prompt discipline |
+| 用法 | `@Audio1` 做什么 | 提示纪律 |
 |-----|---------------------|-------------------|
-| **Audio-as-output** | Requests the uploaded track unmodified as the clip's soundtrack | Timestamp-anchor it (`plays exactly as uploaded from 0s to end`). For a **sole-source** soundtrack, remove requests for extra generated layers. For an intended mix, name the preserved layer and allowed additions; exact preservation may require post assembly. |
-| **Audio-as-driver (beat sync)** | Drives the **visuals** — cut timing, camera acceleration, action pace, energy peaks | Write the audio→visual mapping explicitly (below). The clip can still get generated sound, or set `generate_audio` false for visuals-only. |
-| **Audio-as-performance** | The character on screen **performs** the track — hums, sings, plays along, moves to it — hitting the actual notes | Scope it to the one property you want (§ Scope an audio reference, below). Unscoped, it also lends its voice. |
+| **音频即输出** | 要求把上传的音轨原样作为片段音轨 | 用时间码锚定（`plays exactly as uploaded from 0s to end`）。**唯一来源**的音轨，去掉额外生成层的请求。预定混音时，点名保留的层和允许的新增；精确保留可能需要后期组装。 |
+| **音频即驱动（节拍同步）** | 驱动**画面**：切镜时机、摄影机加速、动作节奏、能量峰值 | 明确写出音频→画面的映射（下文）。片段仍可以生成声音，或把 `generate_audio` 设为 false 只要画面。 |
+| **音频即表演** | 画面里的角色**表演**这条音轨：哼唱、唱、跟着演奏、随之运动，踩准实际的音符 | 把它限定到你要的那一个属性（§ Scope an audio reference，下文）。不限定的话，它还会借出它的声音。 |
 
-> **Why it works (author's model — empirical, not in the official spec):** the
-> temporal branch that reasons about motion and pacing reads the sound's
-> structure — beat positions, dynamic contour, timbral texture, song-structure
-> sections — and maps it to visual rhythm. Treat the mechanism as a working
-> model; treat the capability (audio reference role) as confirmed.
+> **为什么有效（作者的模型：经验性的，不在官方规格里）：**推理运动和节奏的时间分支会读取声音的结构（节拍位置、动态轮廓、音色质感、歌曲段落），并把它映射成视觉节奏。把机制当作工作模型；把能力（音频参考职责）当作已确认。
 
-### Scope an audio reference — say which property rides
+### 给音频参考限定范围：说清迁移哪个属性（Scope an audio reference — say which property rides）
 
-Every *image* reference in this stack is scoped in both directions: what it
-locks, and what must be read past ("ignore the sheet's grey background", "not
-its camera vantage"). **Audio references have had no equivalent vocabulary, and
-they need one for the same reason** — a sound file carries several properties
-at once, and an unscoped reference lends all of them.
+这套方法里每个*图像*参考都是双向限定的：它锁定什么，以及什么必须忽略（“ignore the sheet's grey background”“not its camera vantage”）。**音频参考一直没有对应的词汇，而它们出于同样的原因需要它**：一个声音文件同时带着好几个属性，不限定的参考会把它们全部借出去。
 
-The case that shows it [DEMO — Higgsfield "AI Love Stories" tutorial, 2026-08]:
-a character had to hum a specific tune on camera. Without a reference the model
-**invented a different melody every take** — the reported result of the
-no-reference control was a performance that was off-key with no rhythm. With a
-voice memo of the tune attached, it hit the notes on the first take.
+说明这一点的案例 [DEMO — Higgsfield "AI Love Stories" tutorial, 2026-08]：一个角色要在镜头前哼一段特定的曲调。没有参考时，模型**每次都编一段不同的旋律**：无参考对照组的报告结果是跑调、没节奏的表演。附上一段这首曲子的语音备忘后，第一次就踩准了音符。
 
-But the memo was somebody else's voice, and the character has his own. So the
-reference was **scoped in prose**:
+但那段备忘是别人的声音，而角色有他自己的声音。所以参考**用文字限定了范围**：
 
 ```
 @Audio1 is the reference for the HUMMED LINE only. Take from it ONLY the
@@ -364,52 +235,36 @@ his OWN natural speaking voice, the same voice he speaks his lines with. All
 spoken dialogue is performed as scripted below, not taken from any audio.
 ```
 
-**The pattern, generalised — three parts, and the third is the one that gets
-skipped:**
+**归纳出的模式有三部分，第三部分最常被跳过：**
 
-1. **Name the property that rides**, as narrowly as you can: notes, pitches and
-   intervals; tempo and phrasing; the rhythmic pause. Not "the song".
-2. **Name what must NOT ride**, explicitly: voice, timbre, vocal identity.
-   Sound files carry a performer as well as a performance.
-3. **Say where the excluded property comes from instead** — "his own natural
-   speaking voice, the same one he speaks his lines with". A reference that is
-   only told what not to do leaves the model to pick, and it will pick the
-   reference.
+1. **点名要迁移的属性**，越窄越好：音符、音高和音程；速度和乐句；节奏上的停顿。而不是“这首歌”。
+2. **明确点名不能迁移的东西**：嗓音、音色、声音身份。声音文件既带着一段表演，也带着一个表演者。
+3. **说明被排除的属性改从哪里来**：“他自己自然说话的声音，和他说台词用的是同一个”。只被告知不要做什么的参考，会让模型自己挑，而它会挑参考。
 
-The same three-part shape works for other audio properties:
+同样的三部分形式也适用于其他音频属性：
 
-| Riding | Excluded | Sourced instead from |
+| 迁移 | 排除 | 改从哪里来 |
 |---|---|---|
-| melody, tempo, phrasing | voice, timbre, identity | the character's own speaking voice |
-| rhythm and accent pattern | instrumentation, key | the scene's own diegetic sound |
-| emotional contour, dynamics | the words | the scripted dialogue |
+| 旋律、速度、乐句 | 嗓音、音色、身份 | 角色自己的说话声 |
+| 节奏和重音型 | 配器、调性 | 场景自己的画内声音 |
+| 情绪轮廓、动态 | 歌词/话语 | 剧本里的对白 |
 
-**Scope note.** Whether a reference track becomes the spoken output differs by
-model line — see § Audio by Model. The scoping vocabulary above is about which
-*property* transfers, and is written to be read alongside whatever that line
-does with an attached track, not instead of it.
+**范围说明。**参考音轨是否变成说出的输出，因模型线而异：见 § Audio by Model。上面的限定词汇讲的是哪个*属性*迁移，要和该模型线对附加音轨的处理一起读，而不是替代它。
 
-**Rights:** the memo above was recorded by the person for this purpose. Same
-constraint as the voice-reference lip-sync path — use recordings you have clear
-rights to.
+**权利：**上面那段备忘是本人为此专门录的。与音色参考对口型路径同样的约束：只用你有明确权利的录音。
 
-[UNPROVEN HERE] — one production, one property (melody). The *mechanism* is
-already confirmed (audio is a reference media role); what is unproven here is
-how far prose scoping steers it. Cheap to test on any tune you own.
+[UNPROVEN HERE]：一个制作，一个属性（旋律）。*机制*已经确认（音频是参考媒体职责）；这里没有证实的是文字限定能把它引导到什么程度。用任何你拥有的曲子都能便宜地测试。
 
-### Beat sync — the audio choreographs the visuals
+### 节拍同步：音频为画面编舞（Beat sync — the audio choreographs the visuals）
 
-Upload an MP3 as `@Audio1`, then map audio characteristics to visual elements.
-Cover **rhythm source / which visual responds / how energy maps to the arc**.
-The three-sentence form below is an example, not a minimum sentence or stage count:
+把一个 MP3 作为 `@Audio1` 上传，然后把音频特征映射到视觉元素。覆盖**节奏来源 / 哪个视觉元素响应 / 能量怎样映射到弧线**。下面的三句写法是示例，不是最少句数或阶段数：
 
 ```
 Use @Audio1 as the rhythmic foundation. Sync camera transitions to the beat
 positions. Visual energy builds with the audio crescendo and peaks at the drop.
 ```
 
-You can assign **different visual elements to different audio characteristics** —
-mixing audio-to-visual the way you'd mix a track:
+你可以**把不同的视觉元素分配给不同的音频特征**，像混音一样混合音频到画面的映射：
 
 ```
 @Audio1 drives the visual rhythm. Camera cuts land on the downbeats. Subject
@@ -417,13 +272,9 @@ movement accelerates into the build, holds at the peak, releases on the drop.
 Colour temperature shifts warmer with the crescendo.
 ```
 
-Camera ← beat position. Movement ← dynamic contour. Colour ← overall energy arc.
-These mappings apply to requested beat-driven work. Select musically meaningful cues
-that support the story; a beat need not trigger a cut, and a phrase need not equal a stage.
-Preserve an attached performance's timing instead of forcing it into equal time ranges.
+镜头 ← 节拍位置。运动 ← 动态轮廓。色彩 ← 整体能量弧线。这些映射适用于要求卡节拍的工作。挑选支持故事的、有音乐意义的提示点；一个节拍不必触发切镜，一个乐句也不必等于一个阶段。保留附加表演的时间，而不是把它硬塞进等长的时间区间。
 
-It **stacks with other references** — character from `@Image1`, camera style from
-`@Video1`, rhythm from `@Audio1`, processed together:
+它**可以和其他参考叠加**：角色来自 `@Image1`，镜头风格来自 `@Video1`，节奏来自 `@Audio1`，一起处理：
 
 ```
 @Image1 as character reference. Follow @Video1 camera-movement style. @Audio1 as
@@ -431,45 +282,22 @@ rhythmic foundation — sync all camera transitions to the beat positions.
 Character movement should pulse with the music.
 ```
 
-**The one constraint:** `@Video1` camera style and `@Audio1` rhythm have to be
-**temporally compatible**. A slow continuous dolly pulled from a video reference
-fighting an EDM track sends the temporal branch conflicting instructions — same
-failure class as mixing reference *images* of clashing styles. Pick references
-that can coexist. (Sibling of `higgsfield-seedance.md` § Reference Roles
-→ Load-Bearing Rule: references stay in their lanes.)
+**唯一的约束：**`@Video1` 的镜头风格和 `@Audio1` 的节奏必须**在时间上相容**。从视频参考里拿来的缓慢连续推轨对上一首 EDM，会给时间分支发出相互冲突的指令：和混用风格冲突的参考*图像*是同一类失败。挑能共存的参考。（与 `higgsfield-seedance.md` § Reference Roles → Load-Bearing Rule 是同一原则：参考各守其道。）
 
-### Cutting to music — assembling separately-generated clips on one track
+### 按音乐剪辑：把分别生成的片段组装到一条音轨上（Cutting to music — assembling separately-generated clips on one track）
 
-For non-musical scenes, the editor can carry ambience and effect tails across cuts.
-Record this as a post-production handoff, not an instruction that one generated shot
-can read the previous shot's sound. Each independent shot prompt states only its own
-audible sources; matching and crossfades happen after generation.
+非音乐类场景，剪辑师可以让环境声和音效尾巴跨过切点。把这一点记为后期交接，而不是一条让某个生成镜头能读到上一个镜头声音的指令。每个独立镜头的提示词只写它自己的可听声源；匹配和交叉淡化在生成之后完成。
 
-`[EMPIRICAL — MiniMax H3 skill corpus, re-derived; cross-model editing craft]`
-Beat sync governs what happens *inside* a clip; these three laws govern the
-timeline the clips land on:
+`[EMPIRICAL — third-party skill corpus, re-derived; cross-model editing craft]` 节拍同步管的是片段*内部*发生什么；下面这几条管的是片段落上去的时间线：
 
-- **Continuity is an editing decision.** If the assembled film needs uninterrupted
-  weather or room tone, mix one consistent bed and transition effect tails in post.
-  Individual generation prompts cannot guarantee the same sound across shots.
-- **Music is optional and defaults off in shots.** If the user explicitly wants a film
-  score, plan a master music track in post; do not generate a new score in every shot.
-  Cuts in a requested music track are audible before picture cuts.
-- **Cuts land on musical punctuation** — a breath, a lyric pause, a snare, the
-  drop. Never hard-cut inside a sung vowel unless the incoming shot is an ECU
-  whose mouth shape continues that vowel: lip continuity is an *edit*
-  constraint, not only a prompt constraint.
-- **Mask batch color drift on purpose.** Clips generated in separate runs never
-  match grade exactly. One unified fine-grain pass plus one LUT across the whole
-  timeline, applied as a deliberate finishing step, hides the inter-clip color
-  variance that would otherwise read as a continuity error.
+- **连续性是剪辑决定。**如果组装好的影片需要不间断的天气声或房间底噪，就在后期混一层统一的声音底，并让音效尾巴过渡。单条生成的提示词无法保证跨镜头的同一声音。
+- **音乐是可选的，镜头里默认关闭。**用户明确想要配乐时，在后期规划一条主音乐轨；不要在每个镜头里生成新的配乐。要求的音乐轨里的切点，比画面切点更先被听到。
+- **切点落在音乐的标点上**：一次换气、一个歌词停顿、一下军鼓、drop。绝不在唱出的元音中间硬切，除非接进来的是一个口型延续这个元音的大特写：嘴唇的连续是*剪辑*约束，不只是提示词约束。
+- **有意识地掩盖批次色差。**分开生成的片段调色永远不会完全一致。在整条时间线上统一做一次细颗粒加一个 LUT，作为刻意的收尾步骤，能藏住否则会被读成连续性错误的片段间色差。
 
-### The `[AUDIO: Xs]` script block — dialogue + SFX + lip-sync from text alone
+### `[AUDIO: Xs]` 脚本块：只靠文字生成对白 + 音效 + 口型（The `[AUDIO: Xs]` script block — dialogue + SFX + lip-sync from text alone）
 
-No microphone, no recording. A timestamped script **inside the prompt text**
-generates voices, SFX, and lip-sync. Quoted text → speech with automatic
-lip-sync; physical descriptions → sound effects. Each marker is a timestamp in
-the clip:
+不需要麦克风，不需要录音。写在**提示词文字里**的带时间码的脚本能生成人声、音效和口型。引号里的文字 → 带自动口型的说话；物理描述 → 音效。每个标记是片段里的一个时间码：
 
 ```
 [AUDIO: 0s] heavy footsteps on concrete, echoing in a corridor
@@ -480,21 +308,11 @@ the clip:
 [AUDIO: 9s] object placed on table, soft thud
 ```
 
-The model generates the **voice first**, then maps facial movement to the
-waveform — so lip-sync quality is mostly set by how precisely you wrote the
-dialogue. **Exact quoted text outperforms paraphrase.** It works across
-languages (write the line in Spanish/Japanese/French → speech with
-phoneme-level lip-sync in that language).
+模型**先生成声音**，再把面部运动映射到波形上，所以口型质量主要取决于你把对白写得多准确。**准确的引用文字胜过意译。**它跨语言有效（用西班牙语/日语/法语写台词 → 生成该语言的说话和音素级口型）。
 
-This obeys the same physical rules as § Lip-Sync Rules above: a strong `@Image1`
-character reference gives a consistent mouth structure to animate, and **close-up
-framing beats wide** (a small face has too few pixels to sync). The 3–8s accuracy window is a useful testing example for individual dialogue takes;
-it must not truncate a sentence or override source timing.
+它遵循和上面 § Lip-Sync Rules 一样的物理规则：一个强的 `@Image1` 角色参考提供一致的嘴部结构来做动画，**近景胜过远景**（小脸的像素太少，无法同步）。3–8 秒的准确度窗口是单条对白镜头有用的测试示例；它不能截断句子，也不能覆盖源时间。
 
-It **combines with beat sync** in one generation when the selected mode supports the
-intended mix — uploaded music as the rhythmic foundation and an audible background layer,
-the script block as new foreground dialogue/SFX. This is not a sole-source track lock.
-Keep exact original-track preservation in post if the generation alters it. Example:
+所选模式支持预定的混音时，它**可以和节拍同步在一次生成里组合**：上传的音乐作为节奏基础和可听的背景层，脚本块作为新的前景对白/音效。这不是唯一来源锁定。如果生成改变了原始音轨，就在后期做精确保留。例子：
 
 ```
 @Audio1 as background music. Sync camera transitions to the beats.
@@ -504,294 +322,117 @@ Keep exact original-track preservation in post if the generation alters it. Exam
 [AUDIO: 8s] character says "Let's go"
 ```
 
-### The 15-second extraction problem — pick the window, don't upload the track
+工作室块结构里，对白不用 `[AUDIO: Xs]`，而写成 `[声音]` 的计时行；`[AUDIO: Xs]` 只用于明确选择的原生/短格式流程。
 
-For **Seedance 2.0**, the audio reference limit is **15s, and the model takes the first 15s** of
-whatever you upload. Drop in a full 3-minute track and you almost always feed it
-the **intro** — low energy, often ambient, no rhythmic drive. Nothing for the
-temporal branch to map.
+### 15 秒截取问题：挑窗口，别上传整首（The 15-second extraction problem — pick the window, don't upload the track）
 
-For a requested rising-energy beat-sync sequence, a **build → drop** window is one
-useful example: its dynamic gradient can drive visual energy. It is not a mandatory arc
-or a required 15s stage. A steady groove, sustained ambience, silence, or a complete
-spoken phrase may serve the actual narrative better. Select the relevant window within
-the input limit without chopping meaning or inventing a crescendo.
+对 **Seedance 2.0**，音频参考限制是 **15 秒，而模型取你上传内容的前 15 秒**。丢进一首 3 分钟的曲子，你几乎总是喂给它**前奏**：能量低，常常是氛围性的，没有节奏推动。时间分支没有东西可映射。
 
-Example build/drop window locations:
+要求一段能量上升的卡节拍段落时，**铺垫 → drop** 的窗口是一个有用的例子：它的动态梯度可以驱动视觉能量。它不是必须的弧线，也不是必须的 15 秒阶段。稳定的律动、持续的氛围、沉默或一句完整的台词，可能更服务实际的叙事。在输入限制内挑选相关的窗口，不切碎含义，也不编造渐强。
 
-- Pre-chorus into chorus
-- Instrumental build into the drop (EDM, electronic, hip-hop)
-- Verse climax into a bridge
-- The last 15s of an intro that breaks into the first hook
+铺垫/drop 窗口位置的例子：
 
-**Extract exactly that segment before uploading.** The source workflow recommends MP3
-at **≥256kbps** for beat detection; this is a quality recommendation for that path, not
-a universal accepted-format or minimum-bitrate requirement. Don't upload the full track and hope; pick the
-window, cut it, upload that. (Flipping the workflow — audio in first, visuals
-built around it — changes the output at a structural level, not subtly.)
+- 预副歌进入副歌
+- 器乐铺垫进入 drop（EDM、电子、嘻哈）
+- 主歌高潮进入桥段
+- 前奏最后 15 秒冲进第一个 hook
+
+**上传之前精确截出那一段。**原流程建议节拍检测用 **≥256kbps** 的 MP3；这是对那条路径的质量建议，不是通用的接受格式或最低码率要求。不要上传整首然后碰运气：挑窗口、剪下来、上传。（把流程反过来，先音频、再围绕它构建画面，会在结构层面而不是细微处改变输出。）
 
 ---
 
-## Audio by Model — What Works Best Where
-
-### Kling 3.0 (V3) / 3.0 Omni (O3)
-- Best overall audio-visual integration
-- Multi-language dialogue (English, Chinese, Japanese, Korean, Spanish + regional accents: American English, British English, Indian English)
-- Multi-character dialogue: 3+ characters with correct speaker attribution and lip-sync per character
-- Voice Binding: lock specific voice profiles to specific characters across shots
-- O3 adds Voice Extraction from static images: upload audio clip (min 3s) + image to build a voice profile
-- O3 adds Performance Cloning: act out a scene on camera → AI re-renders preserving likeness and voice
-- Include dialogue, ambient, and SFX naturally in the prompt
-- Prompt like a script: action + camera + mood + dialogue cues together
-
-**Audio Speaker Attribution Format (V3/O3):**
-```
-[Speaker: Character Name] "dialogue" in a [warm/confident/excited] [male/female] voice with [accent].
-Add [sound: footsteps / rain / door closing] when [action].
-Background ambient: [environment description].
-```
+## 按模型看音频：哪里效果最好（Audio by Model — What Works Best Where）
 
 ### Seedance 1.5 Pro
-- Best lip-sync accuracy of all models
-- Class-leading multilingual support including Chinese dialects
-- Most stable emotional tone control
-- Use for: professional dialogue scenes, multilingual content
+- Seedance 系列里对口型最准
+- 一流的多语言支持，包括中文方言
+- 情绪语气控制最稳定
+- 用于：专业对白场景、多语言内容
 
 ### Seedance 2.0
-- Upload MP3 audio as @Audio reference (part of Rule of 12)
-- **Source-workflow format report:** the original audio guide describes its Seedance 2.0
-  upload path as MP3-only and reports silent WAV/AAC/OGG/FLAC failures. Its precise surface
-  is not identified; this is not a verified restriction for every Seedance 2.0 API/UI.
-  Use the selected surface's supported input formats; MP3 is the source workflow's fallback.
-- Source-workflow limits: max 15s per clip, 3 audio files, 10MB each;
-  **≥256kbps** is its beat-sync quality recommendation
-- **Measured enforcement bounds** `[EMPIRICAL — third-party, China Ark lane, 2026-08]`:
-  per-clip duration is enforced at **1.8–15.2s**, and the **total across all attached
-  clips is also capped at ≤15.2s** — three individually-legal 6s clips get rejected
-  (captured 400 errors). Measured on the China Ark lane by a third party; Higgsfield's
-  own proxy enforcement is **unverified** — if a multi-clip attach fails, this total
-  cap is the first suspect.
-- Timestamp anchoring (audio-as-output): `"Audio @Audio1 plays exactly as uploaded from 0s to end. Do not modify."`
-  For a sole-source soundtrack, remove requests for additional generated dialogue,
-  ambient/SFX/music. Visual-driver, performance-reference, and intentional-mix uses retain
-  their explicitly allowed sound layers.
-- **`@Audio1` is also a visual driver** — beat sync, the `[AUDIO: Xs]` script block,
-  and the first-15s extraction trap are all in § Audio as a Conditioning Input above.
+- 把 MP3 音频作为 @Audio 参考上传（计入 12 素材规则）
+- **原流程的格式报告：**原音频指南把它的 Seedance 2.0 上传路径描述为只接受 MP3，并报告 WAV/AAC/OGG/FLAC 静默失败。它的具体平台没有指明；这不是对每个 Seedance 2.0 API/界面都已核实的限制。用所选平台支持的输入格式；MP3 是原流程的备选。
+- 原流程的限制：每段最长 15 秒，3 个音频文件，每个 10MB；**≥256kbps** 是它的节拍同步质量建议
+- **测得的执行边界** `[EMPIRICAL — third-party, China Ark lane, 2026-08]`：单段时长在 **1.8–15.2 秒**之间执行，并且**所有附加片段的总长也上限为 ≤15.2 秒**：三段各自合法的 6 秒片段会被拒绝（捕获到 400 错误）。这是第三方在 China Ark 通道上测的；Higgsfield 自己代理的执行**未经核实**：多段附件失败时，先怀疑这个总长上限。
+- 时间码锚定（音频即输出）：`"Audio @Audio1 plays exactly as uploaded from 0s to end. Do not modify."` 唯一来源的音轨，去掉额外生成对白、环境声/音效/音乐的请求。视觉驱动、表演参考和有意混音的用法保留它们明确允许的声音层。
+- **`@Audio1` 也是视觉驱动**：节拍同步、`[AUDIO: Xs]` 脚本块和前 15 秒截取陷阱都在上面的 § Audio as a Conditioning Input。
 
-> **Diegetic-only is an optional mix policy**, useful when the score will be added
-> in post or a generated music bed has interfered with dialogue. In that workflow,
-> describe physical sources such as footsteps, fabric, breath, room tone, weather,
-> and crowd reaction. It does not override requested native BGM, singing, musical
-> performance, beat-sync conditioning, or an intentional reference-plus-dialogue mix.
-> A sole-source track lock permits only the attached soundtrack; diegetic-only
-> generation permits new scene sounds. Choose the policy by purpose, and state it
-> once in section 3 of a full draft.
+> **只用画内声音是可选的混音策略**，适用于配乐要在后期加、或生成的音乐底干扰了对白的情况。在那种流程里，描述物理声源：脚步、布料、呼吸、房间底噪、天气和人群反应。它不覆盖要求的原生 BGM、演唱、音乐表演、节拍同步的条件输入，或有意的参考加对白混音。唯一来源锁定只允许附加的音轨；只用画内声音的生成允许新的场景声音。按用途选策略，并在完整稿里只写一次（工作室格式：`[声音]`）。
 
-### Veo 3 / 3.1
-- Strong native audio for English dialogue and environmental sounds
-- Dialogue in quotes: `"This must be it," he murmured.`
-- SFX explicitly: `tires screeching loudly`
-- Ambient as environment soundscape descriptions
+## 常见音频失败与修正（Common Audio Failures and Fixes）
 
-### Grok Imagine Video
-- Improved audio as of Video Imagine 1.0 (Feb 2026)
-- Include audio intent directly in prompt — same inline style as other models
-- Best for: social clips where audio adds polish but isn't the hero
-
----
-
-## Common Audio Failures and Fixes
-
-| Problem | Cause | Fix |
+| 问题 | 原因 | 修正 |
 |---------|-------|-----|
-| Lip-sync completely off | Long/complex delivery or head motion competes with sync | Remove nodding/turning tokens; test a complete shorter phrase if appropriate, preserving source timing and approved dialogue |
-| Model replaces a track meant to be preserved | Generated layers may conflict with the intended source lock | Confirm reference purpose; timestamp-anchor the original. Remove added-layer requests only for sole-source output; preserve exact tracks in post if needed |
-| Dialogue missing entirely | Possible unsupported upload format on the source guide's Seedance 2.0 path, or output/routing settings | Check the selected surface's accepted inputs and audio settings; try MP3 128–320kbps on that reported path |
-| SFX drowns out dialogue | Competing sound cues or mix levels | Lower or simplify competing SFX and prioritize dialogue; no fixed SFX quota |
-| Audio sounds robotic | Flat emotional cues | Add emotional direction: "says warmly", "whispers with urgency" |
-| Background music too loud | Mix priority unclear | Set dialogue-over-music priority and lower BGM in section 3 (or the native Audio field); describe local level changes at their events |
+| 口型完全对不上 | 演绎太长/太复杂，或头部动作和同步争抢 | 去掉点头/转头词；合适时测试一段完整的较短短语，保留源时间和已批准的对白 |
+| 模型替换了本该保留的音轨 | 生成层可能与预定的源锁定冲突 | 确认参考用途；用时间码锚定原音轨。只有唯一来源输出才去掉新增层的请求；需要时在后期精确保留音轨 |
+| 对白完全消失 | 可能是原指南 Seedance 2.0 路径上不支持的上传格式，或输出/路由设置 | 检查所选平台接受的输入和音频设置；在那条报告过的路径上试 128–320kbps 的 MP3 |
+| 音效盖过对白 | 声音线索或混音电平相互竞争 | 降低或简化竞争的音效，优先对白；没有固定的音效配额 |
+| 声音听起来像机器人 | 情绪线索平淡 | 加情绪指引：“says warmly”“whispers with urgency” |
+| 背景音乐太响 | 混音优先级不清楚 | 设定对白优先于音乐，在 `[声音]`（或原生 Audio 字段）里降低 BGM；局部电平变化写在对应事件处 |
 
 ---
 
-## When to Skip Audio
+## 何时不写音频（When to Skip Audio）
 
-Not every prompt needs audio direction. Skip audio cues when:
-- Using a model without native audio (Kling 2.6, Wan 2.6, Seedance Pro, Minimax Hailuo 2.3/02)
-- The content is purely visual (product beauty shots, abstract motion, landscape)
-- Audio will be added entirely in post-production; retain visual rhythm/performance
-  conditioning and timing cues when the picture still depends on that audio
-- In an explicitly short-form submission, optional sound cues may yield to essential visual
-  direction; the 200-word soft cap does not remove required audio or shorten a full draft
+不是每条提示词都需要音频指引。以下情况不写音频提示：
+- 所选 Seedance 模式关闭了原生音频
+- 内容纯视觉（产品美图、抽象运动、风景）
+- 音频完全在后期加；画面仍依赖那段音频时，保留视觉节奏/表演的条件输入和时间提示
+- 明确的短格式提交里，可选的声音提示可以让位给必要的视觉指引；200 词软上限不会去掉必需的音频，也不会缩短完整稿
 
 ---
 
-> **Negative constraints:** For audio-specific artifacts (lip-sync desync, background music
-> overriding dialogue, SFX drowning dialogue) and their prevention phrases, see
-> `negative-constraints.md` — Temporal/Consistency Artifacts section.
-> Apply its audio rows within the scopes established here: 3–8s is a reliability trial,
-> MP3 failures are a source-path report, and removing extra layers serves sole-source
-> preservation. Those rows do not override reference purposes, approved timing, native
-> multi-speaker support, or the studio four-section delivery.
+> **约束：**音频相关的瑕疵（口型不同步、背景音乐盖过对白、音效盖过对白）及其预防措辞，见 `negative-constraints.md` 的 Temporal/Consistency Artifacts 部分。在这里确立的范围内应用它的音频行：3–8 秒是可靠性试验，MP3 失败是原路径的报告，去掉额外层服务于唯一来源保留。这些行不覆盖参考用途、已批准的时间、原生多说话人支持或工作室块结构交付。
 
 ---
 
-## Cinema Studio 3.0 Audio (Business/Team Plan)
+## 场景音频生成：Seed Audio 1.0（Scene-Audio Generation — Seed Audio 1.0）
 
-Cinema Studio 3.0 introduces native audio-video joint generation — a fundamental shift from models that treat audio as a post-processing step.
+独立于上面的视频内联合音频：**Seed Audio 1.0**（字节跳动，2026-06-23 在 FORCE 大会发布）是一个独立的**一次生成整场音频的生成器**。一次生成就产出多人对白 + 音乐 + 音效 + 环境声，已经混好：是一场广播剧，而不是一条单人声轨。用它为要在后期组装的素材做音轨，或者做完全没有视频的场景音频。
 
-### Native Audio-Video Joint Generation
+### 何时选它：决策表（When to choose it — decision table）
 
-Audio is generated **simultaneously** with video via a unified multimodal architecture. This means:
-- Audio and video are temporally aligned by default — no manual sync needed
-- Dual-channel stereo output
-- Sound design prompts directly influence both audio AND visual generation
-- Audio is not "added on" — it's part of the same generation pass
-
-### Audio as Prompt Element (SCELA)
-
-For a **native Cinema Studio SCELA submission**, keep the separate Audio field/block.
-For a full four-section video draft, put local dialogue/effects/ambience and the tail
-inside the corresponding timed action in 【具体情节】, necessary continuity and switches in
-【全局补充】; do not add another top-level section.
-The generation engine handles three parallel audio tracks:
-
-1. **BGM** — background music, score
-2. **Ambient SFX** — environmental sounds, foley
-3. **Dialogue** — character speech, voiceover
-
-```
-A chef slices vegetables rapidly on a wooden cutting board.
-Camera: tight close-up tracking the knife.
-Style: warm kitchen lighting, shallow depth of field.
-
-Audio: rhythmic chopping on wood, oil sizzling in a nearby pan,
-soft clinking of ceramic bowls. Light acoustic guitar BGM.
-```
-
-### Input Constraints
-
-These are the source guide's **Cinema Studio 3.0** input limits, not universal audio
-restrictions or Seed Audio output-format settings.
-
-| Parameter | Limit |
-|-----------|-------|
-| Accepted formats | MP3, WAV |
-| Max audio clips | 3 per generation |
-| Combined duration | ≤15s total |
-| Single file size | <15MB |
-| MP3 bitrate | 128–320 kbps |
-
-### Lip-Sync
-
-Available but experimental in Cinema Studio 3.0:
-- Focus on **emotion and general mouth movement**, not perfect phoneme sync
-- **Single face per generation only on this documented experimental path** — do not
-  carry this restriction over to Kling 3.0 / Omni multi-speaker modes
-- Under 8 seconds is a reliability trial for this path; preserve complete delivery and
-  source windows rather than making it a mandatory stage length
-- Pair with clear frontal or 3/4 face angle reference images
-
-### Tone / Voice Cloning via @Reference
-
-Control speaking style, accent, and language by referencing a video with the desired voice:
-
-```
-Use @Video1 only as a reference for the narrator's speaking style and accent.
-Generate the scripted line in a warm, conversational tone: "This changes everything."
-```
-
-### Dialect Support
-
-Dialects written directly in the prompt work — the model understands regional speech patterns. Write dialogue in the target dialect for authentic delivery.
-
-### Timestamp Anchoring
-
-For a preserved original track designated as the **sole soundtrack**, use this alternative
-to generated speech/voice-style transfer:
-
-```
-Audio @Audio1 plays exactly as uploaded from 0s to end.
-Do not modify or replace the audio content.
-```
-
-For this sole-source mode, remove requests for additional generated speech, ambient,
-SFX, or music. A voice-style or performance reference alone does not trigger that lock;
-an intended mix must identify both the preserved layer and allowed additions.
-
-### Sound Design Specificity
-
-Describe **specific foley**, not generic moods:
-
-**Wrong:** `nice ambient sounds, pleasant background noise`
-
-**Right:** `the scratch of frosted glass, rustling of plush fabric, gentle tapping on acrylic, popping of bubble wrap, wooden floor creaking under bare feet`
-
-Specific sound descriptions directly influence the generated audio output. The more precise the foley description, the more accurate the result.
-
----
-
-## Scene-Audio Generation — Seed Audio 1.0
-
-Separate from in-video joint audio above: **Seed Audio 1.0** (ByteDance, released
-2026-06-23 at the FORCE conference) is a standalone **one-pass whole-scene audio
-generator**. One generation produces multi-speaker dialogue + music + SFX +
-ambience, already mixed — a radio-drama scene, not a single voice track. Use it
-to build a soundtrack for footage you'll assemble in post, or scene audio that
-has no video at all.
-
-### When to choose it — decision table
-
-| You need | Use | Why |
+| 你需要 | 用 | 为什么 |
 |----------|-----|-----|
-| A whole scene's soundtrack: several speakers + music + SFX + ambience, mixed in one pass | **Seed Audio 1.0** (`seed_audio`) | One-pass scene audio; script-style prompt drives the whole mix |
-| One clean voice track (narration, single-speaker VO) | **`text2speech_v2`** (pick an engine) | Single-voice TTS — simpler, engine-selectable |
-| Sound baked into the generated video, synced to on-screen action and lips | **Seedance `generate_audio`** (in-video) | Native joint generation — audio and visuals in the same pass (see § Audio as a Conditioning Input) |
+| 整场戏的音轨：几个说话人 + 音乐 + 音效 + 环境声，一次混好 | **Seed Audio 1.0**（`seed_audio`） | 一次生成场景音频；剧本式提示词驱动整个混音 |
+| 一条干净的人声轨（旁白、单人画外音） | **`text2speech_v2`**（选一个引擎） | 单人声 TTS：更简单，可选引擎 |
+| 声音烤进生成的视频里，与画面动作和嘴同步 | **Seedance `generate_audio`**（视频内） | 原生联合生成：音频和画面在同一次生成里（见 § Audio as a Conditioning Input） |
 
-### Verified surface [OFFICIAL — model spec 2026-08-01]
+### 已核实的参数面（Verified surface）[OFFICIAL — model spec 2026-08-01]
 
-Model id `seed_audio` (output_type `audio`). Parameters:
+模型 id `seed_audio`（output_type `audio`）。参数：
 
-| Param | Range / options | Default |
+| 参数 | 范围 / 选项 | 默认 |
 |-------|-----------------|---------|
 | `format` | wav / mp3 / pcm / ogg_opus | wav |
 | `sample_rate` | 8000–48000 Hz | 24000 |
 | `speech_rate` | −50..100 | 0 |
 | `loudness_rate` | −50..100 | 0 |
 | `pitch_rate` | −12..+12 | 0 |
-| `voice_type` + `voice_id` | preset \| element — **must travel together** | none |
+| `voice_type` + `voice_id` | preset \| element，**必须一起出现** | 无 |
 
-Media roles: `image_references` + `audio_references`. Per the fal schema: up to
-**3 reference audio clips** (each ≤30s, ≤10MB) **XOR one image reference** —
-image and audio refs cannot combine. Reference audio inputs in the prompt by
-load order: `@Audio1`, `@Audio2`, `@Audio3`.
+媒体职责：`image_references` + `audio_references`。按 fal 的 schema：最多 **3 段参考音频**（每段 ≤30 秒，≤10MB）**或一张图像参考，二选一**：图像和音频参考不能组合。在提示词里按加载顺序引用参考音频：`@Audio1`、`@Audio2`、`@Audio3`。
 
-### Script-format prompting [EMPIRICAL — community guides, NOT official docs]
+### 剧本格式提示（Script-format prompting）[EMPIRICAL — community guides, NOT official docs]
 
-Everything in this subsection is community-converged practice, not spec — treat
-as a starting point, not a guarantee. Write the prompt as a **radio-drama
-script**:
+本小节的一切都是社区收敛出的实践，不是规格：当作起点，不是保证。把提示词写成一份**广播剧剧本**：
 
-- Open with a scene header: `[Scene: busy coffee shop, morning]`
-- Speaker labels with emotion parentheticals: `Host (warm, upbeat): "…"`
-- Inline sound cues where they happen: `[sound: espresso machine, soft jazz fades in]`
-- Music by **mood, not genre**: "soft piano builds to triumphant orchestra", not "cinematic score"
-- **~4 distinct speakers** is a community-reported reliability guideline for Seed Audio,
-  not a schema limit or a ceiling for other multi-speaker models
-- **Test a representative scene segment** before scaling toward the ~2-minute cap;
-  20s is a trial example, not a stage size or an assembly rule
-- Output **WAV** (`format: wav`) when the audio is headed for post
+- 用场景标题开头：`[Scene: busy coffee shop, morning]`
+- 说话人标签加情绪括注：`Host (warm, upbeat): "…"`
+- 在声音发生处写内联声音提示：`[sound: espresso machine, soft jazz fades in]`
+- 音乐按**情绪而不是题材**写：“soft piano builds to triumphant orchestra”，而不是“cinematic score”
+- **约 4 个不同说话人**是社区报告的 Seed Audio 可靠性准则，不是 schema 限制，也不是其他多说话人模型的上限
+- 往约 2 分钟上限扩展之前，**先测一段有代表性的场景片段**；20 秒是试验示例，不是阶段大小，也不是组装规则
+- 音频要进后期时输出 **WAV**（`format: wav`）
 
-Use the shared event/state plan to place speech, responses, pauses, and sound changes;
-retain this radio-drama format. For audio-only work, the final audible state replaces the
-final-frame description. Complete phrases and mix continuity determine joins, not equal
-chunks or the number of speaker labels.
+用共享的事件/状态规划来安排说话、回应、停顿和声音变化；保留这种广播剧格式。纯音频工作里，最终的可听状态代替结尾画面描述。完整的短语和混音连续性决定接点，而不是等长分块或说话人标签的数量。
 
-Compact worked example:
+紧凑示例：
 
 ```
 [Scene: rain-soaked night market, closing time]
 Vendor (tired, warm): "Last skewers — half price, take them."
-Girl (excited): "Two! No — three!"
+Customer (excited): "Two! No — three!"
 [sound: rain drumming on tarp canopy, a scooter passing in the distance]
 Vendor (chuckling): "Three it is. Careful, they're hot."
 [sound: coins dropped on a metal tray, charcoal hiss]
@@ -800,46 +441,28 @@ Music: a lonely muted trumpet fades in under the rain, wistful but hopeful.
 
 ---
 
-## Standalone Audio tab — tool catalog (2026-08-01 snapshot)
+## 独立音频标签页：工具目录（2026-08-01 快照）（Standalone Audio tab — tool catalog (2026-08-01 snapshot)）
 
-The live standalone-audio catalog, reconciled against the models_explore
-snapshot of **2026-08-01** (parameter data: `audio-model-specs.json`;
-table: `AUDIO-MODEL-SPECS.md`, machine twin
-`audio-model-specs.json`; verify against a current schema before production).
-The Audio tab's UI tools — **Voiceover** (text → speech), **Change Voice** (swap a
-voice in any video), **Translation** (translate speech in any video) — sit on top
-of these models:
+在线的独立音频目录，与 **2026-08-01** 的 models_explore 快照对齐（参数数据：`audio-model-specs.json`；表格：`AUDIO-MODEL-SPECS.md`；正式制作前对照当前 schema 核实）。音频标签页的界面工具（**Voiceover**：文字 → 语音；**Change Voice**：替换任意视频里的声音；**Translation**：翻译任意视频里的说话）建立在这些模型之上：
 
-| Model id | Name | What it does | Availability |
+| 模型 id | 名称 | 做什么 | 可用性 |
 |----------|------|--------------|--------------|
-| `seed_audio` | Seed Audio 1.0 (ByteDance) | One-pass whole-scene audio: dialogue + music + SFX + ambience (§ above) | General |
-| `qwen_audio_tts` | Qwen Audio 3.0 TTS Flash (Alibaba) | Expressive TTS: natural-language `instruction` for emotion/dialect/speed, preset or cloned reference-element voices, 13 language hints | General *(NEW 2026-08-01)* |
-| `text2speech_v2` | Text to Speech V2 | Single-voice TTS; engine via `variant`: `elevenlabs`, `minimax`, `seed_speech`, `vibe_voice`, **`cozy_voice`** *(NEW)*; preset or reference-element voices (`voice_type` + `voice_id`) | General |
-| `sonilo_music` | Sonilo Music (FAL) | Text-to-music with controllable duration | **Game pipeline only** |
-| `mirelo_text_to_audio` | Mirelo Text to Audio (FAL) | Text-to-audio SFX with controllable duration | **Game pipeline only** |
-| `inworld_text_to_speech` | Inworld TTS (FAL) | Preset-voice TTS, ~110 voices across en/zh/ja/ko/es/fr/de/ru/… | **Game pipeline only** |
+| `seed_audio` | Seed Audio 1.0（字节跳动） | 一次生成整场音频：对白 + 音乐 + 音效 + 环境声（§ 上文） | 通用 |
+| `qwen_audio_tts` | Qwen Audio 3.0 TTS Flash（阿里巴巴） | 表现力 TTS：用自然语言 `instruction` 控制情绪/方言/语速，预设或克隆的参考元素音色，13 种语言提示 | 通用 *（2026-08-01 新增）* |
+| `text2speech_v2` | Text to Speech V2 | 单人声 TTS；引擎通过 `variant` 选择：`elevenlabs`、`minimax`、`seed_speech`、`vibe_voice`、**`cozy_voice`** *（新）*；预设或参考元素音色（`voice_type` + `voice_id`） | 通用 |
+| `sonilo_music` | Sonilo Music（FAL） | 可控时长的文生音乐 | **仅游戏管线** |
+| `mirelo_text_to_audio` | Mirelo Text to Audio（FAL） | 可控时长的文生音效 | **仅游戏管线** |
+| `inworld_text_to_speech` | Inworld TTS（FAL） | 预设音色 TTS，约 110 个音色，覆盖 en/zh/ja/ko/es/fr/de/ru/… | **仅游戏管线** |
 
-Engine picks within `text2speech_v2`: **seed_speech** when the deliverable is
-multilingual voiceover/narration; **elevenlabs** (Eleven v3) when fine
-emotional/tone control matters; **vibe_voice** for long-form narration. These
-are standalone audio generators — distinct from the native joint audio baked
-into Kling 3.0 / Seedance 2.0 / Veo during video generation. (Catalog reflects
-the 2026-08-01 snapshot; verify live before quoting pricing or availability.)
+`text2speech_v2` 里的引擎选择：交付是多语言画外音/旁白时选 **seed_speech**；需要细腻的情绪/语气控制时选 **elevenlabs**（Eleven v3）；长篇旁白选 **vibe_voice**。这些是独立的音频生成器，不同于视频生成时烤进 Seedance 2.5 / 2.0 的原生联合音频。（目录反映 2026-08-01 快照；报价或说明可用性之前先在线核实。）
 
-### Post-generation voice-over — Supercomputer workflow [DEMO]
+### 生成后的画外音：Supercomputer 流程（Post-generation voice-over — Supercomputer workflow）[DEMO]
 
-A post-generation alternative to prompting audio at all: upload the **finished
-clip** to Supercomputer and ask for an analyzed voice-over (e.g. "Analyze the
-video and create a voiceover for it in the style of wildlife documentaries") —
-the agent analyzes the footage, writes a script, and offers voices to pick from.
-Shown working in Higgsfield's Seedance-4K tutorial; useful when the visuals are
-already locked and only narration is missing.
+一种完全不在提示词里写音频的生成后替代方案：把**成片**上传到 Supercomputer，要求一段分析式的画外音（例如“Analyze the video and create a voiceover for it in the style of wildlife documentaries”）：智能体分析素材、写稿，并提供可选的声音。Higgsfield 的 Seedance-4K 教程里演示过；适合画面已锁定、只缺旁白的情况。
 
 ---
 
-## Related skills
-- `higgsfield-seedance-vfx` — Footage transforms whose payoff is a camera move synced to a spoken line (crash-zoom / push-in), or preserving the source talk track through a transform (`SFX and source dialogue only`); see `higgsfield-seedance-vfx-dialogue-timing.md`
-- `higgsfield-models` — Which models support native audio
-- `higgsfield-troubleshoot` — Audio failure diagnosis
-- `higgsfield-cinema` — Cinema Studio audio workflow with Kling 3.0
-- `higgsfield-vibe-motion` — Motion graphics with audio (different from AI-generated audio)
+## 相关模块（Related skills）
+- `higgsfield-seedance-vfx`：素材变换中，兑现点是与一句台词同步的运镜（急推 / 推近），或在变换中保留源说话音轨（`SFX and source dialogue only`）；见 `higgsfield-seedance-vfx-dialogue-timing.md`
+- `higgsfield-models`：哪些模型支持原生音频
+- `higgsfield-troubleshoot`：音频失败诊断

@@ -1,245 +1,158 @@
-# Higgsfield AI Prompt Skill
+# Higgsfield 平台指南（Higgsfield AI Prompt Skill）
 
-**Current studio video route:** Seedance 2.5 `omni_reference` by default. Map
-character/prop/scene images and reference video/audio to their specific attributes,
-with real bound slots; a single image does not become an opening frame. Fast Path
-model/mode defaults and legacy image-to-video examples below do not override this
-project rule. Check platform parameters against the dated schema when executing.
+**当前工作室视频路线：**默认 Seedance 2.5 `omni_reference`。把角色/道具/场景图和参考视频/音频映射到各自的具体属性，并对应真实绑定的槽位；单张图不会变成开场画面。下面快速路径里的模型/模式默认和旧的图生视频示例，不覆盖这条项目规则。执行时对照带日期的 schema 核对平台参数。
 
-**Language rule:** Reply in whatever language the user writes in.
+**语言规则：**用户用什么语言写，就用什么语言回复。
 
-**Scene-based batches; coordinated samples:** Follow [sample approval](sample-approval.md). End-to-end production and combined asset/video requests share one asset registry and scene layout per project. Deliver each scene or continuous story segment as a batch, with new asset prompts and matching video prompts in separate code blocks. Approve a coordinated sample before expanding that batch; reuse unchanged assets across batches and wait for the user to continue the next one. Explicit asset-only/video-only requests retain their scope. Current-batch approval leads directly to full delivery, not another approval loop. Text planning, media generation, binding and visual acceptance have separate statuses. Preserve native schemas and module capabilities; this workflow takes precedence over automatic pipeline expansion below.
+**按场景分阶段交付：**遵守 [样本确认流程](sample-approval.md)：统一规划，共享资产先定稿，然后每个场景走「补充基础资产 → 场景 → 视频」。展开一个阶段之前，先确认这个阶段的样本；已确认未变的内容复用。资产/视频联合样本只用于明确要求的快速预览。一个阶段确认了，不代表授权了下游所有阶段。已有的、明确的局部修订授权不需要再次审批。文字、素材可用、绑定和视觉验收是分开的状态。
 
-**Merged studio planning:** For every video planning, prompt, shotlist, edit, or extension task, read [the shared director planning contract](narrative-planning.md) before the routed modules. Complete video prompts in every genre default to the visible structure and performance detail of the [user-approved full example](template-full-performance-example.md) and [cross-genre director template](template-general-director-2-5.md); read both in full before drafting. This project default takes precedence over short-form length recommendations. Keep concise, scoped and native-format outputs available on request and compile hard-limited submissions from the complete performance plan. Plan assets → goal → global audiovisual/space → behavior → event-driven stages → final frame/join → constraints (seven sections; continuity is folded into the event-driven stages and constraints, not a separate section), then compile into the module's native output. Stages, shots, and generation clips are distinct; derive their number and duration from events, performance, and legal model limits. Historical shot counts and time envelopes are examples, not universal defaults. Keep the HARD RULES below and every mode-specific capability; static-image, tool, and model-cost tasks retain their own workflows.
+**工作室规划与加载：**用 [最小加载与规则归属](load-map.md)，不整包加载。视频任务选读相关的 [共享规划](narrative-planning.md) 章节、[导演模板](template-general-director-2-5.md)，首次完整创作/完整改写时读 [完整演出范本](template-full-performance-example.md)。输出是块结构：Higgsfield 块结构（[角色]…[生成目标]→[具体情节]→[视觉风格]→[镜头]→[声音]→[保持一致]）；规划类别只在内部使用，绝不是第二种交付格式。短格式/原生提交保留它们实际的约定。图像、音频、工具和费用任务只加载各自适用的模块。
 
 ---
 
-## HARD RULES — pre-delivery checklist
+## 硬规则：交付前检查清单（HARD RULES — pre-delivery checklist）
 
-These rules apply to every Higgsfield response. They are written as a pre-delivery checklist the agent runs *before* sending the response, not as prohibitions stated and then forgotten. The failure mode they prevent is **plausibility-over-verification** — producing a response that looks correct because the agent's training data knows the rough shape of Higgsfield work, rather than because the agent actually read the skill files and verified the platform's ground truth.
+这些规则适用于每一次 Higgsfield 相关的回复。它们写成助手在发送回复*之前*跑的交付前检查清单，而不是说完就忘的禁令。它们防止的失败模式是**“看起来像就当是”**：产出一个看起来正确的回复，是因为训练数据知道 Higgsfield 工作的大致样子，而不是因为真的读了技能文件、核实了平台的实际情况。
 
-**Before delivering any Higgsfield response, confirm in this order:**
+**交付任何 Higgsfield 相关回复之前，按顺序确认：**
 
-1. **Routing line present.** First line of response names which sub-skills you routed to (e.g. "Routing to higgsfield-prompt + higgsfield-camera for an Atmosphere push-in"). One line, then the work. Missing routing line = response is incomplete; add it.
+1. **有路由说明。**回复的第一行写出你路由到了哪些子模块（例如“路由到 higgsfield-prompt + higgsfield-camera，做一个氛围类推近”）。一行，然后开始工作。缺少路由说明 = 回复不完整；补上。
 
-2. **Routed sub-skills opened and read in this conversation.** Match the user's ask to the routing table below, open the matching sub-skill files with the read tool, and READ them. Root `higgsfield-guide.md` and `higgsfield-prompt.md` are mandatory at minimum on any prompt request. Grepped snippets do not satisfy this rule. Full reads do. If your only access to `higgsfield-guide.md` or `higgsfield-prompt.md` in this conversation came from grep results, you have not satisfied this rule — open the file. Platform vocabulary, preset names, and model parameters must come from the files because this platform's lineup changes between releases.
+2. **本轮对话里读过路由到的章节。**用 [最小加载与规则归属](load-map.md)。打开并完整读取选中的适用章节；grep 片段不能替代。截断的章节用 offset/limit 读完。平台相关的提示词工作读本指南和适用的提示词工程章节；限定范围的修订复用未受影响的带版本证据，而不是重读全部模块。记录实际读了什么，而不是笼统声称全读过。
 
-3. **Named vocabulary verified, not invented.** Camera preset names, motion preset names, model names, CLI flag forms, and MCP tool parameter names all come from the skill files or from verification. For model parameters, enums, and durations, verify against `model-specs.json` first — it is generated from a dated `models_explore` snapshot (see `snapshot_date` inside the file); if the snapshot is stale (>30 days), verify live instead (`higgsfield model get <model>` for CLI param schemas; `models_explore` for MCP). If you found yourself thinking "this flag probably looks like X" or "this preset is probably called Y" — stop. Read the file or run the verification command. Plausibility is not validity. Do not substitute generic video-prompt vocabulary for named Higgsfield presets; do not invent model versions, camera presets, or motion-preset names. If the user names one you don't see in the skill files, say so and ask for clarification.
+3. **具名词汇经过核实，而不是编造。**运镜预设名、运动预设名、模型名、CLI 参数写法和 MCP 工具参数名，全部来自技能文件或核实。模型参数、枚举和时长，先对照 `model-specs.json` 核实：它由一份带日期的 `models_explore` 快照生成（见文件里的 `snapshot_date`）；快照过期（>30 天）时改为在线核实（CLI 参数 schema 用 `higgsfield model get <model>`；MCP 用 `models_explore`）。如果你发现自己在想“这个参数大概是 X”或“这个预设大概叫 Y”，停下。读文件或跑核实命令。看起来像不等于有效。不要用泛泛的视频提示词词汇代替 Higgsfield 的具名预设；不要编造模型版本、运镜预设或运动预设名。用户点名一个你在技能文件里看不到的，照实说并请他澄清。
 
-4. **MCSLA coverage intact on video prompts.** Model · Camera · Subject · Look · Action remain the five checks. In this project's seven-section performance format, model/settings live outside the copyable prompt and the other layers occupy their assigned sections; do not append a duplicate MCSLA block.
+4. **视频提示词的 MCSLA 覆盖完整。**模型 · 运镜 · 主体 · 画面 · 动作仍是五项检查。在本项目的块结构演出格式里，模型/设置放在可复制提示词之外，其他层落在各自分配的块里；不要另附一个重复的 MCSLA 块。
 
-5. **Shared constraints checked and selected.** Consult `negative-constraints.md` for this shot's actual risks. Use applicable positive prevention phrases, respecting model/mode scope. Do not append whole tables or repeat locks already established; the final constraints section contains only remaining task-specific risks.
+5. **检查并挑选了共享约束。**按这个镜头的实际风险查 `negative-constraints.md`。使用适用的正向预防措辞，遵守模型/模式范围。不要整表附上，也不要重复已经确立的锁定；最终的约束只包含剩下的、本任务特有的风险。
 
-6. **Preflight surfaced when applicable.** If execution intent is signaled (CLI / MCP / bundled-skills mentioned) AND a video-class or high-cost model is named OR a budget concern is named, surface the two-step preflight (`model get` / `models_explore` for schema, then cost estimate). See `higgsfield-stack.md` § Preflight discipline.
+6. **适用时提示预检。**如果出现执行意图（提到 CLI / MCP / 内置技能），**并且**点名了视频类或高成本模型，**或者**提到了预算问题，就提示两步预检（先用 `model get` / `models_explore` 查 schema，再估算费用）。生成之前用已安装的工具核对费用和余额。
 
-7. **Aspect ratio is an enum, not a free-form value.** Check the model's allowed ratios against `model-specs.json` before writing them into the header; if the snapshot is stale (>30 days), verify live via schema (`models_explore` / `model get`). Example of why this matters: Seedance 2.0 supports native 21:9, Kling 3.0 does not. Anamorphic / 2.35:1 / 2.39:1 are *style register* vocabulary for the Look line, not output ratios. See `vocab.md` § Aspect Ratio: output spec vs. style register.
+7. **画幅是枚举值，不是自由值。**写进头部之前，对照 `model-specs.json` 核对模型允许的画幅；快照过期（>30 天）时通过 schema 在线核实（`models_explore` / `model get`）。为什么重要的例子：Seedance 2.0 支持原生 21:9；Seedance 1.5 Pro 的枚举与 2.5 不同。Anamorphic / 2.35:1 / 2.39:1 是画面那一行的*风格语域*词汇，不是输出画幅。见 `vocab.md` § Aspect Ratio: output spec vs. style register。
 
-8. **Prompt under 200 words — short-form regime only.** This soft MCSLA cap applies when a short version is requested, not to the project's complete seven-section performance draft, even for a single shot. Production block scaffolds retain their structural checks (`higgsfield-seedance.md` § Official Prompt Architecture); a longer complete draft is not a rule-8 violation. Compile actual platform character limits into the submission version without losing the full causal plan.
+8. **提示词在 200 词以内：只限短格式。**这个 MCSLA 软上限只在要求短版本时适用，不适用于本项目完整的块结构演出稿，单镜头也一样。块结构制作稿保留它们的结构检查（`higgsfield-seedance.md` § Official Prompt Architecture）；更长的完整稿不违反第 8 条。工作室块结构稿不设字数上限。
 
-**If any of items 1–8 are missing or unverified, the response is incomplete. Complete them before sending, not after.**
-
----
-
-## What Is Higgsfield?
-
-Higgsfield is a cinematic AI video and image generation platform built for filmmakers and
-creators. Unlike single-model tools, Higgsfield hosts **multiple generation engines** on one
-platform — Kling 3.0/3.0 Omni/3.0 Motion Control, Sora 2 incl. Pro/Max/Pro Max tiers (UI-only — confirmed in the UI 2026-07-06, absent from the API/MCP catalog), Google Veo 3.1/3.1 Lite, Wan 2.7/2.6/2.5,
-Seedance 2.5/2.0/Pro, FLUX 3 Video, Minimax Hailuo 2.3/02, Higgsfield DoP (Lite/Standard/Turbo) for video; Soul 2.0, Soul Cinema Preview,
-Soul Cast, Nano Banana Pro/2, Kling Image 3.0/Omni, Seedream 4.0, GPT Image 2.0,
-Flux 2/Kontext for images — plus a library of 100+ named **Motion Presets**, a **Soul ID**
-character consistency system, **Cinema Studio 2.5**, **Cinema Studio 3.0** (Business/Team plan), and **Cinema Studio 3.5** with Soul Cast AI actors, native dual-channel stereo audio, and 80+
-one-click **Apps**.
+**第 1–8 条任何一条缺失或未核实，回复就不完整。发送之前补完，而不是之后。**
 
 ---
 
-## Input and output files
+## Higgsfield 是什么？（What Is Higgsfield?）
 
-Read user materials at their supplied paths. Write deliverables to the user's project directory and report the resulting path. Keep generated files outside the installed skill; do not move source materials automatically.
-
-### Fast Path — Simple Creative Requests
-
-If the user provides a clear creative intent ("write me a prompt for a car chase at night")
-with no specific constraints, **generate immediately** using these sensible defaults:
-
-> **Fast Path still requires reading `higgsfield-prompt.md` first — Fast Path means skip clarifying questions, NOT skip the file read.**
-
-| Parameter | Default |
-|-----------|---------|
-| Aspect ratio | 16:9 |
-| Duration | 8s (Kling lanes — see Seedance exception below) |
-| Style | Cinematic |
-| Video model | Kling 3.0 (character-focused) or Seedance 2.0 (action/scale/references) |
-| Image model | Soul 2.0 (portrait) or Nano Banana 2 (everything else) |
-
-Do not ask clarifying questions. Deliver a ready-to-paste prompt. Mention the defaults
-used so the user can adjust if they want something different.
-
-> **Seedance exception:** Seedance 2.0 never gets a silently defaulted runtime
-> (`higgsfield-seedance.md` — always ask, never default). On Fast
-> Path that means: if the user named no duration, route video to Kling 3.0;
-> pick Seedance 2.0 only when the request names a duration — or when the user
-> asked for Seedance by name, in which case state the assumed runtime as the
-> first adjustable default in the delivery.
-
-> If you did not read `higgsfield-prompt.md` earlier in this conversation, read it now before writing the prompt.
-
-### Full Path — Production Requests
-
-When the user signals production-grade intent (Cinema Studio, multi-shot, specific model,
-budget constraints, client work), **confirm before generating:**
-
-**Required:**
-- **Generation type**: Image / Video / App (one-click)
-- **Video duration**: model-dependent enum — check the model's `duration` values in `model-specs.json` before offering choices (e.g. Seedance 2.0 4–15s, Veo 3.1 4/6/8s; image-to-video clips trend short)
-- **Aspect ratio**: 16:9 / 9:16 / 1:1 / 4:5 / 4:3 / 21:9-where-supported (default: 16:9) — enums per model in `model-specs.json` (HARD RULE 7); anamorphic / 2.35:1 / 2.39:1 are **Look-line style register**, never output ratios
-- **Model preference** (or ask Claude to recommend — see `higgsfield-models.md`)
-
-**Optional (skip if user already provided):**
-- Visual style: Cinematic / VHS / Super 8MM / Anamorphic / Abstract
-- Soul ID character reference (if character consistency needed)
-- Reference image for image-to-video
-- Motion preset preference
-
-> Ask everything in one message — do not split across multiple rounds.
+Higgsfield 是一个电影感的 AI 视频与图像生成平台。本工作室视频只用 **Seedance 系列**（默认 Seedance 2.5；明确选择时用 2.0 / 2.0 Mini / 1.5 Pro）。其他视频生成模型和后期视频工具（超分、对口型、去背景、去闪烁）已删除（removed）。图像模型保留：Soul 2.0、Soul Cinema Preview、Soul Cast、Nano Banana Pro/2、Kling Image 3.0/Omni、Seedream、GPT Image 2、Flux 2/Kontext。提示词写作之外的平台功能（运动预设、Soul ID、Cinema Studio、Apps、Canvas）本工作室不覆盖。
 
 ---
 
-### Route to the Right Skill
+## 输入与输出文件（Input and output files）
 
-| User wants | Route to |
+在用户提供的路径读取用户素材。把交付物写到用户的项目目录，并报告生成的路径。生成的文件不放进已安装的 Skill 目录；不自动移动源素材。
+
+### 快速路径：简单的创作请求（Fast Path — Simple Creative Requests）
+
+意图清楚时可以不问多余的澄清问题就给样本；但不跳过当前阶段的样本规则和适用的文件读取。用根入口的默认：Seedance 2.5 `omni_reference`、16:9 和用户的语言；按表演估计时长，同时满足项目 30 秒上限和已核实的模型限制。继承项目的风格和图像工具；不要悄悄换成 Seedance 2.0、真人实拍或某个固定的图像模型。没有实际附件时，只描述已知的主体，不虚构参考槽位。
+
+### 完整路径：制作请求（Full Path — Production Requests）
+
+继承已确认的类型、模型、时长预算、画幅、风格和参考。只问执行所必需的缺失信息，最好只问一个窄问题。用户已经授权了范围时，不要再要求一次意图确认。当前阶段的新样本按 [样本确认流程](sample-approval.md) 确认；下游生成和付费执行需要各自的真实输入和授权。模型枚举/时长从实际所选模型的 schema 核实，绝不用示例的默认值。
+
+---
+
+### 路由到正确的模块（Route to the Right Skill）
+
+| 用户想要 | 路由到 |
 |------------|----------|
-| User unsure which workspace/tool fits, or asks "what should I use for X" | `higgsfield-workspaces` |
-| Write or improve a prompt | `higgsfield-prompt` + relevant sub-skills |
-| Develop a character / world / story / premise before prompting, build a character sheet / story bible, lock a visual style ("visual DNA"), keep a character consistent across many shots, or "I keep getting generic AI characters" | `higgsfield-character-design` |
-| Audit or strengthen a scene / sequence / beat outline before generating it, or "is this scene working", "what's weak here", "why doesn't this land" | `higgsfield-scene-engine` |
-| Cinematic still image prompt (shot framing, angles) | `higgsfield-image-shots` |
-| GPT Image 2.0 / gpt-image-2 prompt, UI mockup, infographic, character/reference sheet, layout-dense image | `higgsfield-gpt-image-2` |
-| Choose the right model | `higgsfield-models` |
-| Camera movement guidance (video) | `higgsfield-camera` |
-| Named motion preset (Explosion, Werewolf, etc.) | `higgsfield-motion` |
-| Visual style selection | `higgsfield-style` |
-| Character consistency across shots | `higgsfield-soul` |
-| **Consistency tie-break:** character consistency via a live Soul ID / reference images inside Higgsfield → `higgsfield-soul`; developing WHO the character is first (sheet, story bible, visual DNA) → `higgsfield-character-design`. Both may apply in sequence: design first, then lock with Soul. | — |
-| VFX presets (Air Bending, Plasma, etc.) | `higgsfield-motion` |
-| One-click App workflow | `higgsfield-apps` |
-| Genre recipe (action, horror, romance, etc.) | `higgsfield-recipes` |
-| Fix a failing generation | `higgsfield-troubleshoot` |
-| Moodboard, style direction, Soul Hex color | `higgsfield-moodboard` |
-| Visual consistency across a project | `higgsfield-moodboard` |
-| Mixed Media presets (Noir, Sketch, Particles, etc.) | `higgsfield-mixed-media` |
-| Photodump style preset / social-feed photo-dump aesthetic | `photodump-presets.md` (root reference) |
-| Artistic style transformation, preset stacking | `higgsfield-mixed-media` |
-| Higgsfield Assist (GPT-5 copilot) | `higgsfield-assist` |
-| Credit optimization, plan selection, budget strategy | `higgsfield-assist` |
-| Cinema Studio 2.5 / Cinema Studio 3.0 / Cinema Studio 3.5 / multi-shot sequence workflow / Soul Cast | `higgsfield-cinema` |
-| Optical physics, camera bodies, lenses, Hero Frame | `higgsfield-cinema` |
-| Elements system (@Characters/@Locations/@Props) | `higgsfield-cinema` |
-| Director Panel, Speed Ramp, shot modes, Popcorn | `higgsfield-cinema` |
-| Cinema Studio 3.0 Smart mode, @ references, native audio | `higgsfield-cinema` |
-| Cinema Studio 3.5 — three-pill UI, Style Settings, Camera Settings, Manual Style, AI director toggle | `higgsfield-cinema` |
-| User mentions Higgsfield Canvas, a node-based / node-graph workspace, an infinite board, chaining prompts→images→videos into a pipeline, Shared Canvas, or a ComfyUI-style node workflow | `higgsfield-canvas` |
-| Multi-shot workflow, chaining tools, full production pipeline | `higgsfield-pipeline` |
-| Short film, narrative sequence, Popcorn → video → assembly | `higgsfield-pipeline` |
-| Vibe Motion, kinetic typography, animated text, infographic/data/presentation animation as **code** (Remotion — crisp text, exact colors, deployable, real-time edits) | `higgsfield-vibe-motion` |
-| Audio design, dialogue cues, SFX, ambient sound | `higgsfield-audio` |
-| **Standalone audio generation** — soundtrack, ambience bed, multi-speaker scene audio, Seed Audio 1.0 (`seed_audio`), TTS voiceover / narration as its own deliverable | `higgsfield-audio` |
-| **Extend / continue an existing clip** — "make it longer", "what happens next / before", prequel, last-frame handoff, extension chains | `higgsfield-seedance` (§ Extension Prompting) + `higgsfield-pipeline` (§ Continuation & Extension Handoff) |
-| **Prep assets / reference sheets before video** — character sheet, prop three-view, location plate, variety sheet for crowds | `template-character-asset-delivery.md` + `higgsfield-gpt-image-2` (props) + `higgsfield-soul` (people & crowds) |
-| Audition / screen-test a designed character (how they move, speak, react) before scene generation | `higgsfield-character-design` (§ Screen Test / Audition) |
-| Seedance 2.0 / Pro prompt, flagged prompt, credit waste on Seedance | `higgsfield-seedance` |
-| **Seedance 2.5** — user names 2.5 / Dreamina / Jimeng, wants a single clip longer than 15s, wants to **edit** or **extend** a video that already exists, or supplies many image/video/audio references (up to 30/10/10) | `higgsfield-seedance-2-5` |
-| **2.0 vs 2.5** (both say "Seedance"): needs 4K/1080p, a platform start/end frame, or a `genre` hint → `higgsfield-seedance`; needs >15s in one generation, video editing, forward/backward extension, or heavy multi-reference → `higgsfield-seedance-2-5`. 2.5 caps at 720p | — |
-| **Character performance** — acting, behavior, mannerisms, tics, a gait, subtext, "my characters look wooden / dead-eyed / AI", keeping a character themselves across many shots, an acting master profile | `higgsfield-acting` |
-| **Feature-film production pipeline on Seedance** — headless character sheets, location sheets, a scene geography block reused across shots, dialogue construction, iteration discipline, giants / crowds / threshold transitions | `higgsfield-seedance` (`higgsfield-seedance-hell-grind.md`) |
-| **Transform footage the user already has** (video-to-video): "make a Seedance prompt for this video/clip", add a VFX element (set my head/hair on fire, transform my hand, make a limb invisible), swap the world/background around a preserved subject (desert, clouds, lava, neon city), put a giant creature behind me or on a landmark, relight/regrade to match, sync a crash-zoom/push-in to a line — a **real source clip** is the starting point | `higgsfield-seedance-vfx` |
-| **Replace a VFX/3D pipeline with generation** — "can AI do this instead of VFX", put myself in this plate, put a creature in my footage, a dragon/monster shot without buying or rigging a 3D model, "how do I build a whole VFX shot", asset sheets → size-ref → locations → shots as one pipeline; also "my v2v keeps failing / turns to slop", scale drift between two subjects, which image model for faces vs creatures vs clothing vs locations | `higgsfield-seedance-2-5` (`higgsfield-seedance-2-5-vfx-pipeline.md`) |
-| Precise facial expression / FACS / Action Unit codes (AU12, AU6…), forced or uncanny or mixed expression, close-up micro-performance, monologue/dialogue facial acting, "which AU code for anger/fear", FACS reference sheet | `higgsfield-facs` |
-| "Make a shotlist", break a script/brief/treatment into many connected Seedance prompts, director's shotlist, global style prefix + `@`-glossary + named per-scene prompts as one editable HTML | `higgsfield-shotlist-director` |
-| User has Higgsfield CLI / MCP / bundled skills installed and asks how this skill works alongside them | `higgsfield-stack` |
-| User mentions `higgsfield auth login`, `higgsfield generate create`, `mcp.higgsfield.ai/mcp`, `/higgsfield:generate`, or asks "do I need both" | `higgsfield-stack` |
-| User asks where the prompt construction ends and the CLI/MCP execution begins (handoff questions) | `higgsfield-stack` |
+| 写或改进一条提示词 | `higgsfield-prompt` + 相关子模块 |
+| 写提示词之前开发角色 / 世界 / 故事 / 前提，做角色表 / 故事圣经，锁定视觉风格（“视觉 DNA”），在很多镜头里保持角色一致，或“我总是得到泛泛的 AI 角色” | `higgsfield-character-design` |
+| 生成之前审查或加强一场戏 / 一个段落 / 一份节拍大纲，或“这场戏成立吗”“哪里弱”“为什么不落地” | `higgsfield-scene-engine` |
+| 电影感静帧提示词（构图、角度） | `higgsfield-image-shots` |
+| GPT Image 2.0 / gpt-image-2 提示词、UI 原型、信息图、角色/参考表、版式密集的图 | `higgsfield-gpt-image-2` |
+| 选对模型 | `higgsfield-models` |
+| 运镜指导（视频） | `higgsfield-camera` |
+| 视觉风格选择 | `higgsfield-style` |
+| **一致性的分工：**用参考图在 Higgsfield 里保持角色一致 → 按 [角色资产交付规范](template-character-asset-delivery.md) 做参考图；先开发角色是谁（角色表、故事圣经、视觉 DNA）→ `higgsfield-character-design`。两者可以先后都用：先设计，再锁定参考图。 | — |
+| 修复失败的生成 | `higgsfield-troubleshoot` |
+| 音频设计、对白提示、音效、环境声 | `higgsfield-audio` |
+| **独立音频生成**：配乐、环境声底、多人场景音频、Seed Audio 1.0（`seed_audio`）、作为单独交付物的 TTS 画外音/旁白 | `higgsfield-audio` |
+| **延伸 / 续接已有片段**：“加长一点”“接下来/之前发生什么”、前传、尾帧交接、延伸链 | 默认 2.5 模式用 `higgsfield-seedance-2-5`；其他所选模型用它的延伸章节 |
+| **视频之前准备资产 / 参考表**：角色表、道具三视图、场景底图、人群的多样性表 | `template-character-asset-delivery.md` + `higgsfield-gpt-image-2`（道具） |
+| 在场景生成之前给设计好的角色试镜（看他怎么动、说话、反应） | `higgsfield-character-design`（§ Screen Test / Audition） |
+| Seedance 2.0 / Pro 提示词、被标记的提示词、在 Seedance 上浪费额度 | `higgsfield-seedance` |
+| **Seedance 2.5**：用户点名 2.5 / Dreamina / 即梦，想要单条超过 15 秒，想**编辑**或**延伸**一段已有视频，或提供很多图/视频/音频参考（最多 30/10/10） | `higgsfield-seedance-2-5` |
+| **2.0 还是 2.5**（都叫“Seedance”）：需要 4K、`mode=fast` 或 `genre` 提示 → `higgsfield-seedance`；需要单次生成超过 15 秒、视频编辑、前后向延伸或大量多参考 → `higgsfield-seedance-2-5`。2.5 支持到 1080p | — |
+| **角色表演**：表演、行为、习惯动作、小动作、步态、潜台词，“我的角色看起来很木 / 眼神空洞 / 像 AI”，让角色跨很多镜头保持自己，表演母本 | `higgsfield-acting` |
+| **Seedance 上的长片制作流程**：角色表、场景表、跨镜头复用的场景地理块、对白构建、迭代纪律、巨物 / 人群 / 门槛转场 | `higgsfield-seedance`（`higgsfield-seedance-hell-grind.md`） |
+| **变换用户已有的素材**（视频到视频）：“给这段视频/片段写 Seedance 提示词”，加一个特效元素（让我的头/头发着火、变换我的手、让一条肢体隐形），在保留主体周围换掉世界/背景（沙漠、云、岩浆、霓虹城），在我身后或地标上放一个巨型生物，重新打光/调色以匹配，让急推/推近与一句台词同步：起点是一段**真实的源片段** | `higgsfield-seedance-vfx` |
+| **用生成代替视效/三维流程**：“AI 能不能代替视效做这个”、把我放进这个底片、把一个生物放进我的素材、不买也不绑定三维模型做龙/怪兽镜头、“怎么搭一整个视效镜头”、资产表 → 尺寸参照 → 场景 → 镜头作为一条流程；还有“我的视频到视频总失败 / 变成劣质”、两个主体之间的尺度漂移、脸 / 生物 / 服装 / 场景各用哪个图像模型 | `higgsfield-seedance-2-5`（`higgsfield-seedance-2-5-vfx-pipeline.md`） |
+| 精确的面部表情 / FACS / 动作单元代码（AU12、AU6……）、勉强或诡异或混合的表情、近景微表演、独白/对白的面部表演、“愤怒/恐惧用哪个 AU”、FACS 参考表 | `higgsfield-facs` |
+| “做一张分镜表”，把剧本/说明/大纲拆成很多条相连的 Seedance 提示词，导演分镜表，全局风格前缀 + `@` 资产表 + 带名字的逐场提示词，做成一个可编辑的 HTML | `higgsfield-shotlist-director` |
 
 ---
 
-### Load Map — how much to read
+### 加载地图：要读多少（Load Map — how much to read）
 
-The routing table says *where*; this says *how much*. Loads are cumulative — every path starts from HARD RULE 2's mandatory reads.
+详细的任务/范围决定在 [最小加载与规则归属](load-map.md)。这张平台表是可选的能力索引，不是额外的全读关卡。默认的 Seedance 工作加载适用的 2.5 模式；只有选 2.0/Pro 或做相应诊断时才加载 2.0/Pro。多场景工作不自动要求加载所有模块。模型选择只读所选输出模态的 schema，不读全部三份目录。
 
-| Situation | Load |
-|-----------|------|
-| Simple creative prompt (Fast Path) | `higgsfield-guide.md` + `higgsfield-prompt.md` — nothing else |
-| Any Seedance prompt | + `higgsfield-seedance.md` (+ the matching the Seedance `template-*.md` references file when the request is technique-shaped) |
-| Multi-scene / sequence / script breakdown | + `higgsfield-shotlist-director` + `higgsfield-pipeline` |
-| Model choice unclear or contested | + `higgsfield-models` + `model-specs.json`, `image-model-specs.json`, and `audio-model-specs.json` (the generated spec for the output type) |
-| Budget / credits / plan question | + `higgsfield-assist` |
-| Anything else | one routing-table row → that sub-skill; resist loading more than the row names |
+### 检查题材模板是否匹配（Check Templates for Genre Match）
 
-### Check Templates for Genre Match
+从零写提示词之前，先看用户的请求是否符合一种常见题材。`template-*.md` 参考里有 9 个带逐行拆解、推荐模型、约束和变体的注释示例模板。
 
-Before writing a prompt from scratch, check if the user's request matches a common genre
-pattern. The `template-*.md` references contain 9 annotated example templates with line-by-line
-breakdowns, recommended models, negative constraints, and variations.
-
-| User request matches | Check template |
+| 用户请求符合 | 查看模板 |
 |---------------------|----------------|
-| Chase, pursuit, action, parkour | `template-01-cinematic-action-chase.md` |
-| Horror, scary, creepy, dread | `template-03-horror-atmosphere.md` |
-| Fashion, editorial, lookbook | `template-04-fashion-editorial.md` |
-| Sci-fi, cyberpunk, VFX, space | `template-05-sci-fi-vfx.md` |
-| Portrait, character intro, close-up | `template-06-portrait-character-intro.md` |
-| Landscape, nature, establishing shot | `template-07-landscape-establishing-shot.md` |
-| Comedy, social media, TikTok, skit | `template-08-comedy-social-media.md` |
-| Romance, intimate, couple, wedding | `template-09-romantic-intimate.md` |
-| Dance, music, performance, concert | `template-10-dance-music-performance.md` |
+| 追逐、追捕、动作、跑酷 | `template-01-cinematic-action-chase.md` |
+| 恐怖、吓人、诡异、恐惧 | `template-03-horror-atmosphere.md` |
+| 时尚、大片、lookbook | `template-04-fashion-editorial.md` |
+| 科幻、赛博朋克、视效、太空 | `template-05-sci-fi-vfx.md` |
+| 肖像、人物登场、近景 | `template-06-portrait-character-intro.md` |
+| 风景、自然、建立镜头 | `template-07-landscape-establishing-shot.md` |
+| 喜剧、社媒、抖音、小品 | `template-08-comedy-social-media.md` |
+| 爱情、亲密、情侣、婚礼 | `template-09-romantic-intimate.md` |
+| 舞蹈、音乐、表演、演唱会 | `template-10-dance-music-performance.md` |
 
-Use the template as a starting point — adapt the example prompt to the user's specific
-request. The annotations explain WHY each element works, helping you make informed
-substitutions.
+把模板当作起点：按用户的具体请求改写示例提示词。注释解释每个元素**为什么**有效，帮你做出有依据的替换。工作室交付仍按块结构，模板只提供镜头写法参考。
 
-**Technique templates** (the Seedance `template-*.md` references) — structure templates for Seedance
-prompts where the user request is technique-shaped rather than genre-shaped:
+**技法模板**（Seedance 的 `template-*.md` 参考）：用户请求是技法类而不是题材类时，Seedance 提示词的结构模板：
 
-| Technique need | Template |
+| 技法需要 | 模板 |
 |---|---|
-| Pre-visualize multi-character spatial geometry before prompting | `template-top-down-map.md` |
-| Multi-character shot with cross-character relationships | `template-multi-character-anchor.md` |
-| Single-character shot with position + pose + contact-point locks | `template-single-character-position.md` |
-| Worked example: two-character anchoring end-to-end | `template-worked-example-two-character.md` |
-| Anime / stylized-2D animation — layered formula + style block + character turnaround | `template-anime-animation.md` |
-| Close-up facial acting via FACS Action Unit codes — beat-synced expression schedule | `template-facs-expression-beats.md` |
-| Seedance **2.5** multi-reference brief — role map + staged beats with end states | `template-omni-reference-2-5.md` |
+| 写提示词之前预先可视化多人空间几何 | `template-top-down-map.md` |
+| 有跨角色关系的多人镜头 | `template-multi-character-anchor.md` |
+| 锁定位置 + 姿势 + 接触点的单人镜头 | `template-single-character-position.md` |
+| 完整示例：双人锚定从头到尾 | `template-worked-example-two-character.md` |
+| 日式动画 / 风格化 2D 动画：分层公式 + 风格块 + 角色转面 | `template-anime-animation.md` |
+| 用 FACS 动作单元代码做近景面部表演：按节拍同步的表情表 | `template-facs-expression-beats.md` |
+| Seedance **2.5** 多参考说明：职责映射 + 带结束状态的分阶段节拍 | `template-omni-reference-2-5.md` |
+| 动作戏：招式因果与破坏累积（当前格式，两条 Clip） | `template-action-example-xianxia.md` |
 
-**Text-overlay templates** (the subtitle and speech-bubble templates) — paste-ready text-rendering
-prompts for subtitle / speech-bubble overlays:
+**文字叠加模板**（字幕和对话气泡模板）：可直接粘贴的字幕 / 对话气泡文字渲染提示；只在用户明确要求画面文字时使用：
 
-| Text overlay type | Template |
+| 文字叠加类型 | 模板 |
 |---|---|
-| Subtitle (dialogue-synchronized) | `template-subtitle.md` |
-| Speech bubble (character-attributed) | `template-speech-bubble.md` |
+| 字幕（与对白同步） | `template-subtitle.md` |
+| 对话气泡（归属于角色） | `template-speech-bubble.md` |
 
 ---
 
-### Build the Prompt Using the MCSLA Formula
+### 用 MCSLA 公式构建提示词（Build the Prompt Using the MCSLA Formula）
 
-Full MCSLA definition and prompt structure → `higgsfield-prompt.md`
+完整的 MCSLA 定义和提示词结构 → `higgsfield-prompt.md`
 
-Quick summary — five layers, every prompt:
+快速概括：五层，每条提示词都有：
 
 | M | C | S | L | A |
 |---|---|---|---|---|
-| Model | Camera | Subject | Look | Action |
+| 模型 | 运镜 | 主体 | 画面 | 动作 |
 
-**Core rules:**
-- Be specific — name camera presets, describe VFX concretely
-- Keep prompts under 200 words (short-form regime — block-scaffold production prompts follow their own structural rules, HARD RULE 8)
-- Subject → Action → Camera → Style is the most reliable order
+**核心规则：**
+- 要具体：写出运镜路径和终点（用预设时写准确名称），具体描述特效
+- 提示词控制在 200 词以内（只限短格式；块结构制作提示词遵循自己的结构规则，HARD RULE 8）
+- 短格式里，主体 → 动作 → 运镜 → 风格是最可靠的顺序
 
 ---
 
-### Output Format
+### 输出格式（Output Format）
 
-**Single prompt:**
+完整视频按工作室块结构交付（见 [跨类型导演模板](template-general-director-2-5.md)）；平台设置写在代码块外。下面是用户明确要求短格式时的原生写法。
+
+**单条提示词（短格式）：**
 ```
 **Model**: [model name]
 **Aspect ratio**: [ratio]  **Duration**: [Xs]  **Style**: [style]
@@ -247,10 +160,9 @@ Quick summary — five layers, every prompt:
 [Prompt]
 
 **Camera**: [camera control name]
-**Motion preset** (if used): [preset name]
 ```
 
-**Two versions (when style varies):**
+**两个版本（风格不同时）：**
 ```
 ### Version 1 — [Style Name]
 [Prompt]
@@ -260,72 +172,56 @@ Quick summary — five layers, every prompt:
 [Prompt]
 ```
 
-**Output rules:**
-- Output a clean, ready-to-paste prompt — no meta-commentary after
-- Do not explain what every line does unless the user asks
-- Always name the camera control and motion preset explicitly
+**输出规则：**
+- 输出干净、可直接粘贴的提示词：后面不加元评论
+- 除非用户要求，不解释每一行做什么
+- 运镜写明路径和终点；用了预设就写出准确的预设名
 
 ---
 
-## @ Reference Rules
+## @ 参考规则（@ Reference Rules）
 
-- User uploads a document (script, bible, brief, reference notes): read it at the supplied path; keep the source in place.
-- User uploads image: use `[reference image]` or describe it as "the provided reference"
-- For Soul ID character: note "using Soul ID character reference" in the prompt
-- For video extension: note "extend from [reference video], continue with..."
-- For style transfer: note "match the visual style of [reference image]"
+- 用户上传文档（剧本、圣经、说明、参考笔记）：在提供的路径读取；源文件留在原处。
+- 用户上传图像：用 `[reference image]`，或描述为“提供的参考”；工作室格式在映射块写 `名字 对应 @名字`，只绑定真实槽位
+- 视频延伸：写明“extend from [reference video], continue with...”
+- 风格迁移：写明“match the visual style of [reference image]”
 
 ---
 
-## Shared Resources
+## 共享资源（Shared Resources）
 
-| Resource | What it contains | When to use |
+| 资源 | 包含什么 | 何时用 |
 |----------|-----------------|-------------|
-| `negative-constraints.md` | All generation artifacts + prevention phrases, by category | Check before every prompt — append relevant constraints |
-| `template-*.md` | 9 annotated genre templates with examples, models, annotations, variations | When user request matches a common genre — use as starting point |
-| the character worksheet templates | 6 character-design worksheets (9-question sheet, story bible, visual DNA) | With `higgsfield-character-design` when developing characters before prompting |
-| the Seedance `template-*.md` references | 9 Seedance technique templates: top-down-map, multi-character-anchor, single-character-position, worked-example-two-character, anime-animation, facs-expression-beats, footage-vfx-transform, global-style-prefix, omni-reference-2-5 | When Seedance request is technique-shaped (spatial blocking, multi-character anchoring, anime/stylized-2D, FACS acting, footage VFX, style prefix, 2.5 multi-reference) |
-| the subtitle and speech-bubble templates | 2 text-rendering templates: subtitle, speech-bubble | When user request includes on-screen text rendering |
+| `negative-constraints.md` | 按类别的全部生成瑕疵 + 预防措辞 | 每条提示词之前查一下，挑选适用的约束 |
+| `template-*.md` | 9 个带示例、模型、注释和变体的题材注释模板 | 用户请求符合常见题材时，作为起点 |
+| 角色工作表模板 | 6 个角色设计工作表（九问角色表、故事圣经、视觉 DNA） | 写提示词之前开发角色时，配合 `higgsfield-character-design` |
+| Seedance 的 `template-*.md` 参考 | Seedance 技法模板：俯视平面图、多人锚定、单人站位、双人示例、动画、FACS 表情节拍、素材视效变换、全局风格前缀、2.5 多参考、动作演出范本 | Seedance 请求是技法类时（空间站位、多人锚定、动画/风格化 2D、FACS 表演、素材视效、风格前缀、2.5 多参考、动作戏） |
+| 字幕和对话气泡模板 | 2 个文字渲染模板：字幕、对话气泡 | 用户请求包含画面文字渲染时 |
 
 ---
 
-## Sub-Skills (auto-loaded as needed)
+## 子模块（按需自动加载）（Sub-Skills (auto-loaded as needed)）
 
-| Skill | Trigger |
+| 模块 | 触发 |
 |-------|---------|
-| `higgsfield-workspaces` | User is choosing a workspace / asking "what should I use for X" / hasn't picked a tool yet |
-| `higgsfield-prompt` | Any prompt writing or refinement request |
-| `higgsfield-image-shots` | Cinematic image prompts — shot framing, angles, composition |
-| `higgsfield-gpt-image-2` | GPT Image 2.0 prompts — three-format taxonomy (JSON / prose / meta-prompt), UI mockups, infographics, reference sheets |
-| `higgsfield-models` | "Which model should I use?" / model comparison |
-| `higgsfield-camera` | Camera movement questions (video) |
-| `higgsfield-motion` | Named preset requests (Explosion, Werewolf, VFX, etc.) |
-| `higgsfield-style` | Visual style / aesthetic questions |
-| `higgsfield-soul` | Character consistency / Soul ID |
-| `higgsfield-character-design` | Pre-production story bible — premise / world / 9-question character / story spine / visual DNA (before prompting) |
-| `higgsfield-scene-engine` | Scene/sequence structural audit — Goal / Obstacle / Tactic / Reversal / Value Shift (before spending credits) |
-| `higgsfield-apps` | One-click app recommendations |
-| `higgsfield-recipes` | Genre scene templates |
-| `higgsfield-troubleshoot` | Failed generations / quality issues |
-| `higgsfield-moodboard` | Moodboard / Soul Hex / project-level style consistency |
-| `higgsfield-mixed-media` | Artistic preset overlays (Noir, Sketch, Particles, etc.) |
-| `higgsfield-assist` | Higgsfield Assist copilot / credit optimization / plan selection |
-| `higgsfield-cinema` | Cinema Studio 2.5 + 3.0 + 3.5 / Soul Cast / color grading / optical physics / multi-shot / Elements / Smart mode / @ references / Style Settings / Camera Settings / Manual Style |
-| `higgsfield-canvas` | Node-based Canvas workspace / infinite board / chain prompts→images→videos / named canvas patterns / build-free generate-paid cost model / Shared Canvas live collaboration |
-| `higgsfield-pipeline` | Multi-shot workflow / tool chaining / full production pipeline |
-| `higgsfield-vibe-motion` | Vibe Motion — motion graphics / kinetic typography / data animation as **Remotion code** (crisp text, exact colors, deployable) |
-| `higgsfield-audio` | Audio design, dialogue, SFX, ambient sound for audio-capable models |
-| `higgsfield-seedance` | Seedance 2.0 / Pro prompt director + content-filter preflight linter (+ `higgsfield-seedance-hell-grind.md`, Higgsfield's open-sourced feature-film pipeline) |
-| `higgsfield-seedance-2-5` | Seedance 2.5 omni-reference dialect — the four modes (t2v / omni_reference / video_edit / video_extension), reference-role grammar, 30s staging, editing + forward/backward extension, keyframes, storyboards, blockouts, transitions (+ `higgsfield-seedance-2-5-vfx-pipeline.md`, the AI-VFX production pipeline: asset-class model routing, size-ref frame, the `omni_reference` v2v lane, the four-batch rule, the slop catalog) |
-| `higgsfield-seedance-vfx` | Video-to-video footage transformation for Seedance 2.0 — preserve a real subject + camera move, add a VFX element / swap the environment / drop a photoreal creature / relight to match / sync a timed zoom, run in std 4K |
-| `higgsfield-acting` | Character performance as behavior under pressure — objective / obstacle / tactics / beats / subtext, body + status + proxemics, mandatory eye life, the 150–220-word acting master profile and its per-scene rewrite, locked voice prompt |
-| `higgsfield-shotlist-director` | Brief/script → one connected Seedance shotlist (style prefix + `@`-glossary + named per-scene prompts) as editable HTML |
-| `higgsfield-facs` | FACS Action Unit codes for precise facial expressions in Seedance 2.0 — forced/uncanny/mixed expressions, close-up dialogue facial acting, emotion→AU recipes, FACS reference sheets |
-| `higgsfield-stack` | User mentions the Higgsfield CLI / MCP connector / bundled skills, or asks how this skill coexists with those execution surfaces |
+| `higgsfield-prompt` | 任何写提示词或改进提示词的请求 |
+| `higgsfield-image-shots` | 电影感图像提示词：构图、角度、取景 |
+| `higgsfield-gpt-image-2` | GPT Image 2.0 提示词：三种格式（JSON / 文字 / 元提示）、UI 原型、信息图、参考表 |
+| `higgsfield-models` | “该用哪个模型？” / 模型比较 |
+| `higgsfield-camera` | 运镜问题（视频） |
+| `higgsfield-style` | 视觉风格 / 美感问题 |
+| `higgsfield-character-design` | 前期故事圣经：前提 / 世界 / 九问角色 / 故事脊柱 / 视觉 DNA（写提示词之前） |
+| `higgsfield-scene-engine` | 场景/段落结构审查：目标 / 障碍 / 策略 / 反转 / 价值转变（花额度之前） |
+| `higgsfield-troubleshoot` | 失败的生成 / 质量问题 |
+| `higgsfield-audio` | 支持音频的模型的音频设计、对白、音效、环境声 |
+| `higgsfield-seedance` | Seedance 2.0 / Pro 提示词导演 + 内容过滤预检 lint（+ `higgsfield-seedance-hell-grind.md`，Higgsfield 开源的长片制作流程） |
+| `higgsfield-seedance-2-5` | Seedance 2.5 多参考写法：四种模式（t2v / omni_reference / video_edit / video_extension）、参考职责语法、30 秒分阶段、编辑 + 前后向延伸、关键帧、分镜、白模、转场（+ `higgsfield-seedance-2-5-vfx-pipeline.md`，AI 视效制作流程：按资产类型选模型、尺寸参照帧、`omni_reference` 视频到视频通道、四批规则、劣质效果清单） |
+| `higgsfield-seedance-vfx` | Seedance 2.0 的视频到视频素材变换：保留真实主体 + 镜头运动，加一个特效元素 / 换环境 / 放一个照片写实的生物 / 重新打光匹配 / 同步一次计时变焦，用 std 4K 跑 |
+| `higgsfield-acting` | 把角色表演当作压力下的行为：目标 / 障碍 / 策略 / 节拍 / 潜台词，身体 + 地位 + 空间距离，必须的眼神生命力，表演母本及其逐场改写，固定音色 |
+| `higgsfield-shotlist-director` | 说明/剧本 → 一张相连的 Seedance 分镜表（风格前缀 + `@` 资产表 + 带名字的逐场提示词），做成可编辑的 HTML |
+| `higgsfield-facs` | 用 FACS 动作单元代码在 Seedance 2.0 里做精确的面部表情：勉强/诡异/混合表情、近景对白面部表演、情绪→AU 配方、FACS 参考表 |
 
-> Full vocabulary in `vocab.md`
-> Full motion preset library in `higgsfield-motion.md`
-> Model comparison in `model-guide.md`
-> Example prompts in `prompt-examples.md`
-> Shared negative constraints in `negative-constraints.md`
-> Genre-specific annotated templates in `template-*.md`
+> 完整词汇见 `vocab.md`
+> 模型比较见 `model-guide.md`
+> 共享约束见 `negative-constraints.md`
+> 各题材注释模板见 `template-*.md`

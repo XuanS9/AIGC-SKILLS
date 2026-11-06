@@ -1,171 +1,171 @@
-# Production Economics — Higgsfield AI Cinema Reference
+# 制作经济学：Higgsfield AI 电影参考（Production Economics — Higgsfield AI Cinema Reference）
 
-Production-cost and iteration anchors from a Higgsfield-team-produced 90-minute AI feature shipped for the 2026 Cannes premiere. Documents quadruple-confirmed acceptance rates, per-character and per-shot iteration anchors, three traditional-cost anchors from Hollywood validators, schedule discipline, and the falsifiable success criteria the production was held to.
+来自一部由 Higgsfield 团队制作、为 2026 年戛纳首映交付的 90 分钟 AI 长片的制作成本与迭代锚点。记录了经四重确认的采用率、每个角色和每个镜头的迭代锚点、三位好莱坞验证者给出的传统成本锚点、排期纪律，以及这次制作所遵循的可证伪成功标准。
 
-Use this when planning credit budgets, calibrating realistic iteration counts, or framing AI-cinema expectations against traditional-production cost references.
-
----
-
-## Why this reference exists
-
-Most public framing of AI-cinema cost either understates iteration burn (highlight reels only) or overstates it (worst-case anchoring without context). This reference documents one production team's actual numbers — credits spent, generations rejected, dollars deployed — alongside Hollywood-validator cost anchors for the same content scope.
-
-The source is a fourteen-day, fifteen-person, Higgsfield-team production cycle that produced a 90-minute fully-AI feature ("Hell Grind"). The team documented the process in a three-episode "Road to Cannes" video series. Production-team transparency is what makes the numbers usable; absent that, they would be promotional anecdotes.
+规划额度预算、校准现实的迭代次数，或者对照传统制作成本给 AI 电影的预期定位时使用。这里的数字是一个团队、一个平台时期的经验数据，不是承诺或规则。
 
 ---
 
-## Production-team disclosed totals (Hell Grind 90-min feature)
+## 为什么有这份参考（Why this reference exists）
 
-The 90-minute Cannes feature wrapped on Day 14 with the following totals:
+大多数关于 AI 电影成本的公开说法，要么低估了迭代消耗（只给精彩片段），要么高估了（脱离语境的最坏情况）。这份参考记录了一个制作团队的真实数字（花掉的额度、被淘汰的生成、投入的美元），并配上好莱坞验证者对同等内容范围的成本锚点。
 
-- **108,859 generations** across 14 days — averaging roughly 7,775 per day, or about 324 per hour run non-stop
-- **9,540,047 credits** consumed (against an original 10M-credit budget set on Day 1)
-- **~$400,000 generation cost** (credit spend converted to dollars at the rate that settled at wrap; see Methods below for the rate-divergence finding)
-- **~$500,000 total project cost** (generation + fifteen-person team + audio + post-production)
-- **15-person team** structured as fourteen directors/DPs/editors plus one supervising lead
-
-For comparison framing, the team estimates the traditional-VFX-equivalent of the same 90-minute scope at roughly $50M — placing the AI production at approximately 1% of traditional baseline cost (see Hollywood-validator anchors below for the cost-bracket detail).
+来源是一个为期十四天、十五人、由 Higgsfield 团队完成的制作周期，产出一部 90 分钟的全 AI 长片（“Hell Grind”）。团队在一个三集的“Road to Cannes”视频系列里记录了过程。正是制作团队的透明让这些数字可用；没有这份透明，它们只是宣传轶事。
 
 ---
 
-## Acceptance-rate anchors (quadruple-confirmed)
+## 制作团队披露的总数（Hell Grind 90 分钟长片）（Production-team disclosed totals (Hell Grind 90-min feature)）
 
-The image acceptance rate sits at **roughly 1.0%** and the video acceptance rate at **roughly 1.5%** across the production. Four independently-sourced data points across the three-episode documentary confirm this range:
+这部 90 分钟的戛纳长片在第 14 天完成，总数如下：
 
-| Source | Sample | Rate | Source surface |
+- 14 天里 **108,859 次生成**：平均每天约 7,775 次，或不间断运行每小时约 324 次
+- 消耗 **9,540,047 积分**（第 1 天设定的原始预算是 1000 万积分）
+- **约 40 万美元生成成本**（按收尾时确定的汇率把额度花费折算成美元；汇率分歧的发现见下文“方法”）
+- **约 50 万美元项目总成本**（生成 + 十五人团队 + 音频 + 后期）
+- **15 人团队**，组成为十四位导演/摄影/剪辑加一位总监
+
+作为对比，团队估计同样 90 分钟范围的传统视效等价成本约为 5000 万美元，使这次 AI 制作约为传统基线成本的 1%（成本区间的细节见下文好莱坞验证者锚点）。
+
+---
+
+## 采用率锚点（四重确认）（Acceptance-rate anchors (quadruple-confirmed)）
+
+整个制作中，图像采用率约为 **1.0%**，视频采用率约为 **1.5%**。三集纪录片里四个独立来源的数据点确认了这个范围：
+
+| 来源 | 样本 | 比率 | 来源出处 |
 |---|---|---|---|
-| Hell Grind Ep. 1 funnel (prior 22-min project) | 107 images used / 10,710 generated | **1.00% image** | Ep. 1 production-team disclosure |
-| Hell Grind Ep. 1 funnel (prior 22-min project) | 253 videos used / 16,181 generated | **1.56% video** | Ep. 1 production-team disclosure |
-| 90-min feature audience-comment confirmation | "1 in 64 video, 1 in 100 made it in" | **~1.0% image / ~1.5% video** | Ep. 2 first-half audience anchor |
-| 90-min feature Day-4 session actuals | 800 generated / 8 made final | **1.0%** (image-dominant batch) | Ep. 2 Day-4 wrap-up disclosure |
-| 90-min feature full-project | 108,859 generations / 90 min finished | comparable funnel implied | Ep. 3 wrap totals |
+| Hell Grind 第 1 集漏斗（之前的 22 分钟项目） | 使用 107 张图 / 生成 10,710 张 | **1.00% 图像** | 第 1 集制作团队披露 |
+| Hell Grind 第 1 集漏斗（之前的 22 分钟项目） | 使用 253 段视频 / 生成 16,181 段 | **1.56% 视频** | 第 1 集制作团队披露 |
+| 90 分钟长片观众评论确认 | “视频 64 条里 1 条，图 100 张里 1 张进了成片” | **约 1.0% 图像 / 约 1.5% 视频** | 第 2 集上半部分的观众锚点 |
+| 90 分钟长片第 4 天实际 | 生成 800 / 进入成片 8 | **1.0%**（以图像为主的批次） | 第 2 集第 4 天收尾披露 |
+| 90 分钟长片整个项目 | 108,859 次生成 / 完成 90 分钟 | 暗示相近的漏斗 | 第 3 集收尾总数 |
 
-The quadruple confirmation across separate sessions, separate days, and an independent audience cross-check is what makes this anchor useful for planning. Treat **1.0% image / 1.5% video** as the conservative planning anchor for AI-cinema work at this quality bar.
-
----
-
-## Per-character iteration anchor
-
-Single-character anchor work absorbs disproportionate iteration cost up front, because the character is then reused across every subsequent shot — investment compounds forward.
-
-For the Hell Grind 90-min feature's lead character ("Jack"):
-
-- **~600 generations on Higgsfield Soul Cinema** (initial character generation across pose, costume, expression variations)
-- **~200 generations on GPT Image 2** (refinement editing of selected anchors)
-- **≈800 total iterations** to lock the character anchor sheet before any narrative shot generation began
-
-Plan character-anchor budgets accordingly when scoping work. A character that will appear in tens of shots can justify the front-loaded ~800-iteration investment; a character appearing in one or two shots cannot.
+跨不同会话、不同日子，加上一次独立的观众交叉核对的四重确认，是这个锚点可用于规划的原因。把 **1.0% 图像 / 1.5% 视频** 当作这个质量标准下 AI 电影工作的保守规划锚点。
 
 ---
 
-## Per-shot iteration anchor
+## 每个角色的迭代锚点（Per-character iteration anchor）
 
-Single-shot iteration cost varies widely depending on shot complexity, scene physics, and how clean the reference assets are. One worked example from the production:
+单个角色锚点的工作在前期吸收了不成比例的迭代成本，因为这个角色之后会在每一个后续镜头里复用：投入会向前复利。
 
-- **Prompt 21C, a 10-second establishing shot: 72 generations** before the shot was accepted as final.
+Hell Grind 90 分钟长片的主角（“Jack”）：
 
-Adil's framing of this single shot is instructive: the 72-generation cost for a single 10-second establishing shot equals roughly fifteen minutes of typical shot-line output in the same project. Conceptually-simple shots (a single pan plus push-in, in this case) can be the most iteration-heavy in practice; budget for the surprise.
+- **在 Higgsfield Soul Cinema 上约 600 次生成**（初始角色生成，覆盖姿势、服装、表情的变化）
+- **在 GPT Image 2 上约 200 次生成**（对选定锚点的精修编辑）
+- 在开始任何叙事镜头生成之前，**合计约 800 次迭代**锁定角色参考表
 
-Use the 72-generations-per-10-seconds anchor as an upper-bound planning point for a single iteration-heavy establishing shot, not as a per-shot average.
-
----
-
-## Production-schedule discipline
-
-The team enforced a hard daily output quota to keep the 14-day schedule:
-
-- **~2.5 minutes of finished footage per team member per day** was the quota during the assembly phase
-- **Week 1** (Days 1-7) = full feature assembly — every scene present, even if rough
-- **Week 2** (Days 8-14) = key-moment refinement — re-do the scenes that carry emotional weight; accept rougher takes elsewhere
-
-The Week 1 / Week 2 split is the discipline pattern: get the complete shape down first, then concentrate iteration budget on the moments that matter. Without that split, iteration cost would have run the project over budget by Day 7.
+界定工作范围时按此规划角色锚点预算。一个会出现在几十个镜头里的角色，值得前期约 800 次迭代的投入；只出现在一两个镜头里的角色不值得。工作室的角色组板按 [角色资产交付规范](template-character-asset-delivery.md) 制作。
 
 ---
 
-## AI-vs-traditional cost anchors
+## 每个镜头的迭代锚点（Per-shot iteration anchor）
 
-Three Hollywood validators in the documentary anchor the AI-vs-traditional cost comparison:
+单个镜头的迭代成本因镜头复杂度、场景物理和参考资产是否干净而差别很大。制作里的一个实例：
 
-| Validator | Credentials | Anchor for Hell Grind-equivalent scope | Source |
+- **提示词 21C，一个 10 秒的建立镜头：72 次生成**之后才被采用为最终版本。
+
+Adil 对这个镜头的说法很有启发：一个 10 秒建立镜头的 72 次生成成本，相当于同一项目里典型镜头产出的大约十五分钟。概念上简单的镜头（这里是一次摇镜加推近）在实践中可能是迭代最重的；为意外留预算。
+
+把“每 10 秒 72 次生成”当作单个迭代很重的建立镜头的上限规划点，而不是每个镜头的平均值。
+
+---
+
+## 制作排期纪律（Production-schedule discipline）
+
+团队执行了严格的每日产出配额，以保住 14 天的排期：
+
+- 组装阶段的配额是**每位成员每天约 2.5 分钟成片**
+- **第 1 周**（第 1–7 天）= 完整组装长片：每场戏都在，哪怕很粗糙
+- **第 2 周**（第 8–14 天）= 精修关键时刻：重做承载情感分量的场景；其他地方接受更粗糙的素材
+
+第 1 周 / 第 2 周的划分就是纪律模式：先把完整的形状搭出来，再把迭代预算集中到重要的时刻上。没有这个划分，迭代成本会在第 7 天就让项目超支。
+
+---
+
+## AI 与传统制作的成本锚点（AI-vs-traditional cost anchors）
+
+纪录片里三位好莱坞验证者为 AI 与传统的成本比较提供了锚点：
+
+| 验证者 | 资历 | 对 Hell Grind 等价范围的锚点 | 来源 |
 |---|---|---|---|
-| **Chuck Russell** | Director (The Mask, The Scorpion King) | **~$5M minimum** for a 25-min live-action equivalent | Ep. 1 guest segment |
-| **Patrick Kalin** | Emmy-nominated VFX (Avatar, Dune, Blade Runner 2049, Deadpool 2) | **~$15–20M** for a 25-min VFX-heavy equivalent | Ep. 2 guest segment |
-| **Jamafe** | Concept artist (Mandalorian, Avengers, Jurassic World; 10+ years at Lucasfilm / ILM / Marvel / Frame Store) | Validates the result as "watching a movie" (qualitative anchor, not cost) | Ep. 3 guest segment |
+| **Chuck Russell** | 导演（《变相怪杰》《蝎子王》） | 25 分钟真人等价版本**至少约 500 万美元** | 第 1 集嘉宾段落 |
+| **Patrick Kalin** | 艾美奖提名视效师（《阿凡达》《沙丘》《银翼杀手 2049》《死侍 2》） | 25 分钟重视效等价版本**约 1500–2000 万美元** | 第 2 集嘉宾段落 |
+| **Jamafe** | 概念艺术家（《曼达洛人》《复仇者联盟》《侏罗纪世界》；在卢卡斯影业 / ILM / 漫威 / Frame Store 工作 10 年以上） | 认可成片“就像在看一部电影”（定性锚点，不是成本） | 第 3 集嘉宾段落 |
 
-Russell and Kalin bracket the traditional-equivalent cost range at **$5–20M for a 25-min equivalent**, scaling to roughly **$50M for the 90-min scope** at the VFX-heavy end. The Higgsfield-team's actual ~$500K total cost sits at **roughly 1% of the $50M traditional baseline**.
+Russell 和 Kalin 把传统等价成本框定在 **25 分钟等价版本 500–2000 万美元**，按重视效一端推到 **90 分钟范围约 5000 万美元**。Higgsfield 团队实际约 50 万美元的总成本，**约为 5000 万美元传统基线的 1%**。
 
-The bracket matters more than any single number — it spans a 4× range even within traditional production, so the 1% AI-vs-traditional ratio is itself an order-of-magnitude framing, not a precision claim.
-
----
-
-## Falsifiable AI-cinema success criteria
-
-The production was held to a five-criterion success rubric stated up-front in Ep. 1, before any generation began. Either the finished feature hits the criteria and the AI-cinema thesis is proved, or it misses and the result is a catalog of remaining gaps. Binary verification, not vague framing.
-
-The five criteria, paraphrased:
-
-1. **Viewer stops perceiving AI generation** across the full runtime — the production stops reading as "AI work" and starts reading as cinema
-2. **Narrative coherence** — structured opening, middle, resolution; setups have payoffs
-3. **Characters register as inhabited people** — not as model-produced figures with the characteristic AI-cinema tells
-4. **Intended emotional beats produce the intended audience response** — the scenes designed to land actually land
-5. **Audience experiences unanticipated emotional impact** — beyond what the script intended, real cinema has moments that surprise
-
-When framing your own AI-cinema work, write down the success criteria first. Then ship and check them. The binary structure (proved / gaps cataloged) prevents the failure mode of post-hoc rationalization — claiming success regardless of outcome because no specific test was committed to up front.
+区间比任何单个数字都重要：即使在传统制作内部它也跨了 4 倍，所以“AI 约为传统的 1%”本身是一个数量级的定位，而不是精确的说法。
 
 ---
 
-## Using this reference
+## 可证伪的 AI 电影成功标准（Falsifiable AI-cinema success criteria）
 
-**When to apply:**
+这次制作在第 1 集、任何生成开始之前，就公开了一套五条成功标准。成片要么达到标准、证明 AI 电影的论点，要么达不到、结果是一份剩余差距的清单。是二元的验证，而不是含糊的说法。
 
-- **Budget planning** — use the rate anchors (1.0% image / 1.5% video acceptance; ~800 iterations per anchor character; 72 generations for an iteration-heavy single shot) to estimate credit consumption for a planned scope.
-- **Expectation calibration** — when a single shot consumes more iterations than expected, the per-shot anchor is the reference point for what's normal, not a signal of failure.
-- **Stakeholder framing** — when explaining AI-cinema cost to non-AI stakeholders, the 1%-of-traditional anchor is the order-of-magnitude reference; the $5–20M traditional bracket is the upper-bound framing.
-- **Quality-gate design** — adopt or adapt the five-criterion falsifiable success rubric before starting a project, so success is checkable rather than rationalized.
+五条标准（意译）：
 
-**Caveats:**
+1. **观众在整个片长里不再意识到是 AI 生成**：作品不再读作“AI 作品”，而是读作电影
+2. **叙事连贯**：有结构的开场、中段、结局；铺垫有回报
+3. **角色被感知为有内心的人**：而不是带着典型 AI 电影破绽的模型生成人物
+4. **预定的情绪节拍产生预定的观众反应**：设计要落地的场景真的落地了
+5. **观众体验到意料之外的情感冲击**：超出剧本的意图，真正的电影有让人意外的时刻
 
-- Single production-team source. The numbers are one team's discipline; another team would see different rates.
-- Single platform state. Higgsfield's model surface and credit pricing both evolve; the numbers anchor a specific platform state in the May 2026 production window.
-- Public sample size of one. No comparable AI-cinema production has disclosed this level of operational detail publicly at this scope, so cross-team validation is not yet available.
-
----
-
-## Community-corpus anchors (13-project harvest)
-
-`[FIELD — 2026-07-18 API harvest of 13 shared community projects, 9 creators, ~4,000 sampled production prompts with full params]` — an independent cross-check on the Hell Grind anchors, from solo/small-team community productions rather than a staffed feature:
-
-- **13,626 generations for one ~2–3-minute short** (the "4K Blockbuster Breakdown" flagship, made solo). Of 2,644 sampled job sets, only 201 sat in FINAL folders — including just 16 final Seedance videos in the most-iterated scene (the jungle) — an iteration ratio of roughly **65–100 generations per kept shot**, i.e. the same 1.0–1.5% acceptance band as Hell Grind.
-- **TESTS is the biggest folder everywhere: 61% of the flagship's entire project** (8,321 of 13,626). The physics-heaviest scene (jungle) took 5× the generations of the simplest (living room). Tests taught which model per asset, when to swap assets mid-project, and "where 4K stops falling apart" — budget for the tests as the work, not as overhead.
-- **The five-bucket folder discipline** (best-documented on "The new girl"): per-scene folders + **FINAL KEYFRAMES** (the locked frames each shot was built from) + **FINAL GENERATIONS** (selected takes) + **FAILED GENERATIONS** (discards kept on purpose — "knowing what didn't work is part of navigating what did") + an earliest **TESTS** folder for style calibration. A better mental model than a flat gallery, and cheap to adopt.
-- **Model mix at production scale** (flagship sample): Seedance 2.0 for all video (15s durations dominant — generate long multi-shot clips, cut the best seconds), Soul Cinematic as the volume asset engine, GPT Image 2 for sheet edits, Nano Banana Flash for exposure-matching plate edits.
-- **The best-second splice is explicit practice:** "takes are spliced — one generation's opening cut with another's ending into a single shot." The finished film is assembled from the best seconds of many takes, not from whole kept takes.
+给你自己的 AI 电影工作定位时，先写下成功标准。然后交付，再逐条检查。二元结构（证明了 / 列出差距）防止事后合理化的失败模式：因为事先没有承诺任何具体测试，所以无论结果如何都宣称成功。工作室的验收按 [统一调用与验收总表](production-checks.md#统一调用与验收总表) 的四态记录。
 
 ---
 
-## Source methodology
+## 怎么使用这份参考（Using this reference）
 
-All numbers in this reference trace to the Higgsfield-team-produced "Road to Cannes" three-episode documentary series, where production-team member Adil disclosed acceptance rates, generation counts, credit spend, and dollar totals on-camera across Days 1, 4, and 14 of the production cycle. The discipline of disclosing rejected-generation counts (not just accepted-takes) is what makes the acceptance-rate anchors useful.
+**何时使用：**
 
-### Catch #15 — Credit-rate-per-dollar divergence finding
+- **预算规划**：用比率锚点（1.0% 图像 / 1.5% 视频采用率；每个锚点角色约 800 次迭代；一个迭代很重的单镜头 72 次生成）估算计划范围的额度消耗。
+- **预期校准**：一个镜头消耗的迭代比预期多时，每镜头锚点是什么算正常的参考点，而不是失败的信号。
+- **向相关方说明**：向不熟悉 AI 的相关方解释 AI 电影成本时，“约为传统的 1%”是数量级参考；500–2000 万美元的传统区间是上限框架。
+- **质量关卡设计**：开始一个项目之前，采用或改编这五条可证伪的成功标准，让成功可以被检验，而不是被合理化。
 
-A consistency-check across the three disclosed cost anchors surfaces a divergence in the implied credit-to-dollar conversion rate:
+**注意事项：**
 
-| Source | Credits | Dollars | Implied rate |
+- 单一制作团队来源。这些数字是一个团队的纪律；另一个团队会看到不同的比率。
+- 单一平台状态。Higgsfield 的模型和积分定价都在变化；这些数字锚定的是 2026 年 5 月制作窗口的平台状态。
+- 公开样本量为一。还没有可比的 AI 电影制作在这个规模上公开披露过这种程度的运营细节，所以还无法跨团队验证。
+
+---
+
+## 社区语料锚点（13 个项目的采集）（Community-corpus anchors (13-project harvest)）
+
+`[FIELD — 2026-07-18 API harvest of 13 shared community projects, 9 creators, ~4,000 sampled production prompts with full params]`：对 Hell Grind 锚点的独立交叉核对，来自个人/小团队的社区制作，而不是有编制的长片：
+
+- **一部约 2–3 分钟的短片用了 13,626 次生成**（旗舰作品“4K Blockbuster Breakdown”，一个人完成）。抽样的 2,644 组任务里，只有 201 组在 FINAL 文件夹里，其中迭代最多的场景（丛林）只有 16 段最终 Seedance 视频：迭代比约为**每个留下的镜头 65–100 次生成**，即与 Hell Grind 相同的 1.0–1.5% 采用区间。
+- **TESTS 在每个项目里都是最大的文件夹：占旗舰项目整体的 61%**（13,626 中的 8,321）。物理最重的场景（丛林）用了最简单场景（客厅）5 倍的生成。测试教会了每种资产该用哪个模型、什么时候在项目中途换资产，以及“4K 在哪里开始崩”：把测试当作工作本身来做预算，而不是额外开销。
+- **五个文件夹的纪律**（在“The new girl”里记录得最好）：按场景的文件夹 + **FINAL KEYFRAMES**（每个镜头据以构建的锁定帧）+ **FINAL GENERATIONS**（选中的素材）+ **FAILED GENERATIONS**（刻意保留的废弃素材：“知道什么没用，是摸清什么有用的一部分”）+ 最早的 **TESTS** 文件夹用于风格校准。比平铺的图库更好的心智模型，而且采用起来很便宜。
+- **制作规模下的模型组合**（旗舰样本）：所有视频用 Seedance 2.0（以 15 秒时长为主：生成长的多镜头片段，剪出最好的几秒）、Soul Cinematic 作为批量资产引擎、GPT Image 2 用于设定表编辑、Nano Banana Flash 用于匹配曝光的底片编辑。
+- **“最好的几秒”拼接是明确的做法：**“素材是拼接的：把一次生成的开头和另一次的结尾剪成一个镜头。”成片由很多条素材里最好的几秒组装而成，而不是由完整留下的素材组成。
+
+---
+
+## 来源方法（Source methodology）
+
+这份参考里的所有数字都来自 Higgsfield 团队制作的三集纪录片系列“Road to Cannes”，制作团队成员 Adil 在制作周期的第 1、4、14 天，在镜头前披露了采用率、生成数、额度花费和美元总数。披露被淘汰的生成数（而不只是采用的素材）这一纪律，是采用率锚点可用的原因。
+
+### 第 15 项发现：每美元积分汇率的分歧（Catch #15 — Credit-rate-per-dollar divergence finding）
+
+对三个披露的成本锚点做一致性检查，发现隐含的积分到美元换算率存在分歧：
+
+| 来源 | 积分 | 美元 | 隐含汇率 |
 |---|---|---|---|
-| Hell Grind Ep. 1 (prior 22-min project) | 1,152,295 | ~$69,000 | ~$0.060/credit |
-| 90-min feature Day 4 (mid-production estimate) | 4,441,352 | ~$260,000 | ~$0.059/credit |
-| 90-min feature final wrap (Day 14) | 9,540,047 | ~$400,000 | ~$0.042/credit |
+| Hell Grind 第 1 集（之前的 22 分钟项目） | 1,152,295 | 约 69,000 | 约 0.060 美元/积分 |
+| 90 分钟长片第 4 天（制作中期估算） | 4,441,352 | 约 260,000 | 约 0.059 美元/积分 |
+| 90 分钟长片最终收尾（第 14 天） | 9,540,047 | 约 400,000 | 约 0.042 美元/积分 |
 
-The Ep. 1 prior-project and Day-4 mid-production rates agree at roughly **$0.060/credit**. The wrap-day final rate implies roughly **$0.042/credit** — a roughly 30% divergence within the same project between Day 4 and Day 14.
+第 1 集之前项目的汇率和第 4 天制作中期的汇率一致，约为 **0.060 美元/积分**。收尾日的最终汇率约为 **0.042 美元/积分**：同一个项目里，第 4 天和第 14 天之间相差约 30%。
 
-Possible explanations include (a) a Higgsfield credit-pricing change during the production window, (b) a bulk-pricing tier discount kicking in as the project crossed a volume threshold, (c) the Day-4 dollar figure being a rough estimate while the wrap figure is a settled actual, or (d) the wrap-day figure including a credit-allocation accounting different from the in-progress estimates.
+可能的解释包括：（a）制作窗口期间 Higgsfield 积分定价发生变化；（b）项目跨过某个用量门槛后触发了批量定价折扣；（c）第 4 天的美元数字是粗略估算，而收尾数字是结算后的实际值；（d）收尾日数字包含的积分分配核算方式与进行中的估算不同。
 
-**Decision:** This reference documents both anchors (generation counts and dollar totals) but does **not** assert a unified credit-to-dollar conversion rate. Users planning their own credit budgets should treat the dollar totals as independent benchmarks; if computing a personal rate from current Higgsfield pricing, use that current rate against the credit-count anchors rather than back-deriving from these dollar figures.
+**决定：**这份参考同时记录两类锚点（生成数和美元总数），但**不**断言一个统一的积分到美元换算率。规划自己的额度预算时，把美元总数当作独立的基准；如果按当前 Higgsfield 定价计算个人汇率，就用当前汇率套积分数锚点，而不是从这些美元数字反推。
 
-### Source attribution
+### 来源出处（Source attribution）
 
-- **Series:** "Road to Cannes" — three-episode documentary produced by the Higgsfield team
-- **Speaker:** Adil — Higgsfield team member, self-identified as one of the production leads
-- **Episodes:** Ep. 1 (pre-production framing + Hell Grind Ep. 1 funnel disclosure + Chuck Russell guest); Ep. 2 (Day-4 production with Patrick Kalin guest); Ep. 3 (Day-14 wrap + 28-pro-tip masterclass + Jamafe guest)
-- **Production window:** Days 1–14 of the Hell Grind 90-min feature, ending in May 2026 ahead of the 2026 Cannes premiere
+- **系列：**“Road to Cannes”，Higgsfield 团队制作的三集纪录片
+- **讲述者：**Adil，Higgsfield 团队成员，自称是制作负责人之一
+- **各集：**第 1 集（前期定位 + Hell Grind 第 1 集漏斗披露 + Chuck Russell 嘉宾）；第 2 集（第 4 天制作，Patrick Kalin 嘉宾）；第 3 集（第 14 天收尾 + 28 条专业技巧大师课 + Jamafe 嘉宾）
+- **制作窗口：**Hell Grind 90 分钟长片的第 1–14 天，2026 年 5 月结束，赶在 2026 年戛纳首映之前

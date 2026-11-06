@@ -1,32 +1,21 @@
-# Template: Worked Example — Two-Character Anchoring (Neo-Noir Alley)
+# 模板：完整示例：双人锚定（新黑色电影小巷）
 
-Concrete end-to-end demonstration of `template-multi-character-anchor.md`
-applied to a real scene. Shows what the template fields actually fill
-with when the scene is named.
+把 `template-multi-character-anchor.md` 用在一个真实场景上的完整演示，展示场景有了名字之后，模板字段实际会填成什么。
 
-## The scene
+## 场景
 
-Two characters on a rain-soaked alleyway at night. A detective
-("Roco") confronts a suspect ("Lulu") who is backing toward a chain-
-link fence. Tension; no contact yet. Cinematic neo-noir register.
+夜里，一条被雨浇透的小巷，两个角色。警探（Roco）逼近一名嫌疑人（Lulu），她正向一道铁丝网栅栏后退。紧张，还没有接触。电影感的新黑色风格。
 
-## Planning this example
+## 规划这个示例
 
-Apply [shared narrative planning](narrative-planning.md): assets,
-goal, global audiovisual/space, behavior, stages, continuity, final frame, constraints
-are semantic layers already expressed by the anchor format. Here the confrontation and
-retreat culminate in fence contact; that state change defines the ending. Plan the
-advance, response, and contact before allocating time, without preset stages or equal
-durations. The two-character count, 2s footstep cue, positions, and move distances below
-are illustrative, not mandatory values for other scenes. Keep any chosen values mutually
-consistent within the shot; the footstep sound follows the actual visible step.
+应用 [共享叙事规划](narrative-planning.md)：资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面、约束是语义层，锚点格式里已经表达了它们。这里的对峙和后退最终以碰到栅栏收束，这个状态变化决定了结尾。先规划逼近、反应和接触，再分配时间，不预设阶段，不平均分时。下面的双人数量、2 秒处的脚步声、位置和移动距离只是本例的示意，不是其他场景的必填值。镜头内选定的数值要彼此一致；脚步声跟随画面里真实的那一步。
 
-## The filled prompt
+## 填好的提示词
 
 ```text
 At 0 seconds, two characters in frame.
 
-Character A — Roco (Soul ID @Image1).
+Character A — Roco (registered asset @Image1).
   Screen position: left third, x-position 30%, y-position 55%,
     frame occupancy 28%.
   Depth layer: midground.
@@ -37,7 +26,7 @@ Character A — Roco (Soul ID @Image1).
   Contact points: boots planted on wet asphalt, shoulders square.
   State lock: composed, alert, controlled aggression.
 
-Character B — Lulu (Soul ID @Image2).
+Character B — Lulu (registered asset @Image2).
   Screen position: right third, x-position 70%, y-position 60%,
     frame occupancy 24%.
   Depth layer: midground (1 meter behind Roco's depth plane).
@@ -74,28 +63,17 @@ Final frame: Roco one step closer, Lulu's back touching the fence,
   eyeline locked, negative space narrowed to half the original.
 ```
 
-## What this demonstrates
+编译成工作室块结构时：`[角色]` 首行写 `恰好 2 人`，两人各写身高；第一段是约 1 秒的定位全景，`[声音]` 写 `0s-1s｜Roco 轻声：{Hm.}`；`no music` 改为末尾 `NO BGM。`。
 
-- Every `template-multi-character-anchor.md` field filled — including cross-
-  character relationships (distance + eyeline + crossing rule +
-  negative space) per § Spatial Layout Block in `higgsfield-seedance.md`
-  + [vocab.md](vocab.md) § Composition Vocabulary → Crossing
-  rule + § Negative space
-- One dominant camera motion (slow dolly-in) — no compound moves per
-  § Multi-motion camera overload in `higgsfield-seedance-failure-modes.md`
-- Continuity locks explicit + Soul ID handles (`@Image1`, `@Image2`)
-  match upload-order convention — see § Per-Image Role Convention +
-  § Multi-Form State Tracking + § Physics-state-anchor for the
-  discipline behind state + handle locks
+## 这个示例展示了什么
 
-## See also
+- `template-multi-character-anchor.md` 的每个字段都填了，包括跨角色关系（距离、视线、越轴规则、负空间），见 `higgsfield-seedance.md` § Spatial Layout Block 与 [vocab.md](vocab.md) § Composition Vocabulary → Crossing rule、§ Negative space。
+- 只有一个主导运镜（缓慢推近），没有复合运动，见 `higgsfield-seedance-failure-modes.md` § Multi-motion camera overload。
+- 连续性锁定写明，参考记号（`@Image1`、`@Image2`）与上传顺序一致。
 
-- `template-multi-character-anchor.md` — the template this example fills
-- `template-top-down-map.md` — pre-visualize before filling the template
-- `higgsfield-soul.md` § Character Anchor Block —
-  per-character 10-attribute structure
-- `higgsfield-seedance.md` § Spatial Layout Block —
-  the prompt-body block this example assembles
-- `production-benchmarks.md` § Per-character iteration anchor —
-  budget anchors for the Soul ID generation pass that built Roco and
-  Lulu's character sheets
+## 另见
+
+- `template-multi-character-anchor.md`：本示例填写的模板
+- `template-top-down-map.md`：填写模板前预先可视化
+- `higgsfield-seedance.md` § Spatial Layout Block：本示例拼出的正文块
+- `production-benchmarks.md` § Per-character iteration anchor：为 Roco 和 Lulu 制作角色参考图的迭代预算锚点

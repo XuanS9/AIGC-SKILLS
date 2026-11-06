@@ -1,52 +1,17 @@
 #!/usr/bin/env python3
-"""
-seedance_lint.py
-================
-Pre-flight linter for Seedance 2.0 / Seedance Pro prompts.
+"""Model/asset preflight for studio TEXT prompts (stdlib only).
 
-Seedance's content filter is an LLM reading full-scene intent, not a keyword
-blacklist. But it still reliably flags prompts on a handful of patterns — this
-linter catches those patterns before the user burns credits on an instant-fail.
+Checks each Clip independently using director_contract_lint's parser. Chinese
+and English block-external settings are supported; CLI defaults apply per Clip.
+FAIL means a verifiable text/schema/parameter error, NOT a predicted provider
+rejection. Seedance 2.0/Pro field-observation filter patterns are advisory WARNs;
+they do not apply as hard bans to other models or authorize dialogue rewriting.
 
-Rules are grouped into three severities:
-  FAIL  — will almost certainly be flagged. Do not generate.
-  WARN  — likely to pass but weak; harden before generating.
-  INFO  — style suggestion, not a flag risk.
-
-Beyond the content-filter rules, the linter is a structural preflight driven
-by the local specs snapshot (references/model-specs.json): declared shot counts,
-beat-duration envelopes, ZH length caps, @handle declaration order, and
-aspect-ratio / resolution / mode / duration legality per model enum — the
-expensive class of failure (e.g. Seedance `fast` + 1080p, Kling 3.0 + 21:9).
-
-Usage:
-  python3 scripts/seedance_lint.py "<prompt text>"
-  echo "<prompt text>" | python3 scripts/seedance_lint.py
-  python3 scripts/seedance_lint.py --file prompt.txt
-  python3 scripts/seedance_lint.py --model seedance_2_0 "<prompt>"   # + structural lint
-  python3 scripts/seedance_lint.py --model kling3_0 --ar 21:9 "<prompt>"
-  python3 scripts/seedance_lint.py --preflight --model seedance_2_0 "<prompt>"
-  python3 scripts/seedance_lint.py --preflight --model seedance_2_5 \
-      --mode video_extension --extension-mode forward "<prompt>"
-                                                      # filter + structure
-
-Settings (aspect ratio / resolution / mode / duration) are read from the
-prompt's settings header lines (e.g. `**Aspect ratio**: 16:9  **Duration**: 8s`)
-and can be overridden per-field with --ar / --resolution / --mode / --duration.
-The specs path is relative to the skill directory, independent of the working
-directory. Use --specs /path/to/model-specs.json to supply another local snapshot.
-
-The 1800-character ZH limit is enabled only with --profile bilingual-json.
-It applies to an extracted ZH prompt, or the decoded ZH prompt field of the
-paired EN/ZH JSON array. Standard four-section production drafts are exempt;
-actual platform submission limits still require their own verification.
-
-Pass --asset-registry /path/to/project/asset-registry.json to compare project
-handles exactly across batches, even if --preflight / --model are omitted.
-Platform @Image1 / @Video1 / @Audio1 slots require separate binding review.
-
-Exit codes: 0 = PASS or WARN only, 1 = any FAIL, 2 = usage / registry error.
-
+--profile bilingual-json alone enables the decoded ZH 1800-character cap.
+--asset-registry checks project handles, not real platform bindings.
+--specs supplies another local model-specs.json; no live data are fetched.
+Exit: 0 no hard failure (WARN/INFO may remain), 1 hard failure, 2 input error.
+No verdict proves submission readiness, visual quality, or provider acceptance.
 """
 
 from __future__ import annotations
@@ -57,6 +22,8 @@ import re
 import sys
 from dataclasses import dataclass
 from datetime import date
+from decimal import Decimal, InvalidOperation
+import director_contract_lint as contract
 from pathlib import Path
 
 
@@ -227,35 +194,32 @@ class Settings:
     ar: str | None = None
     resolution: str | None = None
     mode: str | None = None
-    duration: int | None = None
+    duration: Decimal | None = None
     extension_mode: str | None = None
 
 
 SPECS_DEFAULT = Path(__file__).resolve().parent.parent / "references" / "model-specs.json"
 
 _SETTINGS_PATTERNS = {
-    # Tolerant of **bold**, fullwidth ：, and inline comma-run headers.
-    "ar": re.compile(r"aspect[\s_-]*ratio\**\s*[:：]\s*\**\s*(auto|\d+:\d+)", re.I),
-    "resolution": re.compile(r"\bresolution\**\s*[:：]\s*\**\s*(\d{3,4}p?|4k)", re.I),
-    # extension_mode must be matched BEFORE the bare `mode` pattern can claim it —
-    # merge_settings/parse order keeps them distinct because the `mode` regex
-    # requires a word boundary that `extension_mode` does not satisfy.
-    "extension_mode": re.compile(
-        r"\bextension[\s_-]*mode\**\s*[:：]\s*\**\s*(forward|backward)", re.I),
-    "mode": re.compile(r"(?<!extension[\s_-])\bmode\**\s*[:：]\s*\**\s*([a-z0-9_]+)", re.I),
-    "duration": re.compile(r"\bduration\**\s*[:：]\s*\**\s*(\d+)\s*s", re.I),
+    "ar": re.compile(r"(?:aspect[\s_-]*ratio|画幅|宽高比)\**\s*[:：]\s*\**\s*([^\s,，｜|*]+)", re.I),
+    "resolution": re.compile(r"(?:\bresolution|分辨率)\**\s*[:：]\s*\**\s*([^\s,，｜|*]+)", re.I),
+    "extension_mode": re.compile(r"(?:\bextension[\s_-]*mode|延伸方向)\**\s*[:：]\s*\**\s*([^\s,，｜|*]+)", re.I),
+    "mode": re.compile(r"(?<!extension[\s_-])(?:\bmode|模式)\**\s*[:：]\s*\**\s*([^\s,，｜|*]+)", re.I),
+    "duration": re.compile(r"(?:\bduration|时长)\**\s*[:：]\s*\**\s*(\d+(?:\.\d+)?)\s*(?:秒|s)(?![A-Za-z])", re.I),
 }
 
 
 def parse_settings_header(text: str) -> Settings:
-    """Read declared settings out of the prompt's own header lines."""
-    s = Settings()
-    for field, pat in _SETTINGS_PATTERNS.items():
-        m = pat.search(text)
-        if m:
-            value = m.group(1).lower()
-            setattr(s, field, int(value) if field == "duration" else value)
-    return s
+    """Parse metadata, rejecting conflicting declarations within one scope."""
+    settings = Settings()
+    for field, pattern in _SETTINGS_PATTERNS.items():
+        values = {Decimal(m.group(1)) if field == "duration" else m.group(1).lower()
+                  for m in pattern.finditer(text)}
+        if len(values) > 1:
+            raise ValueError(f"conflicting {field} declarations in metadata")
+        if values:
+            setattr(settings, field, next(iter(values)))
+    return settings
 
 
 def merge_settings(header: Settings, cli: Settings) -> Settings:
@@ -277,12 +241,45 @@ def load_specs(path: Path) -> dict:
     """
     try:
         spec = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
+    except (OSError, UnicodeError, json.JSONDecodeError):
         return {}
-    if not spec.get("models"):
+    if (not isinstance(spec, dict) or not isinstance(spec.get("models"), list)
+            or not spec["models"]):
         return {}
     index: dict[str, dict] = {}
     for m in spec["models"]:
+        if (not isinstance(m, dict) or not isinstance(m.get("id"), str)
+                or not m["id"].strip() or not isinstance(m.get("name"), str)
+                or not m["name"].strip() or m["id"] in index
+                or not isinstance(m.get("aliases", []), list)
+                or any(not isinstance(a, str) for a in m.get("aliases", []))):
+            return {}
+        for field in ("modes", "resolutions", "aspect_ratios"):
+            values = m.get(field)
+            if values is not None and (not isinstance(values, list)
+                    or any(not isinstance(v, str) for v in values)):
+                return {}
+        for field in ("params", "constraints"):
+            values = m.get(field, [])
+            if not isinstance(values, list) or any(not isinstance(v, dict) for v in values):
+                return {}
+        duration = m.get("duration")
+        if duration is not None:
+            if not isinstance(duration, dict):
+                return {}
+            values = duration.get("values")
+            if values is not None:
+                if not isinstance(values, list) or not values:
+                    return {}
+            elif "min" in duration and "max" in duration:
+                values = [duration["min"], duration["max"]]
+            else:
+                return {}
+            if any(isinstance(v, bool) or not isinstance(v, (int, float))
+                   or not Decimal(str(v)).is_finite() or v <= 0 for v in values):
+                return {}
+            if "min" in duration and "max" in duration and duration["min"] > duration["max"]:
+                return {}
         index[m["id"]] = m
         for alias in m.get("aliases", []):
             index[alias] = m
@@ -299,11 +296,16 @@ def snapshot_age_finding(index: dict) -> "Finding | None":
     old enums as current platform facts."""
     stamp = index.get("_snapshot_date")
     if not stamp:
-        return None
+        return Finding("INFO", "unknown-specs-date", "",
+                       "Snapshot has no date; current model capability is unverified.")
     try:
         age = (date.today() - date.fromisoformat(stamp)).days
-    except ValueError:
-        return None
+    except (ValueError, TypeError):
+        return Finding("WARN", "invalid-specs-date", str(stamp),
+                       "Invalid snapshot date; do not claim current model capability verification.")
+    if age < 0:
+        return Finding("WARN", "future-specs-date", str(stamp),
+                       "Snapshot date is in the future; verify provenance before submission.")
     if age > 30:
         return Finding(
             "INFO", "stale-specs-snapshot", f"{stamp} ({age}d old)",
@@ -344,6 +346,12 @@ BLOCK_LABEL_RE = re.compile(
 BLOCK_REGIME_MIN_LABELS = 4
 
 
+def is_studio_prompt(text: str) -> bool:
+    """The studio's Higgsfield block prompt: [生成目标] plus [具体情节] (or older stage blocks)."""
+    return bool(re.search(r"^\s*\[(?:生成目标|Generation Goal)\]\s*$", text, re.M)
+                and re.search(r"^\s*\[(?:具体情节|阶段\s*\d|Stage\b)", text, re.M))
+
+
 def detect_regime(text: str) -> str:
     """'block' (block-scaffold production prompt) or 'short' (single-shot MCSLA).
 
@@ -352,8 +360,7 @@ def detect_regime(text: str) -> str:
     or the standard four-section Chinese contract, or 2+ 【镜头N】/[Shot N]
     shot-block markers (the shotlist copy-block form).
     """
-    section_headers = re.findall(r"^\s*【([^】\n]+)】\s*$", text, re.M)
-    if section_headers == ["参考素材职责", "一句话概述", "具体情节", "全局补充"]:
+    if is_studio_prompt(text) or contract.LEGACY_HEADER.search(text):
         return "block"
     labels = {m.group(1) for m in BLOCK_LABEL_RE.finditer(text)}
     if len(labels) >= BLOCK_REGIME_MIN_LABELS:
@@ -365,6 +372,8 @@ def detect_regime(text: str) -> str:
 TIMED_BEAT_RANGE = re.compile(r"\[\s*(\d+)\s*[–-]\s*(\d+)\s*s\s*\]")
 HANDLE_RE = re.compile(r"@([\w-]+)")
 HANDLE_DECL_RE = re.compile(r"^\s*[*\-•]?\s*\**@([\w-]+)\**\s*[:=（(—–]")
+# Studio mapping line: "名字 对应 @名字。" declares the handle (block structure).
+STUDIO_DECL_RE = re.compile(r"对应\s*@([\w-]+)")
 PLATFORM_SLOT_RE = re.compile(r"@(?:Image|Video|Audio)\s*\d+(?![\w-])", re.IGNORECASE)
 
 
@@ -417,7 +426,7 @@ def load_asset_registry(path: Path) -> dict[str, dict]:
             raise ValueError("reference alias must be an object")
         handle, image_id = alias.get("handle"), alias.get("image_id")
         if (not isinstance(image_id, str)
-                or not re.fullmatch(r"S\d{2,}(?:-\d{2,})?", image_id)
+                or not re.fullmatch(r"S\d+(?:-\d+)?", image_id)
                 or handle != "@" + image_id):
             raise ValueError("scene reference alias must be @ followed by its exact S image_id")
         if handle.casefold() in handles_seen:
@@ -507,8 +516,17 @@ def structural_lint(text: str, settings: Settings, spec: dict | None,
             "【镜头N】/[Shot N] blocks or timed beats ([0-2s] …), otherwise "
             "the engine improvises the cuts."))
 
-    # ── Beat durations vs envelope ───────────────────────────────────────
-    beats = [(int(a), int(b)) for a, b in TIMED_BEAT_RANGE.findall(text)]
+    # The studio contract and legacy brackets share numeric duration checks.
+    standard = is_studio_prompt(text) or bool(contract.LEGACY_HEADER.search(text))
+    if standard:
+        for error in contract.check_clip(contract.ClipText("单片段", text, ""), settings.duration)[0]:
+            findings.append(Finding("FAIL", "text-contract", error,
+                                    "Repair the studio block contract, then re-run."))
+        # Only [具体情节] segments form the timeline; [声音] dialogue lines are timed inside it.
+        scene = next((c for n, _, c in contract.split_blocks(text) if n == "具体情节"), text)
+        beats = [(Decimal(a), Decimal(b)) for a, b in contract.TIME.findall(scene)]
+    else:
+        beats = [(Decimal(a), Decimal(b)) for a, b in TIMED_BEAT_RANGE.findall(text)]
     if beats:
         for a, b in beats:
             if b <= a:
@@ -516,7 +534,7 @@ def structural_lint(text: str, settings: Settings, spec: dict | None,
                     "WARN", "reversed-beat", f"[{a}-{b}s]",
                     "Beat range end must be after its start."))
         # Timeline shape: beats must tile the clip — ordered, seamless, from 0.
-        ordered = sorted(b for b in beats if b[1] > b[0])
+        ordered = [b for b in beats if b[1] > b[0]]
         if ordered:
             if ordered[0][0] != 0:
                 findings.append(Finding(
@@ -535,12 +553,14 @@ def structural_lint(text: str, settings: Settings, spec: dict | None,
                         "Gap between beats — the engine improvises uncovered "
                         "seconds. Make ranges contiguous ([0-2s][2-4s]…)."))
         end = max(b for _, b in beats)
-        envelope = settings.duration
-        env_src = "declared duration"
-        if envelope is None and spec and spec.get("duration"):
+        limits = [contract.MAX_CLIP_DURATION]
+        if settings.duration is not None:
+            limits.append(settings.duration)
+        if spec and spec.get("duration"):
             d = spec["duration"]
-            envelope = d["max"] if "max" in d else max(d["values"])
-            env_src = f"{spec['id']} max duration"
+            limits.append(Decimal(str(d["max"] if "max" in d else max(d["values"]))))
+        envelope = min(limits)
+        env_src = "minimum of declared duration, project 30s cap and model maximum"
         if envelope is not None and end > envelope:
             findings.append(Finding(
                 "FAIL", "beats-exceed-envelope", f"beats run to {end}s, {env_src} is {envelope}s",
@@ -595,6 +615,8 @@ def structural_lint(text: str, settings: Settings, spec: dict | None,
         m = HANDLE_DECL_RE.match(line)
         if m:
             declared_handles.setdefault(m.group(1).lower(), i)
+        for m in STUDIO_DECL_RE.finditer(line):
+            declared_handles.setdefault(m.group(1).lower(), i)
     if declared_handles:
         for i, line in enumerate(text.splitlines()):
             for m in HANDLE_RE.finditer(line):
@@ -624,6 +646,9 @@ def structural_lint(text: str, settings: Settings, spec: dict | None,
                 "bound in the UI Elements panel — otherwise declare each "
                 "(`@Name: description`) before first use."))
 
+    if settings.duration is not None and (settings.duration <= 0 or settings.duration > 30):
+        findings.append(Finding("FAIL", "project-duration-out-of-range", str(settings.duration),
+                                "Each Clip's declared duration must be positive and <=30 seconds."))
     # ── Enum legality per specs ──────────────────────────────────────────
     declared_any = any([settings.ar, settings.resolution, settings.mode,
                         settings.duration is not None])
@@ -649,18 +674,30 @@ def structural_lint(text: str, settings: Settings, spec: dict | None,
     enum_check(settings.resolution, spec.get("resolutions"),
                "resolution-not-supported", "resolution")
     enum_check(settings.mode, spec.get("modes"), "mode-not-supported", "mode")
+    enum_check(settings.extension_mode, ["forward", "backward"],
+               "extension-mode-not-supported", "extension_mode")
+    effective_duration = settings.duration
+    if effective_duration is None and beats:
+        effective_duration = max(b for _, b in beats)
+    missing = [name for name in ("ar", "resolution", "mode")
+               if getattr(settings, name) is None]
+    if effective_duration is None:
+        missing.append("duration")
+    if missing:
+        findings.append(Finding("INFO", "settings-not-declared", ", ".join(missing),
+                                "These settings were not checked; verify actual submission defaults separately."))
 
-    if settings.duration is not None and spec.get("duration"):
+    if effective_duration is not None and spec.get("duration"):
         d = spec["duration"]
         if "min" in d:
-            ok = d["min"] <= settings.duration <= d["max"]
+            ok = d["min"] <= effective_duration <= d["max"]
             allowed_fmt = f"{d['min']}–{d['max']}s"
         else:
-            ok = settings.duration in d["values"]
+            ok = effective_duration in d["values"]
             allowed_fmt = "/".join(map(str, d["values"])) + "s"
         if not ok:
             findings.append(Finding(
-                "FAIL", "duration-out-of-range", f"{settings.duration}s",
+                "FAIL", "duration-out-of-range", f"{effective_duration}s",
                 f"{spec['name']} supports {allowed_fmt}."))
 
     # Cross-parameter constraints from the snapshot (e.g. fast forbids 1080p).
@@ -750,7 +787,15 @@ def _has_cue(cues: list[str], text: str) -> bool:
     return any(re.search(c, lowered) for c in cues)
 
 
-def lint(prompt: str, regime: str = "auto") -> list[Finding]:
+def lint(prompt: str, regime: str = "auto", model: str | None = None) -> list[Finding]:
+    starts = contract.outside_clip_starts(prompt)
+    if starts:
+        result = []
+        for clip in contract.parse_clips(prompt):
+            for finding in lint(clip.body, regime, model):
+                result.append(Finding(finding.severity, finding.rule,
+                                      f"Clip {clip.name}: {finding.hit}", finding.fix))
+        return result
     findings: list[Finding] = []
     text = prompt.strip()
     word_count = len(re.findall(r"\b\w+\b", text))
@@ -770,57 +815,32 @@ def lint(prompt: str, regime: str = "auto") -> list[Finding]:
             "if the detection is wrong."
         ))
 
-    # ── FAIL rules ──────────────────────────────────────────────────────────
-
-    hits = _matches(REAL_NAMES, text)
-    if hits:
-        findings.append(Finding(
-            "FAIL", "real-person-name", ", ".join(sorted(set(hits))),
-            "Replace the name with an archetype: age range, build, hair, "
-            "wardrobe, expression."
-        ))
-
-    hits = _matches(BRANDS_IP, text)
-    if hits:
-        findings.append(Finding(
-            "FAIL", "brand-ip", ", ".join(sorted(set(hits))),
-            "Describe visual traits only — geometry, color, material. Never "
-            "name the brand, franchise, or character."
-        ))
-
-    hits = _matches(VIOLENCE_VERBS, text)
-    if hits:
-        findings.append(Finding(
-            "FAIL", "violence-verb", ", ".join(sorted(set(hits))),
-            "Describe aftermath, tension, force, or direction — not the act. "
-            "E.g. 'driven into the car, metal buckling' instead of 'punches'."
-        ))
-
-    hits = _matches(WEAPON_NOUNS, text)
-    if hits:
-        findings.append(Finding(
-            "FAIL", "weapon-noun", ", ".join(sorted(set(hits))),
-            "Describe the standoff / silhouette / prop geometry, not the "
-            "weapon by name. The filter reads named weapons as intent."
-        ))
-
-    hits = _matches(AGE_MARKERS, text)
-    if hits:
-        findings.append(Finding(
-            "FAIL", "age-marker", ", ".join(sorted(set(hits))),
-            "Seedance is age-blind. Describe by role + clothing + action: "
-            "'a figure in a wool cloak', 'the rider', 'the traveler'."
-        ))
+    # Empirical provider risks are not validated hard bans. The historical
+    # evidence belongs to Seedance 2.0/Pro, not arbitrary specs-known models.
+    legacy_filter = model is None or model in ("seedance_2_0", "seedance1_5", "seedance_1_5")
+    if legacy_filter:
+        dialogue = " ".join(contract.DIALOGUE.findall(text))
+        for rule, patterns in (("real-person-name", REAL_NAMES), ("brand-ip", BRANDS_IP),
+                               ("violence-verb", VIOLENCE_VERBS), ("weapon-noun", WEAPON_NOUNS),
+                               ("age-marker", AGE_MARKERS)):
+            hits = sorted(set(_matches(patterns, text)))
+            if hits:
+                in_dialogue = bool(_matches(patterns, dialogue))
+                findings.append(Finding(
+                    "WARN", rule, ", ".join(hits),
+                    "Seedance 2.0/Pro field observation, not a current provider rule or a ban. "
+                    + ("Hit includes dialogue; preserve the approved line and report any verified conflict. "
+                       if in_dialogue else "Review the actual provider policy and shot context. ")
+                    + "Do not automatically change approved dialogue, identity, age or action."))
+    else:
+        findings.append(Finding("INFO", "filter-profile-not-applicable", model or "",
+                                "No verified filter profile for this model; legacy Seedance 2.0/Pro "
+                                "patterns are not applied. Provider acceptance remains unverified."))
 
     if regime == "short" and word_count > 220:
-        findings.append(Finding(
-            "FAIL", "overlength", f"{word_count} words",
-            "Over 220 words often hard-fails the text encoder on short-form "
-            "prompts. Cut to 30–180 words (Style & Mood + camera + action), "
-            "or restructure as a block-scaffold production prompt "
-            "with explicit scene, camera, action, and lighting sections — "
-            "the word cap does not govern that regime."
-        ))
+        findings.append(Finding("WARN", "overlength", f"{word_count} words",
+                                "Historical short-form length guidance only, not a hard encoder limit. "
+                                "Verify the actual provider limit; do not truncate approved performance."))
 
     # ── WARN rules ──────────────────────────────────────────────────────────
 
@@ -865,21 +885,21 @@ def lint(prompt: str, regime: str = "auto") -> list[Finding]:
             "Style & Mood + camera + setting so the shot is legible."
         ))
 
-    if not _has_cue(STYLE_MOOD_CUES, text):
+    if not _has_cue(STYLE_MOOD_CUES + ["光", "明暗", "色温", "色彩"], text):
         findings.append(Finding(
             "WARN", "no-style-mood", "",
             "No Style / Mood / lighting / palette clause detected. Add one "
             "sentence naming the palette, lighting, and atmosphere."
         ))
 
-    if not _has_cue(CAMERA_CUES, text):
+    if not _has_cue(CAMERA_CUES + ["景", "机位", "摄影机", "跟拍", "推近", "移焦"], text):
         findings.append(Finding(
             "WARN", "no-camera", "",
-            "No camera move detected. Name an exact movement: 'slow dolly-in', "
-            "'low-angle tracking', 'static medium'. Not 'the camera moves'."
+            "No camera cue detected by this heuristic. Review the viewpoint/path "
+            "in the prompt language; do not add unnecessary preset names."
         ))
 
-    if not _has_cue(SETTING_CUES, text):
+    if not _has_cue(SETTING_CUES + ["屋", "林", "窗", "门", "室内", "室外", "山", "河", "街"], text):
         findings.append(Finding(
             "WARN", "no-setting", "",
             "No concrete setting detected. Add a location so the filter has "
@@ -903,7 +923,7 @@ def lint(prompt: str, regime: str = "auto") -> list[Finding]:
                 message + " Pick one — split into two shots if you need both."
             ))
 
-    block_hits = _matches(SHOT_BLOCK_MARKERS, text)
+    block_hits = [m.group(0) for pat in SHOT_BLOCK_RES for m in pat.finditer(text)]
     if block_hits:
         findings.append(Finding(
             "INFO", "shot-block-marker", ", ".join(sorted(set(block_hits))),
@@ -938,7 +958,7 @@ def render(prompt: str, findings: list[Finding]) -> tuple[str, str]:
 
     if not findings:
         lines.append("  No issues detected. Scene reads as a filmmaker shot.")
-        lines.append("  Safe to generate.")
+        lines.append("  Local checks only; actual settings, bindings, provider policy and generated results remain unverified.")
         return verdict, "\n".join(lines)
 
     for f in findings:
@@ -951,9 +971,9 @@ def render(prompt: str, findings: list[Finding]) -> tuple[str, str]:
         lines.append("")
 
     if verdict == "FAIL":
-        lines.append("  Do NOT generate. Apply fixes above, re-run linter.")
+        lines.append("  Hard local check failure. Repair or report the verified conflict, then re-run linter.")
     elif verdict == "WARN":
-        lines.append("  Likely to pass, but harden the weak spots first.")
+        lines.append("  No hard failure; review each advisory. This is not a provider-acceptance prediction.")
 
     return verdict, "\n".join(lines)
 
@@ -989,17 +1009,49 @@ def render_preflight(prompt: str, filter_findings: list[Finding],
     section("STRUCTURE", structural, "no structural issues detected")
 
     if verdict == "FAIL":
-        lines.append("  Do NOT generate. Apply fixes above, re-run preflight.")
+        lines.append("  Hard local check failure. Repair or report the verified conflict, then re-run preflight.")
     elif verdict == "WARN":
-        lines.append("  Likely to pass, but harden the weak spots first.")
+        lines.append("  No hard failure; review each advisory. This is not a provider-acceptance prediction.")
     else:
-        lines.append("  Safe to generate.")
+        lines.append("  Local checks only; actual settings, bindings, provider policy and generated results remain unverified.")
     return verdict, "\n".join(lines)
+
+
+def preflight_document(prompt: str, defaults: Settings | None = None,
+                       spec: dict | None = None, registry: dict | None = None,
+                       profile: str = "standard", regime: str = "auto"):
+    """Check bodies and per-Clip metadata independently; never aggregate budgets."""
+    defaults = defaults or Settings()
+    clips = ([contract.ClipText("双语JSON", prompt, "")] if profile == "bilingual-json"
+             else contract.parse_clips(prompt))
+    starts = contract.outside_clip_starts(prompt) if profile == "standard" else []
+    common = parse_settings_header(prompt[:starts[0][0]]) if starts else Settings()
+    filter_findings, structural = [], []
+    for clip in clips:
+        headers = parse_settings_header(clip.metadata if clip.metadata else
+                                       ("" if is_studio_prompt(clip.body) else clip.body))
+        headers = merge_settings(common, headers)
+        settings = merge_settings(headers, defaults)
+        prefix = f"Clip {clip.name}: " if starts else ""
+        if (headers.duration is not None and defaults.duration is not None
+                and headers.duration != defaults.duration):
+            structural.append(Finding("FAIL", "duration-declaration-conflict", prefix,
+                                      "CLI duration differs from the file; update the file, not only the flag."))
+        for finding in lint(clip.body, regime, spec["id"] if spec else None):
+            filter_findings.append(Finding(finding.severity, finding.rule,
+                                           prefix + finding.hit, finding.fix))
+        for finding in structural_lint(clip.body, settings, spec, profile=profile):
+            structural.append(Finding(finding.severity, finding.rule,
+                                       prefix + finding.hit, finding.fix))
+        if registry is not None:
+            structural.extend(Finding(f.severity, f.rule, prefix + f.hit, f.fix)
+                              for f in asset_registry_lint(clip.body, registry))
+    return filter_findings, structural, len(clips)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Preflight linter for Seedance 2.0 (and specs-known) prompts."
+        description="Per-Clip model/asset preflight; empirical filter risks are advisory only."
     )
     parser.add_argument("prompt", nargs="?", help="Prompt text (or use --file / stdin)")
     parser.add_argument("--file", "-f", help="Read prompt from file")
@@ -1011,8 +1063,8 @@ def main() -> int:
     parser.add_argument("--extension-mode", choices=["forward", "backward"],
                         help="Declared extension direction (Seedance 2.5 "
                              "video_extension mode; overrides header)")
-    parser.add_argument("--duration", type=int,
-                        help="Declared duration in seconds (overrides header)")
+    parser.add_argument("--duration", type=contract.positive_duration,
+                        help="Duration default in seconds per Clip; conflicts with file declarations fail")
     parser.add_argument("--specs", type=Path, default=SPECS_DEFAULT,
                         help="Path to a local model-specs.json (default: "
                              "references/model-specs.json relative to the skill directory)")
@@ -1039,7 +1091,7 @@ def main() -> int:
     if args.file:
         try:
             prompt = Path(args.file).read_text(encoding="utf-8")
-        except OSError as e:
+        except (OSError, UnicodeError) as e:
             print(f"ERROR: cannot read --file {args.file!r}: {e}", file=sys.stderr)
             return 2
     elif args.prompt:
@@ -1078,24 +1130,19 @@ def main() -> int:
                   file=sys.stderr)
             return 2
 
-    settings = merge_settings(
-        parse_settings_header(prompt),
-        Settings(ar=args.ar.lower() if args.ar else None,
-                 resolution=args.resolution.lower() if args.resolution else None,
-                 mode=args.mode.lower() if args.mode else None,
-                 duration=args.duration,
-                 extension_mode=(args.extension_mode.lower()
-                                 if args.extension_mode else None)))
-
-    filter_findings = lint(prompt, regime=args.regime)
-    run_structural = args.preflight or args.profile != "standard" or spec is not None or any(
-        [settings.ar, settings.resolution, settings.mode, settings.duration is not None])
-    structural = (structural_lint(prompt, settings, spec, profile=args.profile)
-                  if run_structural else [])
+    try:
+        defaults = Settings(ar=args.ar.lower() if args.ar else None,
+                            resolution=args.resolution.lower() if args.resolution else None,
+                            mode=args.mode.lower() if args.mode else None,
+                            duration=args.duration, extension_mode=args.extension_mode)
+        filter_findings, structural, count = preflight_document(
+            prompt, defaults, spec, registry, args.profile, args.regime)
+    except (ValueError, TypeError, KeyError, AttributeError, InvalidOperation) as exc:
+        print(f"INPUT ERROR: {exc}", file=sys.stderr)
+        return 2
     if age_finding is not None:
         structural.insert(0, age_finding)
     if registry is not None:
-        structural.extend(asset_registry_lint(prompt, registry))
         structural.append(Finding(
             "INFO", "asset-registry-checked", str(args.asset_registry),
             "Exact project handles checked. Review prose identity, actual files "
@@ -1111,6 +1158,7 @@ def main() -> int:
     else:
         verdict, report = render(prompt, filter_findings + structural)
     print(report)
+    print(f"Checked {count} Clip(s) independently; text/snapshot checks only, not submission or visual acceptance.")
 
     return 1 if verdict == "FAIL" else 0
 

@@ -1,34 +1,21 @@
-# Template: Multi-Character Anchor Prompt
+# 模板：多人锚定提示词
 
-Paste-ready Seedance 2.0 prompt template for shots with two or more
-characters in frame. Locks per-character identity, position, depth,
-pose, gaze, and contact points before the action description.
+可直接粘贴的 Seedance 2.0 提示词模板，用于画面里有两个及以上角色的镜头。在动作描述之前，先锁定每个角色的身份、位置、景深、姿势、视线和接触点。工作室交付仍用中文块结构；本页字段在编译时映射到 `[角色]` 映射行（含身高）、`[具体情节]` 各段的 `画面：`/`听者：` 行与 `[保持一致]`。
 
-## When to use this template
+## 何时使用
 
-Any Seedance prompt with two or more characters where placement,
-orientation, and inter-character relationship matter — character
-swaps, axis crossings, eyeline mismatches all drop noticeably when
-this template is used instead of inline spatial fragments.
+任何有两个及以上角色、且站位、朝向和角色间关系重要的 Seedance 提示词。用本模板代替零散的空间片段后，角色互换、越轴和视线错位都会明显减少。
 
-## Narrative planning
+## 叙事规划
 
-Use [shared narrative planning](narrative-planning.md). Its eight
-semantic layers — assets, goal, global audiovisual/space, behavior, stages, continuity,
-final frame, constraints — map into these native character, relationship, and shot fields.
-Choose stages from events, causal responses, reveals, or changes in position/contact/prop
-ownership, then allocate time; no preset count or equal-duration split. A stage need not
-be a cut. Anchor each move to its trigger and carry its resulting state into the next
-anchor, including any explicitly allowed axis crossing. Fill timestamps after planning;
-character count describes the actual cast, not the number of stages. Keep single-shot
-complexity limits and the final-frame field.
+使用 [共享叙事规划](narrative-planning.md)。它的八个语义层（资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面、约束）映射进这些原生的角色、关系和镜头字段。阶段由事件、因果反应、揭晓，或位置/接触/道具归属的变化决定，再分配时间；不预设数量，不平均分时。阶段不一定是切镜。每个移动都锚定到它的触发，并把结果状态带进下一个锚点，包括明确允许的越轴。规划后再填时间码；角色数描述的是实际演员，不是阶段数。守住单镜头复杂度限制和结尾画面字段。
 
-## Prompt template
+## 提示词模板
 
 ```text
 [At/from N seconds] N characters in frame.
 
-Character A — [identity, Soul ID handle].
+Character A — [identity, registered asset name].
   Screen position: [left third / center / right third],
   x-position [%], y-position [%], frame occupancy [%].
   Depth layer: [foreground / midground / background].
@@ -41,7 +28,7 @@ Character A — [identity, Soul ID handle].
   State lock: [emotional or physical state — calm, exhausted,
     injured, soaked].
 
-Character B — [identity, Soul ID handle].
+Character B — [identity, registered asset name].
   [...same fields...]
 
 Cross-character relationships:
@@ -62,52 +49,23 @@ Continuity locks: [costume / state / prop invariants].
 Final frame: [composition at last frame].
 ```
 
-## What goes in each field
+## 各字段写什么
 
-- **Identity** matches a Soul ID character handle (see
-  `higgsfield-soul.md` § Character Anchor Block
-  for the 10-attribute per-character structure this template consumes)
-- **Screen position** pairs qualitative anchor + percentage notation
-  per `higgsfield-seedance.md` § Frame Coordinate
-  System (vocab.md § Editing Syntax bracket notation ships in v3.7.7
-  sub-phase 2f)
-- **Contact points** prevent the character-floating failure mode
-  catalogued in `higgsfield-seedance-failure-modes.md`
-- **Cross-character relationships** prevent character-swap and
-  axis-crossing failures — see § Spatial Layout Block in the seedance
-  higgsfield-guide.md for the structural rationale
+- **身份**对应已登记的角色调用名。
+- **画面位置**把定性锚点和百分比写法配对，见 `higgsfield-seedance.md` § Frame Coordinate System。
+- **接触点**防止角色漂浮这一失败模式，见 `higgsfield-seedance-failure-modes.md`。
+- **跨角色关系**防止角色互换和越轴，结构依据见 `higgsfield-seedance.md` § Spatial Layout Block。
 
-## BAD / GOOD / GREAT
+## 差 / 好 / 很好
 
-**BAD:** Inline spatial fragments scattered through the Dynamic
-Description. `Character A walks in. Character B is by the window.`
-Result: Seedance picks default positions; A and B swap across cuts;
-eyelines drift.
+**差：**空间片段零散地夹在动作描述里。`Character A walks in. Character B is by the window.` 结果：Seedance 自选默认位置；A 和 B 跨切镜互换；视线漂移。
 
-**GOOD:** Use the template, fill in per-character anchor block,
-specify qualitative position only (`left third` / `right third`).
-Spatial accuracy improves; cross-character relationships hold
-better. Coordinate precision is still under-specified for tight
-shots.
+**好：**使用本模板，填好每个角色的锚点块，只写定性位置（`left third` / `right third`）。空间准确度提高，跨角色关系更稳。紧凑镜头里坐标精度仍然不够。
 
-**GREAT:** Use the template, fill every field including percentage
-notation paired with qualitative anchors, specify cross-character
-relationships (distance + eyeline + crossing rule + negative space —
-see [vocab.md](vocab.md) § Composition Vocabulary → Crossing rule
-+ § Negative space). Pre-visualize the scene with `template-top-down-map.md` first
-and paste the
-blocking note Claude generates into the Character A / Character B
-fields. Block is reusable across cuts with the same characters —
-copy and adjust per cut rather than re-specifying.
+**很好：**使用本模板，填满每个字段，包括与定性锚点配对的百分比；写清跨角色关系（距离、视线、越轴规则、负空间，见 [vocab.md](vocab.md) § Composition Vocabulary → Crossing rule 与 § Negative space）。先用 `template-top-down-map.md` 预先可视化场景，把生成的站位说明贴进 Character A / Character B 字段。同一组角色在多个切镜间可以复用这个块，按镜头复制后调整，不必重新指定。
 
-## See also
+## 另见
 
-- `template-top-down-map.md` (sibling) — meta-prompt that generates the
-  blocking note this template consumes
-- `template-worked-example-two-character.md` (sibling) — concrete end-to-end
-  fill of this template structure
-- `higgsfield-soul.md` § Character Anchor Block —
-  the 10-attribute per-character structure
-- `higgsfield-seedance.md` § Frame Coordinate
-  System + § Spatial Layout Block — the vocabulary + block this
-  template uses
+- `template-top-down-map.md`（同类模板）：生成本模板所需站位说明的元提示词
+- `template-worked-example-two-character.md`（同类模板）：本模板结构的完整填写示例
+- `higgsfield-seedance.md` § Frame Coordinate System 与 § Spatial Layout Block：本模板用到的词汇和块

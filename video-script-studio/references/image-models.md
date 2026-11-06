@@ -1,518 +1,510 @@
-# Higgsfield Image Models — Complete Reference
+# Higgsfield 图像模型完整参考（Higgsfield Image Models — Complete Reference）
 
-> **Specs snapshot: 2026-08-01** — check model parameters and enums in `image-model-specs.json` and `IMAGE-MODEL-SPECS.md`. Use a current user-provided schema when this snapshot is stale. Credits and prices require separate current verification.
+> **规格快照：2026-08-01**：模型参数和枚举以 `image-model-specs.json` 和 `IMAGE-MODEL-SPECS.md` 为准。快照过期时用用户提供的当前 schema。积分和价格需要另外按当前情况核实。
 
-All image models available in the Higgsfield Image tab.
-⚠ = Third-party/external model (warning triangle shown in UI)
-G = Google-powered model
+Higgsfield 图像页里可用的全部图像模型。
+⚠ = 第三方/外部模型（界面上显示警告三角）
+G = Google 驱动的模型
+
+本工作室不使用 Soul ID、风格预设和 Moodboard 这类平台功能（removed）；下文出现时只作为平台能力说明，角色一致性按 [角色资产交付规范](template-character-asset-delivery.md) 用参考图实现。
 
 ---
 
-## Routing by Asset Class
+## 按资产类型选模型（Routing by Asset Class）
 
-`[FIELD — AI-vs-VFX, 2026-08-08]` There is no single best image model for a project —
-there is a best model **per asset class**, and switching between them mid-project is the
-normal case. This table is the routing; the per-model sections below are the reference.
+`[FIELD — AI-vs-VFX, 2026-08-08]` 一个项目没有单一最好的图像模型：最好的模型是**按资产类型**分的，项目中途在它们之间切换是常态。这张表是选型；下面逐个模型的章节是参考。
 
-| Asset class | Model | Why |
+| 资产类型 | 模型 | 原因 |
 |---|---|---|
-| Human character sheet, face matching | **Nano Banana 2** | Strongest face match on the platform |
-| Small corrective edits to an existing asset | **Nano Banana 2** | Holds its input images best — switch *to* it for a one-line fix instead of re-prompting the whole sheet |
-| Fantasy creature / non-human character sheet | **Seedream 5.0** | Best at fantasy creatures |
-| Clothing, wardrobe changes, branded garments | **GPT Image 2** | Handles clothing best |
-| Locations and environment stills | **Soul Cinema** | Most cinematic frames; GPT skews yellow, Nano Banana makes locations too clean and too symmetrical |
+| 人类角色设定图、人脸匹配 | **Nano Banana 2** | 平台上人脸匹配最强 |
+| 对已有资产做小的修正编辑 | **Nano Banana 2** | 最能保住输入图：一行修正时*切到*它，而不是重新提示整张设定图 |
+| 奇幻生物 / 非人角色设定图 | **Seedream 5.0** | 最擅长奇幻生物 |
+| 服装、换装、带品牌的衣物 | **GPT Image 2** | 处理服装最好 |
+| 场景和环境静帧 | **Soul Cinema** | 画面最有电影感；GPT 偏黄，Nano Banana 做出的场景太干净、太对称 |
 
-Two economics notes that follow from it:
+由此得出的两条经济学说明：
 
-- **Location work batches.** Seven credits buys one GPT Image 2 generation or ~56 Soul
-  Cinema variations — so on locations, batch wide and select rather than prompt-tuning.
-  Select on **light**: bad light in the still is the most common cause of a slop video.
-- **Fix, don't rebuild.** A warped logo or a colour cast on an otherwise-good sheet is a
-  Nano Banana 2 one-liner (`change the logo to the one in image two`). Re-prompting the
-  sheet re-rolls everything that was already right.
+- **场景工作要批量。**7 积分能买一次 GPT Image 2 生成，或约 56 次 Soul Cinema 变体：所以做场景时，宽批量生成再挑，而不是调提示词。按**光**挑：静帧里光不好，是视频变劣质最常见的原因。
+- **修，不要重做。**一张其他都好的设定图上标识变形或偏色，用 Nano Banana 2 一句话就能修（`change the logo to the one in image two`）。重新提示整张设定图，会把已经对的部分全部重抽一遍。
 
-Sheet-construction laws (grey background, the two-close-up creature sheet, the face-lock
-crop, the size-ref frame) live in `higgsfield-character-design.md`
-§ Sheet Construction Laws; the full production pipeline is
-`higgsfield-seedance-2-5-vfx-pipeline.md`.
+设定图的构建规律（背景、两张近景的生物设定图、锁脸裁切、尺寸参照帧）在 `higgsfield-character-design.md` § Sheet Construction Laws；工作室角色组板的背景以 [角色资产交付规范](template-character-asset-delivery.md) 为准（按服装明度选）。完整制作流程在 `higgsfield-seedance-2-5-vfx-pipeline.md`。
 
 ---
 
-## Higgsfield Native Models
+## Higgsfield 原生模型（Higgsfield Native Models）
 
 ### Soul 2.0
-**Credits:** Free (5,000 free generations)
-**UI:** Soul 2.0 · 3:4 · 2K · 1/4 · Color Transfer · Character slot · Moodboard
-**Best for:** Fashion editorial · cultural/aesthetic portraits · trend-driven content
-**Unique controls:** Style presets (10 named aesthetics) · Color Transfer palettes (6 named) · Soul ID character slot · Moodboard integration
-**Strengths:** Built-in cultural fluency — understands subcultures, fashion aesthetics, contemporary visual trends
-**Prompt tip:** Describe subject + scene + mood only. Apply style via presets, not text.
-→ See `higgsfield-soul` skill for full detail on presets, Color Transfer, and Soul ID
+**积分：**免费（5,000 次免费生成）
+**界面：**Soul 2.0 · 3:4 · 2K · 1/4 · Color Transfer · 角色槽 · Moodboard
+**适合：**时尚大片 · 文化/审美类肖像 · 追潮流的内容
+**独有控制：**风格预设（10 种具名美学）· Color Transfer 色板（6 种具名）· Soul ID 角色槽 · Moodboard 集成
+**优势：**内置的文化理解：懂亚文化、时尚美学、当代视觉潮流
+**提示词技巧：**只描述主体 + 场景 + 情绪。平台用法里风格通过预设施加，而不是写在文字里；工作室项目不用预设，风格写进项目美术设定和提示词。
 
 ---
 
 ### Soul Cinema Preview
-**Credits:** Low (cheaper per generation than most models)
-**Best for:** Cinematic-grade image generation — rich textures, natural compositions, "spontaneous look," deep depth of field, film grain aesthetics
-**Excels at:** Close-up shots specifically
-**Unique:** No preset selection panel — unlike Soul 2.0, it's **purely prompt-driven**
-**Key workflow:** Generate cinematic keyframe with Soul Cinema Preview → feed into video model (e.g., Kling 3.0 I2V) for best results
-**Works with:** Soul ID (character consistency) and Soul HEX (precise color control)
-**Status:** Preview version — full Soul Cinema coming soon
+**积分：**低（每次生成比大多数模型便宜）
+**适合：**电影级图像生成：丰富的质感、自然的构图、“随手拍的感觉”、大景深、胶片颗粒美感
+**擅长：**特别是近景镜头
+**独特之处：**没有预设选择面板：和 Soul 2.0 不同，它**完全由提示词驱动**
+**关键流程：**用 Soul Cinema Preview 生成电影感关键帧 → 作为参考喂进 Seedance 2.5 `omni_reference`，效果最好
+**配合：**Soul ID（角色一致性）和 Soul HEX（精确的颜色控制）
+**状态：**预览版：完整的 Soul Cinema 即将推出
 
-**Soul HEX** — Extracts color palettes from reference photos for consistent, color-matched visuals across shots. Works across Soul 2.0, Soul Cinema Preview, and Cinema Studio 2.5.
+**Soul HEX**：从参考照片提取色板，让各个镜头的画面颜色一致。适用于 Soul 2.0 和 Soul Cinema Preview。
 
 ---
 
 ### Soul Cast
-**Model id:** `soul_cast` · **Provider:** Higgsfield
-**Best for:** Consistent cinematic character identity — the same face/character held across many generations
-**Aspect ratio:** 16:9 only (per the 2026-08-01 specs snapshot)
-**Unique control — `budget` (10–500, default 50):** generation budget dial — higher budget spends more compute on the identity
-**Note:** Previously exposed only inside Cinema Studio (2.5/3.0 "Soul Cast AI actors"); now a standalone model in the image catalog. For per-shot character work at other aspect ratios, generate the identity here and carry it into other models via references.
+**模型 id：**`soul_cast` · **提供方：**Higgsfield
+**适合：**一致的电影感角色身份：在很多次生成里保持同一张脸/同一个角色
+**画幅：**只有 16:9（按 2026-08-01 规格快照）
+**独有控制 `budget`（10–500，默认 50）：**生成预算旋钮：预算越高，在身份上花的算力越多
+**说明：**以前只在 Cinema Studio 里提供；现在是图像目录里的独立模型。其他画幅的逐镜头角色工作，在这里生成身份，再通过参考带进其他模型。
 
 ---
 
 ### Soul Location
-**Model id:** `soul_location` · **Provider:** Higgsfield
-**Best for:** Environment and location generation — establishing plates, backdrops, location references for I2V and multi-shot pipelines
-**Aspect ratios:** 1:1, 4:3, 3:4, 16:9, 9:16, 3:2, 2:3, 21:9, 9:21 — widest ratio spread of the Soul family (only model with 9:21 vertical ultrawide)
-**Controls:** No extra parameters — purely prompt-driven
-**Pairs with:** Soul Cast (character) + Soul Location (environment) as reference inputs for reference-driven video models
+**模型 id：**`soul_location` · **提供方：**Higgsfield
+**适合：**环境和场景生成：建立镜头底片、背景、给图生视频和多镜头流程用的场景参考
+**画幅：**1:1、4:3、3:4、16:9、9:16、3:2、2:3、21:9、9:21：Soul 系列里画幅最多（唯一有 9:21 竖向超宽的模型）
+**控制：**没有额外参数：完全由提示词驱动
+**搭配：**Soul Cast（角色）+ Soul Location（环境）作为参考驱动视频模型的参考输入
 
 ---
 
-### Higgsfield Soul (Legacy)
-**Credits:** 0.5 per generation
-**UI:** Higgsfield Soul · 1:1 · 2K · Style On/Off · 1/4 · Unlimited · Character slot
-**Prompt field:** "Upload image as a prompt or Describe the scene you imagine"
-**Best for:** Lower-cost portrait generation · image-as-prompt workflows · when Soul 2.0 credit quota is exhausted
-**vs Soul 2.0:** Older model, no Color Transfer or style presets. Accepts image uploads as prompt input. Half the cost.
-**Unique feature:** Image-as-prompt — upload a reference image to guide generation style/composition instead of (or alongside) text
+### Higgsfield Soul（旧版）（Higgsfield Soul (Legacy)）
+**积分：**每次 0.5
+**界面：**Higgsfield Soul · 1:1 · 2K · Style On/Off · 1/4 · Unlimited · 角色槽
+**提示词栏：**“Upload image as a prompt or Describe the scene you imagine”
+**适合：**低成本肖像生成 · 以图作提示的流程 · Soul 2.0 额度用完时
+**对比 Soul 2.0：**更老的模型，没有 Color Transfer 和风格预设。接受上传图片作为提示输入。成本减半。
+**独有功能：**以图作提示：上传一张参考图来引导生成的风格/构图，代替文字（或与文字一起）
 
 ---
 
 ### Z-Image
-**Credits:** 0.15 per generation — cheapest image model on the platform
-**UI:** Z-Image · 16:9 · 1/4 · Unlimited
-**Best for:** Rapid iteration · high-volume testing · when budget is the primary constraint
-**Use when:** You need many variations fast and quality is secondary to speed and cost
-**Note:** No resolution or quality controls visible — streamlined for volume
+**积分：**每次 0.15：平台上最便宜的图像模型
+**界面：**Z-Image · 16:9 · 1/4 · Unlimited
+**适合：**快速迭代 · 大量测试 · 预算是首要约束时
+**何时用：**需要快速得到很多变体，而质量排在速度和成本之后
+**说明：**界面上看不到分辨率或质量控制：为批量而精简
 
 ---
 
 ### Kling O1
-**Credits:** 0.5 per generation
-**UI:** Kling O1 · 1:1 · 2K · 1/4 · Unlimited
-**Best for:** Clean, high-quality 2K images at low cost · square format social content
-**vs Z-Image:** 3x the cost but 2K resolution and Kling model quality
-**Default aspect:** 1:1 — native square. Good for Instagram/social.
-**Note:** Image-only version of the Kling engine (same family as Kling 2.6/3.0 video)
+**积分：**每次 0.5
+**界面：**Kling O1 · 1:1 · 2K · 1/4 · Unlimited
+**适合：**低成本的干净、高质量 2K 图 · 方形社媒内容
+**对比 Z-Image：**成本 3 倍，但有 2K 分辨率和 Kling 模型的质量
+**默认画幅：**1:1：原生方形。适合 Instagram/社媒。
+**说明：**纯图像的 Kling 引擎（图像模型；本工作室不使用 Kling 视频，not used by this studio）
 
 ---
 
 ### Kling Image 3.0
-**Credits:** TBD
-**UI:** Kling Image 3.0 · 16:9 · 4K
-**Best for:** Native 4K stills (up to 3840×2160) · Image Series Mode for storyboarding · multi-reference workflows
-**Key features:**
-- **Native 4K** (up to 3840×2160) — no upscaling. Also supports 1K and 2K
-- **Image Series Mode**: generate sequential frames with consistent characters, style, and tone across varied camera angles (storyboarding use case)
-- **Up to 10 reference images** per generation
-- **Visual Chain-of-Thought**: model reasons through composition before rendering
-- **Style transfer + portrait reference + character reference + multi-image blending** all in one workflow
-- **Local re-editing**: add/remove/modify elements without switching tools
-- **Batch optimization**
-- **Cinematic color grading** built in
-- **Aspect ratios**: 1:1, 3:4, 4:3, 16:9, 9:16
+**积分：**待定
+**界面：**Kling Image 3.0 · 16:9 · 4K
+**适合：**原生 4K 静帧（最高 3840×2160）· 用于分镜的 Image Series Mode · 多参考流程
+**关键功能：**
+- **原生 4K**（最高 3840×2160）：不靠超分。也支持 1K 和 2K
+- **Image Series Mode**：生成连续的画面，角色、风格和基调在不同机位间保持一致（分镜用途）
+- 每次生成**最多 10 张参考图**
+- **视觉思维链**：模型在渲染之前先推理构图
+- **风格迁移 + 肖像参考 + 角色参考 + 多图融合**都在一个流程里
+- **局部重编辑**：不换工具就能增/删/改元素
+- **批量优化**
+- 内置**电影感调色**
+- **画幅**：1:1、3:4、4:3、16:9、9:16
 
 ---
 
 ### Kling Image 3.0 Omni
-**Credits:** TBD
-**UI:** Kling Image 3.0 Omni · 16:9 · 4K
-**Best for:** Advanced editing · refining styles and subjects · strongest prompt fidelity
-**What it adds over Image 3.0:** Enhanced editing capabilities, stronger prompt adherence, refining styles and subjects with greater precision
-**Resolution:** Native 2K and 4K output
+**积分：**待定
+**界面：**Kling Image 3.0 Omni · 16:9 · 4K
+**适合：**进阶编辑 · 精修风格和主体 · 最强的提示词遵循
+**比 Image 3.0 多了什么：**更强的编辑能力、更强的提示词遵循、更精确地精修风格和主体
+**分辨率：**原生 2K 和 4K 输出
 
 ---
 
 ### Wan 2.2
-**Credits:** 1 per generation
-**UI:** Wan 2.2 · 3:4 · Style On/Off · 1 generation
-**Best for:** Stylized / artistic image output · non-photorealistic aesthetics
-**vs Wan video:** Same model family as Wan 2.5/2.6 video — painterly, artistic, non-photorealistic strengths carry over to image
-**Style toggle:** On enables stylization mode
+**积分：**每次 1
+**界面：**Wan 2.2 · 3:4 · Style On/Off · 1 次生成
+**适合：**风格化 / 艺术化的图像输出 · 非写实美感
+**优势：**绘画感、艺术化、非写实
+**Style 开关：**打开时启用风格化模式
 
 ---
 
 ### Multi Reference
-**Credits:** 1.5 per generation
-**UI:** Multi Reference · 3:4 · Style On/Off · 1/4 · Unlimited
-**Best for:** Compositing elements from multiple reference images into one generation
-**Use when:** You have several reference photos (character, location, prop, color) and want to blend them into a single coherent output
-**How it works:** Upload multiple reference images, the model synthesizes a new image drawing from all references simultaneously
-**Prompt tip:** Be explicit about which element comes from which reference
+**积分：**每次 1.5
+**界面：**Multi Reference · 3:4 · Style On/Off · 1/4 · Unlimited
+**适合：**把多张参考图里的元素合成进一次生成
+**何时用：**你有几张参考照片（角色、场景、道具、颜色），想把它们融合成一张连贯的输出
+**工作方式：**上传多张参考图，模型同时取用所有参考合成一张新图
+**提示词技巧：**明确写出哪个元素来自哪张参考
 
 ---
 
 ### Reve
-**Credits:** 1 per generation
-**UI:** Reve · 3:4 · Standard quality · 1/4 · Unlimited
-**Best for:** General-purpose image generation
-**Quality selector:** Standard (only option visible — may have additional tiers)
-**Note:** Newer model in the lineup — less known quantity, worth testing for versatile generation
+**积分：**每次 1
+**界面：**Reve · 3:4 · Standard quality · 1/4 · Unlimited
+**适合：**通用图像生成
+**质量选择：**Standard（界面上唯一可见的选项，可能还有其他档）
+**说明：**阵容里较新的模型：了解较少，值得为多用途生成测一测
 
 ---
 
-## Seedream Family
+## Seedream 系列（Seedream Family）
 
 ### Seedream 5.0 Pro
-**Model id:** `seedream_v5_pro` — in the 2026-08-01 spec snapshot (resolution `1k`/`1.5k`/`2k`, default 2k; aspect ratios incl. 21:9). `[FIELD provenance: first observed on 161 harvested community jobs, 2026-07-18]`
-**Best for:** Anime / manga / stylized-2D image work — character sheets with clean linework, flat cel color fills, multi-panel manga page layouts with screentones and readable panel geometry
-**Field-proven dialects:** split-screen anime character sheets (full-body action pose left, chest-up portrait right, identical character, white seamless background, ~190w median) · black-and-white manga page spreads (panels laid out by position + size + content, refs as Image0/1/2, ink linework, screentones, no color)
-**Style anchoring:** use an **art-era anchor** ("early 2000s retro anime, soft painted cel-shading, vintage proportions") — the stylized-image equivalent of the photoreal director/DP anchor
-**vs 5.0 Lite / 4.5:** the pick when line + flat color + text/panel layout matter more than photoreal texture; photoreal sheet work stays on Soul / GPT Image 2 / Nano Banana Pro
+**模型 id：**`seedream_v5_pro`：在 2026-08-01 规格快照里（分辨率 `1k`/`1.5k`/`2k`，默认 2k；画幅含 21:9）。`[FIELD provenance: first observed on 161 harvested community jobs, 2026-07-18]`
+**适合：**日式动画 / 漫画 / 风格化 2D 图像：线条干净、平涂赛璐璐填色的角色设定图，带网点、画格几何清楚的多格漫画页排版
+**实战验证过的写法：**分屏动画角色设定图（左边全身动作姿势，右边胸像，同一角色，白色无缝背景，中位数约 190 词）· 黑白漫画跨页（按位置 + 大小 + 内容排画格，参考记为 Image0/1/2，墨线、网点、无彩色）
+**风格锚定：**用一个**美术年代锚点**（“early 2000s retro anime, soft painted cel-shading, vintage proportions”）：相当于写实类里的导演/摄影指导锚点在风格化图像里的对应物
+**对比 5.0 Lite / 4.5：**线条 + 平涂 + 文字/画格排版比写实质感更重要时选它；写实设定图仍用 Soul / GPT Image 2 / Nano Banana Pro
 
 ---
 
 ### Seedream 5.0 Lite
-**Credits:** 1 per generation
-**UI:** Seedream 5.0 lite · 2K · 16:9 · 1/4 · @ (Elements) · Unlimited
-**Best for:** Fast, high-aesthetic image generation · versatile styles · rapid iteration
-**@ Elements:** Supports @ syntax for referencing saved Elements
-**Unlimited toggle:** Batch generation without credit cap
-**vs 4.5:** 5.0 Lite = faster, 2K. 4.5 = slower, 4K. Same cost.
+**积分：**每次 1
+**界面：**Seedream 5.0 lite · 2K · 16:9 · 1/4 · @（Elements）· Unlimited
+**适合：**快速、高审美的图像生成 · 多种风格 · 快速迭代
+**@ Elements：**支持用 @ 语法引用保存的 Elements
+**Unlimited 开关：**不受额度上限的批量生成
+**对比 4.5：**5.0 Lite = 更快，2K。4.5 = 更慢，4K。成本相同。
 
 ---
 
 ### Seedream 4.5
-**Credits:** 1 per generation
-**UI:** Seedream 4.5 · 4K · 16:9 · 1/4 · @ (Elements) · Unlimited
-**Best for:** 4K output · when maximum resolution matters over speed
-**Quality tiers — `quality`:** `basic` (default, renders up to 4K) / `high` (renders up to ~6K)
-**Aspect ratios:** 1:1, 4:3, 16:9, 3:2, 21:9, 3:4, 9:16, 2:3
-**@ Elements:** Supports @ syntax for referencing saved Elements
-**vs 5.0 Lite:** Higher resolution (4K vs 2K), same cost, slower generation
+**积分：**每次 1
+**界面：**Seedream 4.5 · 4K · 16:9 · 1/4 · @（Elements）· Unlimited
+**适合：**4K 输出 · 最高分辨率比速度重要时
+**质量档 `quality`：**`basic`（默认，最高渲染 4K）/ `high`（最高渲染约 6K）
+**画幅：**1:1、4:3、16:9、3:2、21:9、3:4、9:16、2:3
+**@ Elements：**支持用 @ 语法引用保存的 Elements
+**对比 5.0 Lite：**分辨率更高（4K 对 2K），成本相同，生成更慢
 
 ---
 
 ### Seedream 4.0
-**Credits:** 1 per generation
-**UI:** Seedream 4.0 · Basic quality · 3:4 · 1/4 · Unlimited
-**Best for:** Legacy/baseline generation · portrait orientation (3:4 default)
-**Quality selector:** Basic (lowest tier shown)
-**Note:** Older model tier — use 4.5 or 5.0 Lite for better results at the same cost
+**积分：**每次 1
+**界面：**Seedream 4.0 · Basic quality · 3:4 · 1/4 · Unlimited
+**适合：**旧版/基线生成 · 竖构图（默认 3:4）
+**质量选择：**Basic（显示的最低档）
+**说明：**较老的模型档：同样成本下用 4.5 或 5.0 Lite 效果更好
 
 ---
 
-## Nano Banana Family (G = Google-powered)
+## Nano Banana 系列（G = Google 驱动）（Nano Banana Family (G = Google-powered)）
 
-All three models run on Google's Gemini image engine. Each is a distinct model tier.
+三个模型都跑在 Google 的 Gemini 图像引擎上。每个都是不同的模型档。
 
 ---
 
 ### Nano Banana
-**Google model:** Gemini 2.5 Flash Image
-**Credits:** 1 per generation
-**UI:** Nano Banana · 3:4 · 1/4 · Unlimited · **Draw**
-**Best for:** Sketch-to-image prototyping · portrait format · fast, low-cost generation
-**Draw feature:** Sketch a rough composition or shape — model generates from your drawing
-**Strengths:** Speed and efficiency, optimized for high-volume, low-latency use
-**Note:** Original model — Draw feature makes it still uniquely useful; most other surfaces now default to NB2
+**Google 模型：**Gemini 2.5 Flash Image
+**积分：**每次 1
+**界面：**Nano Banana · 3:4 · 1/4 · Unlimited · **Draw**
+**适合：**草图转图像的原型 · 竖构图 · 快速、低成本生成
+**Draw 功能：**画一个粗略的构图或形状：模型按你的草图生成
+**优势：**速度和效率，为大量、低延迟的使用优化
+**说明：**原始模型：Draw 功能让它仍然有独特用处；其他大多数入口现在默认用 NB2
 
 ---
 
 ### Nano Banana Pro
-**Google model:** Gemini 3 Pro Image Preview
-**Credits:** 2 per generation
-**UI:** Nano Banana Pro · 16:9 · 1K · @ (Elements) · Unlimited · **Draw**
-**Best for:** Professional asset production · complex multi-element prompts · accurate text in images · prop reference sheets · sequential art/storyboards
-**Draw feature:** Sketch-to-image, same as base
-**@ Elements:** Supports @ syntax for Higgsfield saved Elements
+**Google 模型：**Gemini 3 Pro Image Preview
+**积分：**每次 2
+**界面：**Nano Banana Pro · 16:9 · 1K · @（Elements）· Unlimited · **Draw**
+**适合：**专业资产制作 · 复杂的多元素提示词 · 图中文字准确 · 道具参考表 · 连续画面/分镜
+**Draw 功能：**草图转图像，与基础版相同
+**@ Elements：**支持用 @ 语法引用 Higgsfield 保存的 Elements
 
-**Unique capabilities (not in other Nano Banana tiers):**
+**独有能力（其他 Nano Banana 档没有）：**
 
-**Thinking mode** — Before generating, model silently reasons through complex prompts, producing up to 2 interim "thought images" to test composition. Always on, cannot be disabled. Significantly better at complex, multi-instruction prompts.
+**Thinking 模式**：生成之前，模型静默推理复杂的提示词，最多产生 2 张中间“思考图”来测试构图。始终开启，不能关闭。在复杂、多指令的提示词上明显更好。
 
-**Up to 14 reference images** — Input up to 14 images simultaneously:
-- Up to 6 object images (high-fidelity object inclusion)
-- Up to 5 person images (character consistency)
-Tip: Name each reference's role — "Use Image A for pose, Image B for style, Image C for background"
+**最多 14 张参考图**：最多同时输入 14 张图：
+- 最多 6 张物件图（高保真地包含物件）
+- 最多 5 张人物图（角色一致性）
+技巧：写出每张参考的职责：“Use Image A for pose, Image B for style, Image C for background”
 
-**Google Search grounding** — Pulls real-time web info for data-accurate visuals: weather forecasts, stock charts, news events. Ask "what's today's weather in Tokyo" and it generates an accurate graphic.
+**Google 搜索落地**：拉取实时网络信息做数据准确的画面：天气预报、股票图、新闻事件。问“东京今天天气怎么样”，它会生成一张准确的图。
 
-**Advanced text rendering** — Best text accuracy in the family. Multilingual text, infographics, menus, logos, diagrams. Also translates text inside an existing image while preserving layout.
+**进阶文字渲染**：系列里文字准确度最好。多语言文字、信息图、菜单、标识、图解。还能翻译已有图片里的文字并保留版式。
 
-**Resolution:** 1K (default), 2K, 4K
-**Aspect ratios:** 1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9
+**分辨率：**1K（默认）、2K、4K
+**画幅：**1:1、2:3、3:2、3:4、4:3、4:5、5:4、9:16、16:9、21:9
 
-**What it excels at:**
-- Text-heavy assets: posters, infographics, magazine covers, menus, diagrams
-- Costume and prop detailing: pattern draping onto 3D objects and apparel
-- Multi-character scenes: up to 5 consistent characters in a single image
-- Sequential art: comic panels, storyboards with consistent characters across panels
-- Data visualization with Search grounding: charts/graphs using real-world accuracy
-- Prop reference images: controlled studio lighting and clear material detail
+**擅长：**
+- 文字多的资产：海报、信息图、杂志封面、菜单、图解
+- 服装和道具细节：把图案贴合到三维物体和衣物上
+- 多人场景：一张图里最多 5 个一致的角色
+- 连续画面：漫画格、各格角色一致的分镜
+- 用搜索落地的数据可视化：真实准确的图表
+- 道具参考图：受控的棚拍光和清楚的材质细节
 
-**6-element prompt formula for best results:**
-1. **Subject** — who/what: "a stoic robot barista with glowing blue optics"
-2. **Composition** — framing: "extreme close-up", "low angle", "wide shot"
-3. **Action** — what's happening: "brewing coffee, steam rising"
-4. **Location** — setting: "a futuristic café on Mars, warm amber lighting"
-5. **Style** — aesthetic: "photorealistic", "3D animation", "film noir", "watercolor"
-6. **Camera/lighting** — "shallow depth of field (f/1.8)", "golden hour backlight", "muted teal color grading"
+**效果最好的六要素提示词公式：**
+1. **主体**：谁/什么：“a stoic robot barista with glowing blue optics”
+2. **构图**：取景：“extreme close-up”、“low angle”、“wide shot”
+3. **动作**：正在发生什么：“brewing coffee, steam rising”
+4. **地点**：环境：“a futuristic café on Mars, warm amber lighting”
+5. **风格**：美感：“photorealistic”、“3D animation”、“film noir”、“watercolor”
+6. **镜头/光照**：“shallow depth of field (f/1.8)”、“golden hour backlight”、“muted teal color grading”
 
-**When using multiple reference images:** explicitly name each reference's role in the prompt
+**使用多张参考图时：**在提示词里明确写出每张参考的职责
 
-**Known limitations (official):**
-- Small text and fine details may not render perfectly every time
-- Factual data in diagrams should be verified — model can hallucinate data
-- Multilingual text may have grammar errors
-- Complex edits and blending can produce artifacts
-- Character consistency may drift across long multi-turn sessions
+**已知局限（官方）：**
+- 小字和细节不一定每次都完美渲染
+- 图解里的事实数据要核实：模型可能编造数据
+- 多语言文字可能有语法错误
+- 复杂的编辑和融合可能产生瑕疵
+- 在很长的多轮会话里，角色一致性可能漂移
 
-**Production-team observations (Higgsfield team disclosed):**
+**制作团队的观察（Higgsfield 团队披露）：**
 
-The following failure modes and counters come from the Hell Grind 90-min Cannes production team's documented in-pipeline use of Nano Banana Pro. They sit alongside the official limitations above — recurring patterns the team hit and the prompt-side fixes they shipped.
+下面的失败模式和对策，来自 Hell Grind 90 分钟戛纳长片制作团队记录的 Nano Banana Pro 流程内使用。它们和上面的官方局限并列：团队反复遇到的模式，以及他们采用的提示词侧修法。
 
-- **Plasticky-texture failure mode.** Surfaces are smooth and over-rendered; faces read as plastic in wide shots. Counter: append a trailing line `light atmospheric haze, film grain, crush blacks, shadow depth` at the end of the prompt. The single trailing line measurably shifts texture toward photographic without destabilizing the rest of the composition.
-- **Spatial-awareness limit (location references).** Uploading a city or environment image as a reference results in indoor subjects placed outdoors, or interiors that fail to spatially align with the reference geometry. Counter: keep the location in the *prompt text* (described verbally), not as an *image reference*. NBP handles described locations better than image-referenced ones.
-- **4-view default vs single composition.** NBP defaults to producing a 4-view reference sheet when asked for a character. Counter: explicitly request `one view image` (or `single composition`) when you want a single hero frame rather than a sheet.
-- **Multi-image embedded prompt drift.** A single prompt requiring many embedded reference elements (e.g., a 12-Polaroid photo wall built from individual character sheets) produces severe drift — faces from the source sheets fail to read correctly in the composite. Counter: generate each element individually, then composite in Photoshop. The production-team workflow accepted this trade-off (longer post-production for higher per-element fidelity).
+- **塑料质感失败模式。**表面光滑、过度渲染；远景里脸看起来像塑料。对策：在提示词末尾追加一行 `light atmospheric haze, film grain, crush blacks, shadow depth`。这一行能明显把质感推向照片感，而不打乱构图的其他部分。
+- **空间感知局限（场景参考）。**上传城市或环境图作为参考，会导致室内主体被放到室外，或者室内空间和参考几何对不上。对策：把场景写在*提示词文字*里（用文字描述），而不是作为*图像参考*。NBP 处理文字描述的场景比图像参考的场景好。
+- **默认四视图 vs 单一构图。**要一个角色时，NBP 默认产出四视图参考表。对策：想要单张主画面而不是设定表时，明确要求 `one view image`（或 `single composition`）。
+- **多图嵌入的提示词漂移。**一条提示词需要嵌入很多参考元素时（例如由一张张角色设定图组成的 12 张拍立得照片墙），会产生严重漂移：源设定图里的脸在合成图里读不对。对策：每个元素单独生成，再在 Photoshop 里合成。制作团队的流程接受了这个取舍（后期更长，换来每个元素更高的保真度）。
 
-**Location-handling discipline (Group H):**
+**场景处理纪律（H 组）：**
 
-When NBP is generating location-anchored shots, three patterns recur in production-team practice:
+NBP 生成以场景为锚的镜头时，制作团队的实践里反复出现三个模式：
 
-- **Every location needs an anchor** — a named visual landmark (a tree, a specific architectural feature, a recurring prop) gives the prompt a fixed point for relative spatial placement (`Roco stands to the left of the tree`). Anchorless locations drift.
-- **Never generate locations from the front.** Front-facing location renders confuse NBP's depth perception. Use a 3/4 angle or a ceiling-corner (CCTV) angle for location-establishing shots.
-- **Split locations into views, don't combine.** When a location appears across multiple cuts at different angles, generate separate location images per angle and attach them as separate references (`for cut one use this view, for cut two use this view`). Production-team learning evolved this away from earlier combined-into-single-reference practice — separate references hold better.
+- **每个场景都需要一个锚点**：一个具名的视觉地标（一棵树、一个特定的建筑特征、一个反复出现的道具）给提示词一个固定点，用于相对的空间摆放（`Roco stands to the left of the tree`）。没有锚点的场景会漂移。
+- **绝不从正面生成场景。**正对的场景渲染会搞乱 NBP 的纵深感知。场景建立镜头用 3/4 角度或天花板角落（监控）角度。
+- **把场景拆成不同视角，不要合并。**一个场景在多个切镜里以不同角度出现时，每个角度生成单独的场景图，作为单独的参考附上（`for cut one use this view, for cut two use this view`）。制作团队的经验从早期“合并成一张参考”的做法演变而来：分开的参考保持得更好。工作室的场景资产按 [空间布局](spatial-layout.md) 的场景资产内容边界制作。
 
-**Workflow positioning:**
+**流程定位：**
 
-NBP is the strongest single image model on the platform for sharpness, multi-element composition, and text rendering. For **high-investment characters** that will appear across many shots, the two-tool pipeline outperforms NBP alone: Soul Cinema for initial character generation + GPT Image 2 for refinement editing. See `higgsfield-soul.md` § Two-Tool Refinement Pipeline for the split-by-task discipline and the ~600 + ~200 = ~800 generations anchor from the Hell Grind production.
+NBP 是平台上清晰度、多元素构图和文字渲染最强的单一图像模型。对于会出现在很多镜头里的**高投入角色**，两个工具的流程胜过只用 NBP：用 Soul Cinema 做初始角色生成 + 用 GPT Image 2 做精修编辑。
 
 ---
 
 ### Nano Banana 2
-**Google model:** Gemini 3.1 Flash Image
-**Released:** February 26, 2026
-**Credits:** 1.5 per generation
-**UI:** Nano Banana 2 · 16:9 · 1K · 1/4
-**Best for:** Pro-quality output at Flash speed · rapid iteration on complex prompts · character-consistent multi-image workflows · text rendering · storyboarding
+**Google 模型：**Gemini 3.1 Flash Image
+**发布：**2026 年 2 月 26 日
+**积分：**每次 1.5
+**界面：**Nano Banana 2 · 16:9 · 1K · 1/4
+**适合：**以 Flash 的速度得到 Pro 级输出 · 在复杂提示词上快速迭代 · 角色一致的多图流程 · 文字渲染 · 分镜
 
-**What it is:** Google's "best of both worlds" — Nano Banana Pro's intelligence at Nano Banana's speed. Now the default image model across most Google surfaces (Gemini app, Search, Flow). Also powers **Soul Cast** in Cinema Studio 2.5.
+**它是什么：**Google 的“两全其美”：Nano Banana Pro 的智能，加上 Nano Banana 的速度。现在是 Google 大多数入口（Gemini 应用、搜索、Flow）的默认图像模型。也驱动 Soul Cast。
 
-**Capabilities:**
-- **Subject consistency**: maintains resemblance of up to **5 characters** and fidelity of up to **14 objects** in a single workflow — critical for storyboarding
-- **Precision text rendering + translation**: accurate legible text in images, can translate/localize text within an image while preserving layout
-- **Advanced world knowledge**: pulls from Gemini's knowledge base + real-time web search to accurately render specific subjects, places, landmarks
-- **Resolution**: 512px to 4K native
-- **Aspect ratios**: 1:1, 16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 4:5, 5:4, 21:9
-- **Infographics, diagrams, data visualizations**: strong at generating from text prompts
-- **Reference image editing**: edit/transform/combine existing images via text prompts
-- **Style transfer**: combine multiple reference images into one output
-- **Photorealistic quality**: vibrant lighting, richer textures, sharper details vs original Nano Banana
+**能力：**
+- **主体一致性**：在一个流程里保持最多 **5 个角色**的相像和最多 **14 个物件**的保真：对分镜至关重要
+- **精确的文字渲染 + 翻译**：图中文字准确清晰，能翻译/本地化图里的文字并保留版式
+- **进阶的世界知识**：调用 Gemini 的知识库 + 实时网络搜索，准确渲染具体的主体、地点、地标
+- **分辨率**：512px 到原生 4K
+- **画幅**：1:1、16:9、9:16、4:3、3:4、3:2、2:3、4:5、5:4、21:9
+- **信息图、图解、数据可视化**：从文字提示生成很强
+- **参考图编辑**：用文字提示编辑/变换/组合已有图片
+- **风格迁移**：把多张参考图组合成一张输出
+- **照片级质量**：比原始 Nano Banana 光照更鲜明、质感更丰富、细节更锐利
 
-**Prompting patterns that work well:**
-- **Structured JSON prompts** for complex scenes (subject → accessories → photography → background breakdown)
-- **Short direct prompts** also work ("Create a realistic photo of this character")
-- **Style transfer**: "Show me the animation style image version" / "Show me the real-life photo version"
-- **Location + time**: coordinates or place name + "at sunset" generates accurate scenes
-- **Blueprint/schematic**: "hand drawn isometric schematic diagram of [subject]"
-- **Infographic overlays**: detailed annotation instructions on top of photos
-- **Multi-panel comics**: single prompt with per-panel descriptions
+**效果好的提示写法：**
+- 复杂场景用**结构化 JSON 提示词**（主体 → 配饰 → 摄影 → 背景拆解）
+- **简短直接的提示词**也有效（“Create a realistic photo of this character”）
+- **风格迁移**：“Show me the animation style image version” / “Show me the real-life photo version”
+- **地点 + 时间**：坐标或地名 + “at sunset”能生成准确的场景
+- **蓝图/示意图**：“hand drawn isometric schematic diagram of [subject]”
+- **信息图叠加**：在照片上叠加详细的标注说明
+- **多格漫画**：一条提示词里逐格描述
 
-**When to use NB2 vs Pro:**
-- **NB2** = best for rapid generation, precise instruction following, speed, integrated image-search grounding
-- **NB Pro** = best for high-fidelity tasks requiring maximum factual accuracy, complex compositions, Thinking mode reasoning, 14-ref compositing
+**什么时候用 NB2，什么时候用 Pro：**
+- **NB2** = 最适合快速生成、精确遵循指令、速度、集成的图片搜索落地
+- **NB Pro** = 最适合需要最高事实准确度、复杂构图、Thinking 模式推理、14 张参考合成的高保真任务
 
-**When to use NB2 vs base Nano Banana:**
-- NB2 is dramatically better at everything — base is only worth using for its Draw feature
+**NB2 和基础 Nano Banana 怎么选：**
+- NB2 在所有方面都好得多：基础版只值得为 Draw 功能使用
 
-**No Draw yet** — Draw feature exists only in base Nano Banana and Nano Banana Pro
+**还没有 Draw**：Draw 功能只在基础 Nano Banana 和 Nano Banana Pro 里有
 
-**SynthID + C2PA:** All Nano Banana family outputs include an invisible SynthID watermark and C2PA Content Credentials for AI provenance verification
+**SynthID + C2PA：**Nano Banana 系列的所有输出都带不可见的 SynthID 水印和 C2PA 内容凭证，用于 AI 来源验证
 
 ---
 
 ### Nano Banana 2 Lite
-**Model id:** `nano_banana_2_lite` · **Google-powered**
-**Best for:** Budget NB2-family generation — high volume, drafts, iteration passes before committing to NB2/Pro
-**Resolution:** 1k only (single option — no 2K/4K on Lite)
-**Unique control — `thinking` (MINIMAL / HIGH, default HIGH):** depth of internal reasoning before generation. Drop to MINIMAL for speed on simple prompts; keep HIGH for complex multi-instruction prompts
-**Aspect ratios:** auto, 1:1, 3:2, 2:3, 4:3, 3:4, 4:5, 5:4, 9:16, 16:9, 21:9
-**Reference input:** image references supported
-**vs Nano Banana 2:** Lite trades the 2K/4K resolution ladder for a cheaper tier and an explicit thinking-depth dial; same aspect-ratio spread plus auto
+**模型 id：**`nano_banana_2_lite` · **Google 驱动**
+**适合：**低成本的 NB2 系列生成：大量、草稿、在投入 NB2/Pro 之前的迭代轮次
+**分辨率：**只有 1k（单一选项：Lite 没有 2K/4K）
+**独有控制 `thinking`（MINIMAL / HIGH，默认 HIGH）：**生成前内部推理的深度。简单提示词降到 MINIMAL 求速度；复杂的多指令提示词保持 HIGH
+**画幅：**auto、1:1、3:2、2:3、4:3、3:4、4:5、5:4、9:16、16:9、21:9
+**参考输入：**支持图像参考
+**对比 Nano Banana 2：**Lite 用 2K/4K 分辨率阶梯换来更便宜的档位和一个明确的思考深度旋钮；画幅范围相同，另加 auto
 
 ---
 
-## GPT Image Family (OpenAI-powered)
+## GPT Image 系列（OpenAI 驱动）（GPT Image Family (OpenAI-powered)）
 
 ### GPT Image
-**Credits:** 2 per generation
-**UI:** ChatGPT · 1:1 · Mid quality · 1/4 · Unlimited · Character slot
-**Best for:** Instruction-following · complex multi-element prompts · character slot integration
-**Quality selector:** Low / Mid / High
-**Character slot:** Supports Soul ID character reference (GENERAL shown by default)
-**Default aspect:** 1:1 square
-**Note:** Model selector shows "ChatGPT" branding — OpenAI's GPT-Image model
-**Status:** No longer present in the models catalog (2026-08-01 snapshot) — verify in the UI before recommending; prefer GPT Image 1.5/2 or OpenAI Hazel
+**积分：**每次 2
+**界面：**ChatGPT · 1:1 · Mid quality · 1/4 · Unlimited · 角色槽
+**适合：**遵循指令 · 复杂的多元素提示词 · 角色槽集成
+**质量选择：**Low / Mid / High
+**角色槽：**支持 Soul ID 角色参考（默认显示 GENERAL）
+**默认画幅：**1:1 方形
+**说明：**模型选择器显示“ChatGPT”品牌：OpenAI 的 GPT-Image 模型
+**状态：**模型目录里已经没有（2026-08-01 快照）：推荐之前在界面上核实；优先用 GPT Image 1.5/2 或 OpenAI Hazel
 
 ---
 
 ### GPT Image 1.5
-**Credits:** 2 per generation
-**UI:** GPT Image 1.5 · 1:1 · Low quality · 1/4
-**Best for:** Complex prompts · text-in-image · precise instruction following
-**Quality selector:** Low / (implied Medium/High)
-**vs GPT Image:** Newer version. Default shown at Low quality (faster/cheaper mode). No character slot visible.
-**Text in image:** GPT Image 1.5 handles text rendering better than most models
-**Note:** Same credit cost as original — upgrade when you need better prompt adherence
+**积分：**每次 2
+**界面：**GPT Image 1.5 · 1:1 · Low quality · 1/4
+**适合：**复杂提示词 · 图中文字 · 精确遵循指令
+**质量选择：**Low /（应该还有 Medium/High）
+**对比 GPT Image：**更新的版本。默认显示 Low 质量（更快/更便宜的模式）。看不到角色槽。
+**图中文字：**GPT Image 1.5 的文字渲染比大多数模型好
+**说明：**积分成本与原版相同：需要更好的提示词遵循时升级
 
 ---
 
 ### GPT Image 2
-**Credits:** Confirm in Higgsfield UI — premium tier expected given native 4K + O-series reasoning
-**UI:** GPT Image 2 · 16:9 · 4K · 1/4 · Multi-reference (up to 16 images)
-**Best for:** Photorealistic scene imagery · text-heavy designs · character consistency across multi-shot · CJK / Hindi / Bengali text rendering
-**Higgsfield URL:** `higgsfield.ai/ai/image?model=imagegen_2_0`
-**Higgsfield internal slug:** `imagegen_2_0`
-**OpenAI model ID:** `gpt-image-2` (snapshot `gpt-image-2-2026-04-21`, released April 21, 2026, knowledge cutoff December 2025)
-**Native resolution:** 4K (up from 1536×1024 in GPT Image 1.5)
-**Reference images:** up to 16
-**Multilingual text rendering:** >95% accuracy across Japanese, Korean, Chinese, Hindi, Bengali — first OpenAI image model to handle non-Latin scripts at production-grade fidelity
-**vs GPT Image 1.5:** Photorealism leap, text-rendering leap, native 4K (up from 1536×1024), ~2× speed on standard mode, plus O-series reasoning capability for complex multi-element prompts that previously required Nano Banana Pro Thinking mode
-**Note:** First image model with O-series reasoning capabilities — complex multi-element compositions resolve more reliably than on prior GPT Image generations. For full API specs, rate limits, and deep-reference comparison to siblings, see `higgsfield-models-models-deep-reference.md` § GPT Image 2.
+**积分：**在 Higgsfield 界面上确认：考虑到原生 4K + O 系列推理，预计是高价档
+**界面：**GPT Image 2 · 16:9 · 4K · 1/4 · 多参考（最多 16 张）
+**适合：**照片写实的场景图 · 文字多的设计 · 跨多镜头的角色一致性 · 中日韩 / 印地语 / 孟加拉语文字渲染
+**Higgsfield URL：**`higgsfield.ai/ai/image?model=imagegen_2_0`
+**Higgsfield 内部 slug：**`imagegen_2_0`
+**OpenAI 模型 ID：**`gpt-image-2`（快照 `gpt-image-2-2026-04-21`，2026 年 4 月 21 日发布，知识截止 2025 年 12 月）
+**原生分辨率：**4K（GPT Image 1.5 是 1536×1024）
+**参考图：**最多 16 张
+**多语言文字渲染：**日语、韩语、中文、印地语、孟加拉语准确率 >95%：第一个以制作级保真度处理非拉丁文字的 OpenAI 图像模型
+**对比 GPT Image 1.5：**照片写实大幅提升、文字渲染大幅提升、原生 4K（原来 1536×1024）、标准模式约 2 倍速度，另加 O 系列推理能力，处理以前需要 Nano Banana Pro Thinking 模式的复杂多元素提示词
+**说明：**第一个带 O 系列推理能力的图像模型：复杂的多元素构图比以前的 GPT Image 各代更可靠。
 
 ---
 
 ### OpenAI Hazel
-**Model id:** `openai_hazel` · **Provider:** OpenAI
-**Best for:** Powerful reference-based editing · best-in-class text rendering
-**Quality selector — `quality`:** low / medium / high (default medium)
-**Aspect ratios:** 1:1, 3:2, 2:3, auto
-**Reference input:** image references supported — feed the image you want edited/transformed
-**vs GPT Image 2:** Hazel is the editing-and-text specialist with a compact aspect set (1:1/3:2/2:3/auto); GPT Image 2 is the native-4K, 16-reference generation flagship. Reach for Hazel when the job is "edit this image" or "get this text exactly right"
+**模型 id：**`openai_hazel` · **提供方：**OpenAI
+**适合：**强大的基于参考的编辑 · 同类最佳的文字渲染
+**质量选择 `quality`：**low / medium / high（默认 medium）
+**画幅：**1:1、3:2、2:3、auto
+**参考输入：**支持图像参考：喂入你想编辑/变换的图
+**对比 GPT Image 2：**Hazel 是编辑和文字专家，画幅精简（1:1/3:2/2:3/auto）；GPT Image 2 是原生 4K、16 张参考的生成旗舰。任务是“编辑这张图”或“把这段文字弄得完全准确”时选 Hazel
 
 ---
 
-## FLUX Family (⚠ External/Third-party)
+## FLUX 系列（⚠ 外部/第三方）（FLUX Family (⚠ External/Third-party)）
 
-All FLUX models show a warning triangle (⚠) in the UI — third-party external models.
+所有 FLUX 模型在界面上都显示警告三角（⚠）：第三方外部模型。
 
 ### FLUX.2 Flex
-**Credits:** 5 per generation
-**UI:** ⚠ FLUX.2 Flex · 16:9 · 2K · 1/4 · Settings ⚙
-**Best for:** Flexible, high-quality FLUX generation
-**Unique:** Settings ⚙ button — additional configuration options beyond standard controls
-**Note:** No Unlimited toggle visible. Higher cost reflects external model pricing.
+**积分：**每次 5
+**界面：**⚠ FLUX.2 Flex · 16:9 · 2K · 1/4 · Settings ⚙
+**适合：**灵活、高质量的 FLUX 生成
+**独特之处：**Settings ⚙ 按钮：标准控制之外的额外配置选项
+**说明：**看不到 Unlimited 开关。成本较高反映的是外部模型定价。
 
 ---
 
 ### FLUX.2 Pro
-**Credits:** 1.5 per generation
-**UI:** ⚠ FLUX.2 Pro · 16:9 · 2K · 1/4 · Unlimited
-**Best for:** Professional-grade FLUX output at mid-tier cost
-**vs Flex:** Same resolution, lower cost, Unlimited toggle available
+**积分：**每次 1.5
+**界面：**⚠ FLUX.2 Pro · 16:9 · 2K · 1/4 · Unlimited
+**适合：**中档成本的专业级 FLUX 输出
+**对比 Flex：**分辨率相同、成本更低、有 Unlimited 开关
 
 ---
 
 ### FLUX.2 Max
-**Credits:** 6 per generation — most expensive image model on the platform
-**UI:** ⚠ FLUX.2 Max · 16:9 · 2K · 1/4
-**Best for:** Highest FLUX quality output — when cost is not a constraint
-**Note:** No Unlimited toggle. Premium tier of the FLUX.2 family.
+**积分：**每次 6：平台上最贵的图像模型
+**界面：**⚠ FLUX.2 Max · 16:9 · 2K · 1/4
+**适合：**最高质量的 FLUX 输出：成本不是约束时
+**说明：**没有 Unlimited 开关。FLUX.2 系列的高价档。
 
 ---
 
 ### Flux Kontext
-**Credits:** varies
-**UI:** ⚠ Flux Kontext · (editing interface)
-**Best for:** Targeted image editing · inpainting · modifying specific areas of an existing image
-**Use when:** You have an image you want to change, not generate from scratch
-**vs generation models:** This is an editing model — input is an existing image + instruction
+**积分：**不定
+**界面：**⚠ Flux Kontext ·（编辑界面）
+**适合：**定向的图像编辑 · 局部重绘 · 修改已有图片的特定区域
+**何时用：**你有一张想改的图，而不是从零生成
+**对比生成模型：**这是一个编辑模型：输入是已有的图 + 指令
 
 ---
 
 ### Flux Kontext Max
-**Credits:** 1.5 per generation
-**UI:** ⚠ Flux Kontext Max · 3:4 · Style On/Off · 1/4 · Unlimited
-**Best for:** Higher-quality version of Flux Kontext editing
-**vs Kontext:** Same editing purpose, higher quality output, portrait default (3:4)
-**Style toggle:** On enables stylization during edit
+**积分：**每次 1.5
+**界面：**⚠ Flux Kontext Max · 3:4 · Style On/Off · 1/4 · Unlimited
+**适合：**Flux Kontext 编辑的更高质量版本
+**对比 Kontext：**编辑用途相同，输出质量更高，默认竖构图（3:4）
+**Style 开关：**打开时在编辑中启用风格化
 
 ---
 
-## Recraft Family (⚠ External/Third-party)
+## Recraft 系列（⚠ 外部/第三方）（Recraft Family (⚠ External/Third-party)）
 
 ### Recraft 4.1
-**Model id:** `recraft_v4_1` (renamed from `recraft-v4-1`, which remains a catalog alias) · **Provider:** Recraft
-**UI:** Recraft V4.1 (and **Recraft V4.1 Utility**) · 1:1 · 1/4 · NEW
-**Best for:** Photorealistic + expressive generation, prop references, icons, illustrations
-**Resolution:** 1k (everyday) / 2k (larger assets) — see `image-model-specs.json`
-**Batch:** 1–4 images per job (`batch_size`)
-**Unique control — `model_type` (4 variants):**
-- `standard` — expressive, exploratory generation (the default; "Recraft V4.1" in the UI)
-- `vector` — logos, typography, icons, SVG-like illustration
-- `utility` — cleaner, flatter, front-facing, predictable prop reference shots (the **"Recraft V4.1 Utility"** UI entry)
-- `utility_vector` — utility simplicity with vector output (icons and illustrations)
+**模型 id：**`recraft_v4_1`（由 `recraft-v4-1` 改名，旧名仍是目录别名）· **提供方：**Recraft
+**界面：**Recraft V4.1（以及 **Recraft V4.1 Utility**）· 1:1 · 1/4 · NEW
+**适合：**照片写实 + 富有表现力的生成、道具参考、图标、插画
+**分辨率：**1k（日常）/ 2k（更大的资产）：见 `image-model-specs.json`
+**批量：**每个任务 1–4 张（`batch_size`）
+**独有控制 `model_type`（4 种）：**
+- `standard`：富有表现力、探索性的生成（默认；界面上的“Recraft V4.1”）
+- `vector`：标识、字体排印、图标、类 SVG 插画
+- `utility`：更干净、更平、正面、可预期的道具参考图（界面上的 **“Recraft V4.1 Utility”**）
+- `utility_vector`：utility 的简洁加矢量输出（图标和插画）
 
-**Palette control:** `colors` (up to 10 `#RRGGBB` values) and `background_color` (single `#RRGGBB` or null) — strong fit for scene palettes, controlled flat backgrounds, icon/vector work. Hex only: no `#RGB` shorthand, no `#RRGGBBAA`, no `rgba()`, no color names.
-**Prompt tip:** For logos/icons pick `vector`; for clean prop reference shots pick `utility`. Pass palette colors via `colors` rather than describing them in prose.
+**色板控制：**`colors`（最多 10 个 `#RRGGBB` 值）和 `background_color`（单个 `#RRGGBB` 或 null）：很适合场景色板、受控的纯色背景、图标/矢量工作。只接受十六进制：不接受 `#RGB` 简写、`#RRGGBBAA`、`rgba()` 或颜色名。
+**提示词技巧：**标识/图标选 `vector`；干净的道具参考图选 `utility`。色板颜色通过 `colors` 传入，而不是在文字里描述。
 
 ---
 
-## Swap Tools (Not Generation Models)
+## 替换工具（不是生成模型）（Swap Tools (Not Generation Models)）
 
-These are upload-based transformation tools, not text-to-image generators.
+这些是基于上传的变换工具，不是文生图生成器。
 
 ### Face Swap
-**Credits:** Free (2 free generations, then paid)
-**UI:** Face Swap · Your Photo (upload face to insert) · Target Image (photo with face to replace) · 3:4 · Unlimited
-**How it works:** Upload the face you want → upload the target photo → face is composited in
+**积分：**免费（2 次免费生成，之后付费）
+**界面：**Face Swap · Your Photo（上传要放进去的脸）· Target Image（要换脸的照片）· 3:4 · Unlimited
+**工作方式：**上传你要的脸 → 上传目标照片 → 合成脸部
 
 ### Character Swap
-**Credits:** 2 per generation
-**UI:** Character Swap · Your Photo (character to insert) · Target Image (character to replace) · 3:4
-**How it works:** Full character body swap — replaces an entire person in a target image with your uploaded character
-**vs Face Swap:** Face Swap = face only. Character Swap = full body/character replacement.
+**积分：**每次 2
+**界面：**Character Swap · Your Photo（要放进去的角色）· Target Image（要替换的角色）· 3:4
+**工作方式：**整个角色身体替换：用你上传的角色替换目标图里的整个人
+**对比 Face Swap：**Face Swap = 只换脸。Character Swap = 整个身体/角色替换。
 
-> The image catalog also carries utility/system entries — AutoSprite (animate a character image into a game-ready sprite sheet), image_auto (auto model selection), upscalers (Topaz, Bytedance), background remover, and outpaint. These are pipeline tools rather than prompt-crafted generation models and are out of scope for this reference.
+> 图像目录里还有工具/系统类条目：AutoSprite（把角色图做成游戏用的精灵图）、image_auto（自动选模型）、图像超分（Topaz、Bytedance）、去背景和扩图。它们是流程工具，不是靠提示词写作的生成模型，不在本参考范围内。
 
 ---
 
-## Complete Cost Reference
+## 完整成本参考（Complete Cost Reference）
 
-| Model | Credits | Resolution | Notes |
+| 模型 | 积分 | 分辨率 | 说明 |
 |-------|---------|-----------|-------|
-| Z-Image | 0.15 | — | Cheapest |
-| Higgsfield Soul | 0.5 | 2K | Legacy, image-as-prompt |
-| Kling O1 | 0.5 | 2K | Square default |
-| Seedream 4.0 | 1 | Basic | Older tier |
-| Seedream 5.0 Lite | 1 | 2K | Fast |
-| Seedream 4.5 | 1 | 4K | High-res, `quality` basic/high (~6K) |
-| Nano Banana | 1 | — | Draw, portrait |
-| Wan 2.2 | 1 | — | Artistic |
-| Reve | 1 | — | New |
-| Soul 2.0 | Free | 2K | 5K free gens |
-| Soul Cinema Preview | Low | — | Cinematic keyframes |
-| Soul Cast | TBD | — | Character identity, 16:9, `budget` 10–500 |
-| Soul Location | TBD | — | Environments, 9 aspect ratios |
-| Kling Image 3.0 | TBD | 4K | Native 4K, series mode |
-| Kling Image 3.0 Omni | TBD | 4K | Advanced editing |
-| Nano Banana 2 | 1.5 | 1K | Pro quality at Flash speed |
-| Nano Banana 2 Lite | TBD | 1K only | Budget NB2, `thinking` MINIMAL/HIGH |
-| FLUX.2 Pro | 1.5 | 2K | ⚠ External |
-| Flux Kontext Max | 1.5 | — | ⚠ Edit |
-| Multi Reference | 1.5 | — | Multi-image blend |
-| Recraft 4.1 | varies | 1K/2K | ⚠ External · standard/vector/utility/utility_vector · hex palettes |
-| GPT Image | 2 | — | Character slot · gone from catalog (still absent 2026-08-01) |
-| GPT Image 1.5 | 2 | — | Text-in-image |
-| OpenAI Hazel | TBD | — | Editing, best text rendering |
-| Character Swap | 2 | — | Body swap |
-| Nano Banana Pro | 2 | 1K | Draw, landscape |
-| FLUX.2 Flex | 5 | 2K | ⚠ External |
-| FLUX.2 Max | 6 | 2K | ⚠ Most expensive |
-| Face Swap | Free | — | 2 free then paid |
+| Z-Image | 0.15 | — | 最便宜 |
+| Higgsfield Soul | 0.5 | 2K | 旧版，以图作提示 |
+| Kling O1 | 0.5 | 2K | 默认方形 |
+| Seedream 4.0 | 1 | Basic | 较老档 |
+| Seedream 5.0 Lite | 1 | 2K | 快 |
+| Seedream 4.5 | 1 | 4K | 高分辨率，`quality` basic/high（约 6K） |
+| Nano Banana | 1 | — | Draw，竖构图 |
+| Wan 2.2 | 1 | — | 艺术化 |
+| Reve | 1 | — | 新 |
+| Soul 2.0 | 免费 | 2K | 5K 次免费生成 |
+| Soul Cinema Preview | 低 | — | 电影感关键帧 |
+| Soul Cast | 待定 | — | 角色身份，16:9，`budget` 10–500 |
+| Soul Location | 待定 | — | 环境，9 种画幅 |
+| Kling Image 3.0 | 待定 | 4K | 原生 4K，系列模式 |
+| Kling Image 3.0 Omni | 待定 | 4K | 进阶编辑 |
+| Nano Banana 2 | 1.5 | 1K | Flash 速度的 Pro 质量 |
+| Nano Banana 2 Lite | 待定 | 只有 1K | 低成本 NB2，`thinking` MINIMAL/HIGH |
+| FLUX.2 Pro | 1.5 | 2K | ⚠ 外部 |
+| Flux Kontext Max | 1.5 | — | ⚠ 编辑 |
+| Multi Reference | 1.5 | — | 多图融合 |
+| Recraft 4.1 | 不定 | 1K/2K | ⚠ 外部 · standard/vector/utility/utility_vector · 十六进制色板 |
+| GPT Image | 2 | — | 角色槽 · 已从目录消失（2026-08-01 仍不在） |
+| GPT Image 1.5 | 2 | — | 图中文字 |
+| OpenAI Hazel | 待定 | — | 编辑，最佳文字渲染 |
+| Character Swap | 2 | — | 换身体 |
+| Nano Banana Pro | 2 | 1K | Draw，横构图 |
+| FLUX.2 Flex | 5 | 2K | ⚠ 外部 |
+| FLUX.2 Max | 6 | 2K | ⚠ 最贵 |
+| Face Swap | 免费 | — | 2 次免费后付费 |

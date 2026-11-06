@@ -1,86 +1,51 @@
-# Seedance 2.0 — Engine Rules (shared core)
+# Seedance 2.0 引擎规则（共享核心）（Seedance 2.0 — Engine Rules (shared core)）
 
-This file is the **single home** for Seedance 2.0's shared rendering constraints and production techniques. Conditional techniques are identified explicitly.
-Every Seedance prompt dialect cites this core instead of restating it — the
-rules used to live only inside the bilingual-JSON profile doc, where the other
-dialects couldn't see them.
+本文件是 Seedance 2.0 共享渲染约束和制作技法的**唯一归属**。有条件的技法会明确标出。每种 Seedance 提示词写法都引用这个核心，而不是重复它：这些规则以前只存在于双语 JSON 档位的文档里，其他写法看不到。
 
-**The dialects are output *profiles* of this one rule core:**
+**各种写法是这一个规则核心的输出*档位*：**
 
-| Profile | Format | Where |
+| 档位 | 格式 | 位置 |
 |---------|--------|-------|
-| `EN-director` | English prose prompt, six-slot formula, MCSLA-compatible | `higgsfield-seedance.md` (this skill) |
-| `ZH-house` | Chinese house format (镜头-block shotlists, ≤1,800 chars) | team `shotlist-builder` (external corpus); ZH rules enforced by `../scripts/seedance_lint.py` |
-| `bilingual-JSON` | JSON API persona emitting paired `{"lang":"en"}` + `{"lang":"zh"}` prompts | `seedance-bilingual-json.md` |
+| `EN-director` | 英文文字提示词、六槽公式、兼容 MCSLA | `higgsfield-seedance.md`（本模块） |
+| `ZH-house` | 中文团队格式（镜头块分镜表，≤1,800 字） | 团队 `shotlist-builder`（外部语料）；ZH 规则由 `../scripts/seedance_lint.py` 执行 |
+| `bilingual-JSON` | 输出成对 `{"lang":"en"}` + `{"lang":"zh"}` 提示词的 JSON API 角色 | `seedance-bilingual-json.md` |
 
-Pick the profile by delivery target; the rules below apply to **all of them**.
-
----
-
-## Hard rendering constraints
-
-Source: production-validated rules from the bilingual-JSON director doc
-(`seedance-bilingual-json.md` § Engine Rules), consolidated 2026-06-11.
-
-1. **Age-blind characters (CRITICAL).** Never describe characters by age — in
-   either language. Trigger words: *boy, girl, child, kid, young, teen, little,
-   男孩, 女孩, 孩子, 少年, 少女, 小孩, 年轻*. Describe by **role** (rider,
-   figure, traveler), **clothing**, and **action** — label what they do, never
-   who they are.
-2. **Action beats = intent + named technique, not biomechanics.**
-   ✅ "spinning back kick connects." ❌ "left forearm rotates 45° to deflect."
-   If the user names a move, preserve it; if they describe joint mechanics,
-   compress to the move's name or intent.
-3. **Describe force and direction, not destruction sequence.**
-   ✅ "driven into the car, metal buckling." ❌ "thrown into side door, glass
-   shatters, uses rebound to sweep leg."
-4. **Spatial continuity breaks on cuts.** Re-anchor positions and facing
-   direction after any cut.
-5. **≤ 3 characters tracked across cuts.** Name the acting pair and the
-   interaction vector per shot.
-6. **Exit-frame = implicit cut.** A character who leaves frame is gone for the
-   remainder of that shot. Never choreograph exit + re-entry in one continuous
-   shot.
-7. **Off-screen = nonexistent.** State changes must be shown on camera before
-   being referenced.
-8. **Avoid reflection shots** (blades, puddles, mirrors) — Seedance breaks
-   scene geography when rendering reflections. See the high-risk table below
-   for the workaround when the project *requires* one.
-9. **Only describe what can be seen or heard.** ❌ "the air smells of pine."
-   ✅ "pine needles covering the ground, wind moving through branches."
-10. **Micro-expressions as physics.** ✅ "jaw clenches, nostrils flare."
-    ❌ "looks angry."
-11. **Double-contrast cut (conditional technique).** For a motivated contrast,
-    change **both** shot size (extreme wide → wide → medium → MCU → CU → ECU)
-    **and** camera character (handheld | static | stabilized tracking | crane |
-    aerial). Repeated static dialogue coverage, match cuts and deliberate
-    repeated compositions remain valid. Do not add cuts or override approved
-    camera direction solely to create variation.
+按交付目标选档位；下面的规则适用于**所有档位**。工作室默认交付是 Seedance 2.5 的中文块结构（[跨类型导演模板](template-general-director-2-5.md)），不设字数上限；1,800 字只属于上面两个外部档位。
 
 ---
 
-## High-risk shot types — flag at authoring time
+## 硬性渲染约束（Hard rendering constraints）
 
-These shot types conflict with the engine rules above. **Flag the conflict
-when the request comes in** — a project whose hero image is a mirror or water
-reflection needs the documented workaround applied deliberately, not the rule
-silently broken. Mitigations are house technique derived from the engine
-rules; they are not platform-documented features.
+来源：双语 JSON 导演文档里经制作验证的规则（`seedance-bilingual-json.md` § SEEDANCE 2.0 — ENGINE RULES），2026-06-11 合并。
 
-| High-risk shot | Why it breaks | Mitigation |
+1. **不写年龄的角色（关键）。**两种语言里都绝不按年龄描述角色。触发词：*boy, girl, child, kid, young, teen, little, 男孩, 女孩, 孩子, 少年, 少女, 小孩, 年轻*。按**职责**（骑手、身影、旅人）、**服装**和**动作**描述：标注他们在做什么，绝不标注他们是谁。
+2. **动作节拍 = 意图 + 具名招式，而不是生物力学。**✅ “spinning back kick connects.” ❌ “left forearm rotates 45° to deflect.” 用户点名了招式就保留；用户描述了关节力学，就压缩成招式名或意图。
+3. **描述力量和方向，而不是破坏的顺序。**✅ “driven into the car, metal buckling.” ❌ “thrown into side door, glass shatters, uses rebound to sweep leg.”
+4. **空间连续性在切镜处断开。**任何切镜之后重新锚定位置和朝向。
+5. **跨切镜追踪的角色 ≤ 3 个。**每个镜头写明在行动的那一对和互动方向。
+6. **出画 = 隐性切镜。**离开画面的角色在这个镜头剩下的部分里就没了。绝不在一个连续镜头里编排出画 + 再入画。
+7. **画外 = 不存在。**状态变化必须先在镜头上展示，才能被引用。
+8. **避免反射镜头**（刀刃、水坑、镜子）：Seedance 渲染反射时会打乱场景地理。项目*必须*有反射时的变通办法见下面的高风险表。
+9. **只描述能被看到或听到的东西。**❌ “the air smells of pine.” ✅ “pine needles covering the ground, wind moving through branches.”
+10. **微表情写成物理变化。**✅ “jaw clenches, nostrils flare.” ❌ “looks angry.”
+11. **双重对比切镜（有条件的技法）。**需要有动机的对比时，**同时**改变景别（extreme wide → wide → medium → MCU → CU → ECU）**和**镜头性质（手持 | 固定 | 稳定跟拍 | 摇臂 | 航拍）。重复的静态对白覆盖、匹配剪辑和刻意重复的构图仍然有效。不要只为了制造变化而加切镜或推翻已确认的运镜指示。
+
+---
+
+## 高风险镜头类型：写作时就标出（High-risk shot types — flag at authoring time）
+
+这些镜头类型和上面的引擎规则冲突。**请求进来时就标出冲突**：主画面是镜子或水面反射的项目，需要刻意应用记录在案的变通办法，而不是悄悄违反规则。缓解办法是从引擎规则推出来的内部技法；不是平台文档记载的功能。
+
+| 高风险镜头 | 为什么会坏 | 缓解办法 |
 |----------------|---------------|------------|
-| **Reflections** (mirrors, water, blades) | Engine breaks scene geography rendering reflector + reflected together (rule 8) | Never show the reflective surface and the subject in one continuous shot. Shoot the reflection **as** the scene: a dedicated shot where the mirror/water image is the primary subject, then cut to the physical subject (use double contrast from rule 11 when motivated). For a reflection hero image, pin it as the start frame of its own shot rather than asking the engine to construct the reflection. |
-| **Two instances of the same character** (clones, mirror selves, time doubles) | Identity tracking assumes one body per identity; instances contaminate each other | Treat each instance as a **separate named role** with its own wardrobe/feature anchors ("@Hero-present: rain-soaked coat; @Hero-memory: pressed suit"). Pin each with its own reference image where possible. Prefer cutting between instances over continuous two-instance frames. |
-| **Crowds** | Only ≤3 characters track across cuts (rule 5) | Describe the crowd as **environment, not characters**: a single mass with collective motion ("the crowd surges left as one"). Never name or track more than 3 individuals; foreground your tracked pair against the mass. |
-| **Text rendering** (signs, inscriptions, screens) | Glyph fidelity is unreliable, and per § Drafts Validate the Prompt, fine-detail legibility re-rolls every generation | Keep story-critical text out of the generation: use the text-overlay templates (`template-subtitle.md` and `template-speech-bubble.md`) or post overlays. If in-scene text is unavoidable, keep it short, large, and verify legibility **at final resolution** — never approve it from a 480p draft. |
+| **反射**（镜子、水面、刀刃） | 引擎同时渲染反射面和被反射物时会打乱场景地理（规则 8） | 绝不在一个连续镜头里同时显示反射面和主体。把反射**当作**场景来拍：一个专门的镜头，镜子/水面里的影像就是主要主体，然后切到实际的主体（有动机时用规则 11 的双重对比）。反射是主画面时，把它钉为该镜头自己的首帧（2.0 用法；当前项目走 `omni_reference`，把反射构图写进第一段的 `画面：` 描述并配场景参考），而不是让引擎去构建反射。 |
+| **同一角色的两个实例**（克隆、镜中自己、时间分身） | 身份追踪假设一个身份一个身体；实例会互相污染 | 把每个实例当作**独立的具名角色**，各有自己的服装/特征锚点（“@Hero-present: rain-soaked coat; @Hero-memory: pressed suit”）。尽可能给每个实例绑定自己的参考图。优先在实例之间切镜，而不是连续的双实例画面。 |
+| **人群** | 跨切镜只能追踪 ≤3 个角色（规则 5） | 把人群描述为**环境，而不是角色**：一个整体，集体运动（“the crowd surges left as one”）。绝不命名或追踪超过 3 个个体；把你追踪的那一对放在人群前景。 |
+| **文字渲染**（招牌、铭文、屏幕） | 字形保真不可靠，而且按 § Drafts Validate the Prompt，细节的可读性每次生成都会重抽 | 让对故事关键的文字不进生成：用文字叠加模板（`template-subtitle.md` 和 `template-speech-bubble.md`）或后期叠加。如果画面内文字不可避免，保持简短、够大，并在**最终分辨率**下核实可读性：绝不从 480p 草稿批准它。 |
 
 ---
 
-## Enforcement
+## 执行（Enforcement）
 
-- `python3 scripts/seedance_lint.py --preflight --model seedance_2_0` checks the
-  mechanical subset (age markers, shot-count declarations, ZH caps, enum
-  legality per `model-specs.json`).
-- The judgment subset (reflections, instance handling, crowd phrasing,
-  double-contrast) is reviewed against this file — cite the rule number when
-  flagging a conflict to the user.
+- `python3 scripts/seedance_lint.py --preflight --model seedance_2_0` 检查机械性的部分（年龄标记、镜头数声明、ZH 字数上限、按 `model-specs.json` 的枚举合法性）。
+- 判断性的部分（反射、实例处理、人群措辞、双重对比）对照本文件审查：向用户标出冲突时引用规则编号。

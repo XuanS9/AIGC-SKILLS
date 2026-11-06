@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 SCRIPT = Path(__file__).resolve().parents[1] / "seedance_lint.py"
 spec = importlib.util.spec_from_file_location("profile_scope_lint", SCRIPT)
@@ -14,22 +15,36 @@ sys.modules[spec.name] = lint
 spec.loader.exec_module(lint)
 
 
-def production_draft():
-    return ("【参考素材职责】\n纯文字参考。\n【一句话概述】\n她在屋内整理布料。\n"
-            "【具体情节】\n0s-3s：侧面中景，" + "手指压住布面，窗侧柔光照指背。" * 140 +
-            "\n【全局补充】\n本段无对白（设计）。无字幕、无水印。NO BGM。\n")
+def production_draft(repeat=90):
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from studio_fixtures import prompt as build, segment
+    seg = segment('0', '3', '侧面中景', 47, '固定', picture='她坐在屋内桌前，面向布料，窗在画面左侧。',
+                  camera='固定，平视。', action='手指压住布面，窗侧柔光照指背。' * repeat,
+                  expression='她目光低垂，嘴唇抿紧。', end_state='她的手停在布面上。')
+    return build([seg], goal='她在屋内整理布料。', style='窗侧柔光，5600K。', cut=False,
+                 audio='本段无对白（设计）。现场声为房间底噪。NO BGM。',
+                 consistency='画面中只有 1 人。无字幕、无水印。')
+
+
+def overlong_draft():
+    return production_draft(150)
 
 
 class ProfileScopeTests(unittest.TestCase):
     def findings(self, text, profile="standard"):
         return lint.structural_lint(text, lint.Settings(), None, profile=profile)
 
-    def test_complete_four_section_draft_is_not_capped(self):
+    def test_block_draft_has_no_length_cap(self):
+        # The 1,800-character cap belongs to the bilingual-JSON profile only;
+        # studio block drafts have no length cap .
         draft = production_draft()
-        self.assertGreater(len(draft), 1800)
         self.assertEqual(lint.detect_regime(draft), "block")
         self.assertNotIn("zh-overlength", [f.rule for f in self.findings(draft)])
         self.assertFalse(any(f.severity == "FAIL" for f in lint.lint(draft)))
+        import director_contract_lint as contract
+        self.assertEqual(contract.check_document(draft)[0], [])
+        # The studio block format has no length cap .
+        self.assertEqual(contract.check_document(overlong_draft())[0], [])
 
     def test_bilingual_extracted_zh_boundary(self):
         self.assertNotIn("zh-overlength", [f.rule for f in self.findings("字" * 1800, "bilingual-json")])

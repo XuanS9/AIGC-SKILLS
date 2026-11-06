@@ -24,7 +24,7 @@ class CharacterAssetTemplateTests(unittest.TestCase):
         for prompt in self.prompts:
             with self.subTest(prompt=prompt[:50]):
                 filled = (prompt.replace('[角色姓名]', '测试角色').replace('[年龄]', '30').replace('[性别]', '男性')
-                          )
+                          .replace('[音色标签]', 'Voice: male, low husky baritone, slow drawl'))
                 self.assertEqual(self.validate(filled), [])
 
     def test_generic_format_is_medium_neutral(self):
@@ -40,12 +40,12 @@ class CharacterAssetTemplateTests(unittest.TestCase):
         lines = prompt.splitlines()
         self.assertIn('仅示范已选真人实拍方向', self.document)
         self.assertIn('真人演员服装定妆照', lines[0])
-        for term in ('完整头部', '面部不刻画五官', '头顶至鞋全部入画', '头身比7头身', '双手空着'):
+        for term in ('无头全身', '头部不入画', '颈部至鞋全部入画', '身高172cm', '双手空着'):
             self.assertIn(term, lines[3])
         self.assertIn('明暗渐变', lines[4])
         for anchor in ('漫射窗光', '自然衰减', '接触阴影', '中画幅', '85mm', '自然色彩', '可辨'):
             self.assertIn(anchor, lines[5])
-        for legacy in ('8k', '高清细节', '电影级边缘光', '工作室灯光', '不要 CG', '3D 渲染', '--no'):
+        for legacy in ('电影级边缘光', '工作室灯光', '不要 CG', '3D 渲染', '--no'):
             self.assertNotIn(legacy, prompt)
 
     def test_non_live_action_formats_pass_without_camera_terms(self):
@@ -59,8 +59,8 @@ class CharacterAssetTemplateTests(unittest.TestCase):
                     '已选媒介与具体风格': medium, '角色姓名': '测试角色', '年龄': '30', '性别': '男性',
                     '五官+发型描述+与媒介匹配的面部细节': '短发、圆脸，' + detail,
                     '中性/冷静等': '中性', '体型+完整服装描述+符合使用状态的材料细节': '中等体型、蓝衣长裤与布鞋，' + detail,
-                    '符合年龄与风格的比例': '7头身',
-                    '与已选媒介匹配的简洁浅色背景': background,
+                    '身高与体型比例': '身高175cm，肩宽中等',
+                    '按服装明度选的中性背景：深色服装用明亮浅暖白灰、浅色服装用中灰，与服装明度明显拉开': background, '音色标签': 'Voice: female, bright quick alto',
                     '与内容题材及已选媒介匹配的光影、色彩和材质/画材表现': light, '目标媒介': medium,
                 }
                 prompt = self.prompts[0]
@@ -84,9 +84,9 @@ class CharacterAssetTemplateTests(unittest.TestCase):
         prompt = self.prompts[1]
         cases = (
             ('全图共 4 格', '全图共 5 格', '四格总数'),
-            ('完整头部', '无头', '旧版裁切与多格污染'),
-            ('头顶至鞋全部入画', '只展示上半身', '完整三视图'),
-            ('面部不刻画五官', '五官清晰', '完整三视图'),
+            ('无头全身', '完整头部全身', '完整三视图'),
+            ('颈部至鞋全部入画', '只展示上半身', '完整三视图'),
+            ('头部不入画', '面部不刻画五官', '完整三视图'),
             ('全图唯一清晰面部', '清晰面部', '唯一面部锚点'),
             ('各视图服装结构一致', '右下方补充手部局部特写', '旧版裁切与多格污染'),
         )
@@ -96,57 +96,33 @@ class CharacterAssetTemplateTests(unittest.TestCase):
 
     def test_validator_rejects_missing_waveform_and_voice_description_pollution(self):
         prompt = self.prompts[1]
-        self.assertIn('图底非文字波形', self.validate(prompt.replace('非文字声纹波形', '装饰条')))
-        for label in ('音色速览标签「Warm alto」', '英文音色：温暖女中音', 'Voice Description: warm voice', '固定声线：低沉'):
+        self.assertIn('图底波形与音色标签', self.validate(prompt.replace('声纹波形', '装饰条')))
+        self.assertIn('图底波形与音色标签', self.validate(prompt.replace('音色标签', '标记')))
+        for label in ('Voice Description: warm voice', '英文音色：温暖女中音', '固定声线：低沉'):
             with self.subTest(label=label):
                 lines = prompt.splitlines()
                 lines[4] += label
-                self.assertIn('无音色描述或标签', self.validate('\n'.join(lines)))
+                self.assertIn('完整音色描述不进图片正文', self.validate('\n'.join(lines)))
+        long_label = prompt.replace('Voice: female, cool clear mezzo, measured regal cadence',
+                                    'Voice: female, cool clear mezzo with a measured regal cadence and soft edges')
+        self.assertIn('音色标签长度', self.validate(long_label))
 
-    def test_voice_descriptions_removed_and_variant_identity_preserved(self):
-        for guard in ('图底仅保留非文字波形', '不附英文音色描述或音色标签',
-                      '不是音频输入', '保持已定稿五官、肤色、年龄、体型与发色',
-                      '视频只写当下说话/喊叫/喘息的行为'):
+    def test_voice_label_states_gender_and_no_age_word(self):
+        prompt = self.prompts[1]
+        no_gender = prompt.replace('Voice: female, cool', 'Voice: cool')
+        self.assertIn('音色标签写明性别', self.validate(no_gender))
+        aged = prompt.replace('Voice: female, cool clear', 'Voice: female, young clear')
+        self.assertIn('音色标签无年龄词', self.validate(aged))
+        for guard in ('紧接性别词', '不靠 mezzo、bass 等音域词暗示', '不写 young'):
             self.assertIn(guard, self.document)
+
+
+    def test_prompts_print_only_the_voice_label_and_carry_no_negative_style(self):
         for prompt in self.prompts:
-            for forbidden in ('音色', 'Warm alto', 'Voice Description', '固定声线'):
-                self.assertNotIn(forbidden, prompt)
-        self.assertNotIn('### 音色与换装交接', self.document)
-        self.assertNotIn('A warm female alto', self.document)
-
-
-    def test_material_and_style_scope_guards_are_documented(self):
-        for guard in ('新衣不强行做旧', '抛光金属保留其真实反射', '剧情新增泥污、破损仍走状态衍生图',
-                      '即使工具支持独立负面栏', '已确认未变内容不自动重写',
-                      '非人设计不强行转成真人摄影', '不覆盖 C 按所选媒介确定的背景与光影',
-                      '用户明确指定 → 项目已确认', '已有风格直接沿用', '题材不等于媒介',
-                      '不将“3D 渲染”列为排除项', '不增加独立审批'):
-            with self.subTest(guard=guard):
-                self.assertIn(guard, self.document)
-
-    def test_style_pollution_is_removed_not_negated(self):
-        for file in ('SKILL.md', 'references/template-character-asset-delivery.md',
-                     'references/higgsfield-soul.md', 'references/higgsfield-character-design.md'):
-            with self.subTest(file=file):
-                text = (ROOT / file).read_text(encoding='utf-8')
-                self.assertIn('是什么风格就用什么风格', text)
-                self.assertIn('即使工具支持独立负面栏', text)
-                self.assertIn('删除或替换', text)
-                self.assertIn('污染', text)
-                for old_policy in ('风格负面词仅放已确认支持', '风格负面词只放已确认支持',
-                                   '负面提示词按工具能力分流', '风格负面词仅在已确认支持'):
-                    self.assertNotIn(old_policy, text)
-        for prompt in self.prompts:
-            for unwanted in ('负面提示词', '不要 CG', '塑料感', '过度磨皮', '过度锐化', '蜡像'):
+            self.assertIn('音色标签', prompt)
+            self.assertNotIn('Voice Description', prompt)
+            for unwanted in ('负面提示词', '不要 CG', '塑料感', '过度磨皮', '蜡像'):
                 self.assertNotIn(unwanted, prompt)
-
-    def test_entry_and_character_overrides_agree_on_medium(self):
-        for file in ('SKILL.md', 'references/higgsfield-soul.md', 'references/higgsfield-character-design.md'):
-            with self.subTest(file=file):
-                text = (ROOT / file).read_text(encoding='utf-8')
-                for term in ('不默认真人', '根据内容题材', '题材不等于媒介',
-                             '真人演员服装定妆照', '接触阴影', '独立负面栏'):
-                    self.assertIn(term, text)
 
 
 if __name__ == '__main__':

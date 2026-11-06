@@ -1,293 +1,249 @@
-# Higgsfield Character Design — Story Bible
+# Higgsfield 角色设计：故事圣经（Higgsfield Character Design — Story Bible）
 
-At the video handoff, map the locked premise, world, character objectives, story spine and visual DNA into [shared director planning](narrative-planning.md). The preparation steps below organize development; they are not a mandatory count of video stages. Preserve approved identity, goals and ending as the scene, acting and model modules derive events, shots and durations.
+交接到视频时，把锁定的前提、世界、角色目标、故事脊柱和视觉 DNA 映射进 [共享导演规划](narrative-planning.md)。下面的准备步骤用于组织开发；它们不是必须的视频阶段数。在场景、表演和模型模块推出事件、镜头和时长时，保留已批准的身份、目标和结局。
 
-The rest of this skill library answers *"how do I prompt this?"* This skill answers the question upstream of it: *"what am I prompting, and why this and not generic AI slop?"* It is the pre-production layer — premise, world, character, story, and a locked visual style — that you build **before** writing a single generation prompt, then hand off to `higgsfield-prompt` and the model guides.
+这套技能库的其余部分回答“*这个怎么写提示词？*”。本模块回答它上游的问题：“*我在给什么写提示词，为什么是这个、而不是泛泛的 AI 劣质内容？*”它是前期制作层：前提、世界、角色、故事和一套锁定的视觉风格，在写任何一条生成提示词**之前**搭好，然后交给 `higgsfield-prompt` 和模型指南。
 
-> **Attribution.** The framework, worksheet structure, and the "world first" method are adapted from Higgsfield's official *Character Design* materials by **@vavavinca**. We reuse the *schemas and method*; all examples here are original. Credit Vinca when sharing.
+> **出处。**框架、工作表结构和“世界优先”的方法改编自 Higgsfield 官方的 *Character Design* 资料，作者 **@vavavinca**。我们复用的是*结构和方法*；这里的所有示例都是原创。分享时请注明 Vinca。
 
-## QUICK FACTS
-*Routing aids — read the linked sections for the actual method.*
-- **World first, always.** Lock the world before you cast a character; the world is the gravity that shapes who they have to become [→](#the-method-world-first)
-- Six steps, each locks an output you do not revisit: Premise → World → Character → Story Spine → Style Sheet → hand-off [→](#the-method-world-first)
-- The flagship artifact is the **9-Question Character Sheet** — thematic role, external/internal goal, psychological/moral need, wound, spark, silhouette, contradiction [→](#step-3--character-9-questions--the-web)
-- The strongest anti-slop tool is the **Forbidden List** in the Style Sheet — naming what the world is NOT is often more useful than the palette [→](#step-5--style-sheet-visual-dna--forbidden-list)
-- Specificity beats adjectives: if *any* character could say it, it's a stereotype; keep asking **"why?"** until the answer surprises you [→](#anti-generic-drills)
-- Fillable worksheets live in the six `template-*.md` character worksheets listed below — hand them to the user or fill them together [→](#templates)
-- Construction laws for the sheet as an artifact: **plain grey background** · creature sheets get **two close-ups (mouth open + closed)** · the **face-lock crop** · a **size-ref frame** for scale between two subjects [FIELD] [→](#sheet-construction-laws)
-- Once the character **looks** right, don't jump to scenes — run a **screen test**: casting read → role options → playable lines → voice triggers → one audition prompt [EMPIRICAL] [→](#screen-test--audition)
-- This skill produces inputs; it does **not** generate. Hand the locked Visual DNA + character sheet to `higgsfield-prompt` [→](#step-6--hand-off-to-generation)
+## 速查（QUICK FACTS）
+*路由辅助：实际方法见链接章节。*
+- **永远先世界。**选角之前先锁定世界；世界是塑造角色必须成为谁的引力 [→](#方法世界优先the-method-world-first)
+- 六步，每步锁定一个不再回头改的产出：前提 → 世界 → 角色 → 故事脊柱 → 美术设定 → 交接 [→](#方法世界优先the-method-world-first)
+- 核心产物是**九问角色表**：主题角色、外在/内在目标、心理/道德需求、创伤、火花、剪影、矛盾 [→](#第-3-步角色九问--关系网step-3--character-9-questions--the-web)
+- 最强的反劣质工具是美术设定里的**排除清单**：说清世界**不是**什么，常常比配色更有用（工作室写法见下） [→](#第-5-步美术设定视觉-dna--排除清单step-5--style-sheet-visual-dna--forbidden-list)
+- 具体胜过形容词：*任何*角色都能说的话就是刻板印象；一直问**“为什么？”**直到答案让你意外 [→](#反泛泛练习anti-generic-drills)
+- 可填写的工作表在下面列出的六个 `template-*.md` 角色工作表里：交给用户或一起填 [→](#模板templates)
+- 设定图作为产物的构建规律：**中性背景** · 生物设定图配**两张头部近景（张嘴 + 闭嘴）** · **面部锁定裁切** · 两个主体之间用**尺寸参照帧** [FIELD] [→](#设定图构建规律sheet-construction-laws)
+- 角色**看起来**对了之后，别直接跳到场景：先做一次**试镜**：选角解读 → 角色选项 → 可演的台词 → 声音触发 → 一条试镜提示词 [EMPIRICAL] [→](#试镜screen-test--audition)
+- 本模块产出输入；它**不**生成。把锁定的视觉 DNA 和角色表交给 `higgsfield-prompt` [→](#第-6-步交接到生成step-6--hand-off-to-generation)
 
 ---
 
-## The method: world first
+## 方法：世界优先（The method: world first）
 
-A world is **a system of constraints**. Decide what the world will not let a character do, and you have decided who they have to become. So the order is not negotiable — each step locks an output the later steps depend on, and you don't loop back to relitigate it:
+世界是**一个约束系统**。决定世界不让角色做什么，你就决定了角色必须成为谁。所以顺序不容商量：每一步锁定一个后面步骤依赖的产出，你不会回头重新争论它：
 
 ```
-1. PREMISE      one arguable sentence, no characters yet
-2. WORLD        six dimensions, filled before anyone is cast
-3. CHARACTER    9 questions + a relationship web
-4. STORY SPINE  Causal beats as needed, "therefore / but", never "and then"
-5. STYLE SHEET  palette + lighting + materials + a FORBIDDEN list (the Visual DNA)
-6. HAND OFF     feed the locked sheets into higgsfield-prompt + a model
+1. 前提        一句可争论的话，先不写角色
+2. 世界        六个维度，选任何人之前填完
+3. 角色        九个问题 + 一张关系网
+4. 故事脊柱    按需要的因果节拍，“所以 / 但是”，绝不用“然后”
+5. 美术设定    配色 + 光照 + 材质 + 排除清单（视觉 DNA）
+6. 交接        把锁定的表交给 higgsfield-prompt + 一个模型
 ```
 
-The failure mode this prevents is the common one: open Higgsfield → generate a cool image → realize there's no story or consistency → quit. Build the bible first; the image is the *receipt*, not the recipe.
+它防止的是那种常见的失败：打开 Higgsfield → 生成一张很酷的图 → 发现没有故事、也没有一致性 → 放弃。先搭好圣经；图像是*收据*，不是*配方*。
 
-If the user arrives mid-stream ("I already have a character"), don't force them back to step 1 — locate where they are, check the upstream outputs exist (a character with no world is the usual gap), and fill the missing layer.
-
----
-
-## Step 1 — Premise
-
-One sentence, **no character names**. It states an arguable claim about people or the world, not a plot. Four fields, then a pressure test (worksheet: `template-premise.md`).
-
-1. **Theme statement** — a claim, not a logline. *"Belonging is something you build, not something you're owed."*
-2. **What it argues** — the testable belief. *"People who wait to be chosen stay invisible."*
-3. **The counter-argument** — the opposing truth the story must honor, *or the theme is propaganda.* *"Some people are kept out no matter what they build."*
-4. **Emotional promise** — one word + one line. *"Defiance — the thrill of a door forced open."*
-
-**Pressure test (all five):** compresses to ONE sentence (no "and", no semicolon) · contains NO character names · is arguable · has a real counter-argument · names a feeling, not just an event.
+如果用户中途进来（“我已经有一个角色了”），不要逼他回到第 1 步：找到他在哪，检查上游产出是否存在（有角色没世界是常见的缺口），补上缺的那一层。
 
 ---
 
-## Step 2 — World Sheet (six dimensions)
+## 第 1 步：前提（Step 1 — Premise）
 
-Fill **all six** before casting anyone (worksheet: `template-world-sheet.md`). Each answer must be specific and must not change when characters arrive.
+一句话，**不写角色名**。它陈述一个关于人或世界的可争论主张，不是情节。四个字段，然后一次压力测试（工作表：`template-premise.md`）。
 
-| Dimension | The question it answers | Original example |
+1. **主题陈述**：一个主张，不是梗概。*“归属感要靠自己建立，不是别人欠你的。”*
+2. **它在论证什么**：可检验的信念。*“等着被选中的人始终看不见。”*
+3. **反方论点**：故事必须正视的相反事实，*否则主题就成了宣传。**“有些人不管建起什么都被挡在门外。”*
+4. **情感承诺**：一个词加一句话。*“反抗：一扇门被硬推开的快感。”*
+
+**压力测试（五项全过）：**能压成一句话（不用“和”，不用分号）· 不含任何角色名 · 可争论 · 有真正的反方论点 · 写出一种感受，而不只是一件事。
+
+---
+
+## 第 2 步：世界设定表（六个维度）（Step 2 — World Sheet (six dimensions)）
+
+选任何人之前把**六项全部**填完（工作表：`template-world-sheet.md`）。每个答案都要具体，并且角色出场后不能改。
+
+| 维度 | 它回答的问题 | 原创示例 |
 |-----------|-------------------------|------------------|
-| **Physical** | Look, sound, smell, climate, geography, architecture | "A tide-city built on stilts; the streets flood twice a day and everyone owns a boat before they own shoes." |
-| **Social** | Who has power, how it passes | "Status is measured in dry land. The few who own ground above the tideline never have to row." |
-| **Economic** | Currency, what's scarce, what people kill for | "Fresh water is the real currency; salt ruins everything, so sealed jars are inheritance." |
-| **Ideological** | What's sacred, shameful, unspoken | "Drowning is shameful — it means you didn't read the water. Nobody says a drowned name aloud." |
-| **Historical** | What everyone remembers or has forgotten | "The Great Surge took the old capital a century ago; half the city pretends it's coming back." |
-| **Sensory** | The daily textures the body knows | "Rope-burned palms, the green smell of low tide, lantern oil, the constant give of a floor that moves." |
+| **物理** | 外观、声音、气味、气候、地理、建筑 | “一座建在高脚桩上的潮汐城；街道一天淹两次，人人先有船再有鞋。” |
+| **社会** | 谁掌权，权力怎么传递 | “地位按干地来算。少数在潮线以上有地的人，从来不用划船。” |
+| **经济** | 货币、什么稀缺、人们为什么拼命 | “淡水才是真正的货币；盐毁掉一切，所以密封的罐子就是遗产。” |
+| **观念** | 什么神圣、什么可耻、什么不能说 | “淹死是可耻的：说明你读不懂水。没人大声说出一个淹死的名字。” |
+| **历史** | 大家都记得的事，或忘掉的事 | “一百年前大潮吞了旧都；半座城假装它还会回来。” |
+| **感官** | 身体熟悉的日常质感 | “被绳子磨烂的手掌，退潮时的绿腥味，灯油，脚下永远微微晃动的地板。” |
 
-**Done check:** read it aloud — does it sound like *one* world (no contradictions)? Is every answer specific? Will it stay true once characters walk in? Lock it. See also [Hard vs soft worldbuilding](#hard-vs-soft-worldbuilding) for how knowable the rules should be.
-
----
-
-## Step 3 — Character (9 questions + the web)
-
-### The 9-Question Character Sheet
-The framework's flagship artifact (worksheet: `template-9-question-character-sheet.md`). Header: name, age, world, archetype. Then, in order — vague answers are the enemy; only *this* character should be able to give them:
-
-1. **Thematic role** — what they prove or disprove about the premise. *"That belonging can be built — he builds a crew out of other discards."*
-2. **External goal** — a specific, currently-impossible want. *"Buy the deed to a square meter of dry land before the next Surge season."*
-3. **Internal goal** — what reaching it would mean about themselves. *"Proof he's worth keeping, not just useful to keep around."*
-4. **Psychological need** — the flaw that hurts THEM. *"He treats every kindness as a debt he has to discharge before it's used against him."*
-5. **Moral need** — the flaw that hurts OTHERS. *"He recruits people for their use, then can't admit when he's done using them."*
-6. **Wound** — the specific past event that taught them the world hurts. *"At nine, watched his mother trade her water ration to a landlord who let her drown anyway."*
-7. **Spark** — the specific past event that taught them what to become. *"A stranger pulled him out of the tide and asked his name — the first person who wanted it."*
-8. **Silhouette** — what their shape says across a room. *"Always half-crouched at a doorway, weight on the back foot, ready to bolt or bargain."*
-9. **Contradiction** — two things that don't match. *"Pretends he travels light. Keeps a waterlogged ledger of everyone who ever did him a favor."*
-
-### The Character Web
-Characters reveal themselves in friction, never alone (worksheet: `template-character-web.md`). Map four spokes around the hero — **Opponent** (the primary opposite), **Ally** (who they lean on), **Mentor** (who taught them), **Foil** (the variation that exposes them). Characters can move *through* roles over the story (a mentor who becomes an opponent is a person; one stuck in a single bubble is a function). Diagnostic: if you can take one spoke away and the hero says the same line in every scene, the web is too thin.
+**完成检查：**读出来，它像*一个*世界吗（没有矛盾）？每个答案都具体吗？角色出场后它还成立吗？锁定。另见 [硬设定与软设定](#硬设定与软设定hard-vs-soft-worldbuilding)：规则应该有多可知。
 
 ---
 
-## Step 4 — Story Spine
+## 第 3 步：角色（九问 + 关系网）（Step 3 — Character (9 questions + the web)）
 
-Number the causal beats needed by the story (worksheet: `template-story-spine.md`). The original 10–20-beat development scaffold is available for suitable longer stories; it is not a minimum or maximum for a scene. **Beat format:**
+### 九问角色表（The 9-Question Character Sheet）
+框架的核心产物（工作表：`template-9-question-character-sheet.md`）。表头：姓名、年龄、世界、原型。然后按顺序：含糊的答案是敌人；只有*这个*角色才能这样回答：
+
+1. **主题角色**：他证明或推翻前提里的什么。*“归属感可以建立：他用别的弃儿组起一支队伍。”*
+2. **外在目标**：一个具体的、眼下做不到的愿望。*“在下一个大潮季之前，买下一平方米干地的地契。”*
+3. **内在目标**：达成它对他自己意味着什么。*“证明他值得被留下，而不只是留着有用。”*
+4. **心理需求**：伤害**他自己**的缺陷。*“他把每一份善意都当成一笔债，必须在被拿来对付他之前还清。”*
+5. **道德需求**：伤害**别人**的缺陷。*“他按用处招人，用完了却不肯承认。”*
+6. **创伤**：让他认定世界会伤人的那件具体往事。*“九岁时，看着母亲把她的淡水配给换给一个地主，地主还是让她淹死了。”*
+7. **火花**：让他知道自己要成为什么的那件具体往事。*“一个陌生人把他从潮水里拉出来，问了他的名字：第一个想知道他名字的人。”*
+8. **剪影**：他的轮廓在房间另一头说明了什么。*“总是半蹲在门口，重心在后脚，随时准备逃或谈价钱。”*
+9. **矛盾**：两件对不上的事。*“装作自己轻装上路。却留着一本泡过水的账本，记着每一个帮过他的人。”*
+
+### 人物关系网（The Character Web）
+角色在摩擦中显露自己，从不单独显露（工作表：`template-character-web.md`）。在主角周围画四条辐条：**对手**（最主要的对立面）、**盟友**（他依靠的人）、**导师**（教过他的人）、**陪衬**（用对比暴露他的变体）。角色可以在故事里*穿过*几种身份（变成对手的导师是一个人；困在一个气泡里的是一个功能）。诊断：拿掉一条辐条后，主角每场戏都说同一句话，说明关系网太薄。
+
+---
+
+## 第 4 步：故事脊柱（Step 4 — Story Spine）
+
+给故事需要的因果节拍编号（工作表：`template-story-spine.md`）。原来 10–20 个节拍的开发骨架适用于合适的较长故事；它不是一场戏的下限或上限。**节拍格式：**
 
 ```
-Beat N: [character] [does / discovers / loses] [thing]. Result: [the next problem].
+节拍 N：[角色] [做了 / 发现 / 失去] [什么]。结果：[下一个问题]。
 ```
 
-Connect beats with **"therefore"** or **"but"** — never "and then" (that's a list, not a story). If the story contains a **Midpoint Turn**, mark the beat that flips the premise against the lead; otherwise mark it not applicable. Stop when the intended progression is complete. Do not invent events or reversals to fill the worksheet, and map beats to shots by staging needs rather than one shot per beat.
+用**“所以”**或**“但是”**连接节拍，绝不用“然后”（那是清单，不是故事）。故事里有**中点转折**时，标出让前提反过来对付主角的那个节拍；没有就标不适用。预定的推进完成就停。不要为了填满工作表编造事件或反转；按调度需要把节拍映射到镜头，而不是一个节拍一个镜头。
 
 ---
 
-## Step 5 — Style Sheet (Visual DNA + Forbidden List)
+## 第 5 步：美术设定（视觉 DNA + 排除清单）（Step 5 — Style Sheet (Visual DNA + Forbidden List)）
 
-Lock the look once, then inject it verbatim into every prompt (worksheet: `template-style-sheet.md`). Two ways to build it: **(A)** let the model draft it from the World Sheet (the worksheet carries a ready-to-paste prompt), or **(B)** fill it by hand. Six constants:
+画面锁定一次，然后用到每条提示词里（工作表：`template-style-sheet.md`）。两种搭法：**（A）**让模型从世界设定表起草，或 **（B）**手工填写。六个常量：
 
-- **Palette** — 5–7 hex codes (`#1B3A4B`, `#6FA8A0`, …). Inject the hex, don't describe colors in prose.
-- **Lighting** — the recurring light logic ("flat overcast noon, warm lantern pools after dark").
-- **Materials** — what the world is made of ("wet rope, salt-bleached wood, hammered tin, oilcloth").
-- **Juxtaposition** — one familiar + new pairing that fixes the world's identity ("a child's birthday party on a half-sunk rooftop").
-- **Age & proportion** — the build/era language for characters.
-- **Real-life refs** — 2–3 actors / paintings / films for the look (treat as *look* references, not identity to copy).
+- **配色**：5–7 个 hex 值（`#1B3A4B`、`#6FA8A0`……）。需要精确时写 hex，不用文字描述颜色。
+- **光照**：反复出现的光照逻辑（“平淡的阴天正午，入夜后一片片暖色灯光”）。
+- **材质**：世界是用什么做的（“湿绳、被盐漂白的木头、锤打的锡、油布”）。
+- **并置**：一个熟悉 + 新鲜的组合，定下世界的身份（“在半沉的屋顶上办生日派对”）。
+- **年龄与比例**：角色的体格/年代语言。
+- **真实参考**：2–3 个演员 / 画作 / 影片作为画面参考（当作*画面*参考，不是要复制的身份）。按 [电影视觉参考匹配](higgsfield-style.md#电影视觉参考匹配) 拆进项目视觉总纲；复制正文不写片名或演员名。
 
-**The Forbidden List is the most valuable field** — name what the world is **NOT**. It's often more useful than the palette and it's your strongest anti-slop lever:
+**排除清单是最有价值的字段**：说清世界**不是**什么。它常常比配色更有用，也是最强的反劣质杠杆：
 
-> *NO generic flooded-city teal-and-orange. NO neon. NO pristine surfaces — everything is salt-scarred. NO clear blue sky. NO photoreal celebrity faces. NO pure-black shadows; use deep indigo instead.*
+> *不要泛泛的淹没城市青橙色。不要霓虹。不要崭新的表面：一切都有盐蚀痕迹。不要晴朗的蓝天。不要照片级的名人脸。不要纯黑阴影，改用深靛蓝。*
 
-This Visual DNA — hex palette + forbidden list — is what gets pasted into prompts to keep a series consistent. See `higgsfield-soul` (Soul HEX) and `higgsfield-style` for how the color lock is applied at generation time.
-
----
-
-## Step 6 — Hand off to generation
-
-This skill produces inputs; it does not generate. When the bible is locked, route forward:
-
-- **The prompt** → `higgsfield-prompt` (MCSLA structure). Inject the Visual DNA (hex + forbidden list) verbatim, and pull the subject from the character's Silhouette + Contradiction, the action from the relevant Story Spine beat.
-- **The model** → `model-guide.md` / `image-models.md`. For a character who recurs across many shots, train a **Soul ID / Soul Cast** identity (`higgsfield-soul`) rather than re-rolling one-offs; for a single hero image that won't reappear, a one-off generation is fine.
-- **Multi-shot sequences** → `higgsfield-cinema` (Cinema Studio) for shot-by-shot continuity; the Story Spine beats become the shot list.
-- **Generic prompts get generic characters.** A thin prompt ("a young man's portrait, cyberpunk") cannot recover what the sheet would have supplied — the locked sheet is the difference between a function and a person on screen.
-
-### Ship the bible as a reusable artifact, not a paste
-
-`[DEMO — Joey story-bible-builder, 2026-08-16]` `[UNPROVEN HERE]` A bible that lives in a
-chat transcript gets re-explained every session, drifts a little each time it is retyped,
-and is the reason "the same" character comes back subtly different a week later. **Write it
-out once as a single dense canon document and reuse the file** — one artifact that every
-later prompt reads from, rather than context reassembled from memory.
-
-Two ways it gets used, and they want slightly different shapes:
-
-1. **Standalone canon reference** — you consult it while writing prompts. Optimised for a
-   human reading it.
-2. **Context source for prompt work** — it is loaded alongside the prompt so the world,
-   characters, voices, tone and production rules are already known. Optimised for
-   retrieval: short labelled sections, one fact per line, no narrative throat-clearing.
-
-Keep it with the user's project materials at a user-specified path. For anything recurring, give each character a **voice lock**
-and a **movement lock** — one line each, fixed wording, reused verbatim — so speech register
-and physical signature stay pinned the way the Visual DNA pins the look.
-
-**Build it by interview, not by questionnaire dump.** Scope first (how big is this — one
-short, or a series?), then the spine (premise, thesis, timeline, aesthetic), then factions,
-locations and world rules, then characters, then relationships and ensemble dynamics, then
-the structural engines, then the production rules. Ask in that order and each answer
-constrains the next; ask everything at once and you get a pile of unrelated facts that
-contradict each other three sections later.
-
-**Only build the part that is needed.** A single hero image does not need a faction table.
-Scope the interview to the work in front of you and leave the rest unbuilt — an unfinished
-bible is normal, an invented one is not.
+**工作室写法：**排除清单是设定阶段的思考工具，记在项目美术设定里；写进提示词时改成正向的目标状态（“一切表面带盐蚀痕迹”“阴影是深靛蓝”“天空是低垂的灰云”），不把“不要”清单抄进复制正文（见 `negative-constraints.md` § The words you write are the words you summon）。视觉 DNA（hex 配色 + 转写成正向的排除项）用来保持系列一致。生成时怎样应用颜色锁定见 `higgsfield-style`。
 
 ---
 
-## Sheet Construction Laws
+## 第 6 步：交接到生成（Step 6 — Hand off to generation）
 
-`[FIELD — AI-vs-VFX, 2026-08-08]` The sections above decide **what** is on the sheet. These
-are the construction laws for the sheet as an *artifact* — the flaws they prevent are the
-ones you otherwise pay for in every downstream generation that references it.
+本模块产出输入；它不生成。圣经锁定后，往下游走：
 
-**Plain grey background, always.** Not a set, not an environment, not a gradient. A sheet
-built on a busy background makes the downstream model decide which pixels are the character
-and which are the world, and that decision costs re-rolls. Grey is the credit-saver.
+- **提示词** → `higgsfield-prompt`（MCSLA 结构）。用上视觉 DNA，主体从角色的剪影 + 矛盾里取，动作从相应的故事脊柱节拍里取。工作室完整视频按块结构交付。
+- **模型** → `model-guide.md` / `image-models.md`。在很多镜头里反复出现的角色，做一张锁定的参考图（[角色资产交付规范](template-character-asset-delivery.md)），而不是一次次重掷；不会再出现的单张主图，单次生成就可以。
+- **多镜头段落** → `higgsfield-shotlist-director`；故事脊柱的节拍变成分镜表。
+- **泛泛的提示词得到泛泛的角色。**一条单薄的提示词（“一个男人的肖像，赛博朋克”）补不回角色表本该提供的东西：锁定的表，就是银幕上一个功能和一个人的区别。
 
-**Creature and non-human sheets carry two head close-ups: mouth open and mouth closed.**
-A creature detailed enough to be interesting is detailed enough to glitch between
-expressions — a jaw that reshapes the skull when it opens. Two close-ups at the same angle,
-one closed and one in a full roar, pin both extremes. The canonical layout is three panels:
-full body, head closed, head open.
+### 把圣经作为可复用的产物交付，而不是一段粘贴（Ship the bible as a reusable artifact, not a paste）
 
-**The face-lock crop.** A three-panel human sheet gives the model three faces to average —
-front full-body, back full-body, close-up — and at full-body scale the face is only a few
-dozen pixels, so averaging drags identity toward generic. **Crop the heads out of the
-full-body panels.** The full-body frames keep doing their real job (build, silhouette,
-wardrobe); the close-up becomes the single source of truth for the face.
+`[DEMO — Joey story-bible-builder, 2026-08-16]` `[UNPROVEN HERE]` 活在聊天记录里的圣经，每次会话都要重新解释，每次重打都漂移一点，这就是“同一个”角色一周后回来却微妙地不同的原因。**把它一次写成一份密集的正典文档，复用这个文件**：后面每条提示词都从这一个产物读取，而不是凭记忆重新拼装上下文。
 
-**Scale between two subjects needs its own asset.** Relative size is the first thing to
-drift and the last thing words can fix — "tiny compared to the enormous creature" returns a
-different size every generation, and worst on wides. Build a **size-ref frame**: merge the
-two character sheets plus a frame whose scale was right into one image showing them
-together, write the proportion in human-height comparisons ("wingspan as wide as twenty
-humans lying head to toe"), save it as its own named asset, and attach it to every shot
-containing both. Add the asymmetry lock — *if scale is uncertain, render the smaller
-subject smaller, never larger* — because an undersized subject reads as distance while an
-oversized one reads as fake.
+它有两种用法，需要的形态略有不同：
 
-**Fix a flawed sheet; don't rebuild it.** A warped logo or a colour cast on an otherwise
-good sheet is a one-line edit on the model that holds inputs best (Nano Banana 2), not a
-re-prompt: `change the logo to the one in image two`. Re-prompting re-rolls everything that
-was already right. Model routing per asset class: `image-models.md` § Routing by
-Asset Class.
+1. **独立的正典参考**：写提示词时翻看。为人阅读而优化。
+2. **提示词工作的上下文来源**：和提示词一起加载，让世界、角色、声音、基调和制作规则都已知。为检索而优化：短的带标签章节，每行一个事实，没有叙事铺垫。
+
+把它和用户的项目资料放在一起，路径由用户指定（工作室约定：`project.md` 与资产总表所在的项目工作区）。凡是反复出现的，给每个角色一条**声音锁定**和一条**动作锁定**：各一行，固定措辞，原样复用，这样说话语域和身体特征就像视觉 DNA 锁定画面一样被钉住。
+
+**靠访谈搭建，不靠一次倒出问卷。**先定范围（这有多大：一个短片，还是一个系列？），然后是脊柱（前提、论点、时间线、美学），然后是阵营、地点和世界规则，然后是角色，然后是关系和群戏动态，然后是结构引擎，最后是制作规则。按这个顺序问，每个答案约束下一个；一次全问，得到的是一堆互不相关、三节之后就相互矛盾的事实。
+
+**只搭需要的部分。**一张单独的主图不需要阵营表。把访谈范围限定在眼前的工作上，其余不搭：没搭完的圣经是正常的，编造出来的才不正常。
 
 ---
 
-## Screen Test / Audition
+## 设定图构建规律（Sheet Construction Laws）
 
-> **[EMPIRICAL — community workflow]** Adapted from a community casting-director system prompt. It works in the field; it is not a platform guarantee.
+`[FIELD — AI-vs-VFX, 2026-08-08]` 上面几节决定设定图上有**什么**。这些是把设定图当作*产物*的构建规律：它们防止的缺陷，否则你要在每一次引用它的下游生成里付出代价。
 
-The bible tells you who the character *is*; the generated stills tell you they *look* right. Neither tells you how they **move, speak, and react** — and that is what every scene generation you are about to pay for depends on. So before spending on real scenes, run one cheap audition video and watch the character *act*. Generate candidates, **test them in motion**, then lock the winner: consistent-looking is not the same as castable.
+**中性背景。**不是布景，不是环境。背景繁杂的设定图，会让下游模型自己决定哪些像素是角色、哪些是世界，这个决定要花重掷的钱。原资料写的是“永远用纯灰底”；**工作室规则**按 [角色资产交付规范](template-character-asset-delivery.md) 按服装明度选中性背景（深衣用明亮浅暖白灰、浅衣用中灰），保证轮廓从背景里跳出来；B/P 同理按主体明度选。
 
-Six steps, in order — the user chooses at step 5; never skip ahead to the final prompt:
+**生物和非人设定图配两张头部近景：张嘴和闭嘴。**细节丰富到有意思的生物，也丰富到会在表情之间出错：张嘴时下颌改变了头骨形状。同一角度的两张近景，一张闭着、一张大吼，钉住两个极端。标准版式是三格：全身、头部闭嘴、头部张嘴。
 
-1. **Casting read.** Interpret the locked character sheet as casting material, not lore: presence, playable age range, status, inner wound, external mask, likely voice, likely movement. Pull straight from the 9 questions — Silhouette and Contradiction do most of the work here.
-2. **Role options (3–6).** Offer contrasting role types the character could be cast as — lead, antagonist, mentor, tragic hero, villain-with-restraint, silent presence… Each option must state **what the audition has to prove** ("can he menace without raising his voice?"). An option with nothing to prove is not an option.
-3. **Three audition lines.** Real scene dialogue with subtext, implying an off-camera reader, each playable more than one way. **Not trailer narration, not lore recitation** — if it sounds like a voice-over, it cannot be *acted*.
-4. **Three voice triggers.** Each is **≤3 comma-separated qualities** ("authoritative, grief, controlled") — a *how*, never the spoken line itself. The three must contrast with each other, not be synonyms.
-5. **The user picks** one role + one line + one trigger (blending is allowed — the blend still obeys ≤3 qualities).
-6. **One final audition prompt, under 3500 characters.** Build a playable scene, not a showcase:
-   - **Simple setting** — the audition room, not the movie: one location, no spectacle competing with the face.
-   - **Camera:** MCU or locked-off eye-level, shallow depth of field. The frame holds still so the *performance* is what moves.
-   - **Acting spine:** objective, obstacle, tactic, emotional shift, and the subtext under the line.
-   - **Reaction beats and silence** — write the listening, not just the speaking.
-   - **At least one expressive vocal moment** (a stutter, a vocal crack, a whispered threat, a controlled shout) and **subtle physical acting** (blinks, gaze shifts, jaw tension) — muscle, not emotion labels.
-   - **Unresolved ending** — cut the take before the moment closes; resolution reads as trailer, open tension reads as acting.
-   - Finish with film grain + realistic skin, so you judge a performance, not a render.
+**面部锁定裁切。**三格的人物设定图给模型三张脸去平均：正面全身、背面全身、近景；而在全身尺度下脸只有几十个像素，平均会把身份拉向泛泛。**把全身格里的头裁掉。**全身格继续做它真正的工作（体型、轮廓、服装）；近景成为脸的唯一事实来源。工作室角色组板就是这样做的：唯一清晰面部特写 + 三个无头全身格。
 
-**Divergence rule:** if the user comes back and picks a *different role type*, rebuild the acting logic from scratch — new objective, new tactics, new beat pattern. A mentor read is not a villain read with softer adjectives; the same beats reworded is the audition-room version of slop.
+**两个主体之间的尺度需要单独的资产。**相对大小是最先漂移、文字最难修的东西：“跟巨大的生物比起来很小”每次生成都回来一个不同的大小，远景最糟。做一个**尺寸参照帧**：把两张角色设定图和一帧尺度对的画面合成一张图，展示两者在一起，用人体高度比较写出比例（“翼展相当于二十个人头脚相接躺成一排”），存为单独命名的资产，附到每个同时出现两者的镜头上。加上不对称锁定：*尺度不确定时，把较小的主体渲染得更小，绝不更大*，因为偏小的主体读起来是距离，偏大的读起来是假。工作室视频里另在 `[角色]` 写生物体长/翼展。
 
-### Worked mini-example (the tide-city fixer from Step 3)
-
-- **Casting read:** late 20s reading older; low status wearing borrowed confidence; mask of the indispensable broker over a wound of being kept only while useful; voice quick and transactional, dropping register when cornered; moves like his Silhouette — half-crouched at doorways, weight on the back foot.
-- **Role option — villain-with-restraint.** Must prove: he can threaten someone *while doing them a favor*, without ever raising his voice.
-- **Audition line:** *"You've still got both your water jars. That's not luck — that's me. So sit down, and let me tell you the second half of the favor."* (Playable warm or menacing; the off-camera reader is whoever owes him.)
-- **Voice trigger:** `quiet, transactional, barely controlled`.
-
-### Direct the takes, then lock the winner
-
-- **Facial direction:** for muscle-level control of the audition takes (the jaw tension, the asymmetric almost-smile), hand the beats to `higgsfield-facs.md` — AU codes, not emotion labels.
-- **After the audition:** when a take proves the character is castable, lock that winner's identity with `higgsfield-soul.md` (Soul ID / Soul Cast) so every real scene starts from the version that can act.
+**修有缺陷的设定图，别重建。**一张其他方面都好的设定图上，一个扭曲的标识或一层偏色，是在最能保住输入的模型（Nano Banana 2）上改一行的事，不是重新提示：`change the logo to the one in image two`。重新提示会把已经对的东西全部重掷。按资产类型选模型：`image-models.md` § Routing by Asset Class。
 
 ---
 
-## Anti-generic drills
+## 试镜（Screen Test / Audition）
 
-Three fast tests for killing slop, usable at any step:
+> **[EMPIRICAL — community workflow]** 改编自一个社区的选角导演系统提示词。它在实践中有效；不是平台保证。
 
-- **Always Ask Why.** Repeat "why?" until the answer surprises *you*. "He's guarded." Why? "He was betrayed." Why does that still run him? "Because the one who betrayed him also taught him everything." A stereotype is any line *any* character could say; yours is the line only this one could.
-- **One Wound, Two Characters.** The same wound produces opposite people. "Abandoned as a child" → one runs toward every relationship and clings; another refuses to need anyone. Pick the *less* obvious reaction.
-- **Eyes Wide Shut / Silhouette test.** Can you recognize the character from shape alone, with no face? If the silhouette doesn't read (warrior / mystic / rogue), the design is generic — fix it before generating.
+圣经告诉你角色*是*谁；生成的静帧告诉你他*看起来*对。两者都没告诉你他怎么**动、说话、反应**，而你即将付钱的每一次场景生成都依赖这一点。所以在花钱拍真正的场景之前，先跑一条便宜的试镜视频，看角色*表演*。生成候选，**在运动中测试**，然后锁定最好的那个：看起来一致，不等于可以选用。
+
+六步，按顺序：用户在第 5 步做选择；绝不跳到最后的提示词：
+
+1. **选角解读。**把锁定的角色表当作选角材料来读，而不是设定资料：气场、可演的年龄范围、地位、内心创伤、外在面具、可能的声音、可能的动作。直接从九个问题里取：剪影和矛盾做了大部分工作。
+2. **角色选项（3–6 个）。**给出这个角色可以被选去演的、相互对比的角色类型：主角、反派、导师、悲剧英雄、克制的反派、沉默的存在……每个选项都必须写明**试镜要证明什么**（“他能不提高嗓门就让人害怕吗？”）。没有要证明的东西的选项不算选项。
+3. **三句试镜台词。**带潜台词的真实场景对白，暗示画外有一个对戏的人，每句都能演出不止一种方式。**不是预告片旁白，不是背设定**：听起来像画外音的东西，没法*演*。
+4. **三个声音触发。**每个**不超过 3 个用逗号分隔的特质**（“权威，悲痛，克制”）：是*怎么说*，绝不是说出的台词本身。三个必须相互对比，不能是近义词。
+5. **用户选择**一个角色 + 一句台词 + 一个触发（允许混合，混合后仍遵守不超过 3 个特质）。
+6. **一条最终试镜提示词。**原资料建议 3500 字符以内；工作室块结构稿不设字数上限，按 [模板](template-general-director-2-5.md) 写足。搭一场可演的戏，而不是展示：
+   - **简单的环境**：试镜房间，不是电影：一个地点，没有和脸抢戏的奇观。
+   - **运镜：**中近景或锁定的平视，浅景深。画面不动，让*表演*成为动的东西。
+   - **表演脊柱：**目标、障碍、策略、情绪转变，以及台词下面的潜台词。
+   - **反应节拍和沉默**：写出倾听，而不只是说话。
+   - **至少一个有表现力的声音时刻**（结巴、破音、低语的威胁、克制的喊）和**细微的身体表演**（眨眼、视线转移、下颌紧张）：写肌肉，不写情绪标签。台词写进 `[声音]` 的计时行。
+   - **不收尾的结局**：在这一刻闭合之前切掉；收尾读起来像预告片，开放的张力读起来像表演。
+   - 按项目已确认的媒介写质感（真人方向可加胶片颗粒和真实皮肤），这样你评判的是表演，而不是渲染。
+
+**分歧规则：**用户回来选了一个*不同的角色类型*时，从头重建表演逻辑：新的目标、新的策略、新的节拍模式。导师的解读不是换了更柔和形容词的反派解读；同样的节拍换个说法，就是试镜间版本的劣质内容。
+
+### 小示例（第 3 步的潮汐城掮客）（Worked mini-example (the tide-city fixer from Step 3)）
+
+- **选角解读：**看起来比实际年纪大；低地位，却穿着借来的自信；在“只在有用时才被留下”的创伤上，戴着“不可或缺的掮客”面具；声音快而精于交易，被逼到角落时压低音区；动起来像他的剪影：半蹲在门口，重心在后脚。
+- **角色选项：克制的反派。**必须证明：他能*一边帮人一边*威胁对方，而从不提高嗓门。
+- **试镜台词：***“You've still got both your water jars. That's not luck — that's me. So sit down, and let me tell you the second half of the favor.”*（可以演得温暖或吓人；画外对戏的人是欠他人情的那个。）
+- **声音触发：**`quiet, transactional, barely controlled`。
+
+### 指导素材，然后锁定最好的那条（Direct the takes, then lock the winner）
+
+- **面部指导：**要对试镜素材做肌肉级控制（下颌的紧张、不对称的似笑非笑），把节拍交给 `higgsfield-facs.md`：写 AU 代码，不写情绪标签。
+- **试镜之后：**一条素材证明角色可以选用时，把这个胜出版本的身份锁定成参考图（[角色资产交付规范](template-character-asset-delivery.md)），让每一场真正的戏都从这个会演戏的版本开始。
 
 ---
 
-## Hard vs soft worldbuilding
+## 反泛泛练习（Anti-generic drills）
 
-How knowable should the world's rules be? Decide with three questions (worksheet note in `template-world-sheet.md`):
+三个快速消灭劣质内容的测试，任何步骤都能用：
 
-1. Does the story depend on the audience *mastering* the rules? Yes → **hard** (rules are explicit and consistent, e.g. heist/system stories).
-2. Do you want the audience feeling smart or feeling *wonder*? Smart → hard; wonder → **soft**.
-3. Are you willing to leave things unexplained? Yes → soft (mystery preserved, e.g. fable/dream logic).
-
-Hard worlds reward consistency in your prompts (repeat the same physical rules); soft worlds reward atmosphere over explanation. This choice changes how literal your World Sheet's Physical/Historical dimensions should be at generation time.
+- **一直问为什么。**重复问“为什么？”，直到答案让*你*意外。“他很戒备。”为什么？“他被背叛过。”为什么那件事现在还支配着他？“因为背叛他的人，也是教会他一切的人。”刻板印象是*任何*角色都能说的话；你的是只有这一个角色能说的那句。
+- **一个创伤，两个角色。**同一个创伤造出相反的人。“小时候被抛弃” → 一个扑向每一段关系、紧抓不放；另一个拒绝需要任何人。挑*不那么*显然的反应。
+- **闭眼测试 / 剪影测试。**只看轮廓、看不到脸，能认出这个角色吗？剪影读不出来（战士 / 神秘者 / 浪子），设计就是泛泛的：生成之前先修好。
 
 ---
 
-## Templates
+## 硬设定与软设定（Hard vs soft worldbuilding）
 
-Fillable worksheets in the six `template-*.md` character worksheets listed below (hand them to the user or fill collaboratively):
+世界的规则应该有多可知？用三个问题决定（工作表说明在 `template-world-sheet.md`）：
 
-| Worksheet | Step |
+1. 故事是否要求观众*掌握*规则？是 → **硬**（规则明确且一致，例如盗窃/系统类故事）。
+2. 你希望观众觉得自己聪明，还是感到*惊奇*？聪明 → 硬；惊奇 → **软**。
+3. 你愿意留下不解释的东西吗？愿意 → 软（保留神秘，例如寓言/梦的逻辑）。
+
+硬世界在提示词里奖励一致性（重复同样的物理规则）；软世界奖励氛围胜过解释。这个选择决定了生成时，世界设定表的物理/历史维度应该写得多字面。
+
+---
+
+## 模板（Templates）
+
+下面列出的六个 `template-*.md` 角色工作表（交给用户或一起填）：
+
+| 工作表 | 步骤 |
 |-----------|------|
-| `template-premise.md` | 1 — theme + counter-argument + pressure test |
-| `template-world-sheet.md` | 2 — six dimensions + hard/soft check |
-| `template-9-question-character-sheet.md` | 3 — the flagship character schema |
-| `template-character-web.md` | 3 — Opponent / Ally / Mentor / Foil map |
-| `template-story-spine.md` | 4 — beats + midpoint turn |
-| `template-style-sheet.md` | 5 — Visual DNA + Forbidden List (+ AI-draft prompt) |
+| `template-premise.md` | 1：主题 + 反方论点 + 压力测试 |
+| `template-world-sheet.md` | 2：六个维度 + 硬/软检查 |
+| `template-9-question-character-sheet.md` | 3：核心角色结构 |
+| `template-character-web.md` | 3：对手 / 盟友 / 导师 / 陪衬图 |
+| `template-story-spine.md` | 4：节拍 + 中点转折 |
+| `template-style-sheet.md` | 5：项目美术设定（视觉 DNA） |
 
 ---
 
-## Related skills
-- `higgsfield-prompt` — turns the locked sheet into an MCSLA generation prompt (the primary hand-off)
-- `higgsfield-soul` — Soul ID / Soul Cast for recurring-character consistency; Soul HEX for the palette lock
-- `higgsfield-cinema` — Cinema Studio multi-shot sequences; Story Spine → shot list
-- `higgsfield-style` — applying the Visual DNA / forbidden list at generation time
-- `model-guide.md` · `image-models.md` — picking the model for the character/scene
+## 相关模块（Related skills）
+- `higgsfield-prompt`：把锁定的表变成 MCSLA 生成提示词（主要交接）
+- `higgsfield-style`：在生成时应用视觉 DNA
+- `model-guide.md` · `image-models.md`：为角色/场景选模型
 
 ## 整合版：角色资产交付与同一身份多角度
 
-本项目的角色资产执行 [角色资产交付规范](template-character-asset-delivery.md)，其默认约定优先：全图共4格，唯一清晰面部特写＋正面/90°侧面/背面完整全身。三个全身格保留完整头部、不刻画五官、头顶至鞋全部入画，明确头身比，站姿中性、双手空着；材质与鞋袜细节并入对应格，不增加局部特写格。图底仅非文字波形，全图无文字标签，不附音色描述；换装复用基础身份与版式。背景与光影按所选媒介确定；选用真人实拍时可用浅色摄影布景的轻微明暗渐变与脚下接触阴影，四格清晰，服装与比例一致。正面定稿为身份主参考，其他面部角度按需单独补充并核对身份；人物图只作身份和服装等指定属性参考，不作为镜头起始构图。
-
-直接按规范中的媒介中性六行格式交一段精简完整提示词，阿德莱德案例仅用于真人实拍分支，明确只有一个清晰面部格。五官特征集中在面部格，完整头型、体型、服装及穿戴配饰由三个全身格呈现，最后写背景、一致性和灯光质感；不默认堆叠长摄影参数、皮纹清单或负面词库。是什么风格就用什么风格，不默认真人：用户明确指定优先，其次直接继承项目已确认风格；仅缺少风格时根据内容题材、叙事气质与用途推荐媒介并随当前样本确认；题材不等于媒介，写实三维也不等于真人。二维、插画、三维与定格分别使用对应线条、画材、渲染与工艺描述，不统一去 CG。仅选定真人实拍方向时，首句以“真人演员服装定妆照”锚定媒介，按项目需要选用柔和漫射窗光与自然衰减、简短中画幅/85mm 摄影观感及自然色彩，不作为所有题材的必填项；少量自然肤质与材料细节按角色状态选择，颗粒不遮细节，不强行做旧、不擅改定稿身份。真人出现 CG 感时，先通读正向正文及附加模板，删除或替换混入的渲染展示语义与质量堆词，保持原定风格、身份和服装；即使工具支持独立负面栏，也不以负面提示词解决这种风格污染，不保留污染词再叠加摄影词抵消。案例外观不套用所有角色，动漫、插画、明确 CG 风格及非人设计保留对应媒介。
+本项目的角色资产版式、媒介分支和风格污染处理只按 [角色资产交付规范](template-character-asset-delivery.md) 执行，本页不另列。正面定稿为身份主参考，其他面部角度按需单独补充并核对身份；人物图只作身份和服装等指定属性参考，不作为镜头起始构图。
 
 已有定稿面部时组板直接沿用，新角度须核对身份；也可一次生成参考图后验收。全身格额外清晰脸或头脚缺失时，按规范局部修复并另存版本。表情或非人角色张嘴参考仅写同源生成备注，交由用户单独生成；原角色开发、非人设计、多角度研究、比例参考和试演能力全部保留。

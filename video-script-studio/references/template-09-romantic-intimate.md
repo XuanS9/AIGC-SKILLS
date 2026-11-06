@@ -1,100 +1,76 @@
-# Template: Romantic / Intimate Moment
+# 模板：爱情 / 亲密时刻
 
-## Genre/Use-Case
-Romance scenes, intimate character moments, love stories, emotional connection beats, wedding/couple content, and any prompt centered on tenderness between characters.
+## 题材与用途
+爱情戏、角色间的亲密时刻、爱情故事、情感连接的节拍、婚礼/情侣内容，以及任何围绕角色之间温柔情感的提示词。
 
-## When to use this template
-User asks for romance, love scene, intimate moment, couple content, wedding video, emotional connection, or any prompt where the energy is warmth and closeness.
+## 何时使用
+用户要爱情、爱情戏、亲密时刻、情侣内容、婚礼视频、情感连接，或任何能量是温暖与亲近的提示词。
 
-## Recommended model
-**Kling 3.0** for character-focused romance with audio (soft ambient, dialogue whispers). **Kling 2.6** (legacy) for no-audio emotional scenes. Style: **Cinematic** or **Super 8MM**.
+## 推荐模型
+以角色为中心、带音频（柔和环境声、低语对白）的爱情戏用 **Seedance 2.5** `omni_reference`。风格用 **Cinematic** 或 **Super 8MM**。
 
-## Narrative planning
+## 叙事规划
 
-Use [shared narrative planning](narrative-planning.md). Assets, goal,
-global audiovisual/space, behavior, stages, continuity, final frame, and constraints
-are semantic layers; keep the short prompt and separate character Identity Blocks.
-Let a look, decision, gesture, or visible response determine stages, then allocate time
-for the complete interaction and meaningful pauses. No preset count or equal durations;
-a continuous shot can hold the moment. Preserve one tender gesture per shot, slow camera
-movement, contact, eyelines, and prop state into the planned final composition.
-Example durations and beat counts are illustrative, not mandatory.
+使用 [共享叙事规划](narrative-planning.md)。资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面和约束是语义层；保留短提示词，每个角色的身份各自放进资产参考。由一个眼神、一个决定、一个手势或一个可见反应决定阶段，再为完整的互动和有意义的停顿分配时间。不预设数量，不平均分时；一个连续镜头可以撑住这个时刻。一镜一个温柔的手势，运镜缓慢，接触、视线和道具状态都带到规划好的结尾构图。示例时长和节拍数只是示意。
 
-## Example prompt
+## 示例提示词
 
 ```
-Model: Kling 3.0
-Aspect: 16:9 | Duration: 8s | Style: Cinematic
+模型：Seedance 2.5（omni_reference）
+画幅：16:9｜时长：8 秒｜风格：电影感
 
-Two people on a rooftop terrace at dusk, city glowing below them.
-They've been talking for hours — coffee cups empty, leaning close.
-A long pause. She looks at him.
-Camera: Arc slowly around both of them, city blurring behind.
-He reaches over and tucks a strand of hair behind her ear.
-Style: Cinematic. Golden hour warm tones, shallow depth of field. 16:9.
-Ambient: quiet city hum, distant traffic, gentle wind.
+黄昏的屋顶露台，两个人，城市在他们脚下发着光。
+他们已经聊了好几个小时，咖啡杯空了，身体靠得很近。
+一段长长的停顿。她看着他。
+运镜：Arc 缓慢环绕两人，身后的城市虚化。
+他伸手把她的一缕头发别到耳后。
+风格：电影感。黄金时刻的暖色调，浅景深。16:9。
+环境声：安静的城市嗡鸣，远处车流，轻风。
 ```
 
-## Annotation
+## 注释
 
-| Prompt element | Why it works |
+| 提示词元素 | 为什么有效 |
 |---------------|-------------|
-| "rooftop terrace at dusk, city glowing below" | Romantic setting with natural warm light — environment does the work |
-| "been talking for hours — coffee cups empty" | Tells a story in two details — implies history without exposition |
-| "leaning close" | Physical proximity signals intimacy without explicit direction |
-| "A long pause. She looks at him." | The moment before the moment — tension lives in the pause |
-| "Arc slowly around both of them" | Arc camera isolates two people from the world — classic romance movement |
-| "city blurring behind" | Shallow DOF makes the world disappear — only they matter |
-| "tucks a strand of hair behind her ear" | One small, specific, tender gesture = more powerful than a grand action |
-| "Golden hour warm tones" | Warm palette = emotional warmth — universal cinema convention |
-| "quiet city hum, distant traffic" | Ambient audio creates intimacy — the world is far away |
+| “黄昏的屋顶露台，城市在脚下发着光” | 浪漫场景配自然暖光：环境替你做了功 |
+| “聊了好几个小时，咖啡杯空了” | 两个细节讲出一段故事：不用交代就暗示了过往 |
+| “身体靠得很近” | 身体距离传达亲密，不用直白指令 |
+| “一段长长的停顿。她看着他。” | 那一刻之前的那一刻：张力活在停顿里 |
+| “Arc 缓慢环绕两人” | 环绕镜头把两个人从世界里隔离出来，经典的爱情运镜 |
+| “身后的城市虚化” | 浅景深让世界消失，只剩他们 |
+| “把她的一缕头发别到耳后” | 一个小而具体的温柔手势，比宏大动作更有力 |
+| “黄金时刻的暖色调” | 暖色调等于情感上的温暖，通用的电影惯例 |
+| “安静的城市嗡鸣，远处车流” | 环境声制造亲密：世界离得很远 |
 
-## Negative constraints to include
-- **Face/Identity**: If using Soul ID for both characters, use separate Identity Blocks for each. Reference clearly ("Character A" and "Character B").
-- **Body/Motion**: One tender gesture per shot. Don't stack "he touches her face, holds her hand, pulls her close" — one moment, held.
-- **Temporal/Consistency**: Slow camera movements only. Fast cuts destroy romantic tension.
+## 要加入的约束
+- **面部/身份：**两个角色的身份各自放进资产参考，用名字清楚区分（“角色 A”和“角色 B”）。
+- **身体/动作：**一镜一个温柔手势。不要叠“他摸她的脸、握她的手、把她拉近”：一个时刻，停住。
+- **时间/一致性：**只用缓慢运镜。快切会破坏浪漫的张力。
 
-## Common mistakes
-1. **Too many actions in the romantic beat** — the moment should breathe. One gesture, one look, one pause.
-2. **Generic emotion words** — "they look lovingly at each other" is unmeasurable. Describe the physical action: "she tilts her head slightly, eyes softening."
+## 常见错误
+1. **浪漫节拍里动作太多**：这一刻需要呼吸。一个手势，一个眼神，一个停顿。
+2. **泛泛的情绪词**：“他们深情地看着对方”无法测量。写身体动作：“她微微歪头，眼神变软。”
 
-## Variations
-- **Super 8MM nostalgia**: Swap to Super 8MM style, warm grain, soft vignette, 4:3 — instant home movie feel
-- **Rain romance**: Add rain, "they don't move to shelter", Dolly In instead of Arc
-- **First meeting**: Two-shot, slight Focus Change between faces, "their eyes meet for the first time"
-- **Bittersweet/farewell**: Dolly Out instead of Arc — camera retreating = emotional distance growing
+## 变体
+- **Super 8 怀旧：**换成 Super 8MM 风格，暖色颗粒，柔和暗角，4:3，立刻有家庭录像感
+- **雨中爱情：**加雨，“他们没有去躲雨”，用 Dolly In 代替 Arc
+- **初次相遇：**双人镜头，两张脸之间轻微转焦，“他们第一次对上眼”
+- **苦涩告别：**用 Dolly Out 代替 Arc，镜头后退等于情感距离拉大
 
-### Identity Block (Character A)
+### 身份（角色 A，写进资产参考）
 ```
-A woman in her early 30s, dark wavy hair, wearing a light linen jacket,
-delicate silver earrings. Relaxed posture, feet tucked under her on the chair.
-```
-
-### Identity Block (Character B)
-```
-A man in his early 30s, short beard, kind eyes, wearing a soft navy sweater
-with the sleeves pushed up. Leaning forward slightly, elbows on his knees.
+深色波浪长发，穿一件浅色亚麻外套，戴精致的银耳环。姿态放松，双脚收在椅子上。
 ```
 
-### Motion Block
+### 身份（角色 B，写进资产参考）
 ```
-A long pause. She looks at him.
-Camera: Arc slowly around both of them.
-He reaches over and tucks a strand of hair behind her ear.
-Ambient: quiet city hum, distant traffic, gentle wind.
+短胡子，眼神温和，穿一件柔软的藏青色毛衣，袖子推上去。身体微微前倾，手肘撑在膝盖上。
 ```
 
-## Cinema Studio 3.0 (Business/Team Plan)
-
-**Genre mapping:** Drama
-**Prompt length target:** 60–100 words (Drama/Narrative — lead with Scene)
-**Speed Ramp:** Slow-mo for emotional moments, Auto for natural pacing
-
-**@reference workflow:**
+### 动作
 ```
-@Image1 as Character A. @Image2 as Character B.
-They walk along a beach at sunset, waves lapping at their feet.
-She laughs, he reaches for her hand. Camera: slow tracking alongside.
-Style: golden hour, warm tones, shallow depth of field, Super 8MM grain.
-Audio: waves, sand underfoot, distant seagulls, soft laughter.
+一段长长的停顿。她看着他。
+运镜：Arc 缓慢环绕两人。
+他伸手把她的一缕头发别到耳后。
+环境声：安静的城市嗡鸣，远处车流，轻风。
 ```

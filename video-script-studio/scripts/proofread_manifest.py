@@ -4,25 +4,23 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import re
+import director_contract_lint as contract
 import sys
 from pathlib import Path
 
-CLIP_RE = re.compile(r"^#{1,6}\s+Clip\s+([1-9]\d*-[1-9]\d*)(?=\s|[｜|]|$)", re.M | re.I)
-
-
 def units_for(text: str, kind: str) -> dict[str, str]:
+    if not text.strip():
+        raise ValueError('最终文件不能为空')
     if kind == 'clip':
-        matches = list(CLIP_RE.finditer(text))
-        if not matches:
+        starts = contract.outside_clip_starts(text)
+        if not starts:
             raise ValueError('未找到 Clip 标题')
         units = {}
-        for i, match in enumerate(matches):
-            unit_id = match.group(1)
-            end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
+        for i, (start, unit_id) in enumerate(starts):
+            end = starts[i + 1][0] if i + 1 < len(starts) else len(text)
             if unit_id in units:
                 raise ValueError(f'Clip 编号重复：{unit_id}')
-            units[unit_id] = text[match.start():end].rstrip()
+            units[unit_id] = text[start:end].rstrip()
         return units
     if kind == 'whole':
         return {'whole': text}
@@ -36,21 +34,27 @@ def digest(text: str) -> str:
 def validate(prompt_path: Path, manifest_path: Path) -> list[str]:
     prompt = prompt_path.read_text(encoding='utf-8')
     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+    if not isinstance(manifest, dict):
+        raise ValueError('manifest 必须是JSON对象')
     errors = []
     kind = manifest.get('unit_kind')
     units = units_for(prompt, kind)
     expected = manifest.get('expected_units')
     entries = manifest.get('reviews')
     mode = manifest.get('coverage_mode', 'complete')
-    if not isinstance(expected, list) or len(expected) != len(set(expected)):
-        return ['expected_units 必须是无重复的条目列表']
+    if (not isinstance(expected, list) or not expected
+            or any(not isinstance(v, str) or not v.strip() for v in expected)
+            or len(expected) != len(set(expected))):
+        return ['expected_units 必须是非空、无重复的字符串条目列表']
     if mode not in ('complete', 'scoped'):
         return ['coverage_mode 必须为 complete 或 scoped']
     if mode == 'complete' and set(expected) != set(units):
         missing = sorted(set(units) - set(expected))
         extra = sorted(set(expected) - set(units))
         errors.append(f'完整覆盖范围与最终文件不一致；未纳入={missing}，不存在={extra}')
-    elif mode == 'scoped' and (not str(manifest.get('scope', '')).strip() or not set(expected) <= set(units)):
+    elif mode == 'scoped' and (not isinstance(manifest.get('scope'), str)
+                               or not manifest['scope'].strip()
+                               or not set(expected) <= set(units)):
         errors.append('限定范围复查须说明scope，且expected_units必须是最终文件条目子集')
     if not isinstance(entries, dict):
         return errors + ['reviews 必须是按条目ID索引的对象']
@@ -61,7 +65,7 @@ def validate(prompt_path: Path, manifest_path: Path) -> list[str]:
             continue
         if entry.get('status') != 'reviewed':
             errors.append(f'{unit_id}：状态不是 reviewed')
-        if not str(entry.get('summary', '')).strip():
+        if not isinstance(entry.get('summary'), str) or not entry['summary'].strip():
             errors.append(f'{unit_id}：缺少逐条结论')
         if not isinstance(entry.get('findings'), list):
             errors.append(f'{unit_id}：findings 必须是列表（无发现时用空列表）')
@@ -93,7 +97,11 @@ def main() -> int:
         for error in errors:
             print('FAIL: ' + error)
         return 1
-    print('PASS: 全部条目有逐项复查记录，且记录绑定当前文件哈希。语义结论仍由人工负责。')
+    data = json.loads(args.manifest.read_text(encoding='utf-8'))
+    mode = data.get('coverage_mode', 'complete')
+    count = len(data['expected_units'])
+    scope = '全稿覆盖记录通过' if mode == 'complete' else '所列条目复查记录通过（限定范围，非全稿）'
+    print(f'PASS: {scope}；覆盖{count}条，记录绑定当前文件哈希。语义结论仍由人工负责。')
     return 0
 
 

@@ -1,139 +1,92 @@
-# Template: Dance / Music Performance
+# 模板：舞蹈 / 音乐表演
 
-## Genre/Use-Case
-Dance sequences, music video scenes, concert performances, choreography showcases, and any prompt where physical performance and rhythm are the primary energy.
+## 题材与用途
+舞蹈段落、MV 场景、演唱会表演、编舞展示，以及任何以肢体表演和节奏为主要能量的提示词。
 
-## When to use this template
-User asks for dance video, music performance, choreography, concert scene, DJ set, or any prompt where the body in motion is the hero subject.
+## 何时使用
+用户要舞蹈视频、音乐表演、编舞、演唱会场景、DJ 现场，或任何运动中的身体是主角的提示词。
 
-## Recommended model
-**Minimax Hailuo 2.3** for best fluid body motion and dance. **Kling 3.0** for character-focused performance with audio. **Sora 2** for large-scale concert/crowd scenes.
+## 推荐模型
+舞蹈与表演用 **Seedance 2.5** `omni_reference`；编舞必须卡住某首曲子时，把曲子作为音频参考提供。交付需要 4K 时用 **Seedance 2.0**。
 
-## Narrative planning
+## 叙事规划
 
-Use [shared narrative planning](narrative-planning.md). Map its eight
-semantic layers — assets, goal, global audiovisual/space, behavior, stages, continuity,
-final frame, constraints — into the short prompt, Identity/Motion blocks, or beat prose.
-Let movement phrases, releases, music changes, and resulting body states define stages;
-then allocate time against the actual track and physical performance. No preset count
-or equal-duration rule; equal phrases are valid when the music calls for them. Protect
-complete movements, carry weight/foot placement and sound across cuts, and name the
-final pose. Example durations and movement counts are illustrative, not mandatory;
-performer limits, one camera move per shot, and audio-reference limits remain in force.
+使用 [共享叙事规划](narrative-planning.md)。把它的八个语义层（资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面、约束）映射进短提示词、工作室块结构或节拍描述。由动作乐句、释放、音乐变化和由此产生的身体状态决定阶段；再按实际曲子和身体表演分配时间。不预设数量，也没有等长规则；音乐要求时，等长乐句也成立。保护完整的动作，跨切镜带上重心/落脚位置和声音，并写出结尾姿势。示例时长和动作数只是示意；表演者数量限制、一镜一个运镜和音频参考限制照常适用。
 
-## Example prompt
+## 示例提示词
 
 ```
-Model: Minimax Hailuo 2.3
-Aspect: 16:9 | Duration: 10s | Style: Cinematic
+模型：Seedance 2.5（omni_reference）
+画幅：16:9｜时长：10 秒｜风格：电影感
 
-A dancer in a white flowing dress performs alone in a vast black studio.
-A single overhead spotlight. She moves through contemporary choreography —
-slow arms, sudden explosive turns, floor work.
-Camera: 360 Orbit tightening toward her as movement intensifies.
-Overhead shot as she collapses to the floor in the final beat.
-Style: Cinematic. Pure black and white contrast. 16:9.
-Apply Glow Trace preset — her movement leaves a trail of white light.
+一名穿白色飘逸长裙的舞者独自在空旷的黑色排练厅里表演。
+头顶一盏聚光灯。她跳一段现代舞：缓慢的手臂，突然爆发的旋转，地面动作。
+运镜：360 Orbit，随着动作加强逐步收紧靠近她。
+最后一拍她倒向地面时，切到俯拍。
+风格：电影感。纯黑白对比。16:9。
+她的手臂运动在身后拖出一道白色光迹，约半秒后淡去。
 ```
 
-The orbit-to-overhead example is a sequence brief: keep the orbit through the movement
-phrase, then use a separate shot for the final floor pose, preserving body orientation
-and action phase. This retains the one-camera-movement-per-shot rule below; the event
-motivates the cut, and its timing is allocated afterward.
+环绕转俯拍这个例子是一份段落说明：动作乐句期间保持环绕，结尾倒地姿势用另一个镜头，保持身体朝向和动作相位。这样守住了下面的一镜一个运镜规则；事件推动切镜，时长随后分配。
 
-## Annotation
+## 注释
 
-| Prompt element | Why it works |
+| 提示词元素 | 为什么有效 |
 |---------------|-------------|
-| "white flowing dress" | High-contrast clothing against black studio = maximum visual drama |
-| "vast black studio" | Negative space isolates the performer — all attention on the body |
-| "single overhead spotlight" | One light source creates dramatic shadows and rim lighting |
-| "slow arms, sudden explosive turns, floor work" | Describes the dynamics of the dance — not specific moves |
-| "Camera: 360 Orbit tightening" | Orbit + zoom builds energy — starts wide, ends close as dance peaks |
-| "as movement intensifies" | Ties camera to performance energy — they escalate together |
-| "Overhead shot as she collapses to the floor" | Camera shift marks the climax — top-down for the final beat |
-| "Pure black and white contrast" | Removes color distraction — pure form and movement |
-| "Apply Glow Trace preset" | Visual effect that extends the movement — trails of light behind her arms |
+| “白色飘逸长裙” | 高反差服装对黑色排练厅，视觉戏剧性最大 |
+| “空旷的黑色排练厅” | 负空间孤立表演者，全部注意力在身体上 |
+| “头顶一盏聚光灯” | 单一光源制造戏剧性阴影和轮廓光 |
+| “缓慢的手臂，突然爆发的旋转，地面动作” | 描述舞蹈的动态，而不是具体舞步名 |
+| “360 Orbit 逐步收紧” | 环绕加推近累积能量：开始宽，舞蹈高潮时收近 |
+| “随着动作加强” | 把镜头和表演能量绑在一起，同步升级 |
+| “倒向地面时切到俯拍” | 镜头转换标出高潮：最后一拍用顶视 |
+| “纯黑白对比” | 去掉色彩干扰，只剩形体与运动 |
+| “手臂运动拖出一道白色光迹” | 延伸动作的视觉效果，写清颜色和消散时间 |
 
-## Negative constraints to include
-- **Body/Motion**: Describe energy and dynamics ("slow arms, explosive turns"), not specific named dance moves. The model can't execute "fouetté en tournant."
-- **Temporal/Consistency**: One camera movement that tracks the dance energy. Don't switch cameras mid-flow.
-- **Texture/Lighting**: Commit to one lighting setup. Strobing/color changes mid-clip confuse the model.
+## 要加入的约束
+- **身体/动作：**描述能量和动态（“缓慢的手臂、爆发的旋转”），不写具名舞步。模型做不出“fouetté en tournant”。
+- **时间/一致性：**一个跟随舞蹈能量的运镜。不要在动作流中途换镜头。
+- **质感/光照：**只用一套灯光。片中频闪或变色会让模型困惑。
 
-## Common mistakes
-1. **Named dance moves** — "pirouette, plié, grand jeté" don't translate reliably. Describe the energy and body positions instead.
-2. **Too many dancers for one generation** — one or two performers max per clip. Crowds → use Minimax Hailuo 2.3 with a wider shot.
+## 常见错误
+1. **写具名舞步**：“pirouette、plié、grand jeté”翻译不可靠。改写能量和身体位置。
+2. **一次生成里舞者太多**：每条最多一到两名表演者。人群改用更宽的景别。
 
-## Variations
-- **Hip-hop/street**: 9:16 vertical, Rap Flex camera (quick zooms), "sharp isolated movements", neon lighting
-- **Concert/live performance**: Sora 2, wide shot, "stage lighting sweeping the crowd", Apply Live Concert preset
-- **Slow/emotional dance**: Dolly In instead of Orbit, "minimal movement, arms reaching", Cinematic + shallow DOF
-- **Music video energy**: Crash Zoom In on beat drops, Apply Color Rain preset, fast cuts (separate generations per beat)
+## 变体
+- **嘻哈/街舞：**9:16 竖屏，Rap Flex 运镜（快速推拉），“利落的分离动作”，霓虹灯光
+- **演唱会/现场：**远景，“舞台灯光扫过人群”，写清灯光颜色与扫动方向
+- **慢速/情感舞蹈：**用 Dolly In 代替 Orbit，“极少的动作，手臂伸展”，电影感加浅景深
+- **MV 能量：**节拍落下时 Crash Zoom In，彩色光点像雨一样落下，快切（每个节拍分开生成）
 
-### Identity Block (if using Soul ID)
+### 身份（写进资产参考）
 ```
-The Soul ID character — athletic build, braided hair pulled back tight,
-barefoot, wearing a white flowing contemporary dance costume.
-```
-
-### Motion Block
-```
-She moves through contemporary choreography — slow arms,
-sudden explosive turns, floor work. Energy builds.
-Camera: 360 Orbit tightening toward her.
-Overhead shot as she collapses to the floor.
-Apply Glow Trace preset.
+运动员体型，编发紧紧向后扎，赤脚，穿一件白色飘逸的现代舞服。
 ```
 
-## Beat-by-beat choreography (Seedance 2.0)
-
-The "describe energy, not named moves" rule above (no `pirouette`, no `grand
-jeté` — the model can't execute jargon) has a **Seedance-specific upgrade**:
-between vague energy ("he dances") and untranslatable jargon sits the sweet
-spot — **spell the move out beat by beat in plain, observable physical terms**.
-"He dances" means nothing to Seedance; a named ballet step means nothing either;
-but a concrete sequence of body actions renders:
-
+### 动作
 ```
-first two crisp head nods, chin dipping on each beat; then his shoulders roll
-back one at a time — right, then left; he steps off on his right foot with a
-soft knee-dip and drags the left foot in to meet it with a small heel-bounce,
-hips swaying side to side; halfway across he throws a loose finger-snap;
-finishes with a light quarter-spin on the ball of his foot.
+她跳一段现代舞：缓慢的手臂，突然爆发的旋转，地面动作。能量逐步累积。
+运镜：360 Orbit 逐步收紧靠近她。
+她倒向地面时切到俯拍。
+手臂运动拖出一道白色光迹。
 ```
 
-This is the dance case of `higgsfield-seedance.md` § Voice
-Rewrite (describe physics, not labels). Keep each move observable (which foot,
-which direction, what the hands do) — not interpretive ("grooves", "vibes").
+## 逐拍编舞（Seedance 2.0）
 
-## `@music_track` drives the motion
-
-When the choreography must lock to a specific track, upload it as `@music_track`
-(an audio reference) and write the movement so it **responds to the beat** — the
-audio is a conditioning input that the model maps to visual rhythm, not just a
-soundtrack:
+上面“写能量、不写具名舞步”的规则（不写 `pirouette`，不写 `grand jeté`，模型执行不了术语）有一个 **Seedance 专用的升级版**：在模糊的能量（“他在跳舞”）和无法翻译的术语之间，有一个最佳位置：**用直白、可观察的身体动作逐拍拼出这个动作**。“他在跳舞”对 Seedance 没有意义，具名的芭蕾舞步也没有意义；但一串具体的身体动作能渲染出来：
 
 ```
-@music_track as the rhythmic foundation — the dancer's movement locks to its
-beat throughout. Steps land on the downbeats, the spin releases on the drop.
+先干脆地点头两下，每拍下巴一沉；然后肩膀一边一边向后绕，先右后左；右脚迈出，膝盖轻轻一沉，左脚拖过来并拢，脚跟小小一弹，胯部左右摆动；走到一半随手打一个响指；最后用前脚掌轻巧地转四分之一圈收住。
 ```
 
-Full beat-sync mechanics (the 3-sentence mapping, the first-15s extraction trap,
-combining with `@Image`/`@Video` references): `higgsfield-audio.md`
-§ Audio as a Conditioning Input. Keep the prompt body diegetic-only and layer the
-final music in post.
+这是 `higgsfield-seedance.md` § Voice Rewrite（写物理，不写标签）在舞蹈上的应用。每个动作都要可观察（哪只脚、哪个方向、手在做什么），不要写解读性的词（“律动”“感觉”）。
 
-## Cinema Studio 3.0 (Business/Team Plan)
+## 用 `@music_track` 驱动动作
 
-**Genre mapping:** Action (for high-energy) or Drama (for emotional performance)
-**Prompt length target:** 50–80 words (Music Video — lead with Style)
-**Speed Ramp:** Bullet Time for freeze moments, Ramp Up for drops
+编舞必须卡住某首曲子时，把它作为 `@music_track`（音频参考）上传，并把动作写成**响应节拍**：音频是条件输入，模型会把它映射成视觉节奏，而不只是配乐：
 
-**@reference workflow:**
 ```
-Reference @Video1 for dance choreography.
-@Image1 as the dancer. She performs on a rooftop at sunset,
-city skyline behind her. Wind catches her dress on each spin.
-Camera: 360 orbit. Style: anamorphic flares, crushed blacks.
-Audio: heavy bass drop, rhythmic percussion, wind through fabric.
+@music_track 作为节奏基础，舞者的动作全程卡在它的节拍上。脚步落在重拍上，旋转在 drop 处释放。
 ```
+
+完整的节拍同步机制（三句话映射、前 15 秒截取陷阱、与 `@Image`/`@Video` 参考组合）见 `higgsfield-audio.md` § Audio as a Conditioning Input。提示词正文只写画内声音，最终音乐在后期叠加。

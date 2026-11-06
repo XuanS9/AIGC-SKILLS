@@ -1,42 +1,16 @@
-# Model Specs
+# 视频模型规格
 
-**Snapshot: 2026-08-07**. Verify current parameters against a user-provided current schema before production.
+**快照：2026-09-26。**正式制作前，以用户提供的当前 schema 核对参数。
 
-Image models: see IMAGE-MODEL-SPECS.md (snapshot 2026-08-01); this file covers video models only.
+图像模型见 IMAGE-MODEL-SPECS.md（快照 2026-08-01）；本文件只含视频模型。
 
-| Model | id (aliases) | Duration | Resolutions | Modes | Aspect ratios | Media roles | Constraints |
+本工作室只保留 Seedance 系列。其他视频生成模型（Kling、Veo、Sora、Wan、MiniMax、Grok、Gemini Omni、FLUX Video、Happy Horse、Cinema Studio Video）和后期视频工具（超分、对口型、去背景、去闪烁、剪辑、预设）已从本快照中删除（removed）。
+
+| Model（模型） | id（别名） | 时长 | 分辨率 | 模式 | 画幅 | 媒体职责 | 约束 |
 |-------|--------------|----------|-------------|-------|---------------|-------------|-------------|
-| Bytedance Video Upscale | bytedance_video_upscale | — | 1080p, 2k, 4k | — | — | medias: video_references | — |
-| Cinema Studio Video 3.0 | cinematic_studio_3_0 | 4–15s | 480p, 720p, 1080p, 4k | — | auto, 21:9, 16:9, 4:3, 1:1, 3:4, 9:16 | medias: image, start_image, end_image | — |
-| Cinema Studio Video | cinematic_studio_video | 5/10s | — | — | 1:1, 4:3, 3:4, 16:9, 9:16 | medias: image, start_image, end_image | — |
-| Cinema Studio Video | cinematic_studio_video_v2 | 3–12s | — | pro, std | 1:1, 4:3, 3:4, 16:9, 9:16 | medias: image, start_image, end_image | — |
-| Personal Clipper | clipify | — | — | — | — | — | — |
-| FLUX 3 Video | flux_3_video | 5–20s | 720p, 1080p | — | auto, 21:9, 2:1, 16:9, 4:3, 1:1, 3:4, 9:16 | medias: start_image, end_image, image_references, video_references | — |
-| Gemini Omni Flash | gemini_omni | 4–10s | 720p | — | 16:9, 9:16 | medias: image_references, video_references | — |
-| Grok Video | grok_video | 1–15s | — | — | 16:9, 9:16, 1:1 | medias: start_image | — |
-| Grok Video 1.5 | grok_video_v15 | 2–15s | 480p, 720p, 1080p | — | — | medias: start_image, image_references, audio_references | — |
-| Happy Horse Video | happy_horse_video | 3–15s | 720p, 1080p | — | 16:9, 9:16, 1:1, 4:3, 3:4 | medias: start_image | — |
-| Higgsfield Preset | higgsfield_preset | — | — | — | 16:9, 9:16, 1:1 | medias: image | — |
-| Kling 2.6 Video | kling2_6 | 5/10s | — | — | 16:9, 9:16, 1:1 | medias: start_image | — |
-| Kling v3.0 | kling3_0 | 3–15s | — | std, pro, 4k | 16:9, 9:16, 1:1 | medias: start_image, end_image | — |
-| Kling 3.0 Turbo | kling3_0_turbo | 3–15s | 720p, 1080p | — | 16:9, 9:16, 1:1 | medias: start_image | — |
-| LLM Generation | llm_text | — | — | — | — | medias: input_images | — |
-| MiniMax H3 | minimax_h3 | 5–15s | 2K | — | auto, 21:9, 16:9, 4:3, 1:1, 3:4, 9:16 | medias: start_image, end_image, image_references, video_references, audio_references | — |
-| Minimax Hailuo | minimax_hailuo | 6/10s | 512, 768, 1080 | — | — | medias: start_image, end_image | — |
-| Remove Background | sam_3_video | — | — | — | — | medias: video_references | — |
 | Seedance 1.5 Pro | seedance1_5 (seedance_1_5) | 4/8/12s | 480p, 720p, 1080p | — | auto, 16:9, 9:16, 4:3, 3:4, 1:1, 21:9 | medias: start_image, end_image | — |
-| Seedance 2.0 | seedance_2_0 (video_standard) | 4–15s | 480p, 720p, 1080p, 4k | std, fast | auto, 16:9, 9:16, 4:3, 3:4, 1:1, 21:9 | medias: start_image, end_image, image_references, video_references, audio_references | mode=fast forbids resolution 1080p/4k |
+| Seedance 2.0 | seedance_2_0 (video_standard) | 4–15s | 480p, 720p, 1080p, 4k | std, fast | auto, 16:9, 9:16, 4:3, 3:4, 1:1, 21:9 | medias: start_image, end_image, image_references, video_references, audio_references | mode=fast 不可用 1080p/4k |
 | Seedance 2.0 Mini | seedance_2_0_mini | 4–15s | 480p, 720p | — | auto, 16:9, 9:16, 4:3, 3:4, 1:1, 21:9 | medias: start_image, end_image, image_references, video_references, audio_references | — |
-| Seedance 2.5 | seedance_2_5 | 4–30s | 480p, 720p | t2v, omni_reference, video_edit, video_extension | auto, 21:9, 16:9, 4:3, 1:1, 3:4, 9:16 | medias: image_references, video_references, audio_references | — |
-| Sync Lipsync 3 | sync_so | — | — | — | — | medias: input_video, input_audio | — |
-| Topaz | topaz_video | — | 1080p, 2160p | — | auto, 21:9, 16:9, 4:3, 1:1, 3:4, 9:16 | medias: video_references | — |
-| Google Veo 3 | veo3 | — | — | — | 16:9, 9:16 | medias: start_image | — |
-| Google Veo 3.1 | veo3_1 | 4/6/8s | — | — | 16:9, 9:16 | medias: start_image | — |
-| Google Veo 3.1 Lite | veo3_1_lite | 4/6/8s | — | — | 16:9, 9:16, auto | medias: start_image, end_image | — |
-| Video Background Remover | video_background_remover | — | — | — | — | medias: video_references | — |
-| Video Deflicker | video_deflicker | — | — | — | — | medias: input_video | — |
-| Video Upscale | video_upscale | — | — | — | — | medias: input_video | — |
-| Wan 2.6 Video | wan2_6 | 5/10/15s | — | — | 16:9, 9:16, 1:1 | medias: image_references, video_references, audio_references | — |
-| Wan 2.7 | wan2_7 | 2–15s | 720p, 1080p | — | 16:9, 9:16, 1:1, 4:3, 3:4 | medias: start_image, end_image, audio_references | — |
+| Seedance 2.5 | seedance_2_5 | 4–30s | 480p, 720p, 1080p | t2v, omni_reference, video_edit, video_extension | auto, 21:9, 16:9, 4:3, 1:1, 3:4, 9:16 | medias: start_image, end_image, image_references, video_references, audio_references | start_image/end_image 仅限 omni_reference；t2v 不带参考；omni_reference 至少 1 个参考；图像参考 + 首帧 + 尾帧 ≤ 30；全部参考 + 首帧 + 尾帧 ≤ 50 |
 
-Full per-model parameter schemas live in `model-specs.json`.
+各模型完整参数 schema 在 `model-specs.json`（含 2.5 / 2.0 / 2.0 Mini 的 `bitrate_mode` standard/high）。来源：OSideMedia/higgsfield-ai-prompt-skill v3.42.0（MIT），快照 2026-09-26。

@@ -1,33 +1,33 @@
-# Worksheet: Premise (Step 1)
+# 工作表：前提（第 1 步）
 
-> One sentence. No characters yet. A premise is an arguable claim about people or the world — not a plot.
-> Framework adapted from Higgsfield's Character Design materials by @vavavinca.
+> 一句话，先不写角色。前提是关于人或世界的一个可争论的主张，不是情节。
+> 框架改编自 Higgsfield 角色设计资料（@vavavinca）。
 
-## Fill in
+## 填写
 
-**1. Theme statement** — a claim, not a logline.
+**1. 主题陈述**：一个主张，不是一句话梗概。
 > _______________________________________________
-> *(e.g. "Belonging is something you build, not something you're owed.")*
+> *（例：“归属感要靠自己建立，不是别人欠你的。”）*
 
-**2. What is this story arguing?** — stated as a testable belief.
+**2. 这个故事在论证什么？**用一个可检验的信念来写。
 > _______________________________________________
-> *(e.g. "People who wait to be chosen stay invisible.")*
+> *（例：“等着被选中的人始终看不见。”）*
 
-**3. The counter-argument** — the opposing truth the story must honor, or the theme is propaganda.
+**3. 反方论点**：故事必须正视的相反事实，否则主题就成了宣传。
 > _______________________________________________
-> *(e.g. "Some people are kept out no matter what they build.")*
+> *（例：“有些人不管建起什么都被挡在门外。”）*
 
-**4. Emotional promise** — one word + one line.
-> Feeling: __________  ·  Line: ____________________
-> *(e.g. "Defiance — the thrill of a door forced open.")*
+**4. 情感承诺**：一个词加一句话。
+> 感受：__________  ·  句子：____________________
+> *（例：“反抗：一扇门被硬推开的快感。”）*
 
-## Pressure test (must pass all 5)
+## 压力测试（五项全过）
 
-- [ ] Compresses to ONE sentence (no "and", no semicolon)
-- [ ] Contains NO character names
-- [ ] Is arguable (someone could disagree)
-- [ ] Has a real counter-argument
-- [ ] Names a feeling, not just an event
+- [ ] 能压成一句话（不用“和”，不用分号）
+- [ ] 不含任何角色名
+- [ ] 可争论（有人会不同意）
+- [ ] 有真正的反方论点
+- [ ] 写出一种感受，而不只是一件事
 
-## Next
-Premise locked → build the **World Sheet** (`template-world-sheet.md`). Do not cast characters yet.
+## 下一步
+前提锁定后，建立**世界设定表**（`template-world-sheet.md`）。先不要选角。

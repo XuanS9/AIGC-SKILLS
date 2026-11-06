@@ -1,104 +1,84 @@
-# Higgsfield Acting Director
+# Higgsfield 表演导演（Higgsfield Acting Director）
 
-For video work, [shared director planning](narrative-planning.md) governs full format and overrides local creative defaults: objective/tactic/information changes create performance stages; decide their duration after identifying the behavior and response. Preserve complete listening and reaction arcs, then hand their start/end states to the shotlist, camera, audio and model modules. A performance beat need not create a cut or a new generation.
+视频工作中，[共享导演规划](narrative-planning.md) 决定完整格式，并优先于本地的创作默认：目标/策略/信息的变化形成表演阶段；先确定行为和反应，再决定时长。保留完整的倾听与反应弧线，再把起止状态交给分镜、运镜、音频和模型模块。一个表演节拍不一定产生切镜，也不一定产生新的生成。
 
-`[OFFICIAL — Higgsfield "Hell Grind" open-source brief]` — the performance system behind
-Higgsfield's 95-minute AI feature film, adapted to this repo's prompt surfaces.
+`[OFFICIAL — Higgsfield "Hell Grind" open-source brief]`：Higgsfield 95 分钟 AI 长片背后的表演体系，按本仓库的提示词写法做了改编。
 
-**The core axiom of the entire system: acting is BEHAVIOR under pressure, not a display of
-emotion.** A character wants something, something is in the way, and they act to get it.
-Emotion is a byproduct of that struggle — never the thing you write directly.
+**整个体系的核心公理：表演是压力下的行为，不是情绪的展示。**角色想要某样东西，有东西挡着，他们行动去争取。情绪是这场争夺的副产品，永远不是你直接写的东西。
 
-This is the performance craft layer for the studio. In full video prompts, compile it into
-【具体情节】 and necessary continuity in 【全局补充】; do not add a PERFORMANCE / CHARACTER ACTING
-heading. Native platform fields apply only when that output is explicitly selected.
-Identity assets, camera, lighting and grade retain their own responsibilities.
+这是工作室的表演技艺层。完整视频提示词里，把它编译进 `[具体情节]` 各段（`表情：` / `听者：` 行）和 `[保持一致]` 里必要的连续性；不要加 PERFORMANCE / CHARACTER ACTING 标题。只有明确选择原生平台字段时才用原生字段。身份资产、运镜、光照和调色各管各的。
 
-## QUICK FACTS
-- Write the **objective** (a verb aimed at a partner), never the state — "make him confess", never "be angry" [→](#the-five-pillars-of-every-scene)
-- **Event-driven beat changes**, visible in pause, posture, tempo or gaze; 2–4 is a useful scene example, not a required count. Sustained behavior can be intentional when the objective calls for it [→](#the-five-pillars-of-every-scene)
-- **Listening beats speaking.** Reactions start when information registers, often mid-line; assessment time follows the event [→](#listening-and-reaction)
-- The body carries the biography: **center of gravity, tempo, openness, breath** — set all four before any psychology [→](#the-body)
-- **Business** — a physical task the hands are doing — kills theatricality; the strongest accent in a scene is the moment the character **stops** it [→](#the-body)
-- **Distance is drama** when it changes the relationship; status is what you DO, and a status break can mark an event [→](#the-body)
-- Reuse the character master profile and adapt relevant behaviors per scene; the 150–220-word paragraph below is an example form, not mandatory prompt padding [→](#the-acting-master-profile)
-- Any tic or mask used needs a **trigger**; a crack is optional when the character and scene support it [→](#the-acting-master-profile)
-- **Purposeful attention is required** — choose readable gaze/blink cues for the event and framing; the eye-life menu is not a quota [→](#eye-life)
-- Scene adaptation preserves motivation while selecting visible behavior; convert useful tics and omit irrelevant ones [→](#scene-adaptation)
-- Describe current delivery (breath, pace, loudness), not a fixed timbre/profile; actual audio references keep their recorded role [→](#voice--fixed-identity-never-adapted)
-- **State anchors are optional remediation.** Retain the full preparation → action → response → recovery chain and inherited states [→](#states-not-transitions)
-- Ensemble reactions follow individual perception; wave timing and still/quiet power are optional performance patterns [→](#ensemble-and-space)
-- 15 named bad-acting symptoms and a descriptive 0–5 scale; accept using [evidence checks](#表演证据验收), not a score threshold [→](#the-atlas-of-bad-acting)
+## 速查（QUICK FACTS）
+- 写**目标**（一个指向对手的动词），绝不写状态：“逼他招认”，绝不写“生气” [→](#每场戏的五根支柱the-five-pillars-of-every-scene)
+- **由事件驱动的节拍变化**，体现在停顿、姿态、节奏或视线上；2–4 个是有用的场景示例，不是必须的数量。目标需要时，持续不变的行为可以是有意为之 [→](#每场戏的五根支柱the-five-pillars-of-every-scene)
+- **倾听胜过说话。**信息被接收的那一刻反应就开始，常常在一句话中间；评估的时长跟随事件 [→](#倾听与反应listening-and-reaction)
+- 身体承载履历：**重心、节奏、开合、呼吸**，在任何心理之前先把这四项定下来 [→](#身体the-body)
+- **手上活**（双手正在做的一件实际任务）消灭舞台腔；一场戏里最强的重音，是角色**停下**手上活的那一刻 [→](#身体the-body)
+- **距离改变关系时，距离就是戏**；地位是你做出来的，地位的破裂可以标记一个事件 [→](#身体the-body)
+- 复用角色的表演母本，每场按需改写相关行为；下文 150–220 词的段落只是示例形式，不是必须的提示词填充 [→](#表演母本the-acting-master-profile)
+- 用到的任何小动作或面具都要有**触发**；裂缝是可选的，角色和场景支持时才用 [→](#表演母本the-acting-master-profile)
+- **必须有目的的注意**：为事件和构图选择可读的视线/眨眼线索；眼神生命力清单不是配额 [→](#眼神生命力eye-life)
+- 场景改写保留动机，挑选可见行为；有用的小动作转换出口，不相关的省略 [→](#场景改写scene-adaptation)
+- 可以引用已登记的音色描述；当下的演绎（气息、语速、响度）仍跟随动作；真实音频参考保持其录制职责 [→](#声音固定身份不随场改写voice--fixed-identity-never-adapted)
+- **状态锚点是可选的补救。**保留完整的准备 → 动作 → 反应 → 恢复链条和继承的状态 [→](#写状态而不是过渡states-not-transitions)
+- 群体反应跟随各自的感知；波浪式时序和静止/安静的力量是可选的表演模式 [→](#群戏与空间ensemble-and-space)
+- 15 个具名的糟糕表演症状和一个描述性的 0–5 量表；验收用 [证据检查](#表演证据验收)，不用分数门槛 [→](#糟糕表演图谱the-atlas-of-bad-acting)
 
 ---
 
-## Where this sits among the repo's performance tools
+## 本模块在仓库表演工具中的位置（Where this sits among the repo's performance tools）
 
-| Layer | Skill | What it controls |
+| 层 | 模块 | 控制什么 |
 |---|---|---|
-| **Craft** — why the character does anything | **this skill** | objective, obstacle, tactics, beats, subtext, status, business |
-| Muscle | `higgsfield-facs.md` | facial Action Unit codes (AU12, AU6…) |
-| Named expressions | `higgsfield-soul.md` § Micro-Expressions | expression vocabulary for identity work |
-| Production form | `director-compiler.md` | performance within the studio four-section contract; no extra acting block |
-| Backstory | `higgsfield-character-design.md` | who the character is before any scene exists |
+| **技艺**：角色为什么做任何事 | **本模块** | 目标、障碍、策略、节拍、潜台词、地位、手上活 |
+| 肌肉 | `higgsfield-facs.md` | 面部动作单元代码（AU12、AU6……） |
+| 制作形式 | `director-compiler.md` | 在工作室块结构契约内的表演；不另加表演块 |
+| 前史 | `higgsfield-character-design.md` | 任何场景存在之前角色是谁 |
 
-Use this skill to decide **what the body does**; optionally use FACS to specify
-**which muscles** matter in an existing close-up. AU codes are empirical prompt vocabulary,
-not guaranteed controls; do not force a close-up or an AU schedule into every performance.
+用本模块决定**身体做什么**；可选地用 FACS 指定一个已有近景里**哪些肌肉**重要。AU 代码是经验性的提示词词汇，不是有保证的控制；不要把近景或 AU 节拍表强加到每段表演里。
 
 ---
 
-# Part I — The craft
+# 第一部分：技艺（Part I — The craft）
 
-## What good acting is
+## 什么是好的表演（What good acting is）
 
-Truthful behavior under imaginary circumstances. Not depicted emotions, not recited text,
-not "expressive faces."
+在想象情境中真实的行为。不是描绘出来的情绪，不是背诵的台词，不是“有表现力的脸”。
 
-| Bad acting | Good acting |
+| 糟糕的表演 | 好的表演 |
 |---|---|
-| Shows the emotion ("I am angry") | Pursues the objective ("I will make you return the money") — anger arises on its own |
-| Waits mechanically for their cue | Listens continuously and reacts when information registers, without a per-second gesture quota |
-| Body illustrates the words (gesture = word) | Body lives its own life, sometimes contradicts the words |
-| All lines in one tempo and tone | Rhythm changes with every change of tactic |
-| Emotion switches on at the line and off after | State is continuous — there is a life before and a life after the line |
-| The face "performs" — eyebrows, grimaces | The face thinks — the thought is readable in the eyes before the words |
+| 展示情绪（“我很生气”） | 追求目标（“我要让你把钱还回来”）：愤怒自己会产生 |
+| 机械地等着接自己的词 | 持续倾听，信息被接收时反应，没有每秒手势配额 |
+| 身体图解台词（手势 = 词） | 身体有自己的生活，有时和台词相矛盾 |
+| 所有台词同一个节奏和语调 | 每次换策略，节奏都变 |
+| 情绪在台词处打开，说完就关 | 状态是连续的：台词之前有生活，台词之后也有 |
+| 脸在“表演”：眉毛、鬼脸 | 脸在思考：话说出来之前，想法已经能从眼睛里读出来 |
 
-## The five pillars of every scene
+## 每场戏的五根支柱（The five pillars of every scene）
 
-Use these five questions for active dramatic characters; adapt to the scene and character.
-An unconscious or sleeping figure has a physical state, not an invented conscious objective.
-Do not add goals, conflict or subtext to fill a template for non-dramatic work.
+对主动的戏剧角色用这五个问题；按场景和角色调整。昏迷或熟睡的人物只有身体状态，不要编造有意识的目标。非戏剧类的工作，不要为了填模板加目标、冲突或潜台词。
 
-**1. Objective.** What the character wants IN THIS SCENE, RIGHT NOW, FROM A SPECIFIC PERSON.
-Always a verb aimed at the partner: *make him confess* · *beg a week's extension* ·
-*convince her I'm not afraid*. Never a state ("be angry", "feel guilty") — states cannot be
-played. Behind the scene objective sits a **super-objective**: what the character wants
-across the whole story, with every scene objective a step toward it.
+**1. 目标。**角色在**这场戏、此刻、从一个具体的人那里**想要什么。永远是指向对手的动词：*逼他招认* · *求宽限一周* · *让她相信我不怕*。绝不是状态（“生气”“内疚”）：状态没法演。场景目标背后是**最高目标**：角色在整个故事里想要什么，每个场景目标都是走向它的一步。
 
-**2. Obstacle and stakes.** What prevents them — external (another character wants the
-opposite; witnesses in the room; two hours to deadline) or internal (pride won't let them
-beg; they don't believe their own words). Always answer *what happens if I do NOT get what I
-want?* — and the answer must frighten the character. The higher the cost of failure, the
-more taut the scene.
+**2. 障碍与利害。**什么在阻止他们：外部的（另一个角色想要相反的东西；屋里有旁人；离截止还有两小时）或内部的（自尊不让他们求人；他们不相信自己说的话）。永远要回答*如果我得不到想要的，会发生什么？*答案必须让角色害怕。失败的代价越高，戏越紧。
 
-**3. Tactics.** The concrete method of pursuing the objective right now, as an action verb:
-*press · charm · shame · plead · provoke · bargain · threaten · stall*. When a tactic fails,
-a living person may **change** it. Sustaining a tactic is valid when the objective and
-response justify it; do not invent tactic changes to meet a count.
+**3. 策略。**此刻追求目标的具体方法，用动作动词：*施压 · 讨好 · 羞辱 · 恳求 · 激将 · 讨价还价 · 威胁 · 拖延*。一个策略失败时，活人可能会**换**策略。目标和反应说得通时，坚持一个策略也成立；不要为了凑数编造策略变化。
 
-**4. Beats.** The smallest unit of action: the stretch during which the character wants one
-thing and pursues it one way. A beat ends when the objective is achieved, the tactic fails,
-new information arrives, or the balance of power shifts. **Every beat change must be VISIBLE
-in behavior** — a pause, a change of posture, a change of speech tempo, a shift of gaze. A
-scene may have **2–4 beat changes** as an illustrative pattern. Let actual tactics, information and power shifts determine the count; do not invent turns to meet a quota or split a complete emotional arc.
+**4. 节拍。**动作的最小单位：角色想要一样东西、用一种方式追求的那一段。目标达成、策略失败、新信息到来或力量平衡转移时，节拍结束。**每次节拍变化都必须在行为上看得见**：一个停顿、一次姿态变化、一次语速变化、一次视线转移。一场戏有 **2–4 次节拍变化**只是示意模式。由实际的策略、信息和权力转移决定数量；不要为了配额编造转折，也不要把一段完整的情绪弧线切开。
 
-**5. Subtext.** What the character actually thinks and wants, as opposed to what they say.
-Subtext is **not performed** — it leaks out on its own when the character plays the true
-objective while speaking the false text. Buildable markers: questions that aren't questions ·
-repetitions (asking the same thing — they don't believe the answer) · abrupt topic changes ·
-jokes at the wrong moment (a shield against vulnerability) · answers that are too short
-("Fine." "Sure." — a closed door).
+**5. 潜台词。**角色真正想的、想要的，与他说出口的相对。潜台词**不是演出来的**：角色一边说着假的台词、一边追求真正的目标时，它会自己漏出来。可以构建的标记：不是问题的问题 · 重复（问同一件事：他们不信答案）· 突然转换话题 · 不合时宜的玩笑（对脆弱的防护）· 太短的回答（“好。”“行。”：一扇关上的门）。
+
+### 动作中的面部表演与近景必检
+
+**自然克制不等于面无表情，动作写足也不等于表演写足。**人物脸部近景/特写必须写出当前可读的表情状态，并说明刺激导致的变化或状态持续的依据；不能只写“看向前方”“急喘”“害怕”。眉眼、眼睑、鼻翼、嘴角与下颌按角色和事件选择，不套固定肌肉数量或每镜同款皱眉。
+
+- **面部与主动作并行。**逃跑时可在绊步中眼睛骤睁、嘴角绷开，落脚接重后重新盯住逃路；听见追兵索物时，可短暂抬起内眉再收紧下颌并藏物。不能先停步演恐惧再恢复逃跑，也不能为了表情插镜拉长命中时间。
+- **区分相邻情绪与任务。**受惊的瞬时张眼、强撑反击的咬牙、压声隐藏的紧唇、痛后脱力的眼睑下垂不是同一个“紧张表情”。前镜的紧张、疲惫或疼痛要留到下一镜，不因切镜恢复空白脸；持续状态也不要求每镜新增表情动作。
+- **脸部近景交付具体证据。**写“听到脚步停近，上眼睑抬起、下眼睑绷住，随即压合嘴唇收住喘息”，而不是只写“她很害怕”。AU代码可辅助内部设计，不是正文必须项，也不是表情效果保证。
+- **取景限定证据。**中景仅写能读清的大幅眉眼/口部变化；全景、背影、过肩看向对手或手脚特写不硬塞不可见脸部微表情。需要观众读到脸部判断时，实际设计脸部取景，不以增加面部词语冒充已经拍到。非人角色继续按其结构适配，不套人类眉毛和嘴角。
+- **保持揭晓边界。**脸部反应只能针对人物此刻已感知的信息，不能在揭晓前写认出身份后的惊恐、喜悦或信任；为看孩子提沿时先写注意集中，首次看清后再落对应反应。
+
+交付前逐镜列出“面部可见范围 → 刺激/任务 → 具体表情或持续状态 → 同时进行的动作”；面部不可见则注明由什么身体/声音线索承接。脸部近景缺少表情证据时先修复，不能用读取了FACS模块或呼吸词数量判通过。
 
 ### 提示词编译：物理动作后接潜台词
 
@@ -118,184 +98,115 @@ jokes at the wrong moment (a shield against vulnerability) · answers that are t
 - 连续动作、纯景观/产品镜头、无意识状态和无需心理解释的物理行为通常省略；非人角色只使用其已确认的感知与行为渠道。
 - 复制用视频提示词中可保留 `（潜台词：...）` 作为紧邻动作的导演意图；不另设 PERFORMANCE/心理分析栏目。内部规划可用更完整的目标与障碍，提交正文只保留本镜需要的短句。
 
-## The layer above the pillars — one direction, different fuel
+## 支柱之上的一层：同一方向，不同燃料（The layer above the pillars — one direction, different fuel）
 
-`[DEMO — Tigran (tig-acting-task), 2026-07-10]` `[UNPROVEN HERE]` The five pillars are
-per-character. They do not say what holds an ensemble together, and that is why scenes
-built from them alone can read as several good performances that are not in the same
-scene. One layer sits above them.
+`[DEMO — Tigran (tig-acting-task), 2026-07-10]` `[UNPROVEN HERE]` 五根支柱是针对单个角色的。它们没有说明是什么把群戏凝聚在一起，所以只靠它们搭出来的戏，读起来可能是几段好表演，却不在同一场戏里。在它们之上还有一层。
 
-**Optional ensemble lens: a shared scene direction, with different motives.** Use it when the scene supports a common intention; opposing objectives need not be rewritten into agreement. Usually unspoken —
-a mutual silent agreement about how this time will be lived. *Part without pain, stay
-positive* (a mother packing her son's kit before he leaves). It belongs to everyone in
-the room at once. It is **not** the film's dramaturgic function: characters never play
-the reveal or the theme, which are accomplished *through* them as a byproduct.
+**可选的群戏视角：共同的场景方向，不同的动机。**场景支持共同意图时使用；相反的目标不必改写成一致。通常不说出口：一种关于这段时间怎么过的无声默契。*不痛地分别，保持乐观*（一个母亲在儿子离家前给他收拾行装）。它同时属于屋里的每一个人。它**不是**影片的戏剧功能：角色从不演揭晓或主题，那些是*通过*他们作为副产品完成的。
 
-**Each character pushes that direction for their own reason — the MOTIVE.** Same vector,
-different fuel. The son keeps it painless *for his mother*; the mother out of
-*superstition* (tears before a journey are a bad omen). **The fuel is what makes each
-performance distinct while the scene still reads unified** — and it is the piece most
-often skipped, which is what collapses an ensemble into one note repeated.
+**每个角色出于自己的理由推动这个方向：这就是动机。**同一个方向，不同的燃料。儿子让它不痛，是*为了母亲*；母亲则出于*迷信*（出远门前流泪不吉利）。**燃料让每段表演彼此不同，而这场戏仍然读起来统一**；它也是最常被跳过的部分，跳过它，群戏就会塌成同一个音的重复。
 
-Given circumstances constrain the motive: a character who already took a compromised job
-cannot play moral innocence. If the motive contradicts the backstory, re-derive it.
+既定情境约束动机：一个已经接了一份不光彩工作的角色，演不了道德上的清白。如果动机与前史矛盾，重新推导。
 
-Distinguish carefully, because these are four different things and only the last two are
-per-character:
+仔细区分，因为这是四样不同的东西，只有后两样是每个角色各自的：
 
-| Layer | Whose | Example |
+| 层 | 归谁 | 例子 |
 |---|---|---|
-| Scene direction | Shared by all | *keep it painless* |
-| Motive (fuel) | Each character's own | *superstition* / *for her* |
-| Objective (§ pillar 1) | Each character's own | *send him off strong* |
-| Tactic (§ pillar 3) | Each character's own | *pack ordinarily, steal looks* |
+| 场景方向 | 所有人共有 | *让它不痛* |
+| 动机（燃料） | 每个角色自己的 | *迷信* / *为了她* |
+| 目标（§ 支柱 1） | 每个角色自己的 | *把他体面地送走* |
+| 策略（§ 支柱 3） | 每个角色自己的 | *照常收拾，偷偷看他* |
 
-### Name the event from the ENDING
+### 从结尾给事件命名（Name the event from the ENDING）
 
-Read how the scene **ends** before naming what it is about. The last line or beat is the
-key you read the whole scene backward through — and watch for the double-meaning last
-line, spoken about one thing and meant about another (*"Poor bastard. Just can't forgive
-himself"* — said over a patient, meant about the speaker).
+先读这场戏怎么**结束**，再给它命名。最后一句台词或最后一个节拍是你倒着读整场戏的钥匙；留意双关的最后一句：说的是一件事，指的是另一件（*“可怜的家伙。就是没法原谅自己”*：对着病人说，指的是说话者自己）。
 
-**The test: the event must contain EVERY character in the scene**, including silent and
-unconscious ones, as participants or mirrors of the same process. **If a character stands
-outside the named event, the event is named wrong** — rename it until they are all inside
-it. This is the cheapest structural check in this file and it catches the scene where one
-character is merely present.
+**检验：事件必须包含场里的每一个角色**，包括沉默的和昏迷的，作为同一过程的参与者或镜像。**如果有角色站在所命名的事件之外，事件就命名错了**：改名，直到所有人都在里面。这是本文件里最便宜的结构检查，它能抓出某个角色只是“在场”的那场戏。
 
-### The physical action is the channel
+### 身体动作是通道（The physical action is the channel）
 
-The surface activity — the *terrain* — stays as the physical action, and each character
-pursues the event **through it, via their own distinct, camera-readable behaviour**. The
-invisible task must have a visible channel or the model has nothing to render.
+表面活动（*地形*）保持为身体动作，每个角色**通过它、经由自己独特的、镜头可读的行为**去追求事件。看不见的任务必须有可见的通道，否则模型没有东西可渲染。
 
-One terrain (*routine hospital rounds*), one event (*the search for self-forgiveness*),
-three channels:
+一个地形（*例行查房*），一个事件（*寻求自我原谅*），三条通道：
 
-- one character through **remembering** — REM under closed lids, a tear
-- one through **obligated actions done right** — correct metrics, on time, double-checking an entry
-- one through **caring** — patient-care gestures beyond the checklist, checking the man rather than the chart
+- 一个通过**回忆**：闭着的眼睑下眼球快速转动，一滴泪
+- 一个通过**把应尽的事做对**：指标正确、准时、反复核对一条记录
+- 一个通过**照料**：超出清单的护理动作，看的是人而不是病历
 
-Give every character in the scene their own physical channel for the same event. Different
-behaviours, one event, one terrain. This is what turns an acting note into something a
-video model can actually generate.
+给场里每个角色一条通向同一事件的身体通道。不同的行为，一个事件，一个地形。正是这一点，把一条表演笔记变成视频模型真正能生成的东西。
 
-### Contrast pairing — build duos on mirrored +/−
+### 对比配对：用镜像的正负构建双人戏（Contrast pairing — build duos on mirrored +/−）
 
-A two-hander is richer when the pair is built on contrast: **each character carries one
-plus and one minus, inverted relative to the partner**, and one axis is named as the
-**essential axis** — the opposition the audience actually reads. The other traits are
-colour.
+双人戏建立在对比上会更丰富：**每个角色带一个正和一个负，与搭档相反**，并把一条轴命名为**核心轴**：观众真正读到的那个对立。其他特征只是色彩。
 
-A lab pair, essential axis *care for the patient*:
+一对实验室搭档，核心轴是*对病人的关怀*：
 
-- **Doctor — loyal (+) / careless (−).** Genuinely loyal, but to the institution and the money. His plus serves the wrong master, so on the essential axis he is **minus**.
-- **Medic — compromised (−) / caring (+).** Compromised by taking the job at all, but caring toward the patient. His minus is real; his plus survives inside it — on the essential axis he is **plus**.
+- **医生：忠诚（+）/ 冷漠（−）。**是真忠诚，但忠于机构和钱。他的正为错的主人服务，所以在核心轴上他是**负**。
+- **医护：失守（−）/ 关怀（+）。**接这份工作本身就是失守，但对病人有关怀。他的负是真的；他的正在负里面活了下来，所以在核心轴上他是**正**。
 
-Both still push the same scene direction. The contrast lives *under* it and leaks out
-through the tactics: the careless one's routine is real, the caring one's routine is
-armour, and it cracks.
+两人仍然推动同一个场景方向。对比活在它*底下*，通过策略漏出来：冷漠者的例行公事是真的，关怀者的例行公事是盔甲，而且会裂开。
 
-**The seeming trait is often scar tissue over its opposite** — "careless" is hope lost,
-not care absent. Direct the history, not the surface.
+**表面的特征往往是盖在其反面上的疤**：“冷漠”是希望丢了，不是关怀不存在。导演的是历史，不是表面。
 
-## Listening and reaction
+## 倾听与反应（Listening and reaction）
 
-Performance lives not in the lines but **between** them. Four observable markers to write in:
+表演不在台词里，而在台词**之间**。要写进去的四个可观察标记：
 
-1. **The reaction starts when the information registers.** If the point is understood
-   mid-phrase, face or body can answer before the line ends. A final-word reveal or a
-   deliberate delayed response follows its actual trigger; do not impose a fixed lead or delay.
-2. **Thought before word.** Before a hard answer there is a micro-pause — the person visibly
-   decides what to say. Instant answers at uniform speed read as memorized text.
-3. **The assessment moment.** After news, a threat, or an insult, the character needs time to
-   digest — from a fraction of a second to a long pause. Show the assessment through cues
-   readable at the chosen scale: eyes in close-up, or head, shoulders, posture and breath
-   in wider coverage. The response does not require a close-up.
-4. **Contagion from the partner.** Tempo, volume, and energy shift in response: a shout is
-   answered either with a counter-shout or with pointed quiet — but *answered*, not continued
-   over.
+1. **信息被接收时，反应开始。**如果一句话说到一半就听懂了，脸或身体可以在句尾之前回应。最后一个字才揭示的内容或刻意延迟的回应，跟随它的实际触发；不强加固定的提前或延迟。
+2. **先想后说。**回答一个难题之前有一个微停顿：人看得出在决定说什么。匀速的即时回答读起来像背出来的。
+3. **评估的时刻。**听到消息、威胁或侮辱后，角色需要时间消化：从不到一秒到很长的停顿。用所选景别下可读的线索表现评估：近景里的眼睛，或更宽景别里的头、肩、姿态和呼吸。反应不要求近景。
+4. **被搭档传染。**节奏、音量和能量随回应而变：一声喊叫要么被反喊回去，要么被刻意的安静回应；但总是被*回应*，而不是被盖过去接着说。
 
-**A silent listener still gets a task, not just markers.** The four markers above describe
-how a reaction *reads*; they do not give the listener anything to be doing between them,
-and a listener with no task is where the dead face comes back in a two-shot. Name the work:
-*decide whether he is serious · wait for the opening · protect the mood · catch him in the
-lie.* Every character in frame gets living eyes this way.
+**沉默的听者也要有任务，不只有标记。**上面四个标记描述反应*读起来*的样子；它们没给听者在标记之间*做*点什么，而没有任务的听者正是双人镜头里死脸回来的地方。给出这份工作：*判断他是不是认真的 · 等一个空当 · 护住这个气氛 · 抓他撒谎。*画面里每个角色都以这种方式拥有活的眼睛。
 
-## The body
+## 身体（The body）
 
-**Physical state before psychology.** Set four parameters for every character before any
-inner life:
+**先身体状态，后心理。**在任何内心生活之前，给每个角色定好四个参数：
 
-- **Center of gravity** — high (chest, chin: confidence, aggression, status) or low
-  (shoulders, slouch: fatigue, fear, submission).
-- **Tempo** — fast/ragged (nervousness, stimulant energy) or slow/economical (control,
-  threat — the most dangerous people move least).
-- **Openness** — squared shoulders and open palms, versus crossed arms, dropped head, closed
-  poses.
-- **Breath** — high and rapid (panic) versus low and slow (control). Breath is the most honest
-  indicator of state, and sound must match physics: someone who just ran cannot speak on a
-  steady voice.
+- **重心**：高（胸、下巴：自信、攻击性、地位）或低（肩、塌腰：疲惫、恐惧、顺从）。
+- **节奏**：快而乱（紧张、兴奋剂式的能量）或慢而省（控制、威胁：最危险的人动得最少）。
+- **开合**：方正的肩和张开的手掌，对比交叉的手臂、低垂的头、封闭的姿势。
+- **呼吸**：高而急（恐慌）对比低而慢（控制）。呼吸是状态最诚实的指示，声音必须符合物理：刚跑完的人不可能用平稳的声音说话。
 
-**Business — the physical task.** A character almost always needs a DOING. They don't "have a
-conversation" — they fix an engine, count money, cook, wipe a glass, and talk over the top of
-it. Business kills fake theatricality (the hands are busy with truth), creates rhythm (pauses
-fill with action), and generates subtext (*how* a person counts money says more than the
-words).
+**手上活：身体任务。**角色几乎总是需要一件**在做的事**。他们不是在“谈话”，他们在修发动机、数钱、做饭、擦杯子，一边做一边说。手上活消灭假的舞台腔（手忙着真实的事），制造节奏（停顿被动作填满），并产生潜台词（一个人*怎么*数钱，比他说的话说明得更多）。
 
-> **The interrupted-action rule.** The strongest accent is when a character **stops** the
-> business. If he was slicing bread and stopped at a phrase, the phrase became an event. Use
-> the stop as punctuation.
+> **打断动作规则。**最强的重音是角色**停下**手上活的那一刻。如果他在切面包，说到某句话时停住了，那句话就成了一个事件。把停下当作标点来用。
 
-**Proxemics — distance as drama.** The distance between characters is a visible graph of
-their relationship:
+**空间距离：距离就是戏。**角色之间的距离是他们关系的可见图表：
 
-| Zone | Distance | Reads as |
+| 区域 | 距离 | 读作 |
 |---|---|---|
-| Intimate | under 0.5 m | love or violence — entering uninvited is aggression |
-| Personal | 0.5–1.2 m | trust |
-| Social | 1.2–3.5 m | business, wariness |
-| Public | 3.5 m+ | alienation, hierarchy |
+| 亲密 | 0.5 米以内 | 爱或暴力：不请自入就是攻击 |
+| 个人 | 0.5–1.2 米 | 信任 |
+| 社交 | 1.2–3.5 米 | 公事、戒备 |
+| 公共 | 3.5 米以上 | 疏离、等级 |
 
-A threat whispered 10 cm from a face is scarier than one shouted across a room. Scene drama is
-often just the story of distance: who closes it, who breaks it, who freezes. **A change of
-distance can mark a change of beat** when it changes the relationship or information.
-Use metres when spatial precision matters, per the measurable-language guidance in
-`higgsfield-seedance.md`; routine locomotion does not force a new beat.
+离脸 10 厘米的耳语威胁，比隔着房间喊出来的更吓人。一场戏的戏剧性常常就是距离的故事：谁拉近，谁打破，谁僵住。**当距离变化改变了关系或信息时，它可以标记一次节拍变化。**空间精度重要时用米数，按 `higgsfield-seedance.md` 的可测量语言指南；日常移动不强制产生新节拍。
 
-**Status — the invisible hierarchy.** Status is what you DO, not who you are.
+**地位：看不见的等级。**地位是你做出来的，不是你是谁。
 
-- **High status:** an immobile head, slow movements, long gazes, pauses before answering,
-  taking up space, touching other people's things.
-- **Low status:** fussing, frequent self-touching (face, hair), broken speech, filler-laughter,
-  asking permission with the eyes.
+- **高地位：**头不动，动作慢，凝视长，回答前停顿，占空间，碰别人的东西。
+- **低地位：**忙乱，频繁摸自己（脸、头发），说话断断续续，干笑，用眼睛请求许可。
 
-The most interesting thing in a performance is a **status break**: the boss who shows fear for
-one second; the underling who suddenly stops smiling. A powerful scene shape is *enter high and
-collapse*, or *enter low and flip the room*.
+表演里最有意思的是**地位的破裂**：老板露出一秒钟的恐惧；下属突然不笑了。一种有力的场景形态是*高姿态进场然后崩塌*，或*低姿态进场然后翻转全场*。
 
-## How good acting sounds
+## 好的表演听起来是什么样（How good acting sounds）
 
-- Rhythm is written in the text — deliver it precisely; fast ≠ mushy.
-- Overlaps are normal (lines stepping on each other's tails), but key words stay clean.
-- **Volume contrast: the most frightening things are said the quietest.** Shouting is the
-  currency of the weak; the character who owns the scene lowers the volume and everyone leans in.
-- Pauses are events, not holes — a pause is legal only if something happens inside it: an
-  assessment, a decision, a refusal to answer.
-- Speech may include interruptions or unfinished thoughts when the approved script supports
-  them. Preserve confirmed dialogue exactly; adjust delivery, not words, unless rewriting is authorized.
+- 节奏写在台词里，要精确地说出来；快不等于含糊。
+- 重叠是正常的（台词踩着彼此的尾巴），但关键词要清楚。
+- **音量对比：最可怕的话说得最轻。**喊叫是弱者的货币；掌控这场戏的角色压低音量，所有人都会往前凑。
+- 停顿是事件，不是空洞：只有停顿里发生了什么（一次评估、一个决定、一次拒绝回答），停顿才成立。
+- 已确认的剧本支持时，台词可以有打断或没说完的想法。已确认的对白一字不改；调整演绎，不改词，除非获得改写授权。
 
 ---
 
-# Part II — Writing the acting
+# 第二部分：写表演（Part II — Writing the acting）
 
-## The acting master profile
+## 表演母本（The acting master profile）
 
-Every recurring character gets **one** master profile — the permanent source of truth about
-how they act. Written once, then adapted per scene. The **150–220-word flowing paragraph** below is an optional planning form,
-not a required length or an extra output block. Keep relevant behavior observable and filmable.
+每个反复出现的角色都有**一份**表演母本：他们怎么表演的永久事实来源。写一次，然后每场改写。下面 **150–220 词的连贯段落**是可选的规划形式，不是必须的长度，也不是额外的输出块。相关行为保持可观察、可拍摄。
 
-**Suggested planning order:**
+**建议的规划顺序：**
 
 ```
 Character acting as [NAME]. [Build, physique, posture — the body as a document of their
@@ -309,207 +220,131 @@ when [emotional trigger], [the transformation — how the posture, gait, and fac
 [Optional: the softening target — the one person or thing that makes the face genuinely soften].
 ```
 
-**Rules for each block:**
+**各部分的规则：**
 
-1. **Only observable behavior.** Every inner state needs a body marker. Never "he is nervous" —
-   write the trembling lower lip, the heavy swallow, the long inhale through the mouth and
-   sharp exhale through pursed lips.
-2. **Every tic has a trigger.** Not "he cracks his knuckles" but "he cracks his knuckles during
-   mundane conversations to fake confidence." Format: `[tic] + [when/why]`. Tics without
-   triggers are decoration; tics with triggers are dramaturgy.
-3. **Name the gait.** A coined name in quotes anchors the biomechanics — a "power-walk", a
-   "peacock strut", a "gallery walk", a "battering-ram stride", a "dreadnought pace" — then
-   unpack it: weight, step, what the torso and arms do, what the head does.
-4. **Build in the mask AND the crack.** The single most cinematic device in a profile is the
-   conditional transformation: the facade, plus the precise trigger that collapses it. A
-   dominant swagger that crumbles into a childlike slouch when rejected; stern discipline that
-   melts into a radiant smile at one specific person. A "However, when X — …" clause can specify a genuine change of strategy.
-   It is optional: do not invent a mask or contradiction for every character.
-5. **Softening targets, when established.** Use the relationships already supported by the
-   character and scene; do not impose a count or invent a relationship.
-6. **No wardrobe.** Clothing lives in the scene/look block, never in the acting profile. The
-   profile must survive any costume change.
-7. **No camera, no color.** Acting drives performance, face, voice, and motion only.
-8. **Physique carries biography.** Build and posture tell the backstory — a build "weathered
-   from past struggles", shoulders "perpetually tense", a posture "over-corrected to project
-   authority". Profession, past injuries, and self-image must be readable in the body.
+1. **只写可观察的行为。**每个内在状态都需要一个身体标记。绝不写“他很紧张”：写颤抖的下唇、沉重的吞咽、用嘴长吸一口气再从噘起的唇间猛地呼出。
+2. **每个小动作都有触发。**不是“他掰指节”，而是“他在日常交谈时掰指节来装作自信”。格式：`[小动作] + [何时/为何]`。没有触发的小动作是装饰；有触发的小动作是戏剧。
+3. **给步态起名字。**一个加引号的自创名字锚定生物力学：“权力步”“孔雀步”“画廊步”“攻城锤步伐”“无畏舰步速”，然后展开：重量、步子、躯干和手臂做什么、头做什么。
+4. **同时写进面具和裂缝。**母本里最有电影感的手法是有条件的转变：表面，加上让它崩塌的精确触发。被拒绝时塌成孩子般含胸的跋扈姿态；对某一个特定的人化成灿烂笑容的严格纪律。“However, when X — …”这一句可以写出真正的策略转变。它是可选的：不要给每个角色都编一个面具或矛盾。
+5. **软化对象，有依据时才写。**使用角色和场景已经支持的关系；不强加数量，也不编造关系。
+6. **不写服装。**服装放在场景/画面块里，绝不放在表演母本里。母本必须能挺过任何换装。
+7. **不写镜头，不写色彩。**表演只驱动表演、脸、声音和动作。
+8. **体格承载履历。**体型和姿态讲出前史：一副“被过去的挣扎磨出来的”身板，“永远绷着的”肩，“矫枉过正、想显出权威的”姿态。职业、旧伤和自我形象必须能从身体上读出来。
 
-> **Identity and age follow confirmed project facts.** This craft module imposes no blanket
-> age-word ban. Body, posture and voice may express life experience without repeating asset
-> descriptions, but do not conceal age, change identity, or rewrite words to bypass safeguards.
-> Apply the actual platform rules; if they prevent the requested submission, explain the conflict.
+> **身份与年龄遵循已确认的项目事实。**这个技艺模块不施加一刀切的年龄词禁令。身体、姿态和声音可以表达人生经历，而不重复资产描述；但不要隐藏年龄、改变身份或改写台词去绕过保护措施。按实际平台规则执行；如果它们阻止了要求的提交，解释这个冲突。
 
-## Eye life
+## 眼神生命力（Eye life）
 
-**Dead eyes are the number-one tell of AI-generated acting.** Every character gets continuous,
-purposeful attention, in the profile *and* in every scene. The following cues are a
-menu: select only meaningful eye work readable in the framing. No each-second motion,
-blink count or close-up quota; a motivated held gaze is valid.
+**死眼是 AI 生成表演的头号破绽。**每个角色都要有持续的、有目的的注意，在母本里*也*在每场戏里。下面的线索是一份菜单：只挑在构图里可读的、有意义的眼神工作。没有每秒运动、眨眼次数或近景配额；有动机的停住凝视是成立的。
 
-- **Micro-saccades and gaze targeting** on whatever they attend to: eyes may drift,
-  flick away in thought, scan to a detail or settle. Avoid an unmotivated frozen stare;
-  sustained attention can remain still.
-- **Realistic blink rate and quality**, tied to state: rapid blink-bursts under stress; slow
-  calm lids in control; a blink-and-glaze on a moment of dissociation.
-- **Live catchlights** — the eyes must read as wet, lit, and alive. But a catchlight is a
-  *render* property, not a cure: **dead eyes are not fixed by lighting tricks, they are
-  fixed by giving the eyes a task.** A glassy stare with a beautiful catchlight is still a
-  glassy stare. Write the eye-work as purposeful action aimed at the partner — *checking
-  both of their eyes for a sparkle of trust · registering after each point whether it
-  landed · stealing a look and snapping back before being caught · measuring them,
-  comparing what I feel against what they show.* **The eye movement IS the doing**, and
-  aliveness is the mind visibly working on the task moment to moment. Catchlights make
-  that legible; they never substitute for it.
-- **Controlled stillness is chosen, never dead.** For a near-unblinking predator calm, keep
-  blinks rare, slow, and deliberate — a decision, not a freeze — and let the gaze still shift
-  slowly with intent.
-- **Eyes lead the thought.** The eyes reach the target a touch before the head turns. The
-  thought is readable in the eyes before the words come.
-- **Eye life reacts to the event.** Select changes in blink quality or gaze steadiness
-  when motivated; catchlights follow lighting and eye direction, not an emotion schedule.
+- **微扫视与视线定向**，落在他们关注的东西上：眼睛可能飘移、思考时瞥开、扫到一个细节或停下。避免无动机的冻结凝视；持续的注意可以保持静止。
+- **真实的眨眼频率和质感**，与状态绑定：压力下快速连眨；掌控时眼睑缓慢平静；失神时眨一下然后目光发直。
+- **活的眼神光**：眼睛必须读起来湿润、有光、活着。但眼神光是*渲染*属性，不是解药：**死眼不是靠打光技巧修好的，是靠给眼睛一个任务修好的。**一双配着漂亮眼神光的呆滞凝视仍然是呆滞凝视。把眼神工作写成指向搭档的有目的动作：*检查对方两只眼睛里有没有信任的光 · 每说完一点就看它有没有落地 · 偷看一眼，在被发现前收回 · 打量对方，拿我的感受去比他表现出来的。***眼睛的运动就是在做事**，而活力就是头脑在一刻接一刻地明显处理这个任务。眼神光让它可读；永远替代不了它。
+- **受控的静止是选择，从来不是死。**要那种几乎不眨眼的掠食者式平静，就让眨眼稀少、缓慢、刻意（是一个决定，不是冻结），并让视线仍然带着意图缓慢移动。
+- **眼睛引领想法。**眼睛比头稍早一点到达目标。话说出来之前，想法已经能从眼睛里读出来。
+- **眼神生命力对事件做出反应。**有动机时挑选眨眼质感或视线稳定度的变化；眼神光跟随光照和眼睛方向，不跟随情绪时间表。
 
-The phased-blink shorthand from the film pipeline — *one lazy blink → a quick DOUBLE-BLINK →
-one HARD reset-blink* — is an optional static-shot remediation example, not a required sequence
-(`higgsfield-seedance-hell-grind.md` § Physics, not adjectives).
+来自长片流程的分段眨眼速记（*一次懒洋洋的眨眼 → 一次快速的双眨 → 一次用力的重置眨眼*）是可选的固定镜头补救示例，不是必须的顺序（`higgsfield-seedance-hell-grind.md` § Physics, not adjectives）。
 
-## Scene adaptation
+## 场景改写（Scene adaptation）
 
-The master profile is who the character IS. For each scene, **rewrite it into the moment** —
-never paste it.
+表演母本是角色**是**谁。每场戏都**把它改写进这一刻**，绝不粘贴。
 
-1. **Present characters only.** An acting paragraph only for characters actually in the shot.
-   No character in frame → no paragraph.
-2. **Keep the constant core.** Identity, signature tics, eye life, and the
-   emotional through-line stay the same in every scene — this is what holds the character
-   together across cuts. Never contradict the master.
-3. **Re-express for this scene.** Select, emphasize, modify, or drop specific behaviors to fit
-   the scene's posture (seated / standing / running / hiding), action, beat, emotional state,
-   and time of day.
-4. **Preserve the motive; select its outlet.** A behavior that cannot happen here can
-   be *converted*: a restless pacer on a sofa may displace that pressure into a wrist-flick
-   or paper-tearing. Choose a meaningful visible outlet; omit irrelevant tics rather than
-   stacking substitutions. Fatigue, injury or new information can change the energy.
-5. **One flowing paragraph for the acting sub-block.** Fold it into the full director
-   format's behavior, staged performance and continuity sections; this sub-block style
-   does not remove the enclosing headings or detailed action prose.
-6. **Bind the character to real references** in the role map. Use the selected mode's
-   tag grammar; follow the root's direct registered @handle convention in project video prose,
-   without re-describing the asset. Unbound authoring aliases remain explicitly unbound in records.
+1. **只写在场的角色。**只给镜头里实际出现的角色写表演段落。画面里没有角色 → 没有段落。
+2. **保留不变的核心。**身份、招牌小动作、眼神生命力和情绪主线在每场戏里都一样：这是让角色跨切镜保持一体的东西。绝不与母本矛盾。
+3. **为这场戏重新表达。**按这场戏的姿态（坐 / 站 / 跑 / 躲）、动作、节拍、情绪状态和时段，挑选、强调、修改或去掉具体行为。
+4. **保留动机，挑选出口。**在这里没法发生的行为可以被*转换*：一个坐立不安的踱步者坐在沙发上，可能把那股压力转到甩手腕或撕纸上。选一个有意义的可见出口；不相关的小动作就省略，而不是叠加替代品。疲惫、伤势或新信息可以改变能量。
+5. **表演子块写成一段连贯文字。**把它并入完整导演格式的行为、分阶段演出和连续性部分；这种子块写法不去掉外面的块结构或详细的动作文字。
+6. **在职责映射里把角色绑定到真实参考。**用所选模式的标签语法；项目视频正文按根入口的规则直接用已登记的中文名和映射，不重新描述资产。未绑定的写作别名在记录里明确标为未绑定。
 
-## Voice — fixed identity, never adapted
+## 声音：固定身份，不随场改写（Voice — fixed identity, never adapted）
 
-Do not output fixed timbre, register, resonance or accent profiles in character assets or video drafts. Delivery is
-scene-dependent: breath, pace, pauses, loudness and strain must follow the current action.
-A frightened whisper and a calm answer can come from the same speaker without the same delivery.
+角色资产可以在图像提示词之外带一份固定的音色描述（音色、音域、共鸣、口音），视频稿可以在 [角色]/[道具]/[场景] 映射块里引用它。固定音色是身份；演绎随场景而变：气息、语速、停顿、响度和用力程度必须跟随当下的动作。同一个说话者可以有受惊的耳语和平静的回答，演绎却不一样。
 
-Use actual provided audio references or platform IDs only with verified roles and binding;
-do not turn them into invented descriptions. Full video drafts use inline speech, non-verbal
-vocalizations and scene sounds, without a fifth Audio field. Silent appearances do not need
-voice instructions; offscreen dialogue retains speaker attribution. Native audio-only tool
-settings remain in their own task scope. Actual lip-sync and audio matching require results.
+> **连近义词都不换（Not even a synonym）。**`[FIELD — Higgsfield Studio, ONEIRIC breakdown, via OSideMedia v3.35.0]`“原样复制”比听起来更严格。破坏它的，是写作者在镜头之间“改进”措辞、并以为意思保留了：把 *warm* 换成 *rich*，或把 *gravelly* 换成 *raspy*，都会让生成的声音变化。每次都从项目总表复制已登记的音色描述；只通过更新总表条目来修改它。
 
-## States, not transitions
+> **范围：2.0 与 2.5（Scope — 2.0 vs 2.5）**`[via OSideMedia v3.38.0, house ruling P2-2]`。在 **2.5** 上复用同一张角色设定参考图时，参考图把声音和外观一起带着：声音在该角色的 [角色]/[道具]/[场景] 映射块里写一次。在 **2.0** 上，或者任何没有复用参考来承载声音的镜头里，在每个说话节拍处粘贴同一句音色描述。2.5 需要每条提示词写一次还是每个项目写一次，没有测量过；工作室默认每条提示词写一次。
 
-**Optional remediation for a failed transition or a short submission.** A clearly
-anchored state — mid-throw, mid-punch, mid-pace, mid-argument — can help the model
-recover a difficult action phase. It does not replace the complete causal performance.
+只有核实了职责和绑定，才使用实际提供的音频参考或平台 ID；有真实音频参考时，它优先于文字描述。完整视频稿里，对白写在 `[声音]` 的计时行，非语言发声和现场声随动作写，不另设第五个音频字段。沉默出场不需要声音指令；画外对白保留说话人归属。原生纯音频工具的设置留在各自的任务范围里。实际的口型和声音匹配需要生成结果来验证。
 
-- Failure example: "reaches into the bag, pulls out the knife, winds up" collapses in a take.
-- Possible repair anchor: "mid-throw, arm extended" identifies the phase to regenerate.
+## 写状态，而不是过渡（States, not transitions）
 
-Keep the preparation, draw, weight transfer, release, contact/miss, target response and
-recovery explicit in the full master. If separate coverage is needed, preserve the approach
-and matched outgoing/incoming states. Opening mid-action is an option only when the cause
-and user-directed opening remain legible
-(`higgsfield-seedance-hell-grind.md` § Solutions born under deadline).
+**用于失败的过渡或短提交稿的可选补救。**一个锚定清楚的状态（投掷中、出拳中、踱步中、争吵中）可以帮助模型救回一个困难的动作相位。它不替代完整的因果表演。
 
-## Ensemble and space
+- 失败示例：“reaches into the bag, pulls out the knife, winds up”在一次生成里塌掉了。
+- 可能的修复锚点：“mid-throw, arm extended”标出要重新生成的相位。
 
-The wave, freeze and strong/weak contrasts below are optional dramatic patterns;
-character intent, readable distance and actual stimuli determine behavior and timing.
+完整母稿里保留准备、拔出、重心转移、出手、接触/落空、目标反应和恢复。需要分开拍时，保留接近过程以及匹配的离开/进入状态。只有当原因和用户指定的开场仍然清楚时，从动作中间开场才是一个选项（`higgsfield-seedance-hell-grind.md` § Solutions born under deadline）。
 
-- **Group reactions follow perception.** One person may get a joke first, another later,
-  another not at all; a shared sudden stimulus can also produce simultaneous responses.
-  Vary behavior where motivated, not by mandatory stagger or per-person reaction slots.
-- **Give the reaction its needed weight.** Preserve action and response together; show a
-  witness's face when that viewpoint carries the event, without forcing reaction close-ups.
-- **A freeze can punctuate a threat.** A motivated change from shifting weight or business
-  to stillness is one option. Each person responds to what they perceive; no constant
-  micro-movement or synchronized stop is required.
-- **Movement equals motivation.** Nobody crosses a room without an impulse: toward something or
-  away from something. Strong motivated events — closing in (escalation) · turning one's back
-  (dismissal, or hiding the face) · standing while the other sits (dominance grab) · sitting
-  down mid-conflict (paradoxical power) · stopping in the doorway (the threshold is the decision
-  point) · starting to pack (ultimatum by body).
-- **The strong are still and quiet; the weak fidget and shout.** Danger is played not by the
-  dangerous one but by the tension of everyone around them. Threat without wind-up: no menacing
-  pauses, no slow-motion turns — in a truthful world violence arrives without an announcement.
-- **Degradation accumulates.** If a character is worn down across a story, carry it in the body
-  cumulatively — greyer, heavier, slower reactions — never resetting between scenes.
+## 群戏与空间（Ensemble and space）
 
-> **Capacity is model- and mode-specific.** Older production heuristics are not a universal
-> three-character ceiling. Check actual reference/speaker limits and visible workload; do not
-> demote a plot-relevant character to an anonymous crowd solely to meet an assumed count.
+下面的波浪、定格和强弱对比是可选的戏剧模式；角色意图、可读的距离和实际刺激决定行为和时机。
+
+- **群体反应跟随感知。**一个人先听懂笑话，另一个后懂，还有一个根本没懂；一个共同的突然刺激也可能引发同时的反应。在有动机的地方变化行为，而不是靠强制错开或每人一个反应时段。
+- **给反应它需要的分量。**动作和反应放在一起；当目击者的视角承载事件时展示他的脸，但不强制反应近景。
+- **定格可以给威胁加标点。**从挪动重心或手上活转为静止，是一个有动机的选项。每个人回应自己感知到的东西；不需要持续的微动作，也不需要同步停下。
+- **运动等于动机。**没有人会毫无冲动地穿过房间：要么朝向什么，要么远离什么。强有动机的事件：逼近（升级）· 转身背对（轻蔑，或藏起脸）· 对方坐着时站起来（夺取主导）· 冲突中坐下（悖论式的权力）· 停在门口（门槛就是决定点）· 开始收拾东西（用身体下最后通牒）。
+- **强者静而安静；弱者乱动而喊叫。**危险不是由危险的人演出来的，而是由他周围每个人的紧张演出来的。威胁不需要蓄势：没有吓人的停顿，没有慢动作转身；在真实的世界里，暴力不打招呼就来了。
+- **损耗会累积。**如果一个角色在整个故事里被磨损，就把它累积地带在身体上：更灰、更沉、反应更慢；绝不在场与场之间复位。
+
+> **容量取决于模型和模式。**以前的制作经验并不是通用的三人上限。核对实际的参考/说话人限制和可见工作量；不要仅仅为了满足一个假设的数量，就把一个有剧情作用的角色降级成匿名人群。
 
 ---
 
-# Part III — Quality control
+# 第三部分：质量控制（Part III — Quality control）
 
-## The atlas of bad acting
+## 糟糕表演图谱（The atlas of bad acting）
 
-Recognize the symptom, apply the prompt-level fix.
+认出症状，应用提示词层面的修正。
 
-| # | Symptom | How it looks | Prompt-level fix |
+| # | 症状 | 看起来是什么样 | 提示词层面的修正 |
 |---|---|---|---|
-| 1 | Indication (mugging) | The face "depicts" the emotion: arched brows, grimaces | Remove the face from the task; write the objective and give the hands business |
-| 2 | Playing the result | The character plays the scene's outcome from second one | Write only what the character knows NOW |
-| 3 | Waiting for the cue | Empty face while the partner speaks | Give the listener a task; start the response when the relevant information registers |
-| 4 | Monotactics | One color despite changing circumstances | Check event-driven tactics; a sustained tactic is valid when justified |
-| 5 | Gesture illustration | Gesture duplicates the word ("big" — arms spread) | Gesture either precedes the thought, contradicts the words, or is absent |
-| 6 | Free emotion | Tears or rage with no build-up and no trigger | Build the ladder: restraint → break; emotion must cost something |
-| 7 | Body false to biography | A thug with a dancer's posture | Set the body profile: center of gravity, tempo, wear |
-| 8 | Speech mismatches the character | Delivery lacks the established rhythm | Adjust delivery within approved words; do not add fillers, repeats or rewrite dialogue without authorization |
-| 9 | Threat signaling | "Menacing" pauses, squints, slow turns before violence | Threat is mundane; violence without wind-up |
-| 10 | Unmotivated synchronized ensemble | Different perceptions yield identical reactions | Tie each response to its stimulus; simultaneous reactions are valid when justified |
-| 11 | Dead pauses | Silence in which nothing happens | Fill with assessment or business — or cut |
-| 12 | Emotional reset | The character instantly "recovers" after a strong event | States have inertia; the trail carries into the next beat |
-| 13 | Commenting the role | The performance winks at the viewer | Full belief in the circumstances; comedy is played dead serious |
-| 14 | Close-up overload | Active mimicry on a close-up | The tighter the shot, the less movement: only the eyes and the thought |
-| 15 | Dead eyes | Unmotivated frozen stare and absent attention | Apply § Eye life through a clear attention task and selected visible cues, without a motion quota |
+| 1 | 表演指示（做鬼脸） | 脸在“描绘”情绪：挑眉、鬼脸 | 把脸从任务里拿掉；写目标，给手安排活 |
+| 2 | 演结果 | 角色从第一秒就在演这场戏的结局 | 只写角色**此刻**知道的东西 |
+| 3 | 等着接词 | 搭档说话时脸是空的 | 给听者一个任务；相关信息被接收时开始反应 |
+| 4 | 单一策略 | 情境在变，表演只有一种颜色 | 检查由事件驱动的策略；有依据时坚持一个策略也成立 |
+| 5 | 手势图解 | 手势重复台词（说“大”就张开双臂） | 手势要么先于想法，要么与台词矛盾，要么不做 |
+| 6 | 白来的情绪 | 没有铺垫、没有触发的眼泪或暴怒 | 搭梯子：克制 → 崩溃；情绪必须付出代价 |
+| 7 | 身体与履历不符 | 一个打手有舞者的体态 | 设定身体档案：重心、节奏、磨损 |
+| 8 | 说话方式与角色不符 | 演绎缺少既定的节奏 | 在已批准的台词内调整演绎；未经授权不加口头填充、不重复、不改写对白 |
+| 9 | 威胁预告 | 暴力之前“吓人的”停顿、眯眼、慢转身 | 威胁是日常的；暴力不蓄势 |
+| 10 | 无动机的整齐群戏 | 不同的感知产生一模一样的反应 | 把每个反应绑定到它的刺激；有依据时同时反应也成立 |
+| 11 | 死停顿 | 什么也没发生的沉默 | 用评估或手上活填满，或者剪掉 |
+| 12 | 情绪复位 | 角色在强烈事件之后瞬间“恢复” | 状态有惯性；余波带进下一个节拍 |
+| 13 | 评论角色 | 表演在对观众眨眼 | 完全相信情境；喜剧要一本正经地演 |
+| 14 | 近景过载 | 近景里表情动作太活跃 | 镜头越紧，动作越少：只剩眼睛和想法 |
+| 15 | 死眼 | 无动机的冻结凝视，注意力缺席 | 按 § Eye life，给出清楚的注意任务和挑选的可见线索，不设运动配额 |
 
-## The performance scale
+## 表演量表（The performance scale）
 
-Optional descriptive diagnosis, not an acceptance score or a required arc:
+可选的描述性诊断，不是验收分数，也不是必须的弧线：
 
-- **0 — Mannequin:** behavior/attention absent where needed.
-- **1 — Declaimer:** labels and illustrative gestures replace an objective.
-- **2 — Diligent:** an objective is suggested, but needed reactions or continuity are missing.
-- **3 — Craftsman:** motivated, readable behavior and listening with credible body state.
-- **4 — Alive:** nuance and scene-specific responses deepen the established character.
-- **5 — Magnet:** especially compelling, coherent performance; mixed truths may help when
-  the story calls for them, but are not required.
+- **0：人体模特。**需要的地方没有行为/注意。
+- **1：朗诵者。**标签和图解式手势代替了目标。
+- **2：用功者。**暗示了目标，但缺少需要的反应或连续性。
+- **3：匠人。**有动机、可读的行为和倾听，身体状态可信。
+- **4：活的。**细腻和针对场景的反应加深了既定的角色。
+- **5：磁铁。**格外吸引人、前后一致的表演；故事需要时，混合的真实感会有帮助，但不是必须的。
 
-A pure emotion, sustained stillness or simple truthful response can pass. Do not manufacture
-contradiction, unexpected choices, extra tears or tactic changes to reach 4+. Acceptance uses
-[表演证据验收](#表演证据验收); a failed critical item cannot be averaged away.
+纯粹的情绪、持续的静止或简单真实的反应都可以通过。不要为了到 4 分以上而制造矛盾、意外选择、额外的眼泪或策略变化。验收用 [表演证据验收](#表演证据验收)；关键项失败不能被平均掉。
 
-## Pre-send checklist
+## 发送前检查（Pre-send checklist）
 
-- [ ] Active dramatic characters have a concrete objective/attention target; sleeping or unconscious figures retain an appropriate physical state
-- [ ] Obstacle and stakes exist; the cost of failure is real
-- [ ] Beat changes follow actual events/tactics and remain visible in behavior (pause / posture / tempo / gaze); no mandatory count or equal timing
-- [ ] Reactions follow perception of the trigger, including mid-line when understood; assessment time fits the event
-- [ ] Each active character has purposeful attention; business or a held posture fits the scene, without inventing conscious tasks for sleeping/unconscious figures
-- [ ] Any distance changes are motivated and spatially clear; metres used where precision matters
-- [ ] Status is in the body, not just the words
-- [ ] Any tic/mask used has a trigger; no compulsory mask, crack or contradiction
-- [ ] Attention and selected gaze/blink cues are meaningful and visible at the chosen scale; no per-second or blink quota
-- [ ] No fixed timbre/profile prose; delivery follows current action and actual reference roles
-- [ ] Full action process, response and recovery retained; optional repair state anchors have causal handoffs
-- [ ] No wardrobe, camera, or color inside the acting paragraph
-- [ ] Confirmed identity/age preserved; actual platform rules checked without concealment or blanket age-word rules
-- [ ] Ensemble responses fit perception and motivation; any stagger or status contrast serves the event
-- [ ] Evidence checks below passed for the applicable scope; score is not a substitute
+- [ ] 主动的戏剧角色有具体的目标/注意对象；熟睡或昏迷的人物保持合适的身体状态
+- [ ] 障碍和利害存在；失败的代价是真的
+- [ ] 节拍变化跟随实际事件/策略，并在行为上可见（停顿 / 姿态 / 节奏 / 视线）；没有强制数量或等长时间
+- [ ] 反应跟随对触发的感知，包括听懂时在一句话中间就反应；评估时间与事件相称
+- [ ] 每个主动角色都有有目的的注意；手上活或保持的姿势符合场景，不给熟睡/昏迷的人物编造有意识的任务
+- [ ] 任何距离变化都有动机、空间清楚；精度重要时用米数
+- [ ] 地位体现在身体上，不只在台词里
+- [ ] 用到的任何小动作/面具都有触发；没有强制的面具、裂缝或矛盾
+- [ ] 注意和挑选的视线/眨眼线索有意义、在所选景别下可见；没有每秒或眨眼配额
+- [ ] 音色描述（如有）与登记的一致；演绎跟随当下动作和实际参考职责
+- [ ] 保留完整的动作过程、反应和恢复；可选的修复状态锚点有因果交接
+- [ ] 表演段落里没有服装、镜头或色彩
+- [ ] 保留已确认的身份/年龄；核对了实际平台规则，没有隐藏，也没有一刀切的年龄词规则
+- [ ] 群体反应符合感知和动机；任何错开或地位对比都服务于事件
+- [ ] 适用范围内通过了下面的证据检查；分数不能替代它
 
 ---
 
@@ -534,11 +369,11 @@ contradiction, unexpected choices, extra tears or tactic changes to reach 4+. Ac
 | 检查点 | 文字通过条件 | 典型失败 |
 |---|---|---|
 | 动机与注意 | 能定位当前任务、刺激源及视线对象；主动角色的行为服务目标，听者在理解/判断 | 只有“惊恐/悲伤”，或所有人空等 |
-| 表情与情绪发展 | 适用近景写出可见变化及其触发，状态如何影响行动；没有变化也有维持该状态的理由 | 无缘由落泪、开场就演结局、每镜相同抖嘴 |
+| 表情与情绪发展 | 脸部近景/特写有具体表情状态、刺激后的变化或维持依据；奔跑/躲避/反击与表情并行，状态跨镜继承，按上节逐镜核对 | 只有视线/喘息或抽象情绪；逃跑空白脸、近景无表情依据；无缘由落泪、提前演结局、每镜同款皱眉 |
 | 听者及群体 | 反应由各自听见/看见的信息触发，可并行也可有感知延迟，背景仅写可读幅度 | 所有人同步同表情，或轮流等待自己的镜头 |
 | 景别与身体 | 脸部、手部、姿态、呼吸取舍符合取景和遮挡；受力与伤势限制持续 | 远景硬写瞳孔、背影硬写嘴角、受伤肢体突然正常 |
 | 时序与接缝 | 表情、判断与主动作可并行，情绪/气息/注意跨镜有余态 | 停下追逐演表情、切回就恢复平静、准备/命中被反应镜拉长 |
-| 声音与表情 | 不输出固定音色，语气/响度/气息随当前行动，口型需求与所选模式相容 | 奔跑后突然无喘息长句、说话者切错、听者跟口型 |
+| 声音与表情 | 音色描述与登记一致，语气/响度/气息随当前行动，口型需求与所选模式相容 | 奔跑后突然无喘息长句、说话者切错、听者跟口型 |
 | 风格与幅度 | 符合角色、题材和项目已定表现尺度；纯粹、克制或复杂情绪均可成立 | 为高评分硬造潜台词、反转或矛盾，擅加哭喊 |
 | 非人适配 | 非人角色符合上一节结构、感知和拟人化边界 | 直接套人类FACS或新增器官/能力 |
 
@@ -546,11 +381,11 @@ contradiction, unexpected choices, extra tears or tactic changes to reach 4+. Ac
 
 生成后另用实际视频与时间码核验：表情是否可读且不过度、注意目标是否正确、反应是否及时、气息/动作是否连贯、身份和非人结构是否稳定。有静帧只验可见静态项，有视频无音频不能声称声音验收；没有生成结果时结果层待核验。
 
-# Part IV — Worked example
+# 第四部分：完整示例（Part IV — Worked example）
 
-Invented character; use as a pattern, not as content.
+虚构角色；作为模式参考，不作为内容。
 
-## Master profile
+## 表演母本（Master profile）
 
 ```
 Character acting as VIKTOR. A retired night-shift taxi driver and former amateur boxer; heavy,
@@ -571,10 +406,9 @@ hands rise halfway, the feet find their old stance — then he catches himself a
 embarrassed. His face only truly softens for stray dogs, which he feeds from his coat pocket.
 ```
 
-## Scene adaptation
+## 场景改写（Scene adaptation）
 
-*Scene: VIKTOR sits in his parked cab at night; a nervous passenger in the back seat is lying
-about having money for the fare.*
+*场景：VIKTOR 坐在夜里停着的出租车里；后座一个紧张的乘客在谎称自己有钱付车费。*
 
 ```
 VIKTOR sits motionless in the driver's seat, heavy and grounded, watching the passenger in the
@@ -588,36 +422,32 @@ when the passenger's voice cracks does the sleepy mask ease a fraction: a long e
 blink, the coin resuming its roll — patience choosing, for now, to be kind.
 ```
 
-**What happened here:** the walk is irrelevant (seated) so its energy moved into stillness and
-the coin; the signature tics kept their triggers (coin = sizing up · stopped coin = interrupted
-action as punctuation · nose-breath = refusal · stillness plus silence = pressure on a liar);
-the eye life obeys the master but is re-targeted to mirror, hands, lock; the beat changes are
-visible (coin stops → silence → quieter voice → softening); and current delivery remained tied to his listening and response, without an added voice-profile field.
+**这里发生了什么：**步态用不上（坐着），所以它的能量转进了静止和硬币；招牌小动作保留了各自的触发（硬币 = 打量局面 · 硬币停下 = 作为标点的打断动作 · 鼻息 = 拒绝 · 静止加沉默 = 给撒谎者施压）；眼神生命力服从母本，但重新指向后视镜、手和门锁；节拍变化看得见（硬币停 → 沉默 → 声音更轻 → 软化）；当下的演绎始终绑在他的倾听和回应上。
+
+工作室格式里，这段编译进 `[具体情节]` 各段的 `动作：`/`表情：`/`听者：` 行；乘客的台词写进 `[声音]` 的计时对白行，第一秒定位 `0s-1s｜VIKTOR 轻声：{Hm.}`。
 
 ---
 
-## Final axioms
+## 最终公理（Final axioms）
 
-1. Acting is behavior under pressure, not a demonstration of feelings.
-2. Listening matters more than speaking; reacting matters more than declaiming.
-3. Emotion is the consequence of a won or lost struggle, and it is expensive.
-4. The body is smarter than the words: when text and body conflict, the viewer believes the body.
-5. The strong are still and quiet; the weak fuss and shout. Exceptions are events.
-6. Every tic needs a trigger; every mask needs a crack.
-7. Defeat is one dramatic scene pattern; other scenes may reveal, connect or sustain an experience without inventing a loser.
-8. Subtext is not shown — it fails to be hidden.
-9. State anchors can repair a failed transition; the full performance still shows what happens and why.
-10. Trim redundant mimicry when it obscures the event; preserve complete action, response and emotional development.
+1. 表演是压力下的行为，不是情感的演示。
+2. 倾听比说话重要；反应比朗诵重要。
+3. 情绪是一场赢了或输了的争夺的结果，而且代价昂贵。
+4. 身体比台词聪明：台词和身体冲突时，观众相信身体。
+5. 强者静而安静；弱者忙乱而喊叫。例外就是事件。
+6. 每个小动作都需要触发；每个面具都需要裂缝。
+7. 失败是一种戏剧场景模式；其他场景可以揭示、连接或维持一段体验，而不必编造输家。
+8. 潜台词不是被展示出来的，而是没藏住的。
+9. 状态锚点可以修复失败的过渡；完整的表演仍要展示发生了什么、为什么。
+10. 多余的表情动作遮住事件时就削减；保留完整的动作、反应和情绪发展。
 
 ---
 
-## Related Skills
+## 相关模块（Related Skills）
 
-- `higgsfield-seedance.md` — the Seedance prompt this paragraph goes into
-- `higgsfield-seedance-hell-grind.md` — the CHARACTER ACTING block's production form,
-  dialogue construction, and the micro-life rules
-- `higgsfield-seedance-2-5.md` — 2.5's observable-cue emotional direction
-- `higgsfield-facs.md` — muscle-level facial control by Action Unit code
-- `higgsfield-soul.md` — identity consistency and micro-expression vocabulary
-- `higgsfield-character-design.md` — the story bible upstream of any profile
-- `higgsfield-audio.md` — where the locked voice prompt is delivered
+- `higgsfield-seedance.md`：这段表演要进入的 Seedance 提示词
+- `higgsfield-seedance-hell-grind.md`：CHARACTER ACTING 块的制作形式、对白构建和微生命规则
+- `higgsfield-seedance-2-5.md`：2.5 的可观察线索式情绪引导
+- `higgsfield-facs.md`：用动作单元代码进行肌肉级面部控制
+- `higgsfield-character-design.md`：任何母本上游的故事圣经
+- `higgsfield-audio.md`：固定音色提示交付的地方

@@ -1,98 +1,70 @@
-# Template: Portrait / Character Introduction
+# 模板：人物肖像 / 角色登场
 
-## Genre/Use-Case
-Character reveals, protagonist introductions, talking-head setups, emotional close-ups, and any prompt where the human face and expression are the primary subject.
+## 题材与用途
+角色亮相、主角登场、说话人镜头、情感近景，以及任何以人脸和神情为主体的提示词。
 
-## When to use this template
-User asks for a character intro, portrait, close-up, emotional moment, reaction shot, or any prompt centered on a single person's face and presence.
+## 何时使用
+用户要角色登场、肖像、近景、情感时刻、反应镜头，或任何围绕单个人物的脸与存在感的提示词。
 
-## Recommended model
-**Kling 3.0** for video (best character consistency + native audio for dialogue). **Soul 2.0** or **Nano Banana Pro** for the reference image. **Soul Cinema Preview** for cinematic keyframes.
+## 推荐模型
+视频用 **Seedance 2.5** `omni_reference`（角色参考按职责绑定，对白有原生音频）。参考图用 **Soul 2.0** 或 **Nano Banana Pro**。电影感关键帧用 **Soul Cinema Preview**。
 
-## Narrative planning
+## 叙事规划
 
-For video, use [shared narrative planning](narrative-planning.md).
-Its eight semantic layers — assets, goal, global audiovisual/space, behavior, stages,
-continuity, final frame, constraints — map to the short and Identity/Motion formats.
-Let a recognition, reveal, or visible response determine stages before assigning time
-for gaze, dialogue, and reaction. No preset stage count or equal-time split. Keep the
-one-emotion-per-shot constraint below; when an arc requires distinct emotions, plan
-coverage and preserve identity, eyeline, and pose across the cut. End on the intended
-expression/composition. Example durations and counts are illustrative, not mandatory.
-Static identity/reference images retain their separate asset workflow.
+视频按 [共享叙事规划](narrative-planning.md) 规划。它的八个语义层（资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面、约束）映射到短提示词或工作室块结构。由一次认出、一次揭晓或一个可见反应决定阶段，再为视线、对白和反应分配时间。不预设阶段数，不平均分时。守住下面的一镜一种情绪；情绪弧线需要几种不同情绪时，规划镜头覆盖，并在切镜处保持身份、视线和姿势。结尾落在预定的表情与构图。示例时长和数量只是示意。静态身份/参考图走各自的资产流程。
 
-## Example prompt
+## 示例提示词
 
-### Identity Block
+### 身份（写进资产参考）
 ```
-The Soul ID character — a man in his late 40s, weathered skin, deep-set eyes,
-salt-and-pepper stubble, wearing a worn leather jacket over a dark henley.
-A thin scar across the left eyebrow.
+四十多岁的男人，饱经风霜的皮肤，深陷的眼睛，花白胡茬，穿一件旧皮夹克，里面是深色亨利衫。
+左眉上有一道细疤。
 ```
 
-### Motion Block
+### 动作
 ```
-He stands at the edge of a rain-soaked harbour dock at night.
-He stares at the horizon, collar turned up against the driving rain.
-Camera: slow Dolly In from medium-wide to medium close-up.
-Style: Cinematic. Crushed blacks, single sodium-vapour key light from the right,
-cold blue fill. 2.35:1 anamorphic.
-```
-
-### Combined prompt (for non-Soul ID use)
-```
-Model: Kling 3.0
-Aspect: 16:9 | Duration: 8s | Style: Cinematic
-
-A weathered man in his late 40s stands at the edge of a rain-soaked harbour dock at night.
-Salt-and-pepper stubble, worn leather jacket, collar turned up against the driving rain.
-An old leather briefcase sits at his feet, open, papers scattered by the wind.
-He stares at the horizon.
-Camera: slow Dolly In from medium-wide to medium close-up.
-Style: Cinematic. Crushed blacks, single sodium-vapour key light from the right,
-cold blue fill. 2.35:1 anamorphic.
+夜里，他站在被雨浇透的港口码头边。
+他望着地平线，衣领竖起挡着斜打的雨。
+运镜：缓慢 Dolly In，从中远景推到中近景。
+风格：电影感。压暗的黑位，一盏钠灯主光从画面右侧打来，冷蓝补光。2.35:1 变形宽银幕。
 ```
 
-## Annotation
+### 合并写法（无资产参考时）
+```
+模型：Seedance 2.5（omni_reference）
+画幅：16:9｜时长：8 秒｜风格：电影感
 
-| Prompt element | Why it works |
+一个饱经风霜的男人站在夜里被雨浇透的港口码头边。花白胡茬，旧皮夹克，衣领竖起挡着斜打的雨。
+一只旧皮公文包在他脚边打开着，文件被风吹散。
+他望着地平线。
+运镜：缓慢 Dolly In，从中远景推到中近景。
+风格：电影感。压暗的黑位，一盏钠灯主光从画面右侧打来，冷蓝补光。2.35:1 变形宽银幕。
+```
+
+## 注释
+
+| 提示词元素 | 为什么有效 |
 |---------------|-------------|
-| "late 40s, weathered skin, deep-set eyes" | Observable physical traits — not "handsome" or "attractive" |
-| "salt-and-pepper stubble" | Texture detail the model renders well at close range |
-| "thin scar across the left eyebrow" | Distinguishing mark — helps Soul ID lock identity |
-| "rain-soaked harbour dock at night" | Specific environment with atmospheric conditions |
-| "collar turned up against the driving rain" | Small physical action reveals character without dialogue |
-| "slow Dolly In from medium-wide to medium close-up" | Gradual intimacy build — starts environmental, ends personal |
-| "sodium-vapour key light from the right, cold blue fill" | Named light types with direction — not "dramatic lighting" |
-| "2.35:1 anamorphic" | Widescreen + shallow DOF = cinematic portrait standard |
+| “饱经风霜的皮肤，深陷的眼睛” | 可观察的外貌特征，不是“英俊”“迷人” |
+| “花白胡茬” | 近距离下模型渲染得好的质感细节 |
+| “左眉上有一道细疤” | 辨识标记，帮助锁定身份 |
+| “夜里被雨浇透的港口码头” | 具体环境加天气条件 |
+| “衣领竖起挡着斜打的雨” | 一个小动作，不用对白就显出人物 |
+| “缓慢 Dolly In，从中远景推到中近景” | 亲密感逐步建立：从环境开始，落在人身上 |
+| “钠灯主光从画面右侧打来，冷蓝补光” | 写出灯的种类和方向，不是“戏剧性灯光” |
+| “2.35:1 变形宽银幕” | 宽银幕加浅景深，是电影肖像的标准 |
 
-## Negative constraints to include
-- **Face/Identity**: Keep all face/body descriptors in the Identity Block. Keep camera and motion in the Motion Block. Mixing them causes face warping.
-- **Temporal/Consistency**: For multi-shot character work, copy the Identity Block verbatim across all prompts.
-- **Body/Motion**: One emotion per shot. Don't ask for "angry then sad then surprised."
+## 要加入的约束
+- **面部/身份：**面部与身体描述全部放资产参考，运镜和动作放本段。混在一起会让脸变形。
+- **时间/一致性：**多镜头角色戏，所有提示词原样复用同一份身份描述。
+- **身体/动作：**一镜一种情绪。不要写“先生气再难过再惊讶”。
 
-## Common mistakes
-1. **"A beautiful/handsome person"** — unmeasurable. Describe bone structure, skin texture, expression, clothing.
-2. **Describing the face AND giving vigorous motion** — "she laughs and spins and runs" with detailed face description causes drift. For expressive movement, use micro-expression terms from `higgsfield-soul`.
+## 常见错误
+1. **“一个漂亮/英俊的人”**：无法测量。写骨相、皮肤质感、表情、服装。
+2. **既详细描写脸又给剧烈动作**：“她笑着旋转着奔跑”加详细的脸部描述会导致漂移。表达性的动作用 `higgsfield-facs` 里的微表情词。
 
-## Variations
-- **Dialogue intro**: Add speech in quotes: `He says quietly: "It's done."` Use Kling 3.0 for native lip-sync
-- **Dramatic reveal**: Start with Overhead or Extreme Wide, Crane Down to close-up
-- **Super 8MM nostalgia**: Swap style to Super 8MM, warm grain, soft vignette, 4:3
-- **Editorial/fashion**: Swap to high-key lighting, Clinical Sharp Prime lens in Cinema Studio
-
-## Cinema Studio 3.0 (Business/Team Plan)
-
-**Genre mapping:** Drama
-**Prompt length target:** 60–100 words (Drama/Narrative — lead with Scene)
-**Speed Ramp:** Slow-mo for emotional weight, Auto for natural pace
-
-**@reference workflow:** The sadness-to-surprise arc below is a sequence brief;
-separate the emotional states into shots under this template's one-emotion rule,
-with the sighting through the window motivating the change.
-```
-@Image1 as the character. She sits at a café table, stirring coffee absently.
-She notices someone through the window — expression shifts from sadness to surprise.
-Camera: slow push-in. Style: warm interior light, shallow depth of field.
-Audio: ceramic mug on saucer, spoon stirring, muffled street noise through glass.
-```
+## 变体
+- **对白登场：**台词写进 `[声音]` 的计时对白行，如 `3s-5s｜他低声说：{It's done.}`；Seedance 2.5 生成原生口型
+- **戏剧性揭晓：**从俯拍或大远景开始，Crane Down 降到近景
+- **Super 8 怀旧：**风格换成 Super 8，暖色颗粒，柔和暗角，4:3
+- **杂志/时尚：**换成高调光，锐利的定焦镜头质感

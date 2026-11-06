@@ -1,365 +1,190 @@
-# Higgsfield Seedance Director
+# Higgsfield Seedance 导演（Higgsfield Seedance Director）
 
-## QUICK FACTS
-- The filter is an LLM reading full-scene intent, not a keyword blacklist — describe a SCENE, not a subject; fix the voice first [→](#the-filter-model--read-this-first)
-- Instant fail (<10s) = filter rejection; delayed fail (>30s) = infra/complexity — never regenerate an instant fail unchanged [→](#instant-fail-vs-delayed-fail--the-diagnostic)
-- Six slots, in order: Camera + Subject + Action + Setting + Style + Lighting; missing 3+ slots is where flags come from [→](#the-seedance-prompt-formula)
-- Empirical prompt-craft laws: 50–80-word attention sweet spot (front-load the load-bearing element), name a director/lens not "cinematic", "fast" degrades motion, no negative prompts in the body, unidirectional motion chains + named camera endpoint + detail scale follows shot size [→](#prompt-craft-laws)
-- Five prompt modes: Reference-Based / Continuation / Expand Shot / Edit Shot / Transformation — pick the mode before writing [→](#seedance-20-prompt-modes)
-- [OFFICIAL] block scaffold for production prompts: SCENE CONTEXT → … → POSITIVE LOCKS, distributed style on standalone briefs (connected shotlists glue the compiled Style Prefix verbatim instead), FOV in degrees only, CAMERA block 3rd, cut ladder oner / CUT n / timed / freestyle [→](#official-prompt-architecture--the-block-scaffold)
-- [FIELD] 13-project corpus calibration: word length scales with register (218w → 2,059w medians — the 50–80w sweet spot is single-shot-only), video briefs hand-authored (`enhance_prompt` off), Style Prefix = per-project constant compiled into home blocks [→](#field-calibration--the-13-project-production-corpus)
-- [FIELD] Three "helpful-instinct" drift sources, each with a standing lock: environment invention (#1, above character drift), character-height equalization, scale drift on wides [→](#positive-locks)
-- Build-safe construction for crowds/destruction/creatures: evacuated cities, contained fights ("stays at the sea surface"), the safe benchmark scene [→](#build-safe-construction--crowds-destruction-creatures)
-- Extend an existing clip: attach it as a video reference + open with "The scene continues." — match source resolution AND duration; chain cap ~2 (hard 3), then re-anchor from ORIGINAL references [→](#extension-prompting--video-reference-continuation)
-- **This file is Seedance 2.0.** For **2.5** — four modes incl. `video_edit` / `video_extension`, 4–30s, 30/10/10 references, in-prompt first-last frames, 720p ceiling — use `higgsfield-seedance-2-5.md`
-- Tutorial-demonstrated patterns (reference-role vocabulary incl. VARIETY reference, SCREEN REALISM + duration-match composites, 60:30:10 grade, red-arrow prop annotation): `higgsfield-seedance-production-patterns.md` in this directory
-- [OFFICIAL] Feature-film pipeline (asset construction, per-scene GEO SPATIAL LAYOUT, the position-fixing first second, dialogue construction, ban dictionary, the 10–15 iteration rule, crowds / giants / thresholds): `higgsfield-seedance-hell-grind.md` in this directory
-- Performance — objective, obstacle, tactics, beats, subtext, eye life, the acting master profile: `higgsfield-acting.md`
-- Engine rules (age-blind, exit-frame = cut, off-screen = nonexistent, no reflections, ≤3 tracked characters), double-contrast technique + high-risk shot table: `higgsfield-seedance-engine-rules.md` in this directory
-- Reference roles: Character / Last-Frame / Environment / Prop — role determines what the prompt may re-describe [→](#reference-roles)
-- Working modes: Exploration / Continuation / Bridging / Repair (distinct from prompt modes) [→](#working-modes-vs-prompt-modes--two-taxonomies)
-- Layer 1 briefing vs Layer 2 production prompt — never paste Layer 1 into the prompt box [→](#two-layer-prompt-authoring)
-- Native **4K** is available in `mode=std` only; `mode=fast` (Seedance 2.0 Fast) caps at 480p/720p — in Cinema Studio the model is still capped at 1080p [→](#pre-flight-linter)
-- Always preflight: `python3 scripts/seedance_lint.py --preflight --model seedance_2_0 "<prompt>"` — enums come from `model-specs.json` (fast+1080p/4K and Kling 21:9 are auto-caught) [→](#pre-flight-linter)
-- 480p drafts validate the prompt, NOT the take — no seed param; pin Hero Frame + start/end frames to carry a look [→](#drafts-validate-the-prompt-not-the-take)
-- ZH prompts: hard 1,800-char cap; ZH antislop list enforced by the linter [→](#multi-language-prompt-workarounds)
-- Flagged prompt → rewrite playbook per linter rule, then voice pass [→](#the-rewrite-playbook)
-- Repeated flags → diagnose the exact prompt, rewrite the failing instructions, and verify the revised result [→](#when-the-user-is-already-in-a-failure-loop)
+## 速查（QUICK FACTS）
+- 过滤器是一个读取整场意图的大语言模型，不是关键词黑名单：描述一个**场景**，而不是一个主体；先修语气 [→](#过滤器模型先读这个the-filter-model--read-this-first)
+- 秒拒（<10 秒）= 过滤器拒绝；迟败（>30 秒）= 基础设施/复杂度问题：秒拒的提示词绝不原样重新生成 [→](#秒拒与迟败诊断instant-fail-vs-delayed-fail--the-diagnostic)
+- 六个槽位，按顺序：运镜 + 主体 + 动作 + 环境 + 风格 + 光照；缺 3 个以上槽位就是被标记的来源 [→](#seedance-提示词公式the-seedance-prompt-formula)
+- 经验性的提示词写作规律：50–80 词的注意力甜区（把承重元素放最前）、写出导演/镜头而不是“cinematic”、“fast”会让运动降质、正文里不写负面提示、单向运动链 + 具名的运镜终点 + 细节尺度跟随景别 [→](#提示词写作规律prompt-craft-laws)
+- 五种提示词模式：Reference-Based / Continuation / Expand Shot / Edit Shot / Transformation：写之前先选模式 [→](#seedance-20-提示词模式seedance-20-prompt-modes)
+- 制作提示词的 [OFFICIAL] 块骨架：SCENE CONTEXT → … → POSITIVE LOCKS，独立说明用分布式风格（相连的分镜表改为一字不差地粘贴编译好的风格前缀），视场角只用度数，CAMERA 块放第 3 位，切镜阶梯 oner / CUT n / timed / freestyle [→](#官方提示词结构块骨架official-prompt-architecture--the-block-scaffold)
+- [FIELD] 13 个项目语料的校准：词数随语域增长（中位数从 218 词到 2,059 词：50–80 词的甜区只适用于单镜头），视频说明手写（`enhance_prompt` 关闭），风格前缀 = 每个项目的常量，编译进各自的归属块 [→](#实战校准13-个项目的制作语料field-calibration--the-13-project-production-corpus)
+- [FIELD] 三种“好心本能”的漂移来源，各有一条常设锁定：环境编造（第 1 号，排在角色漂移之上）、角色身高拉平、远景的尺度漂移 [→](#正向锁定positive-locks)
+- 人群/破坏/生物的安全构建：疏散后的城市、受限的打斗（“stays at the sea surface”）、安全的基准场景 [→](#安全构建人群破坏生物build-safe-construction--crowds-destruction-creatures)
+- 延伸一段已有片段：作为视频参考附上 + 以“The scene continues.”开头：匹配源分辨率**和**时长；链条上限约 2 次（硬上限 3），之后从**原始**参考重新锚定 [→](#延伸提示视频参考续接extension-prompting--video-reference-continuation)
+- **本文件是 Seedance 2.0。**用 **2.5**（四种模式，含 `video_edit` / `video_extension`，4–30 秒，30/10/10 张参考，提示词内或平台的首尾帧（仅 `omni_reference`），最高 1080p）时，读 `higgsfield-seedance-2-5.md`
+- 教程演示的模式（参考职责词汇，含 VARIETY 参考、SCREEN REALISM + 时长匹配的合成、60:30:10 调色、红箭头道具标注）：本目录的 `higgsfield-seedance-production-patterns.md`
+- [OFFICIAL] 长片制作流程（资产构建、逐场 GEO SPATIAL LAYOUT、固定位置的第一秒、对白构建、禁用词词典、10–15 次迭代规则、人群 / 巨物 / 门槛）：本目录的 `higgsfield-seedance-hell-grind.md`
+- 表演（目标、障碍、策略、节拍、潜台词、眼神生命力、表演母本）：`higgsfield-acting.md`
+- 引擎规则（不写年龄、出画 = 切镜、画外 = 不存在、不拍反射、追踪 ≤3 个角色）、双重对比技法 + 高风险镜头表：本目录的 `higgsfield-seedance-engine-rules.md`
+- 参考职责：Character / Last-Frame / Environment / Prop：职责决定提示词可以重新描述什么 [→](#参考职责reference-roles)
+- 工作模式：Exploration / Continuation / Bridging / Repair（和提示词模式不同）[→](#工作模式与提示词模式两套分类working-modes-vs-prompt-modes--two-taxonomies)
+- 第 1 层说明 vs 第 2 层制作提示词：绝不把第 1 层粘进提示词框 [→](#两层提示词写作two-layer-prompt-authoring)
+- 原生 **4K** 只在 `mode=std` 下可用；`mode=fast`（Seedance 2.0 Fast）最高 480p/720p [→](#预检-lintpre-flight-linter)
+- 永远做预检：`python3 scripts/seedance_lint.py --preflight --model seedance_2_0 "<prompt>"`：枚举来自 `model-specs.json`（fast+1080p/4K 会被自动抓到）[→](#预检-lintpre-flight-linter)
+- 480p 草稿验证的是提示词，**不是**那条素材：没有 seed 参数；用主画面 + 首尾帧来延续一种画面 [→](#草稿验证提示词而不是那条素材drafts-validate-the-prompt-not-the-take)
+- ZH 提示词：1,800 字上限只属于双语 JSON / 旧的团队格式（`--profile bilingual-json`）；工作室块结构稿没有长度上限。ZH 反套话清单由 lint 执行 [→](#多语言提示词的变通办法multi-language-prompt-workarounds)
+- 被标记的提示词 → 按 lint 规则查改写手册，然后过一遍语气 [→](#改写手册the-rewrite-playbook)
+- 反复被标记 → 诊断确切的提示词，改写失败的指令，并核实修改后的结果 [→](#用户已经陷在失败循环里时when-the-user-is-already-in-a-failure-loop)
 
 
-Use this skill whenever the user wants a Seedance 2.0 / Seedance Pro prompt, OR
-whenever a Seedance generation has been blocked, flagged, or silently failed.
-This skill's job is to stop credit waste on filter rejections.
+用户想要 Seedance 2.0 / Seedance Pro 提示词时，或者 Seedance 生成被拦截、被标记或静默失败时，使用这个模块。这个模块的任务是阻止额度浪费在过滤器拒绝上。本文件是 Seedance 2.0 的历史资料，只在选择 2.0 或做对应诊断时加载；当前项目默认 Seedance 2.5 `omni_reference` 和中文块结构（[跨类型导演模板](template-general-director-2-5.md)）。下面的英文代码块是原版示例。
 
-> **Engine rules (read with this file):** the hard rendering constraints of the
-> Seedance 2.0 engine — age-blind characters, exit-frame = implicit cut,
-> off-screen = nonexistent, no reflection shots, ≤3 tracked characters, the
-> double-contrast cut rule — live in `higgsfield-seedance-engine-rules.md` in this directory,
-> together with the high-risk shot table (reflections, same-character doubles,
-> crowds, text rendering) and its mitigations. This reference is the
-> `EN-director` *profile* of that rule core; the `ZH-house` and
-> `bilingual-JSON` profiles (`seedance-bilingual-json.md`) obey the same
-> core. Flag high-risk shot types at authoring time — never silently break a
-> rule the project's hero image happens to conflict with.
+> **引擎规则（和本文件一起读）：**Seedance 2.0 引擎的硬性渲染约束（不写年龄、出画 = 隐性切镜、画外 = 不存在、不拍反射镜头、追踪 ≤3 个角色、双重对比切镜规则）在本目录的 `higgsfield-seedance-engine-rules.md`，连同高风险镜头表（反射、同一角色的分身、人群、文字渲染）和它的缓解办法。本参考是那个规则核心的 `EN-director` *档位*；`ZH-house` 和 `bilingual-JSON` 档位（`seedance-bilingual-json.md`）遵守同一个核心。写作时就标出高风险镜头类型：绝不悄悄违反一条恰好和项目主画面冲突的规则。
 
-> **Production patterns (sibling reference):** patterns demonstrated working
-> in Higgsfield's own Seedance-4K film tutorial — reference-role vocabulary,
-> coordinate blocking, video-reference screen composites, prompted
-> imperfection, 60:30:10 grade — live in `higgsfield-seedance-production-patterns.md` in this
-> directory, labeled `[DEMO]`.
+> **制作模式（兄弟参考）：**在 Higgsfield 自己的 Seedance-4K 影片教程里演示有效的模式（参考职责词汇、坐标站位、视频参考屏幕合成、提示出来的瑕疵、60:30:10 调色）在本目录的 `higgsfield-seedance-production-patterns.md`，标为 `[DEMO]`。
 
 ---
 
-## Narrative planning before prompt writing
+## 写提示词之前的叙事规划（Narrative planning before prompt writing）
 
-Apply [shared narrative planning](narrative-planning.md) in every working and
-prompt mode. Plan the goal and ending, then find the story events, causal turns, reveals,
-and state transitions that earn stages; only then allocate time for action, response,
-dialogue, holds, and transitions. Do not preselect a stage count or divide runtime equally.
-Equal durations are valid when the content earns them. A **stage is not a cut or a generation
-clip**: a continuous shot can span stages, a stage can use several shots, and generation
-boundaries follow mode, complexity, references, and actual model limits.
+在每种工作模式和提示词模式里都应用 [共享叙事规划](narrative-planning.md)。先规划目标和结局，然后找出值得成为阶段的故事事件、因果转折、揭晓和状态转换；之后才给动作、反应、对白、停顿和转场分配时间。不要预选阶段数，也不要平均分配时长。内容确实需要时，等长也是有效的。**阶段不是切镜或一段生成片段**：一个连续镜头可以跨几个阶段，一个阶段可以用几个镜头，生成边界取决于模式、复杂度、参考和实际模型限制。
 
-Use all eight director layers as shared planning semantics: **assets/reference roles;
-overall goal; global sight, sound, and space; subject behavior and pacing; staged
-performance; continuity/state inheritance; final frame/join; scoped constraints**. Compile
-these into the six-slot short form, the existing output fields, or the production block
-scaffold as appropriate. They are not eight mandatory output headings and do not replace
-reference-role grammar, positive locks, or preflight. Each stage carries its starting
-state, primary change, visible response, and end state; the next stage inherits the result.
-Include the final frame and transitions within the timing budget. Repeated actions, quiet
-holds, and restoration need a story purpose and an explicit state change where applicable.
+把全部八个导演层当作共享的规划语义：**资产/参考职责；总体目标；全局视觉、声音和空间；主体行为和节奏；分阶段的表演；连续性/状态继承；最后一帧/接点；限定范围的约束**。按情况把它们编译进六槽短格式、已有的输出字段或制作块骨架。它们不是八个必须的输出标题，也不替代参考职责语法、正向锁定或预检。每个阶段带着它的起始状态、主要变化、可见反应和结束状态；下一个阶段继承结果。最后一帧和转场都算进时间预算。重复的动作、安静的停顿和复原需要一个故事目的，适用时还需要明确的状态变化。
 
-For Edit Shot and local Repair, annotate the source's events at their original timestamps
-and preserve source duration, pacing, and cuts except for an explicitly requested edit.
-For forward continuation, inherit the source tail's pose, motion phase/direction/speed,
-framing, lighting, prop and emotional states, and audio phase. A prequel/reverse extension
-must end at the source's **first-frame state**, including those moving and audible states.
-Only new footage receives a new timing budget; the source-matching extension rules and
-4–15s generation/input limits below still apply. Expand Shot preserves its spatial-edit
-purpose; Transformation keeps its continuous in-clip state-change arc.
+对 Edit Shot 和局部 Repair，按原时间码标注源素材的事件，保留源时长、节奏和切点，明确要求的编辑除外。向后续接时，继承源素材结尾的姿势、运动相位/方向/速度、构图、光照、道具和情绪状态，以及音频相位。前传/向前延伸必须以源素材的**第一帧状态**结束，包括那些运动中的和可听的状态。只有新素材获得新的时间预算；下面匹配源素材的延伸规则和 4–15 秒的生成/输入限制仍然适用。Expand Shot 保留它空间编辑的目的；Transformation 保留它连续的片内状态变化弧线。
 
-## The Filter Model — Read This First
+## 过滤器模型：先读这个（The Filter Model — Read This First）
 
-Seedance 2.0's content filter is **not** a keyword blacklist. It is a language
-model that reads the full prompt as a single scene and judges intent and context.
-Most users burn hours swapping individual words — that loop does not work.
+Seedance 2.0 的内容过滤器**不是**关键词黑名单。它是一个语言模型，把整条提示词当作一个场景来读，判断意图和语境。大多数用户花几个小时换单个词：这个循环没用。
 
-The filter compares two things:
+过滤器比较两样东西：
 
-- **A prompt that reads like a filmmaker describing a shot** → tends to pass.
-- **A prompt that reads like a note to a friend** → tends to fail.
+- **读起来像电影人在描述一个镜头的提示词** → 往往能过。
+- **读起来像给朋友的留言的提示词** → 往往会失败。
 
-A word that looks sensitive in isolation can sit inside a well-constructed
-cinematic prompt without issue — the filter reads the full picture. A prompt
-with no picture to read (no setting, no visual purpose, no narrative logic)
-gives the filter nothing to work with, and it errs on the side of caution.
+一个单独看起来敏感的词，可以放在一条构建良好的电影感提示词里而不出问题：过滤器读的是整幅画面。一条没有画面可读的提示词（没有环境、没有视觉目的、没有叙事逻辑）不给过滤器任何可以依据的东西，它就会偏向谨慎。
 
-**Practical rule:** the prompt must describe a **scene**, not a **subject**.
-Fix the voice first, then fix the words.
+**实用规则：**提示词必须描述一个**场景**，而不是一个**主体**。先修语气，再修用词。
 
 ---
 
-## Instant Fail vs. Delayed Fail — the Diagnostic
+## 秒拒与迟败：诊断（Instant Fail vs. Delayed Fail — the Diagnostic）
 
-This single heuristic saves time on every failure:
+这一条经验规则在每次失败时都能省时间：
 
-| Failure timing | Meaning | What to do |
+| 失败时间 | 含义 | 怎么做 |
 |----------------|---------|------------|
-| **< 10 seconds** (instant) | Content filter rejection — prompt never reached the GPU | Rewrite for voice + remove risk tokens. Do not regenerate unchanged. |
-| **> 30 seconds** (delayed) | Infrastructure, timeout, or complexity — prompt passed the filter but the render failed | Simplify action density, cut length, try again |
+| **< 10 秒**（秒拒） | 内容过滤器拒绝：提示词根本没到 GPU | 为语气改写 + 去掉风险词。不要原样重新生成。 |
+| **> 30 秒**（迟败） | 基础设施、超时或复杂度：提示词通过了过滤器，但渲染失败了 | 简化动作密度、缩短长度，再试 |
 
-If the user is seeing **instant fails in a loop**, it is a filter issue — never
-a GPU issue. Stop them from regenerating before the rewrite.
+如果用户**循环遇到秒拒**，那是过滤器问题：绝不是 GPU 问题。改写之前先阻止他们重新生成。
 
 ---
 
-## The Seedance Prompt Formula
+## Seedance 提示词公式（The Seedance Prompt Formula）
 
-Every Seedance prompt should hit these six slots, in this order:
+每条 Seedance 提示词都应该按这个顺序覆盖这六个槽位：
 
 ```
 [Camera movement] + [Subject] + [Action] + [Setting] + [Style] + [Lighting]
 ```
 
-All six are technically optional — but a prompt that includes all six almost
-never gets flagged, because the filter has full context to interpret every
-word. A prompt missing 3+ slots is where flags come from.
+六个槽位技术上都是可选的：但六个都有的提示词几乎从不被标记，因为过滤器有完整的语境来理解每个词。缺 3 个以上槽位，就是被标记的来源。
 
-### Minimum viable Seedance prompt
+### 最小可用的 Seedance 提示词（Minimum viable Seedance prompt）
 
-> **Slow dolly-in on a figure in a dark overcoat standing alone at the end of
-> a rain-slick alley. Cold teal shadows, single practical streetlamp, shallow
-> depth of field.**
+> **Slow dolly-in on a figure in a dark overcoat standing alone at the end of a rain-slick alley. Cold teal shadows, single practical streetlamp, shallow depth of field.**
 
-Camera ✓ Subject ✓ Action ✓ Setting ✓ Style ✓ Lighting ✓ — all six slots, ~30
-words, passes the filter because the scene is fully legible.
+运镜 ✓ 主体 ✓ 动作 ✓ 环境 ✓ 风格 ✓ 光照 ✓：六个槽位都有，约 30 词，因为场景完全清楚所以能通过过滤器。
 
 ---
 
-## Prompt-Craft Laws
+## 提示词写作规律（Prompt-Craft Laws）
 
-A set of Seedance-2.0-specific prompt rules. These are **empirical** —
-practitioner A/B findings that are plausible given the architecture but are
-**not** in the official model spec. Treat them as strong heuristics and let the
-repo's iteration discipline (`higgsfield-prompt.md` § The Iteration
-Rule) confirm them on your own material, rather than as guaranteed model
-behavior.
+一组 Seedance 2.0 专用的提示词规则。这些是**经验性的**：实践者的 A/B 发现，从架构上看说得通，但**不在**官方模型规格里。把它们当作很强的经验规则，让仓库的迭代纪律（`higgsfield-prompt.md` § The Iteration Rule）在你自己的素材上确认它们，而不是当作有保证的模型行为。
 
-### Length and order — the attention model
+### 长度和顺序：注意力模型（Length and order — the attention model）
 
-Seedance reads the prompt **left-to-right with diminishing attention weight**.
-The first sentence carries the most influence; by the third sentence you are in
-"detail territory," where the model stops treating elements as primary
-instructions and starts sampling them diffusely.
+Seedance **从左到右读提示词，注意力权重递减**。第一句影响最大；到第三句你就进入了“细节地带”，模型不再把元素当作主要指令，而是开始分散地取样。
 
-- **Sweet spot: 50–80 words (short-form regime).** A 70-word prompt reliably
-  outperforms a structurally identical 200-word version of the same scene —
-  more words past ~3 sentences buys diffusion, not control. (Block-scaffold
-  production prompts are the other regime: § Official Prompt Architecture.)
-- **Structure in three sentences:** ① subject + action, ② camera + style,
-  ③ constraints / positive locks.
-- **Lead with the single most load-bearing element.** When a shot lives on its
-  subject, the subject opens the prompt; when it lives on a camera move, the
-  move opens it.
+- **甜区：50–80 词（短格式模式）。**一条 70 词的提示词，稳定地胜过同一场景结构相同的 200 词版本：超过约 3 句之后，多出的词买到的是扩散，不是控制。（块骨架制作提示词是另一种模式：§ Official Prompt Architecture。工作室块结构稿不设字数上限。）
+- **用三句话组织：**① 主体 + 动作，② 运镜 + 风格，③ 约束 / 正向锁定。
+- **以最承重的那一个元素开头。**镜头靠主体成立时，主体打头；靠一次运镜成立时，运镜打头。
 
-**Relationship to the two length numbers.** This 50–80-word figure is the
-*coherence optimum*. The >180-word figure in § Pre-flight Linter is a *different
-axis* — the filter/encoder risk ceiling (>220 often hard-fails the text
-encoder). 50–80 is where to sit; ~180 is where it starts to break. They don't
-conflict.
+**和两个长度数字的关系。**这个 50–80 词的数字是*连贯性最优点*。§ Pre-flight Linter 里 >180 词的数字是*另一个维度*：过滤器/编码器的风险上限（>220 常常让文本编码器直接失败）。50–80 是该待的地方；约 180 是开始坏的地方。它们不冲突。
 
-**Relationship to the six-slot formula.** The six slots guarantee the filter
-sees a *complete* scene (presence). The attention model governs *weight* (order
-+ length). Keep all six slots present, but the slot list's camera-first ordering
-is a completeness checklist, not a mandate to open with the camera word when the
-shot's identity is the subject.
+**和六槽公式的关系。**六个槽位保证过滤器看到一个*完整*的场景（存在）。注意力模型管的是*权重*（顺序 + 长度）。六个槽位都保留，但槽位列表“运镜在前”的顺序是一份完整性清单，不是要求在镜头的身份是主体时也用运镜词开头。
 
-### Name the thing — kill empty adjectives
+### 写出具体的东西：删掉空洞的形容词（Name the thing — kill empty adjectives）
 
-`cinematic`, `epic`, `beautiful`, `high quality`, `amazing` are high-frequency
-labels attached to an enormous range of training footage — dark thrillers,
-bright rom-coms, nature docs all read as "cinematic" — so the model samples a
-broad, diffuse distribution and they move the output toward nothing in
-particular. Don't just delete the slop word (Voice Rewrite §6) — **substitute a
-named, narrowly-trained referent**:
+`cinematic`、`epic`、`beautiful`、`high quality`、`amazing` 是附在大量训练素材上的高频标签（黑暗惊悚片、明亮的爱情喜剧、自然纪录片都读作“cinematic”），所以模型从一个宽而散的分布里取样，它们不会把输出推向任何具体的方向。不要只删掉套话词（Voice Rewrite §6）：**换成一个具名的、训练范围窄的参照**：
 
-| Empty adjective | Named substitute (samples a narrow distribution) |
+| 空洞的形容词 | 具名的替换（从窄分布里取样） |
 |---|---|
-| "cinematic" / "epic look" | a **director**: "Wes Anderson symmetry" (centered framing, pastel) · "Kubrick one-point perspective" (geometric corridors) |
-| "cinematic lighting" | a **lighting setup**: "golden-hour backlight, long shadows stretching forward" |
-| "beautiful" / "high quality" | a **lens spec**: "anamorphic 2.39:1, lens flare from a practical light source" |
+| “cinematic” / “epic look” | 一位**导演**：“Wes Anderson symmetry”（居中构图、粉彩）· “Kubrick one-point perspective”（几何走廊） |
+| “cinematic lighting” | 一种**布光**：“golden-hour backlight, long shadows stretching forward” |
+| “beautiful” / “high quality” | 一个**镜头规格**：“anamorphic 2.39:1, lens flare from a practical light source” |
 
-Positive form of `higgsfield-prompt.md` § Anti-Slop Vocabulary.
+`higgsfield-prompt.md` § Anti-Slop Vocabulary 的正向形式。
 
-> **Official override on director names.** Higgsfield's own prompt-writing
-> skill forbids director names, signature-work references, and equipment
-> model names outright (see § Official Prompt Architecture — the Block
-> Scaffold → Measurable-language rules). The director-substitute trick above
-> is an empirical short-form fallback; in block-scaffold prompts, describe
-> the look in observable terms instead — "centered symmetrical framing,
-> pastel palette", not "Wes Anderson symmetry".
+> **关于导演名的官方覆盖。**Higgsfield 自己的提示词写作技能直接禁止导演名、代表作引用和器材型号名（见 § Official Prompt Architecture — the Block Scaffold → Measurable-language rules）。上面的导演替换技巧是经验性的短格式退路；在块骨架提示词里，改用可观察的说法描述画面：“centered symmetrical framing, pastel palette”，而不是“Wes Anderson symmetry”。工作室复制正文同样不写片名或导演名。
 
-### "fast" is the highest-degradation keyword
+### “fast”是降质最严重的关键词（"fast" is the highest-degradation keyword）
 
-Combined with complex action or camera movement, `fast` is the single
-worst-degrading keyword. The temporal branch already runs multiple high-velocity
-calculations when motion is layered; `fast` asks all of them to run at maximum
-velocity at once. Two competing fast elements jitter; three compound into error
-that's hard to salvage.
+和复杂动作或运镜一起用时，`fast` 是降质最严重的单个关键词。运动叠加时，时间分支已经在跑多个高速计算；`fast` 要求它们全部同时以最高速度运行。两个互相竞争的快速元素会抖动；三个会叠加成难以挽救的错误。
 
-**Fix: describe the physics, not the speed.** `feet striking hard, each stride
-at full extension, arms pumping at 90 degrees` produces the perception of speed
-with no degradation. One element can carry speed — just not all of them
-simultaneously. (Same family as Voice Rewrite §3 — describe physics, not
-emotion.)
+**修法：描述物理，而不是速度。**`feet striking hard, each stride at full extension, arms pumping at 90 degrees` 产生速度感，却没有降质。一个元素可以承载速度：只是不能所有元素同时承载。（和 Voice Rewrite §3 同一类：描述物理，而不是情绪。）
 
-### No negative prompts in the prompt body
+### 提示词正文里不写负面提示（No negative prompts in the prompt body）
 
-Seedance has **no negative-embedding architecture** for the prompt text — every
-token is read as a *positive* instruction. `negative: jitter, bent limbs` gets
-parsed as scene description the model tries to render (noise), not as a
-constraint, and makes the output worse.
+Seedance 的提示词文本**没有负面嵌入架构**：每个标记都被当作*正向*指令来读。`negative: jitter, bent limbs` 被解析成模型试图渲染的场景描述（噪声），而不是约束，让输出变得更差。
 
-Use **positive constraint statements** — direct declarations of what must be
-true:
+用**正向的约束陈述**：直接声明什么必须为真：
 
 ```
 Face stable. Limbs anatomically natural. Consistent lighting, no flicker.
 Body proportions consistent throughout.
 ```
 
-**Scope:** this is about the Seedance prompt **body**, and the target is
-`negative:` list syntax / bare negation lists — not every "no" token. A short
-lock tail inside a positive declaration ("Consistent lighting, no flicker";
-the Style Prefix's "Photorealistic — no 3D render") is fine and field-proven
-across the harvest corpus. It does **not** override the Higgsfield UI's
-dedicated negative-prompt field (which some image models expose and
-`vocab.md` § Composition Vocabulary uses). The same positive-only
-requirement is already documented for Cinema Studio 3.0 in
-`negative-constraints.md`.
+**范围：**这说的是 Seedance 提示词**正文**，目标是 `negative:` 列表语法 / 光秃秃的否定列表：不是每一个“no”标记。正向声明里的一个短锁定尾巴（“Consistent lighting, no flicker”；风格前缀的“Photorealistic — no 3D render”）没问题，在整个采集语料里经过实战验证。它**不**覆盖 Higgsfield 界面专门的负面提示词栏（一些图像模型有这个栏，`vocab.md` § Composition Vocabulary 用到它）。同样的只用正向的要求记录在 `negative-constraints.md` § Seedance Positive-Constraint Notes。工作室规则更严：Seedance 正文一律写正向目标状态。
 
-### Ambiguous verbs — the homograph trap (v1.10, Peter's find 2026-07-14)
+### 歧义动词：同形词陷阱（v1.10，Peter 的发现，2026-07-14）（Ambiguous verbs — the homograph trap (v1.10, Peter's find 2026-07-14)）
 
-If a word has a plausible second reading, Seedance may take it. The observed
-case: *"wind tearing at her coat"* — meant as fabric pulled violently; the
-model sometimes reads *tearing* as ripping (fabric shredding) or tearing up
-(crying), and the shot changes accordingly. This is not covered by any known
-prompt guide — treat it as a first-class law:
+如果一个词有一个说得通的第二种读法，Seedance 可能会采用它。观察到的情况：*“wind tearing at her coat”*：本意是布料被猛烈拉扯；模型有时把 *tearing* 读成撕裂（布料被撕碎）或流泪（哭），镜头就跟着变了。已知的提示词指南都没覆盖这一点：把它当作一级规律：
 
-**Before a verb ships, ask: is there a second physical thing this word can
-look like? If yes, replace it with the phrasing only ONE thing can look like.**
+**一个动词交出去之前，问：这个词还能看起来像另一样实际的东西吗？如果能，换成只有一样东西能看起来像的说法。**
 
-- `wind tearing at her coat` → `wind whipping violently at her coat` /
-  `her coat flutters violently in the wind`
-- Seed homograph list (grow it whenever a generation misreads a word):
-  **tearing** (rip / cry) · **shoot** (fire / film) · **duck** (crouch / bird) ·
-  **bolt** (run / lightning / hardware) · **draw** (pull / sketch / weapon) ·
-  **wave** (hand / ocean) · **charge** (run at / electricity) · **rock**
-  (sway / stone) · **drop** (fall / droplet) · **fire** (flame / shoot /
-  dismiss) · **strike** (hit / match / lightning) · **break** (shatter /
-  pause / dawn) · **pound** (hammer / heartbeat) · **snap** (break / photo /
-  fingers).
-- The list is a seed, not the rule — the rule is the self-check, which
-  generalizes to any word forever.
+- `wind tearing at her coat` → `wind whipping violently at her coat` / `her coat flutters violently in the wind`
+- 种子同形词清单（每次生成误读一个词时就加进去）：**tearing**（撕 / 哭）· **shoot**（开枪 / 拍摄）· **duck**（蹲下 / 鸭子）· **bolt**（跑 / 闪电 / 螺栓）· **draw**（拉 / 画 / 拔武器）· **wave**（挥手 / 海浪）· **charge**（冲向 / 电）· **rock**（摇晃 / 石头）· **drop**（掉落 / 水滴）· **fire**（火焰 / 开枪 / 解雇）· **strike**（击打 / 火柴 / 闪电）· **break**（打碎 / 休息 / 破晓）· **pound**（锤打 / 心跳）· **snap**（折断 / 拍照 / 打响指）。
+- 这份清单是种子，不是规则：规则是那个自检，它永远可以推广到任何词。中文提示词同样有歧义词，按同样的自检处理。
 
-### Community v3 cherry-picks (Joey drop, audited 2026-07-14)
+### 社区 v3 精选（Joey 发布，2026-07-14 审核）（Community v3 cherry-picks (Joey drop, audited 2026-07-14)）
 
-Adopted (genuinely absent from this skill until now):
+采纳的（之前这个模块里确实没有）：
 
-- **Camera on the shadow side, with a stated operator axis.** Place the
-  camera on the shadow side of the key light and say where the operator
-  stands/moves — light wraps toward the lens and faces keep dimension.
-- **Detail-on-wide ("snake cam").** 84° low-angle placed hard against a small
-  foreground object — detail-shot intimacy without losing the wide's context.
-- **Intimate wide.** 63–84° on a close face instead of a long lens — presence
-  without compression; the room stays in the frame.
-- **Prompt-reset heuristic.** When iterations are getting *worse*, stop
-  stacking fixes: strip the prompt back to subject + action + camera and
-  re-add only what's necessary. Density is a bell curve; past the peak you
-  can't tell which element the model dropped.
-- **Canonical-over-plate.** Every subject keeps its own identity reference
-  even when it is visible in the environment plate — the plate carries the
-  world, the canonical ref carries identity; never let a plate double as an
-  identity source.
-- **Contrast curve stated three ways.** When the grade matters, state it as
-  tonal curve + specular removal + named grade — one phrasing alone drifts.
+- **摄影机放在阴影一侧，并写明操作者的轴线。**把摄影机放在主光的阴影一侧，并说明操作者站在/移动到哪里：光向镜头包过来，脸保持立体感。
+- **远景里的细节（“蛇形镜头”）。**84° 低角度，紧贴一个小的前景物体：有细节镜头的亲密感，又不失远景的语境。
+- **亲密的广角。**近脸用 63–84°，而不是长焦：有在场感但没有压缩；房间留在画面里。
+- **提示词重置经验。**迭代越改越*差*时，停止叠加修正：把提示词剥回主体 + 动作 + 运镜，只重新加必要的东西。密度是一条钟形曲线；过了峰值，你就分不清模型丢掉了哪个元素。
+- **规范参考优先于底片。**每个主体都保留自己的身份参考，即使它在环境底片里可见：底片承载世界，规范参考承载身份；绝不让底片兼作身份来源。
+- **对比度曲线用三种方式说。**调色重要时，用色调曲线 + 去除高光 + 具名调色来写：只用一种说法会漂移。
 
-Rejected (was: flagged, test day pending): their worldbuilder puts the camera
-block at the BOTTOM ("at the top FOV fights identity data") — this contradicts
-both this skill's CAMERA-3rd-position rule and their own seedance skill.
-**Resolved 2026-07-26 by field evidence instead of a test day** `[FIELD — 13-project
-community harvest]`: across ~4,000 harvested production prompts from 9 creators,
-the CAMERA block sits mid-document in every final prompt — never at the bottom.
-CAMERA-3rd stands; the bottom-position claim is dropped.
+拒绝的（原为：已标记，待测试日）：他们的世界构建器把镜头块放在**底部**（“在顶部，视场角会和身份数据打架”）：这和本模块的 CAMERA 放第 3 位规则、也和他们自己的 seedance 技能矛盾。**2026-07-26 由实战证据而不是测试日解决** `[FIELD — 13-project community harvest]`：在 9 位创作者的约 4,000 条采集的制作提示词里，CAMERA 块在每条最终提示词里都位于文档中部：从不在底部。CAMERA 放第 3 位成立；放底部的说法作废。
 
-### Motion-prompt laws (dramaclaw production corpus, audited 2026-08-09)
+### 运动提示词规律（dramaclaw 制作语料，2026-08-09 审核）（Motion-prompt laws (dramaclaw production corpus, audited 2026-08-09)）
 
-`[EMPIRICAL — dramaclaw production corpus, Seedance]` — practitioner findings
-earned in dramaclaw's Seedance production work. The craft is model-agnostic
-i2v motion-writing rather than a Seedance spec; same epistemic status as the
-rest of this section (strong heuristics — confirm on your own material).
+`[EMPIRICAL — dramaclaw production corpus, Seedance]`：在 dramaclaw 的 Seedance 制作工作中得出的实践者发现。这门手艺是与模型无关的图生视频运动写法，而不是 Seedance 规格；和本节其余部分同样的认识地位（很强的经验规则：在你自己的素材上确认）。
 
-- **Unidirectional motion is a drift-control heuristic.** A short action that
-  finishes early can leave the model filling time by **reversing** it. Keep
-  motion purposeful through its endpoint; 2–3 connected actions in the same
-  direction are one example, not an action quota. Do not invent actions to
-  fill runtime. A deliberate there-and-back needs an explicit cause, turn,
-  and end state; split shots or generations only when readability or rendering
-  complexity requires it. (Failure face: `higgsfield-seedance-failure-modes.md` § Action-reversal
-  fill.)
-- **Name the camera endpoint.** A camera move needs a destination, not just
-  a name — say **what the frame shows when the move finishes** ("slow
-  dolly-in, ending on her hands wrapped around the cup"), not only the
-  move's name. A move that runs out of instruction before it runs out of
-  clip drifts or reverses — the camera face of the unidirectional law.
-- **Detail scale follows shot size.** Close-ups earn micro-detail (fingers
-  tightening, a jaw flex); wides earn broad arcs (crossing the courtyard,
-  the crowd parting). Cross-matching — micro-detail written into a wide, or
-  a broad traversal written into a close-up — is unrenderable at that shot
-  size and degrades the whole clip. (Detail *inside* a wide is a
-  composition problem, not a prompt-detail problem — see the snake-cam
-  cherry-pick above.)
+- **单向运动是一条控制漂移的经验规则。**一个早早完成的短动作，可能让模型通过**倒放**它来填时间。让运动有目的地一直进行到终点；同方向 2–3 个相连的动作是一个例子，不是动作配额。不要为了填时长编造动作。刻意的一来一回需要明确的原因、转折和结束状态；只有在可读性或渲染复杂度需要时才拆分镜头或生成。（失败的样子：`higgsfield-seedance-failure-modes.md` § Action-reversal fill。）
+- **写出运镜终点。**一次运镜需要一个目的地，而不只是一个名字：说明**运动结束时画面里是什么**（“slow dolly-in, ending on her hands wrapped around the cup”），而不只是运动的名字。一次在片子结束前就用完指令的运动会漂移或倒退：这是单向规律在运镜上的一面。
+- **细节尺度跟随景别。**近景配得上微细节（手指收紧、下颌一动）；远景配得上大弧线（穿过院子、人群分开）。交叉错配（微细节写进远景，或大范围穿越写进近景）在那个景别下渲染不出来，并会让整段片子降质。（远景*里*的细节是构图问题，不是提示词细节问题：见上面的蛇形镜头精选。）
 
-### Already-covered siblings (cross-links, not new rules)
+### 已覆盖的兄弟规则（交叉链接，不是新规则）（Already-covered siblings (cross-links, not new rules)）
 
-- **Compound camera move** (`dolly in while panning left`) → jitter at the
-  transition because the model executes the two vectors in sequence. Use one
-  primary move + one texture modifier (`slow dolly in, slightly handheld`). Full
-  treatment: `higgsfield-seedance-failure-modes.md` § Multi-motion camera overload.
-- **Image-to-video subject drift** → re-describing what's already in the source
-  image gives the model two competing inputs for one subject; reconciliation
-  introduces drift. Keep an I2V prompt to **motion + camera only**. See
-  § Seedance 2.0 Prompt Modes / Reference-Based and
-  `higgsfield-prompt.md` (I2V key rule).
+- **复合运镜**（`dolly in while panning left`）→ 在过渡处抖动，因为模型按顺序执行两个向量。用一个主要运动 + 一个质感修饰（`slow dolly in, slightly handheld`）。完整说明：`higgsfield-seedance-failure-modes.md` § Multi-motion camera overload。
+- **图生视频的主体漂移** → 重新描述源图里已有的东西，会给模型同一个主体的两个互相竞争的输入；调和它们会带来漂移。图生视频提示词只写**运动 + 运镜**。见 § Seedance 2.0 Prompt Modes / Reference-Based 和 `higgsfield-prompt.md`（图生视频关键规则）。
 
 ---
 
-## Official Prompt Architecture — the Block Scaffold
+## 官方提示词结构：块骨架（Official Prompt Architecture — the Block Scaffold）
 
-`[OFFICIAL — Higgsfield prompt-writter.skill, 2026-07]` — Higgsfield ships
-its own Seedance 2.0 prompt-writing skill with the Seedance-4K release. This
-section is that doctrine, reconciled with the rest of this file. Where the
-two disagree, the official rule wins inside block-scaffold prompts; the
-empirical rules elsewhere in this skill remain the short-form regime.
+`[OFFICIAL — Higgsfield prompt-writter.skill, 2026-07]`：Higgsfield 随 Seedance-4K 发布了自己的 Seedance 2.0 提示词写作技能。本节是那套方法，已与本文件其余部分协调。两者有分歧时，在块骨架提示词里以官方规则为准；本模块其他地方的经验规则仍然是短格式模式的规则。
 
-**Two regimes, not a contradiction.** The six-slot formula and the
-50–80-word sweet spot (§ Prompt-Craft Laws) govern short-form single shots.
-The block scaffold is the production regime — multi-shot, reference-heavy,
-high-control work — where *structure replaces the word cap*: write densely
-where control matters, sparsely where it does not, and say each important
-thing once. The pre-flight linter detects this regime automatically (canonical
-block labels / shot markers) and suspends the short-form word caps — force it
-with `--regime block` if detection misses — while every structural lint rule
-(shot counts, beat sums, handle declarations, enum checks) still applies in
-full. Likewise, the Voice Rewrite instruction
-to put a Style & Mood clause up front is the short-form filter pass — in a
-block prompt the filter gets its full scene from SCENE CONTEXT, LOCATION MAP,
-and LIGHTING instead, and style is distributed (below).
+**两种模式，不是矛盾。**六槽公式和 50–80 词的甜区（§ Prompt-Craft Laws）管短格式单镜头。块骨架是制作模式（多镜头、参考多、控制要求高的工作），在这里*结构取代字数上限*：控制重要的地方写得密，不重要的地方写得疏，每件重要的事说一次。预检 lint 会自动识别这种模式（标准块标签 / 镜头标记）并暂停短格式字数上限：识别不到时用 `--regime block` 强制：而每条结构性 lint 规则（镜头数、节拍总和、交接声明、枚举检查）仍然完整适用。同样，Voice Rewrite 里把 Style & Mood 一句放在最前的指示是短格式的过滤器检查：在块提示词里，过滤器从 SCENE CONTEXT、LOCATION MAP 和 LIGHTING 得到完整的场景，风格是分布式的（见下）。工作室的中文块结构是这种模式的中文形式，同样不设字数上限。
 
-### Block order
+### 块的顺序（Block order）
 
-Write blocks in this order, using **only the blocks the shot needs**:
+按这个顺序写块，**只用镜头需要的块**：
 
 ```
 SCENE CONTEXT
@@ -381,159 +206,78 @@ OUTPUT SETTINGS  (when format must be pinned)
 POSITIVE LOCKS
 ```
 
-Logic: context and references first, then space and timing, then action and
-physics, then descriptive style in its home positions, then a technical
-suffix, locks last. A naturalistic single take may drop COLOR GRADE,
-WARDROBE, and OUTPUT SETTINGS entirely and fold those notes into LOCATION
-MAP / LIGHTING.
+逻辑：先语境和参考，然后空间和时间，然后动作和物理，然后描述性风格放在各自的归属位置，然后技术后缀，最后锁定。自然主义的单镜头可以完全去掉 COLOR GRADE、WARDROBE 和 OUTPUT SETTINGS，把这些内容并进 LOCATION MAP / LIGHTING。
 
-### Distributed style — the standalone-block rule
+### 分布式风格：独立块规则（Distributed style — the standalone-block rule）
 
-In a **standalone block-scaffold prompt** there is no style-prefix block at
-the top; the prompt always opens on SCENE CONTEXT. Each style aspect lives
-in the block that governs it: light → LIGHTING; color → COLOR GRADE, or
-folded into LOCATION MAP + LIGHTING for a naturalistic look; lens / optical
-character → OPTICS; skin realism and acting → PERFORMANCE; format / grain /
-fps → the STYLE + OUTPUT SETTINGS suffix just before POSITIVE LOCKS.
-Descriptive style sits in the body next to what it describes; technical
-style sits as the end suffix; nothing style-related opens the prompt.
+在**独立的块骨架提示词**里，顶部没有风格前缀块；提示词永远以 SCENE CONTEXT 开头。每个风格方面放在管它的块里：光 → LIGHTING；颜色 → COLOR GRADE，或者自然主义画面时并进 LOCATION MAP + LIGHTING；镜头 / 光学特性 → OPTICS；皮肤真实感和表演 → PERFORMANCE；画幅 / 颗粒 / 帧率 → POSITIVE LOCKS 之前的 STYLE + OUTPUT SETTINGS 后缀。描述性风格在正文里挨着它描述的东西；技术性风格作为结尾后缀；没有任何风格相关的东西放在提示词开头。
 
-**Connected-shotlist carve-out** `[FIELD — 13-project harvest]`: in a
-multi-scene shotlist project, the field-proven shape is the opposite — a
-per-project compiled **Style Prefix glued verbatim to the top of every scene
-prompt** (edit once → changes everywhere), then the scene body. Consistency
-across 25 separately-generated scenes outweighs distributed elegance there.
-That regime is owned by `higgsfield-shotlist-director.md` § Per-scene
-prompt law and `template-global-style-prefix.md`; this
-section governs standalone prompts only.
+**相连分镜表的例外** `[FIELD — 13-project harvest]`：在多场景的分镜表项目里，实战验证的形状正好相反：每个项目编译一个**风格前缀，一字不差地粘在每条场景提示词的顶部**（改一次 → 处处都改），然后是场景正文。在那里，25 个分开生成的场景之间的一致性比分布式的优雅更重要。那种模式归 `higgsfield-shotlist-director.md` § Per-scene prompt law 和 `template-global-style-prefix.md` 管；本节只管独立提示词。
 
-### FOV anchors + the CAMERA-3rd-position rule
+### 视场角锚点 + CAMERA 放第 3 位规则（FOV anchors + the CAMERA-3rd-position rule）
 
-In prompt text, state field of view in **degrees from these discrete
-anchors only** — never millimeters, never in-between values (not "23°" —
-use 18° or 29°):
+在提示词文字里，视场角**只用下面这些离散锚点的度数**表示：绝不用毫米，绝不用中间值（不写“23°”：用 18° 或 29°）：
 
-| FOV | mm equiv | Use |
+| 视场角 | 等效毫米 | 用途 |
 |-----|----------|-----|
-| 180° | fisheye | spherical distortion — POV, dream-state |
-| 107° | 14–16mm | architectural ultra-wide, epic establish |
-| 84° | 20–24mm | wide — establish, group blocking |
-| 63° | 28–35mm | observational, reportage |
-| 47° | 40–50mm | neutral human perspective |
-| 29° | 75–85mm | portrait compression, dialogue bust |
-| 18° | 100–135mm | close portrait, identity-preserving |
-| 12° | 180–200mm | tele-detail — hands, objects |
-| 8° | 300–400mm | extreme compression, observation, broadcast |
+| 180° | 鱼眼 | 球面畸变：POV、梦境 |
+| 107° | 14–16mm | 建筑超广角、史诗建立镜头 |
+| 84° | 20–24mm | 广角：建立镜头、群体站位 |
+| 63° | 28–35mm | 观察式、纪实 |
+| 47° | 40–50mm | 中性的人眼视角 |
+| 29° | 75–85mm | 肖像压缩、对白胸像 |
+| 18° | 100–135mm | 近距离肖像、保身份 |
+| 12° | 180–200mm | 长焦细节：手、物件 |
+| 8° | 300–400mm | 极端压缩、观察、转播 |
 
-In a multishot, set FOV per segment and add `"no drift mid-segment"`.
+多镜头里，逐段设定视场角，并加上 `"no drift mid-segment"`。
 
-Place the CAMERA block in the **3rd position** of the prompt's core layers
-(subject → action → camera → style → constraints). Moved to the end, FOV
-gets ignored; moved to the front, it conflicts with identity.
+把 CAMERA 块放在提示词核心层的**第 3 位**（主体 → 动作 → 运镜 → 风格 → 约束）。挪到最后，视场角会被忽略；挪到最前，它会和身份冲突。
 
-### Measurable-language rules
+### 可测量语言规则（Measurable-language rules）
 
-- **Positive phrasing only** — official confirmation of the empirical
-  no-negative-prompts law (§ Prompt-Craft Laws).
-- **Speeds in km/h** — "moves at 40 km/h", not "fast" (which is also the
-  highest-degradation keyword, § Prompt-Craft Laws).
-- **Atmosphere in % / meters** — "fog density 40%", "haze visible at 15
-  meters"; build it in steps across shots (20% → 40% → 60%).
-- **Giant scale via human-height comparison** — "as tall as four humans
-  stacked head to toe", not "huge" or "three meters".
-- **Left/right is always from the camera.**
-- **Emotion through muscle movement, not labels** — same rule as Voice
-  Rewrite §3; the muscle-level extreme is `higgsfield-facs.md`.
-- **White balance in Kelvin**, fixed within a scene: 3200K / 4000K / 5600K /
-  8500K.
-- **Masses and sizes in real units for physics** `[FIELD]` — the PHYSICS
-  block writes weights in so gravity reads correctly: `"the spider is 10–12
-  centimeters, 50–70 grams — it falls gently; the man is 70–80 kg — the
-  drop lands hard."` Material behavior gets the same treatment (`"the liana
-  stretches slightly under load and creaks like fibrous wood"`).
-- **Causal prop interaction** `[FIELD]` — objects never move on their own;
-  every prop event needs a visible physical cause with event order:
-  `"the cup tips only from visible sleeve contact"` · `"a button press is a
-  full mechanical event — contact, 2–3 mm of travel, click, spring-back;
-  the screen lights only AFTER the click."`
-- **No director names, signature works, or equipment model names** — they
-  get ignored or break complex moves; describe the look instead. (Overrides
-  the empirical director-substitute in § Prompt-Craft Laws for this regime.)
-- **English prompts only** (for the historical ZH exception, see
-  § Multi-Language Prompt Workarounds).
+- **只用正向表述**：官方对“正文不写负面提示”这条经验规律的确认（§ Prompt-Craft Laws）。
+- **速度用 km/h**：“moves at 40 km/h”，而不是“fast”（它也是降质最严重的关键词，§ Prompt-Craft Laws）。
+- **氛围用 % / 米**：“fog density 40%”、“haze visible at 15 meters”；跨镜头分步建立（20% → 40% → 60%）。
+- **巨大尺度用人身高比较**：“as tall as four humans stacked head to toe”，而不是“huge”或“three meters”。
+- **左右永远以摄影机为准。**
+- **情绪通过肌肉运动，而不是标签**：和 Voice Rewrite §3 同一条规则；肌肉层面的极致是 `higgsfield-facs.md`。
+- **白平衡用开尔文**，一场戏内固定：3200K / 4000K / 5600K / 8500K。
+- **物理用真实单位写质量和尺寸** `[FIELD]`：PHYSICS 块写上重量，让重力读起来正确：`"the spider is 10–12 centimeters, 50–70 grams — it falls gently; the man is 70–80 kg — the drop lands hard."` 材料行为同样处理（`"the liana stretches slightly under load and creaks like fibrous wood"`）。
+- **有因果的道具互动** `[FIELD]`：物体从不自己动；每个道具事件都需要一个可见的物理原因，并有事件顺序：`"the cup tips only from visible sleeve contact"` · `"a button press is a full mechanical event — contact, 2–3 mm of travel, click, spring-back; the screen lights only AFTER the click."`
+- **不写导演名、代表作或器材型号名**：它们会被忽略，或者打乱复杂运动；改为描述画面。（在这种模式里覆盖 § Prompt-Craft Laws 里经验性的导演替换。）
+- **只用英文提示词**（历史上的中文例外见 § Multi-Language Prompt Workarounds；工作室当前交付用中文块结构，台词用 `{}` 内的原语言）。
 
-### POSITIVE LOCKS
+### 正向锁定（POSITIVE LOCKS）
 
-A **lock** is a short hard fixer placed next to what it protects —
-`"headlights stay glowing in every shot"`. The POSITIVE LOCKS block closes
-the prompt: continuity (characters, props, environment identical across
-cuts) plus a single positive restatement of critical info. This is where the
-positive constraint statements from § Prompt-Craft Laws live in a block
-prompt.
+**锁定**是一句短的硬性固定语，放在它保护的东西旁边：`"headlights stay glowing in every shot"`。POSITIVE LOCKS 块为提示词收尾：连续性（角色、道具、环境在切镜之间完全一致）加上对关键信息的一次正向重申。这是 § Prompt-Craft Laws 里的正向约束陈述在块提示词里的位置。（工作室格式对应 `[保持一致]`。）
 
-**Three named "helpful-instinct" drift sources** `[FIELD — 13-project
-harvest]` — the model's own instincts, each needing a standing lock:
+**三种具名的“好心本能”漂移来源** `[FIELD — 13-project harvest]`：模型自己的本能，各需要一条常设锁定：
 
-1. **Environment invention — the #1 drift source, above character drift.**
-   Whenever a location reference is attached, the model "helpfully" widens
-   rooms and adds furniture it wasn't shown; multiple creators called this
-   the single largest source of drift between clips. Standing lock: `"the
-   set contains only what the reference shows — no added furniture, rooms,
-   or geography beyond the reference"`, plus explicit absences where they
-   matter (`"nothing on the floor, nothing on the bed"`).
-2. **Character-height equalization.** With two people in frame the model
-   drifts toward equal heights. Write real heights into **every** prompt
-   with 2+ characters (`"she is 165 cm, he is 178 cm"`) so relative scale
-   never floats.
-3. **Scale drift on wide shots.** A human anchor shrinks to a speck across
-   cuts. Lock it: `"the girl stays the calm human-sized anchor — never
-   shrunk to a tiny distant dot."`
+1. **环境编造：第 1 号漂移来源，排在角色漂移之上。**只要附了场景参考，模型就会“好心”地把房间加宽、添上没给它看过的家具；多位创作者称这是片段之间最大的单一漂移来源。常设锁定：`"the set contains only what the reference shows — no added furniture, rooms, or geography beyond the reference"`，在重要的地方加上明确的“没有”（`"nothing on the floor, nothing on the bed"`）。工作室中文稿写成正向：“场景只包含参考中的陈设”“地面空着，床上空着”。
+2. **角色身高拉平。**画面里有两个人时，模型会往同样的身高漂。在**每一条**有 2 个以上角色的提示词里写真实身高（`"she is 165 cm, he is 178 cm"`），让相对尺度永远不飘。
+3. **远景里的尺度漂移。**人形锚点在切镜之间缩成一个点。锁定它：`"the rider stays the calm human-sized anchor — never shrunk to a tiny distant dot."`
 
-### Cut-format ladder
+### 切镜格式阶梯（Cut-format ladder）
 
-Four precision levels — points on a scale, pick the one the shot needs:
+四个精度级别：一个刻度上的点，选镜头需要的那一个：
 
-1. **Oner** — `"one continuous shot, the camera does not cut on its own."`
-2. **Sequential cuts, no timecodes** — `CUT 1 … CUT 2 … CUT 3`, described in
-   order, when cuts matter but exact timing doesn't.
-3. **Timed multishot** — explicit cuts at stated seconds
-   (`1.0s HARD CUT`), when beats must land on a clock.
-4. **Freestyle b-roll** — don't lock cuts; let the model find angles.
+1. **一镜到底**：`"one continuous shot, the camera does not cut on its own."`
+2. **有顺序的切镜，不带时间码**：`CUT 1 … CUT 2 … CUT 3`，按顺序描述，切镜重要但精确时间不重要时用。
+3. **计时多镜头**：在写明的秒数处明确切镜（`1.0s HARD CUT`），节拍必须按时钟落下时用。
+4. **自由空镜**：不锁定切镜；让模型自己找角度。
 
-Whenever cuts are specified (timed or not), add: `"cuts only at the
-specified points, the camera does not cut on its own."` Cut vocabulary:
-`HARD CUT`, `SMASH CUT`, `MATCH CUT`, `INSERT CUT`, `REVERSE CUT`,
-`WHIP CUT`; fades/crossfades only if explicitly requested. This ladder is
-the resolution of the pick-a-side anti-pattern in § Output Format
-(per-second labels inside an intended oner read as cut instructions), and
-timed beats must still sum to the declared duration (4–15s) per the runtime
-arithmetic there.
+只要指定了切镜（计时或不计时），就加上：`"cuts only at the specified points, the camera does not cut on its own."` 切镜词汇：`HARD CUT`、`SMASH CUT`、`MATCH CUT`、`INSERT CUT`、`REVERSE CUT`、`WHIP CUT`；淡入淡出/交叉淡化只在明确要求时用。这个阶梯解决了 § Output Format 里的“选边”反模式（本想一镜到底却写了逐秒标签，会被读成切镜指令），而计时节拍加起来仍然必须等于声明的时长（4–15 秒），按那里的时长算术。
 
-### Tag naming + minimal reference text
+### 标签命名 + 最少的参考文字（Tag naming + minimal reference text）
 
-- User-specified tags verbatim; otherwise load-order `@image1 @video1
-  @audio1` — consistent with § Reference Roles → Per-Image Role Convention.
-- The `@TAG:` reference line = role/build + current state + unique visible
-  features + action-critical details + voice (only if it has a line) +
-  `"100% matches the reference"`. **No age.** The official skill's own template
-  opened this line with an age token; engine rule 1 (`higgsfield-seedance-engine-rules.md`) forbids
-  it in either language, and Higgsfield's feature-film brief gives the reason —
-  the content filter tightens sharply the moment it reads a minor
-  (`higgsfield-seedance-hell-grind.md` § Wording rules). Carry the same information through build,
-  wear, and posture.
-- **Keep reference character text minimal** — long appearance text fights
-  the image and degrades it (same mechanism as the I2V subject-drift rule in
-  § Prompt-Craft Laws).
-- **State critical details in words anyway** — small text, logos, colors —
-  even when visible in the reference; the model can drop them.
-- **Never place an `@tag` in a shot where that object is not present** — the
-  model will force it into frame.
+- 用户指定的标签原样使用；否则按加载顺序 `@image1 @video1 @audio1`：与 § Reference Roles → Per-Image Role Convention 一致。（工作室项目的调用名是 `@` + 纯中文名，以资产总表为准。）
+- `@TAG:` 参考行 = 职责/体型 + 当前状态 + 独特的可见特征 + 动作关键细节 + 音色（只在有台词时）+ `"100% matches the reference"`。**不写年龄。**官方技能自己的模板用一个年龄词开头；引擎规则 1（`higgsfield-seedance-engine-rules.md`）在两种语言里都禁止它，而 Higgsfield 的长片说明给出了原因：内容过滤器一读到未成年人就会急剧收紧（`higgsfield-seedance-hell-grind.md` § Wording rules）。用体型、穿着和姿态承载同样的信息。
+- **参考角色的文字保持最少**：长的外貌文字会和图像打架并让它降质（和 § Prompt-Craft Laws 里图生视频主体漂移规则同一个机制）。
+- **关键细节无论如何用文字写出来**：小字、标识、颜色：即使在参考里看得见；模型可能会丢掉它们。
+- **绝不在那个物体不在场的镜头里放它的 `@tag`**：模型会把它硬塞进画面。
 
-**Naming the tags themselves** `[FIELD — Higgsfield Studio, ONEIRIC breakdown, 2026-08-13]`
-The bullets above say what a tag *line* contains; on a project of any size the *name* needs
-a convention too, and the rule behind it is **one element, one name**. Without it a project
-grows duplicates — the same couch living under three names — and nobody can tell which
-reference is the real one:
+**给标签本身命名** `[FIELD — Higgsfield Studio, ONEIRIC breakdown, 2026-08-13]` 上面几条说的是标签*行*包含什么；在任何规模的项目里，*名字*也需要一套约定，背后的规则是**一个元素，一个名字**。没有它，项目会长出重复：同一张沙发住在三个名字下面，没人分得清哪张参考才是真的：
 
 ```
 @loc_ON_dorm_commonroom_front_s2     type + project + name + [angle] + scene
@@ -541,108 +285,45 @@ reference is the real one:
 @prop_ON_pizza                       type + project + name
 ```
 
-- **The scene suffix ties an asset to where it lives**, so two dressings of one room, or
-  two versions of a location across a time jump, cannot collide.
-- **The version suffix appears when a state changes** — and a changed state is a **new
-  asset with a new name, never an overwrite**. One character in a dorm room and the same
-  character in a hospital bed are two assets of one man. The identity discipline behind
-  that split lives in `higgsfield-soul.md` § The Untouched Base; this bullet is
-  only the naming half of it.
-- Tags are arbitrary strings, so mixed case is safe and **consistency is the only rule**.
-  Pair related names visibly (a location and its staging reference sharing a stem) so it
-  reads at a glance which assets belong together — see
-  `template-staging-reference.md` § Tag naming for the staging-side form.
+- **场景后缀把资产绑到它所在的地方**，所以一个房间的两种陈设，或者一个场景跨时间跳跃的两个版本，不会撞车。
+- **状态变化时出现版本后缀**：而变化后的状态是**一个有新名字的新资产，绝不覆盖旧的**。宿舍里的一个角色和病床上的同一个角色，是同一个人的两个资产。这一条是身份纪律在命名上的一半。
+- 标签是任意字符串，所以大小写混用是安全的，**一致是唯一的规则**。让相关的名字看得出配对（场景和它的站位参考共用一个词干），一眼就能看出哪些资产属于一起：站位侧的写法见 `template-staging-reference.md` § Tag naming。
 
-### Context isolation
+### 上下文隔离（Context isolation）
 
-Every generation is a blank slate with no memory of previous shots. Never
-carry in scene numbers, script headings, prior-scene summaries, unused tags
-or characters, or "as above / continues" phrasing. This is *why* the
-Continuation Prompt Formula (below) demands a verbatim identity re-paste
-rather than a reference back to the earlier prompt.
+每次生成都是一张白纸，不记得之前的镜头。绝不带入场号、剧本标题、前一场的概述、没用到的标签或角色，或者“as above / continues”这类说法。这就是为什么下面的续接提示词公式要求一字不差地重新粘贴身份，而不是回指先前的提示词。
 
-### Special protocols
+### 特殊协议（Special protocols）
 
-- **4-mechanism extreme-FOV multishot stack** (8° / 107°): ① sequence-wide
-  identity lock (single location reference across all beats), ② LENS LOCK
-  opener — explicit FOV phrase starting each beat, ③ LENS CHECK closer
-  confirming FOV at the end of each beat, ④ color via material + light, not
-  a list. **All four or extreme-FOV multishots break down after 2–3 beats.**
-- **Whip-pan needs ≥0.8s of blur travel** — under 0.8s it renders as a hard
-  cut without blur (settled → 0.8s WHIP → settled).
-- **Mixed real-time / slow-mo:** hard cuts only between speed modes; each
-  shot is one speed start to finish.
-- **Anti-impact locks** for cracks/breaks: `"crowd PRESSES, not strikes"` ·
-  `"fracture originates from edge stress, not center impact"` · `"no impact
-  point — pressure-based crack"` · sequential timing edge-to-center, not
-  radial from a point.
-- **Observation pattern** (hidden-camera effect), all three at once:
-  foreground occlusion over 20–30% of frame + atmospheric haze between
-  camera and subject + distance vantage at 8–12°. Change the occlusion type
-  between beats; keep the vantage single.
+- **四机制的极端视场角多镜头组合**（8° / 107°）：① 整段的身份锁定（所有节拍用同一张场景参考），② LENS LOCK 开头：每个节拍开头写明确的视场角短语，③ LENS CHECK 结尾：每个节拍结尾确认视场角，④ 颜色通过材质 + 光来写，而不是一份清单。**四个都要，否则极端视场角多镜头在 2–3 个节拍后就会崩。**
+- **甩镜需要 ≥0.8 秒的模糊行程**：少于 0.8 秒会渲染成没有模糊的硬切（稳定 → 0.8 秒甩镜 → 稳定）。
+- **实时 / 慢动作混合：**速度模式之间只用硬切；每个镜头从头到尾一种速度。
+- 裂缝/破碎的**反撞击锁定**：`"crowd PRESSES, not strikes"` · `"fracture originates from edge stress, not center impact"` · `"no impact point — pressure-based crack"` · 时间上从边缘到中心依次发生，而不是从一点放射。
+- **观察模式**（偷拍效果），三样同时用：前景遮挡占画面 20–30% + 摄影机和主体之间的大气雾 + 8–12° 的远距离机位。节拍之间换遮挡的类型；机位保持一个。
 
-For these protocols applied on real footage — per-segment LENS LOCKs, timed
-SMASH/MATCH cuts, screen composites — see `higgsfield-seedance-production-patterns.md` in this
-directory.
+这些协议在真实素材上的应用（逐段 LENS LOCK、计时的 SMASH/MATCH 切镜、屏幕合成）见本目录的 `higgsfield-seedance-production-patterns.md`。
 
-### Field calibration — the 13-project production corpus
+### 实战校准：13 个项目的制作语料（Field calibration — the 13-project production corpus）
 
-`[FIELD — community harvest 2026-07-18: 13 shared Higgsfield projects, 9
-creators, ~4,000 production prompts pulled via API with full params]`. What
-the corpus confirms and calibrates about the block scaffold:
+`[FIELD — community harvest 2026-07-18: 13 shared Higgsfield projects, 9 creators, ~4,000 production prompts pulled via API with full params]`。语料对块骨架确认和校准了什么：
 
-- **The scaffold holds platform-wide.** Every project — photoreal adventure,
-  K-drama romance, broadcast-TV drama, anime, stop-motion folklore — runs the
-  same Style-Prefix-plus-Constraints-plus-variable-SHOT structure with the
-  same block anatomy. "SHOT" markers appear in 95% of the flagship project's
-  1,240 Seedance prompts; 15s is the dominant duration (they generate long
-  multi-shot clips and cut the best seconds).
-- **Word-length ladder by register.** Median Seedance prompt length tracks
-  register and ambition, not a fixed cap: tech-demo 218w → broadcast-TV drama
-  538w → commercial 779w → genre anthology 955w → adventure film 1,433w
-  (p90 2,648) → stop-motion emotional drama 2,059w. The 50–80-word sweet spot
-  (§ Prompt-Craft Laws) is *single-shot* doctrine; production multishot briefs
-  live an order of magnitude above it. Length scales with performance
-  complexity — never truncate a reaction arc to be neat.
-- **Register contracts the template.** Photoreal keeps every block (PHYSICS
-  with real masses, pore-level PERFORMANCE); stylized work (anime,
-  stop-motion) drops PHYSICS/skin realism and keeps SHOT beats + continuity +
-  a hard medium lock. See `higgsfield-style.md` § Register Poles.
-- **The Style Prefix is a per-project compiled constant.** In connected
-  shotlist projects the corpus ships it **verbatim at the top of every scene
-  prompt** (the Style-Prefix-plus-Constraints-plus-SHOT structure in the
-  first bullet — that is the delivered form, not just an authoring note).
-  Standalone block prompts instead *distribute* those aspects into their
-  home blocks (§ Distributed style — the standalone-block rule). Which form
-  ships is decided by the workflow, not by taste — see
-  `higgsfield-shotlist-director.md` § Per-scene prompt law.
-- **Video prompts are hand-authored.** `enhance_prompt` was absent/off on
-  every harvested Seedance job but ON for 1,022 image jobs — let the enhancer
-  expand image prompts, never the video brief.
-- **Platform-layer params observed on Seedance jobs** (Higgsfield surface,
-  not necessarily the raw model API): `multi_shot_mode: "custom"` (the timed
-  multishot mode), `genre: "auto"`, `speedramp: "auto"`, `mode: "std"`,
-  `bitrate_mode: "high"`, `generate_audio: true`, 21:9 at 4K.
-- **Iteration economics** (TESTS-first culture, 65–100 generations per kept
-  shot, five-bucket folder discipline): `production-benchmarks.md`
-  § Community-corpus anchors.
+- **骨架在整个平台上都成立。**每个项目（写实冒险、韩剧爱情、电视剧、日式动画、定格民间故事）都用同样的“风格前缀 + 约束 + 可变 SHOT”结构，块的构成相同。旗舰项目 1,240 条 Seedance 提示词里 95% 出现了“SHOT”标记；15 秒是主导时长（他们生成长的多镜头片段，再剪出最好的几秒）。
+- **按语域的词数阶梯。**Seedance 提示词长度的中位数跟随语域和野心，而不是固定上限：技术演示 218 词 → 电视剧 538 词 → 广告 779 词 → 类型选集 955 词 → 冒险电影 1,433 词（p90 2,648）→ 定格情感剧 2,059 词。50–80 词的甜区（§ Prompt-Craft Laws）是*单镜头*方法；制作多镜头说明比它高一个数量级。长度随表演复杂度增长：绝不为了整齐截断一段反应弧线。
+- **语域收缩模板。**写实保留每个块（带真实质量的 PHYSICS、毛孔级的 PERFORMANCE）；风格化的工作（日式动画、定格）去掉 PHYSICS/皮肤真实感，保留 SHOT 节拍 + 连续性 + 严格的媒介锁定。见 `higgsfield-style.md` § Register Poles。
+- **风格前缀是每个项目编译的常量。**在相连的分镜表项目里，语料把它**一字不差地放在每条场景提示词的顶部**（第一条里的“风格前缀 + 约束 + SHOT”结构：那是交付的形式，不只是写作笔记）。独立块提示词则把这些方面*分布*进各自的归属块（§ Distributed style — the standalone-block rule）。交付哪种形式由流程决定，而不是由喜好：见 `higgsfield-shotlist-director.md` § Per-scene prompt law。
+- **视频提示词是手写的。**每个采集到的 Seedance 任务里 `enhance_prompt` 都不存在/关闭，而 1,022 个图像任务里是打开的：让增强器扩展图像提示词，绝不扩展视频说明。
+- **Seedance 任务上观察到的平台层参数**（Higgsfield 入口，不一定是原始模型 API）：`multi_shot_mode: "custom"`（计时多镜头模式）、`genre: "auto"`、`speedramp: "auto"`、`mode: "std"`、`bitrate_mode: "high"`、`generate_audio: true`、4K 下 21:9。
+- **迭代经济学**（先测试的文化、每个留下的镜头 65–100 次生成、五个文件夹的纪律）：`production-benchmarks.md` § Community-corpus anchors。
 
 ---
 
-## Seedance 2.0 Prompt Modes
+## Seedance 2.0 提示词模式（Seedance 2.0 Prompt Modes）
 
-Seedance 2.0 exposes five generation modes that each take the six-slot formula
-but apply it to a different starting point. Picking the right mode is upstream of
-prompt writing — the same sentence will produce different results in different
-modes, because each mode reads the prompt as a different kind of instruction.
+Seedance 2.0 提供五种生成模式，每种都接受六槽公式，但把它应用到不同的起点上。选对模式在写提示词之前：同一个句子在不同模式里会产生不同的结果，因为每种模式把提示词读成不同类型的指令。
 
-### Reference-Based
+### 基于参考（Reference-Based）
 
-The prompt builds a scene around a source image that carries the visual identity —
-character, wardrobe, palette, sometimes composition. The prompt's job is NOT to
-re-describe what the image already shows; it's to place the subject into a new
-action, setting, or motion context. This is the workhorse mode for any sequence
-that needs a consistent character across varied shots.
+提示词围绕一张承载视觉身份（角色、服装、色板，有时还有构图）的源图搭建场景。提示词的任务**不是**重新描述图里已经显示的东西；而是把主体放进一个新的动作、环境或运动语境里。这是任何需要角色在不同镜头间保持一致的段落的主力模式。
 
 ```
 [Source image role: "as the main character" / "as the starting frame"].
@@ -650,66 +331,38 @@ that needs a consistent character across varied shots.
 [Camera movement]. [Lighting cue if different from source].
 ```
 
-### Continuation
+### 续接（Continuation）
 
-The prompt extends a prior Seedance generation forward in time, picking up at the
-final frame of the previous clip. Identity, wardrobe, environment, and emotional
-state all carry over. The prompt should describe what happens NEXT — never what
-just happened. For the full five-rule construction pattern, see the Continuation
-Prompt Formula section directly below.
+提示词把之前的一次 Seedance 生成在时间上往后延伸，从上一段片子的最后一帧接起。身份、服装、环境和情绪状态全部延续。提示词应该描述**接下来**发生什么：绝不描述刚才发生了什么。完整的五规则构建方式见紧接着的“续接提示词公式”一节。
 
 ```
 [Continuing from prior clip]. [New action that follows from the last frame].
 [Camera direction for the continuation]. [Any state change — light shift, new beat].
 ```
 
-### Expand Shot
+### 扩展画面（Expand Shot）
 
-The prompt grows the canvas or spatial extent of an existing frame — pulling the
-frame boundaries outward to reveal what's beyond the original edges. This is NOT
-a time extension (that's Continuation) and NOT a zoom-out camera move within the
-original generation. It rewrites the frame itself to include more scene. Useful
-for turning a tight composition into a wider establishing shot without
-regenerating from scratch.
+提示词扩大一个已有画面的画布或空间范围：把画面边界往外拉，揭示原来边缘之外的东西。这**不是**时间延伸（那是 Continuation），也**不是**原生成里的一次拉远运镜。它重写画面本身以包含更多场景。适合把一个紧的构图变成更宽的建立镜头，而不用从头重新生成。
 
 ```
 [Source frame reference]. Extend the scene [direction: outward / upward / leftward].
 [What appears in the newly revealed area]. [Preserve the original subject/composition].
 ```
 
-### Edit Shot
+### 编辑画面（Edit Shot）
 
-The prompt modifies specific elements of an existing generation while everything
-else stays exactly as it was. Think of it as a targeted patch: change a jacket
-color, remove a background figure, swap a prop, adjust a facial expression.
-Identity, camera, composition, and lighting stay locked unless you explicitly
-name them in the change list. The Keep Rule matters here: always state what to
-preserve alongside what to change.
+提示词修改一次已有生成里的特定元素，其他一切完全保持原样。把它想成一个定向补丁：换夹克颜色、去掉一个背景人物、换一个道具、调整一个面部表情。身份、运镜、构图和光照保持锁定，除非你在改动清单里明确点名它们。保留规则在这里很重要：永远在写要改什么的同时写明要保留什么。
 
 ```
 Change [specific element] to [new state]. Keep [everything else] unchanged.
 [Preserve identity, composition, lighting, and camera behavior from the original.]
 ```
 
-### Transformation
+### 变形（Transformation）
 
-The prompt describes an explicit state change inside a single clip — the subject,
-object, or environment visibly becomes something else within the shot's
-duration. Distinct from Continuation (which extends time across two clips) and
-from Edit Shot (which modifies a generated clip after the fact). Transformation
-happens *during* the generation, in one continuous take.
+提示词描述单个片段内的一次明确状态变化：主体、物体或环境在镜头时长内可见地变成别的东西。不同于 Continuation（跨两个片段延伸时间），也不同于 Edit Shot（事后修改一个生成的片段）。Transformation 发生在生成*过程中*，在一个连续镜头里。
 
-> **Not to be confused with footage transformation (video-to-video).** This
-> Transformation *prompt mode* is an in-clip morph generated from scratch. When
-> the user starts from a **real clip they already shot** and wants to preserve
-> the subject + camera move while adding a VFX element, swapping the world, or
-> dropping in a creature, that is the video-to-video workflow in
-> `higgsfield-seedance-vfx.md` (`@source` grammar, lock-down clauses,
-> lighting integration, std-4K). Use it when the shot's
-core idea is the change itself: a character morphing, an object decaying, a
-landscape shifting from one season to another. The skeleton below is written
-for character → character; the same pattern applies to object → object and
-environment → environment with the relevant noun substituted.
+> **不要和素材变换（视频到视频）混淆。**这个 Transformation *提示词模式*是从零生成的片内变形。当用户从一段**他们已经拍好的真实片段**开始，想在保留主体 + 镜头运动的同时加一个视效元素、换掉世界或放进一只生物时，那是 `higgsfield-seedance-vfx.md` 里的视频到视频流程（`@source` 语法、锁定句、光照融合、std-4K）。镜头的核心想法就是变化本身时用这个模式：一个角色变形、一个物体腐坏、一片风景从一个季节转到另一个季节。下面的骨架是为角色 → 角色写的；物体 → 物体和环境 → 环境套用同样的模式，换掉相应的名词。
 
 ```
 [Subject in starting state — full identity descriptors]. [Triggering moment or
@@ -718,74 +371,39 @@ physical terms]. [Subject in ending state — new identity descriptors].
 [Camera behavior across the change]. [Lighting / palette shift if any].
 ```
 
-The transformation must be one continuous arc, not a cut. Describe the
-intermediate state explicitly — the model needs a midpoint anchor or it will
-either snap from start to end (looks like a cut) or render an ambiguous blur.
-For a simple transformation, 5–8 seconds is an empirical example of a manageable
-window, not a required stage length. Allocate time from the trigger, physical change,
-and readable result, within actual model limits; longer complex morphs can drift.
+变形必须是一条连续的弧线，而不是一次切镜。明确描述中间状态：模型需要一个中点锚点，否则它要么从开始直接跳到结束（看起来像切镜），要么渲染出含糊的模糊。对简单的变形，5–8 秒是一个经验上可控的窗口示例，不是必须的阶段长度。按触发、物理变化和可读的结果分配时间，在实际模型限制之内；更长的复杂变形可能会漂移。
 
-### Mode Selection Rule
+### 模式选择规则（Mode Selection Rule）
 
-Reference-Based for new action with an existing character. Continuation for the
-next beat in time. Expand Shot to widen the frame spatially. Edit Shot to patch
-specific details. Transformation prompt mode when the shot's core idea is a
-state change inside a single clip — the change is the content. If you find
-yourself writing across multiple modes in one prompt — stop, pick one,
-generate, then use the output as input to the next mode.
+已有角色的新动作用 Reference-Based。时间上的下一个节拍用 Continuation。在空间上加宽画面用 Expand Shot。修补特定细节用 Edit Shot。镜头的核心想法是单个片段内的状态变化（变化就是内容）时，用 Transformation 提示词模式。如果你发现自己在一条提示词里跨多种模式写：停下，选一种，生成，然后把输出作为下一种模式的输入。
 
 ---
 
-## Continuation Prompt Formula
+## 续接提示词公式（Continuation Prompt Formula）
 
-When writing a Continuation mode prompt, apply these five rules. Skipping any of
-them is the most common cause of continuation failures: identity drift across the
-boundary, re-played actions, environment shifts, and broken emotional through-lines.
+写 Continuation 模式的提示词时，应用这五条规则。跳过任何一条，是续接失败最常见的原因：身份跨边界漂移、动作重播、环境变化、情绪线断开。
 
-### The Five Rules
+### 五条规则（The Five Rules）
 
-1. **Last-frame anchor.** Open the prompt with a short description of what the
-   camera sees in the final frame of the prior clip — the pose, the position in
-   frame, where the character is looking. This tells the model where to start
-   rendering from. One sentence is enough.
+1. **最后一帧锚点。**以对上一段片子最后一帧里摄影机看到什么的简短描述开头：姿势、在画面里的位置、角色在看哪里。这告诉模型从哪里开始渲染。一句就够。
 
-2. **Identity anchor.** Paste the character's identity block (the same paragraph
-   you used in the original prompt) verbatim into the continuation prompt. Do
-   not paraphrase it. Do not shorten it. Continuation boundaries are where
-   identity drifts — a verbatim re-paste gives the model no room to reinterpret.
+2. **身份锚点。**把角色的身份块（你在原始提示词里用的同一段）一字不差地粘进续接提示词。不要改写。不要缩短。续接边界是身份漂移的地方：一字不差地重新粘贴，不给模型重新解释的余地。
 
-3. **Prior clip as secondary memory.** Name what just happened in one line —
-   "following the door opening," "after the punch lands," "continuing from her
-   turn toward the window." Do not re-describe the action in detail. One
-   referential phrase, then move on.
+3. **上一段作为次要记忆。**用一行点明刚才发生了什么：“following the door opening”、“after the punch lands”、“continuing from her turn toward the window”。不要详细重新描述动作。一个指代短语，然后往下走。
 
-4. **Immediate continuation.** Start the new action on the frame that follows
-   the prior clip's final frame. No time skip, no fade, no implied cut — unless
-   the user has explicitly asked for one. If they want a skip, describe it as a
-   new shot instead.
+4. **立即续接。**新动作从上一段最后一帧之后的那一帧开始。没有时间跳跃、没有淡化、没有暗示的切镜：除非用户明确要求。如果他们要跳跃，把它描述成一个新镜头。
 
-5. **No action repeat.** The new prompt must extend, not loop. If the prior clip
-   ended on her drawing her weapon, the continuation does NOT describe her
-   drawing her weapon — it describes what she does with it next. Repeating a
-   described action is what causes the "previous beat replays" symptom.
+5. **不重复动作。**新提示词必须延伸，而不是循环。如果上一段以她拔出武器结束，续接**不**描述她拔出武器：它描述她接下来用武器做什么。重复一个描述过的动作，就是造成“上一个节拍重播”症状的原因。
 
-### What Must Carry Over
+### 必须延续的东西（What Must Carry Over）
 
-Across the continuation boundary, preserve: character identity (face, build,
-distinguishing marks), wardrobe (every garment and accessory), environment
-(architecture, light quality, color treatment, ambient particulates), and
-emotional carryover (the state the character was in at the last frame — tense,
-exhausted, alert — should still read on their body in the opening of the
-continuation).
+跨续接边界，保留：角色身份（脸、体型、辨识标记）、服装（每件衣服和配饰）、环境（建筑、光的质感、色彩处理、空气中的粒子），以及情绪延续（角色在最后一帧时的状态：紧张、疲惫、警觉：在续接开头仍然应该在身体上读得出来）。
 
-> For the eight named substrate channels that "emotional carryover"
-> decomposes into, see `vocab.md` § Emotion as Visible Behavior —
-> Channels.
+> “情绪延续”分解成的八个具名的底层通道，见 `vocab.md` § Emotion as Visible Behavior — Channels。
 
-### Example
+### 示例（Example）
 
-Prior clip ended on a detective standing in a doorway, rain behind her, glancing
-over her shoulder. The continuation prompt:
+上一段片子结束在一位侦探站在门口、身后下着雨、回头瞥了一眼。续接提示词：
 
 ```
 Continuing from the prior clip — the detective framed in the doorway, head
@@ -797,200 +415,103 @@ matching her pace. Same cool blue-grey palette, same overhead practical light.
 Tense, controlled energy carrying over from the prior clip.
 ```
 
-All five rules present: last-frame anchor (framed in the doorway, head turned,
-rain behind her), identity anchor (bracketed block, verbatim), prior clip as
-secondary memory ("following her glance back"), immediate continuation (steps
-fully into the corridor — the next frame action), no action repeat (the glance
-is referenced, not re-performed).
+五条规则都在：最后一帧锚点（框在门口、头转过去、身后下雨）、身份锚点（方括号里的块，一字不差）、上一段作为次要记忆（“following her glance back”）、立即续接（完全迈进走廊：下一帧的动作）、不重复动作（那一瞥被提到，而没有重演）。
 
-### Extension Prompting — Video-Reference Continuation
+### 延伸提示：视频参考续接（Extension Prompting — Video-Reference Continuation）
 
-`[EMPIRICAL — cross-surface, verified on Dreamina]` — no Seedance surface
-exposes a dedicated "extend" button. The working extension path: attach the
-existing clip as a **video reference** (the `video_references` media role)
-and open the prompt with **"The scene continues."** The model picks up from
-the clip's end and carries motion, characters, environment, even voices. The
-five rules above still apply — the attached clip simply replaces the prose
-last-frame anchor with the real thing.
+`[EMPIRICAL — cross-surface, verified on Dreamina]`：没有任何 Seedance 入口提供专门的“延伸”按钮。有效的延伸路径：把已有片段作为**视频参考**附上（`video_references` 媒体职责），并以 **“The scene continues.”** 开头。模型从片段结尾接上，延续运动、角色、环境，甚至声音。上面的五条规则仍然适用：附上的片段只是用真实的东西代替了文字描述的最后一帧锚点。
 
-- **Prequels:** open with **"Show me what happens before"** instead — the
-  model generates the clip leading *into* the source. Plan backward from the
-  source's first frame: the new clip's final frame must match its composition,
-  subject/prop states, motion phase, direction, speed, lighting, and audio join.
-  Past / current / future can all be chained around one anchor clip.
-- **Match source resolution where supported; budget duration for the next event.**
-  1080p source → 1080p continuation avoids a quality jump. Choose a legal
-  duration within 4–15s (1080p/4k require `mode=std`); a 15s→15s match is
-  an optional historical workflow choice. Follow actual native extension-mode
-  constraints where available. A synchronized screen composite still needs
-  its own duration lock (`higgsfield-seedance-production-patterns.md` § Video-Reference 1:1 Lock
-  + SCREEN REALISM); that requirement does not govern free continuation.
-- **Feed the tail, not just the frame** `[FIELD — 13-project harvest]`:
-  production practice feeds **the final 3–4 seconds** of the finished take
-  back as the `@video` reference rather than a last-frame still — the clip
-  carries *motion* into the join, so the next shot picks up the exact pose,
-  framing, light, and movement where the previous one left off instead of
-  restarting from a frozen pose.
-- **Occluded-identity binding:** if an identity feature is hidden at the
-  source clip's end (a mole behind a hand), add the character image as a
-  second reference and bind it explicitly: `"The woman's identity is
-  @Image1."`
-- **Chains degrade.** Each extension re-feeds a generation of a generation
-  and compounds artifacts. `[FIELD — community, seedance-2.0 repo v6.6.0]`:
-  expect visible drift by the 4th–5th chained generation; **cap seamless
-  chains at ~2 (hard ceiling 3), then re-anchor from the ORIGINAL canonical
-  references** — a scene boundary is an intentional cut re-opened from
-  canonical refs, not extension #4. A sequence that must run longer: break
-  the chain with a B-roll cutaway between extensions, or upscale before
-  re-feeding.
-- **Prompt-engineered cut points (optional coverage):** when the story calls
-  for a cut, an extension can end on a camera-angle change
-  (`"the scene from the character's perspective"`). Do not impose this on a
-  seamless continuation or replace a backward extension's first-frame join.
-- **Source carries state:** the attached clip carries the state; the
-  extension text carries only the delta — see the `[FIELD]` addendum under
-  § Reference Roles → Load-Bearing Rule before writing the opening line.
-- **Extending dialogue:** check the per-language dialogue-sync budget table
-  in `higgsfield-audio.md` before writing the next line — reliable
-  lip-sync word counts differ sharply by language.
+- **前传：**改用 **“Show me what happens before”** 开头：模型生成*通向*源片段的片子。从源片段的第一帧倒着规划：新片段的最后一帧必须和它的构图、主体/道具状态、运动相位、方向、速度、光照和音频接点一致。过去 / 现在 / 未来都可以围绕一个锚点片段串起来。
+- **支持时匹配源分辨率；按下一个事件预算时长。**1080p 源 → 1080p 续接，避免画质跳变。在 4–15 秒内选一个合法时长（1080p/4k 需要 `mode=std`）；15 秒→15 秒的匹配是一个可选的历史工作流选择。有原生延伸模式时遵守它的实际约束。同步的屏幕合成仍然需要它自己的时长锁定（`higgsfield-seedance-production-patterns.md` § Video-Reference 1:1 Lock + SCREEN REALISM）；那个要求不管自由续接。
+- **喂尾巴，而不只是一帧** `[FIELD — 13-project harvest]`：制作实践把完成素材的**最后 3–4 秒**作为 `@video` 参考喂回去，而不是一张最后一帧静帧：片段把*运动*带进接点，所以下一个镜头从上一个停下的地方接上确切的姿势、构图、光和运动，而不是从一个冻住的姿势重新开始。
+- **被遮挡的身份绑定：**如果某个身份特征在源片段结尾被挡住（一颗痣在手后面），把角色图作为第二参考加上并明确绑定：`"The woman's identity is @Image1."`
+- **链条会退化。**每次延伸都重新喂入一次生成的生成，累积瑕疵。`[FIELD — community, seedance-2.0 repo v6.6.0]`：预计到第 4–5 次链式生成时出现可见漂移；**无缝链条上限约 2 次（硬上限 3），之后从原始的规范参考重新锚定**：场景边界是从规范参考重新打开的刻意切镜，而不是第 4 次延伸。必须更长的段落：在延伸之间插一个空镜切出，打断链条。
+- **用提示词设计的切点（可选的覆盖）：**故事需要切镜时，一次延伸可以以一次机位变化结束（`"the scene from the character's perspective"`）。不要把这个强加在无缝续接上，也不要用它代替向前延伸的第一帧接点。
+- **源素材承载状态：**附上的片段承载状态；延伸文字只承载变化：写开头那句之前，看 § Reference Roles → Load-Bearing Rule 下的 `[FIELD]` 补充。
+- **延伸对白：**写下一句台词之前，查 `higgsfield-audio.md` 里按语言分的对白同步预算表：可靠的口型同步词数在不同语言之间差别很大。
 
 ---
 
-## Working Modes vs Prompt Modes — Two Taxonomies
+## 工作模式与提示词模式：两套分类（Working Modes vs Prompt Modes — Two Taxonomies）
 
-The Seedance 2.0 Prompt Modes section above names five things the
-platform exposes: Reference-Based / Continuation / Expand Shot / Edit
-Shot / Transformation. These are platform mechanisms — different pathways
-through which Seedance accepts a prompt. The Reference Roles and Working
-Modes sections below name two adjacent concepts that the platform
-vocabulary does not surface:
+上面的 Seedance 2.0 提示词模式一节点名了平台提供的五样东西：Reference-Based / Continuation / Expand Shot / Edit Shot / Transformation。这些是平台机制：Seedance 接受提示词的不同通道。下面的参考职责和工作模式两节点名了两个相邻的概念，平台词汇里没有：
 
-- **Working modes** — user intent. What you are trying to DO with the
-  craft when you sit down to write the prompt.
-- **Prompt modes** — platform mechanism. Which of the 5 input pathways
-  Seedance accepts the prompt through.
-- **Reference roles** — what each reference inside the prompt represents.
-  A semantic-role layer, distinct from the input-modality use-case
-  patterns catalogued in `higgsfield-cinema.md` § @ Reference
-  Patterns for Cinema Studio 3.0 (which lists `@Image1` / `@Video1` /
-  `@Audio1` patterns by scenario, not by semantic role).
+- **工作模式**：用户意图。你坐下来写提示词时，想用这门手艺**做**什么。
+- **提示词模式**：平台机制。Seedance 通过 5 个输入通道中的哪一个接受提示词。
+- **参考职责**：提示词里每张参考代表什么。一个语义职责层，不同于输入模态的用例模式（按场景的 `@Image1` / `@Video1` / `@Audio1`）。
 
-These three taxonomies are peers, not hierarchical. A single Seedance
-shot pulls from all three: a working-mode intent picks a prompt mode;
-references inside the prompt play specific roles.
+这三套分类是平级的，不是层级的。一个 Seedance 镜头同时用到三者：一个工作模式的意图选择一个提示词模式；提示词里的参考扮演特定的职责。
 
-### The "Continuation" Word Collision
+### “Continuation”一词的撞名（The "Continuation" Word Collision）
 
-"Continuation" names something in both taxonomies:
+“Continuation”在两套分类里都有：
 
-- **Continuation working mode** = user intent — "I am picking up where
-  the previous shot left off."
-- **Continuation prompt mode** = platform mechanism — the specific
-  Seedance input pathway that extends a prior generation forward in time
-  (see the Seedance 2.0 Prompt Modes section above).
+- **Continuation 工作模式** = 用户意图：“我在接着上一个镜头停下的地方往下做。”
+- **Continuation 提示词模式** = 平台机制：把之前的生成在时间上往后延伸的那个特定 Seedance 输入通道（见上面的 Seedance 2.0 提示词模式一节）。
 
-A user in Continuation working mode almost always uses Continuation
-prompt mode — the intent and the mechanism line up. But Bridging working
-mode can also reach for Continuation prompt mode (when the bridge
-anchors on the last frame of the upstream shot), and Repair working mode
-can reach for Continuation prompt mode (when the repair is a re-shoot
-starting from the same last frame as the failed clip). The names
-overlap; the meanings don't.
+处于 Continuation 工作模式的用户几乎总是用 Continuation 提示词模式：意图和机制对得上。但 Bridging 工作模式也可能用 Continuation 提示词模式（桥接锚定在上游镜头的最后一帧上时），Repair 工作模式也可能用 Continuation 提示词模式（修复是从失败片段的同一个最后一帧开始重拍时）。名字重叠；意思不重叠。
 
-In this skill, section context disambiguates: if the surrounding content
-is in the Working Modes section, "Continuation" means the intent; if in
-the Seedance 2.0 Prompt Modes section or the Continuation Prompt Formula
-section, "Continuation" means the mechanism. If still ambiguous, the
-longer forms — "Continuation working mode" and "Continuation prompt
-mode" — are always available.
+在本模块里，章节语境会消除歧义：如果周围内容在工作模式一节里，“Continuation”指意图；如果在 Seedance 2.0 提示词模式一节或续接提示词公式一节里，“Continuation”指机制。如果仍然有歧义，总可以用更长的形式：“Continuation 工作模式”和“Continuation 提示词模式”。
 
-### Working Mode → Prompt Mode Mapping
+### 工作模式 → 提示词模式映射（Working Mode → Prompt Mode Mapping）
 
-| Working mode  | Typical prompt mode(s)                | Reference roles in play                |
+| 工作模式  | 典型的提示词模式                | 起作用的参考职责                |
 |---------------|---------------------------------------|----------------------------------------|
-| Exploration   | Reference-Based, or pure T2V          | Character (optional)                   |
+| Exploration   | Reference-Based，或纯文生视频          | Character（可选）                   |
 | Continuation  | Continuation                          | Character + Last-Frame                 |
-| Bridging      | Reference-Based or Continuation       | Character + Last-Frame + Environment   |
-| Repair        | Edit Shot, or fresh Reference-Based   | Character + (failed-shot reference)    |
+| Bridging      | Reference-Based 或 Continuation       | Character + Last-Frame + Environment   |
+| Repair        | Edit Shot，或重新 Reference-Based   | Character +（失败镜头的参考）    |
 
-Not a strict mapping. One working mode routes through one or more prompt
-modes depending on what the shot needs; the table anchors the typical
-case without claiming a 1:1 bijection.
+不是严格的映射。一个工作模式根据镜头需要走一个或多个提示词模式；这张表锚定典型情况，不声称是一一对应。
 
 ---
 
-## Reference Roles
+## 参考职责（Reference Roles）
 
-Seedance prompts use references — `@Image`, `@Video`, and `@Audio` — to
-lock specific properties across shots. Each reference plays one of four
-roles depending on what it locks. This is a semantic-role taxonomy: what
-the reference IS FOR in the prompt. It sits alongside (not on top of)
-the input-modality use-case patterns in `higgsfield-cinema.md`
-§ @ Reference Patterns for Cinema Studio 3.0, which catalogs concrete
-prompt patterns by file type.
+Seedance 提示词用参考（`@Image`、`@Video` 和 `@Audio`）跨镜头锁定特定的属性。每张参考根据它锁定什么，扮演四种职责之一。这是一套语义职责分类：参考在提示词里**是用来做什么的**。它和输入模态的用例模式（按文件类型的具体提示词写法）并列，而不是叠在它上面。工作室当前的职责映射写法以 [Seedance 2.5 多参考说明](template-omni-reference-2-5.md) 为准。
 
-If a property has to read consistently across multiple shots, assign it
-to a reference role. If it only matters for one shot, write it inline.
+如果一个属性必须在多个镜头之间一致，就把它分配给一个参考职责。如果它只对一个镜头重要，就写在行内。
 
-Three in-prompt role *phrases* demonstrated in Higgsfield's Seedance-4K
-tutorial — `"100% matches the reference"` (identity lock), `"STYLE
-REFERENCE ONLY"` (environment that the model may extend), and `"VARIETY
-reference"` (crowd lineup sheet, the clone-army fix) — are catalogued in
-`higgsfield-seedance-production-patterns.md` § Reference-Role Vocabulary.
+Higgsfield 的 Seedance-4K 教程里演示过的三个提示词内职责*短语*（`"100% matches the reference"`（身份锁定）、`"STYLE REFERENCE ONLY"`（模型可以扩展的环境）和 `"VARIETY reference"`（人群阵容表，克隆军团的修法））收录在 `higgsfield-seedance-production-patterns.md` § Reference-Role Vocabulary。
 
-### Character
+### 角色（Character）
 
-Locks main-character identity across shots — face, build, distinguishing
-marks. Almost always an image reference; for highest consistency, use
-the Soul ID character sheet documented in
-`higgsfield-soul.md` § Character Sheet Creation.
+跨镜头锁定主角身份：脸、体型、辨识标记。几乎总是图像参考；要最高的一致性，用工作室 [角色资产交付规范](template-character-asset-delivery.md) 的组板。
 
-Pattern in a Seedance prompt:
+Seedance 提示词里的写法：
 
 ```
 @Image1 as the main character. [Identity block verbatim.] [Action the
 subject performs.] ...
 ```
 
-### Last-Frame
+### 最后一帧（Last-Frame）
 
-Anchors the start of a new clip to a specific frame from the previous
-one. The role tells the model where to begin rendering from. Used in
-Continuation prompt mode and inside Bridging working mode. For the full
-five-rule construction pattern, see the Continuation Prompt Formula
-section above.
+把一段新片子的开头锚定到上一段的一个特定画面上。这个职责告诉模型从哪里开始渲染。用于 Continuation 提示词模式和 Bridging 工作模式里。完整的五规则构建方式见上面的续接提示词公式一节。
 
-Pattern in a Seedance prompt:
+Seedance 提示词里的写法：
 
 ```
 Continuing from the prior clip — [short description of what the camera
 sees in the final frame of the prior clip]. [New action that follows.]
 ```
 
-### Environment
+### 环境（Environment）
 
-Locks the world and setting across shots — architecture, light quality,
-ambient particulates, weather state. The role tells the model the
-specific space the action takes place in, separate from any character
-in that space. Pairs with `higgsfield-cinema.md` § Location
-Reference Sheets when the same environment recurs across enough shots
-to earn a sheet.
+跨镜头锁定世界和环境：建筑、光的质感、空气中的粒子、天气状态。这个职责告诉模型动作发生的具体空间，和空间里的任何角色分开。同一个环境在足够多的镜头里反复出现、值得做一张设定表时使用。
 
-Pattern in a Seedance prompt:
+Seedance 提示词里的写法：
 
 ```
 @Image1 as the environment. [Subject + action.] [Lighting / atmospheric
 cues consistent with the environment reference.]
 ```
 
-### Prop
+### 道具（Prop）
 
-Locks specific recurring objects — a hero costume piece, a signature
-weapon, a branded product, a vehicle that appears across multiple shots.
-The role tells the model that this specific object — not a generic
-instance of its category — must read identically across cuts.
+锁定特定的反复出现的物件：一件主打服装、一把标志性武器、一个品牌产品、一辆在多个镜头里出现的载具。这个职责告诉模型这个特定的物件（不是它所属类别的一个泛泛实例）必须在切镜之间读起来完全一样。
 
-Pattern in a Seedance prompt:
+Seedance 提示词里的写法：
 
 ```
 @Image1 as the prop. [Subject interacts with the prop.] [Camera
@@ -998,32 +519,17 @@ behavior.] [How the prop appears in the new shot — same geometry and
 material as the reference.]
 ```
 
-### Depth Map
+### 深度图（Depth Map）
 
-`[FIELD — Higgsfield Studio, ADILIADA breakdown, 2026-08-14]` A greyscale image where
-**light areas are near and dark areas are far**. The model reads it as the scene's depth
-skeleton — an explicit three-dimensional read that fixes composition, volume and
-proportion. The failure it prevents is a space that **rearranges itself between shots**:
-without a depth anchor, geometry drifts and a location subtly re-plans itself every few
-seconds.
+`[FIELD — Higgsfield Studio, ADILIADA breakdown, 2026-08-14]` 一张灰度图，**亮的区域近，暗的区域远**。模型把它读作场景的深度骨架：一种明确的三维读法，固定构图、体积和比例。它防止的失败是一个**在镜头之间自己重新布置的空间**：没有深度锚点，几何会漂移，一个场景每隔几秒就悄悄重新规划一次。
 
-Use it where the space itself must hold — a fight in a specific room, a chase through
-architecture that has to stay the same architecture. It is a *geometry* input and carries
-no style: pair it with the environment reference that owns surfaces and light.
+在空间本身必须保持的地方用它：特定房间里的一场打斗，必须保持同一套建筑的一场追逐。它是*几何*输入，不带风格：和负责表面和光的环境参考配对使用。
 
-### Bake it into the asset when the prompt will not hold it
+### 提示词留不住时，把它烤进资产（Bake it into the asset when the prompt will not hold it）
 
-`[FIELD — Higgsfield Studio, ONEIRIC breakdown, 2026-08-13]` The general move, and one of
-the most useful in this file: **when a property drifts no matter how well you write it,
-stop writing it and move it one step earlier — generate it into the asset.** The reference
-image then carries the property, the model reads it off the plate, and it stops being
-something the text has to win every shot.
+`[FIELD — Higgsfield Studio, ONEIRIC breakdown, 2026-08-13]` 一个通用的做法，也是本文件里最有用的之一：**当一个属性不管写得多好都会漂移时，停止写它，把它往前挪一步：把它生成进资产里。**参考图于是承载这个属性，模型从底片上读出它，它就不再是文字每个镜头都得打赢的东西。
 
-The worked case is **anamorphic optics**. Asked for in a video prompt, the lens character
-drifts shot to shot. Asked for at the *image* stage, it holds — because the plate itself
-becomes the lens. There is no "anamorphic" switch in an image model either, so the effect
-is assembled from the geometry of the lens, written out, at the end of the location image
-prompt:
+实例是**变形宽银幕光学**。在视频提示词里要求时，镜头特性在镜头之间漂移。在*图像*阶段要求时，它保持住：因为底片本身变成了镜头。图像模型里也没有“anamorphic”开关，所以效果是用镜头的几何拼出来的，写在场景图提示词的末尾：
 
 ```
 STRONG anamorphic lens character: horizontal squeeze and compression,
@@ -1032,132 +538,69 @@ edge distortion, chromatic aberration toward the edges.
 NO lens flares, NO light streaks, NO floating bokeh circles. 2.39:1.
 ```
 
-Dose with *subtle / gentle / moderate / strong / maximum*. Ban the garbage that tags along
-(flares, streaks, floating bokeh orbs) **at the image stage only**.
+用 *subtle / gentle / moderate / strong / maximum* 控制剂量。跟着来的垃圾（光晕、拉丝、漂浮的焦外光球）**只在图像阶段**禁止。
 
-> **Then never say those words again.** In the video prompt the optics vocabulary does not
-> appear at all — **not even as a ban** — because naming a thing under a negation summons
-> it (`negative-constraints.md`). The video prompt describes only clean glass and
-> contained glows; the anamorphic character arrives with the asset.
+> **然后再也不提这些词。**视频提示词里光学词汇完全不出现：**连禁止都不写**：因为在否定下点名一样东西会把它召唤出来（`negative-constraints.md`）。视频提示词只描述干净的镜片和收敛的光晕；变形宽银幕的特性随资产一起到来。
 
-This generalises past optics: a grain structure, a lens character, a colour cast, a crowd
-that costs a paragraph to specify — anything the text keeps losing is a candidate for
-baking into the plate. Note the cost: a baked property is no longer directable per shot,
-so bake only what should be *constant* across the sequence.
+这可以推广到光学之外：一种颗粒结构、一种镜头特性、一种偏色、一群要花一段话才能写清的人群：文字总是丢掉的任何东西，都是烤进底片的候选。注意代价：烤进去的属性不再能逐镜头指导，所以只烤应该在整段里*恒定*的东西。
 
-### Per-Image Role Convention
+### 逐张图的职责约定（Per-Image Role Convention）
 
-Reference handles (`@Image1`, `@Image2`, `@Video1`, `@Audio1`) are
-assigned by upload order — the first image attached becomes
-`@Image1`, the second becomes `@Image2`, and so on. Production
-practice locks a stable role assignment per slot, kept identical
-across every prompt in a shot list, so the team and the model both
-know which reference carries which property without re-reading the
-prompt body.
+参考调用名（`@Image1`、`@Image2`、`@Video1`、`@Audio1`）按上传顺序分配：附上的第一张图成为 `@Image1`，第二张成为 `@Image2`，依此类推。制作实践给每个槽位锁定一个稳定的职责分配，在分镜表的每条提示词里保持一致，这样团队和模型都知道哪张参考承载哪个属性，而不用重读提示词正文。
 
-| Slot       | Role                          |
+| 槽位       | 职责                          |
 |------------|-------------------------------|
-| `@Image1`  | Character identity            |
-| `@Image2`  | Costume                       |
-| `@Image3`  | Environment + lighting        |
-| `@Image4`  | Composition                   |
-| `@Video1`  | Motion only                   |
-| `@Video2`  | Camera movement only          |
-| `@Audio1`  | Rhythm + atmosphere           |
+| `@Image1`  | 角色身份            |
+| `@Image2`  | 服装                       |
+| `@Image3`  | 环境 + 光照        |
+| `@Image4`  | 构图                   |
+| `@Video1`  | 只取运动                   |
+| `@Video2`  | 只取运镜          |
+| `@Audio1`  | 节奏 + 氛围           |
 
-`@Audio1` is **load-bearing on timing**, not just atmosphere: an uploaded
-audio file is a conditioning input that drives cut timing, camera
-acceleration, and action pace (beat sync), and a `[AUDIO: Xs]` script block
-in the prompt body generates dialogue + SFX + lip-sync. Both, plus the
-first-15s extraction trap, are documented in
-`higgsfield-audio.md` § Audio as a Conditioning Input. The
-temporal-compatibility constraint below (a `@Video1` camera style must not
-fight the `@Audio1` rhythm) is the audio case of the Load-Bearing Rule.
+`@Audio1` 在**时间上是承重的**，不只是氛围：上传的音频文件是一个条件输入，驱动切镜时间、运镜加速和动作节奏（节拍同步），而提示词正文里的 `[AUDIO: Xs]` 剧本块生成对白 + 音效 + 口型同步。两者，加上“只提取前 15 秒”的陷阱，记录在 `higgsfield-audio.md` § Audio as a Conditioning Input。下面的时间兼容性约束（`@Video1` 的运镜风格不能和 `@Audio1` 的节奏打架）是 Load-Bearing Rule 在音频上的情况。
 
-The slot order is not model-enforced — it is team-side discipline.
-The payoff is reference-stability across long shot lists: once
-`@Image1 = character` for the project, that holds for every prompt,
-and nobody has to re-check which face the model expects at shot 47.
+槽位顺序不是模型强制的：它是团队侧的纪律。回报是长分镜表里的参考稳定性：一旦项目里 `@Image1 = 角色`，每条提示词都成立，没人需要在第 47 个镜头重新检查模型期待哪张脸。
 
-When a reference conflicts with the prompt text — costume reference
-shows red, text says blue — resolve it explicitly in the prompt
-body: `@Image2 as costume reference, but recoloured to blue for this
-shot`. Don't let an unresolved conflict reach the model.
+参考和提示词文字冲突时（服装参考是红色，文字说蓝色），在提示词正文里明确解决它：`@Image2 as costume reference, but recoloured to blue for this shot`。不要让一个没解决的冲突到达模型。
 
-### Load-Bearing Rule
+### 承重规则（Load-Bearing Rule）
 
-**References support memory, but text defines action.** The references
-in a Seedance prompt carry the persistent properties that read
-consistently across shots; the prompt text directs what happens in this
-specific generation. References cannot drive new action; text cannot
-replace what the references carry. Both layers stay in their lanes.
+**参考支持记忆，文字定义动作。**Seedance 提示词里的参考承载跨镜头一致的持久属性；提示词文字指导这一次生成里发生什么。参考不能驱动新动作；文字不能替代参考承载的东西。两层各走各的道。
 
-Sibling formulation of the v3.7.1 camera-side rule ("Prompt wins on
-action, reference wins on texture and world feel" — see
-`higgsfield-camera.md` § Video Reference — What It Reads, and
-What It Can't, § Load-Bearing Rule). Same underlying principle from
-different surfaces. The camera-side rule names the WIN order in case of
-conflict; the Seedance-side rule names the LANES each side covers.
+这是 v3.7.1 运镜侧规则的兄弟表述（“动作上提示词赢，质感和世界感上参考赢”：见 `higgsfield-camera.md` § Video Reference — What It Reads, and What It Can't, § Load-Bearing Rule）。同一个底层原理，来自不同的入口。运镜侧规则点明冲突时谁赢；Seedance 侧规则点明各自覆盖的道。
 
-> `[FIELD — community, seedance-2.0 repo v6.6.0]` **Source carries state.**
-> When an accepted clip or final frame is attached as a reference, the
-> source carries the state — the prompt text carries only the *delta*.
-> Delete opening-state prose that repeats what the attached source already
-> shows; when a reference and the text conflict, **references outrank
-> text**. One class of state stays in prose regardless: a still frame
-> cannot carry open motion vectors, camera-movement phase, or audio phase —
-> in-flight motion and timing must be restated in words even when the frame
-> is attached. Applied to extensions in § Continuation Prompt Formula →
-> Extension Prompting.
+> `[FIELD — community, seedance-2.0 repo v6.6.0]` **源素材承载状态。**当一段已采用的片段或最后一帧作为参考附上时，源素材承载状态：提示词文字只承载*变化*。删掉重复附上的源素材已经显示内容的开场状态描述；参考和文字冲突时，**参考优先于文字**。有一类状态无论如何都留在文字里：静帧承载不了进行中的运动向量、运镜相位或音频相位：即使附了画面，进行中的运动和时间也必须用文字重述。在 § Continuation Prompt Formula → Extension Prompting 里应用于延伸。
 
-The same distinction applies one level up — at the prompt-construction
-workflow, not just inside the prompt. When a Seedance clip lands and
-you want the next prompt to match its look, screenshot the working
-frame and upload it **to Claude, not to Seedance**. Claude needs the
-visual to write a prompt that matches the look; Seedance receives the
-resulting text prompt and renders the next clip without the screenshot
-attached. The screenshot is reference (for the prompt-building model);
-the text prompt is action (for the generation model).
+同样的区分适用于更上一层：在提示词构建流程上，而不只是在提示词内部。当一段 Seedance 片子成功了、你想让下一条提示词匹配它的画面时，截下那一帧，上传**给 Claude，而不是给 Seedance**。Claude 需要看到画面才能写出匹配它的提示词；Seedance 接收得到的文字提示词，渲染下一段片子时不附截图。截图是参考（给构建提示词的模型）；文字提示词是动作（给生成模型）。
 
 ---
 
-## Frame Coordinate System
+## 画面坐标系（Frame Coordinate System）
 
-**Frame Coordinate System** locks where subjects, props, and
-compositional elements sit inside the frame.
+**画面坐标系**锁定主体、道具和构图元素在画面里的位置。
 
-### Qualitative anchors
+### 定性锚点（Qualitative anchors）
 
-Standard film-language position language, machine-readable because
-it is widely-attested in the training data:
+标准的电影语言位置说法，因为在训练数据里大量出现，所以机器可读：
 
-- **Horizontal:** `left third`, `center`, `right third`
-- **Vertical:** `upper third`, `lower third` (centered vertically is
-  the default and rarely needs naming)
-- **Depth:** `foreground`, `midground`, `background`
+- **水平：**`left third`、`center`、`right third`
+- **垂直：**`upper third`、`lower third`（垂直居中是默认，很少需要说）
+- **纵深：**`foreground`、`midground`、`background`
 
-### Percentage notation
+### 百分比记法（Percentage notation）
 
-Numeric coordinates for cases where the qualitative anchors are
-not specific enough:
+定性锚点不够具体时用数字坐标：
 
-- **x-position:** `0%` (far left frame edge) to `100%` (far right
-  frame edge)
-- **y-position:** `0%` (top of frame) to `100%` (bottom of frame)
-- **frame occupancy:** the percentage of the frame area the subject
-  fills, useful for shot-size pinning (a tight close-up sits near
-  `60-80%` occupancy; a wide establishing has the subject below
-  `15%`)
+- **x 位置：**`0%`（画面最左边缘）到 `100%`（画面最右边缘）
+- **y 位置：**`0%`（画面顶部）到 `100%`（画面底部）
+- **画面占比：**主体填满画面面积的百分比，用来钉住景别（紧的近景在 `60-80%` 占比附近；远的建立镜头主体在 `15%` 以下）
 
-Use percentages when qualitative anchors are under-specified —
-e.g., two characters in the same half of frame.
+定性锚点不够明确时用百分比：例如两个角色在画面同一半。
 
-### Pair the two notations
+### 两种记法配对使用（Pair the two notations）
 
-Ship the qualitative anchor and the percentage notation **together
-in the same prompt**, not as alternatives. The qualitative term
-gives the model the film-language hook; the percentage gives it the
-precision target. Example:
+在**同一条提示词里**同时给出定性锚点和百分比记法，而不是二选一。定性词给模型电影语言的钩子；百分比给它精度目标。例：
 
 ```
 Character A stands in the right third, x-position 70%, y-position
@@ -1165,213 +608,107 @@ Character A stands in the right third, x-position 70%, y-position
 x-position 25%, y-position 55%, frame occupancy 22%.
 ```
 
-### Not a mathematical guarantee
+### 不是数学保证（Not a mathematical guarantee）
 
-Frame coordinates are **a strong compositional anchor, not a
-geometric guarantee**. The model treats them as directorial
-intent — the same way a DP reads "right third" on a storyboard —
-not as pixel-exact targets. Use them alongside the rest of the
-standard composition vocabulary (`over-the-shoulder`, `eye line`,
-`ground contact`, `headroom`, `nose room`, `crossing rule` — the last
-formalized at [vocab.md](vocab.md) § Composition Vocabulary →
-Crossing rule) rather than as a substitute for it.
+画面坐标是**很强的构图锚点，不是几何保证**。模型把它们当作导演意图（就像摄影指导在分镜上读到“right third”），而不是像素级精确的目标。和其他标准构图词汇（`over-the-shoulder`、`eye line`、`ground contact`、`headroom`、`nose room`、`crossing rule`：最后一个在 [vocab.md](vocab.md) § Composition Vocabulary → Crossing rule 里正式定义）一起用，而不是替代它们。
 
-When a coordinate drifts in the output, that is the expected behavior
-class — the coordinate set the intent; the model rendered to its
-best-fit interpretation. Adjust the prompt by tightening the
-qualitative anchor or by adding a contact-point clause (`feet on
-the marked floor mark`, `right hand resting on the table edge`)
-that physically grounds the position rather than re-specifying the
-percentage harder.
+输出里一个坐标漂移了，那是预期的行为类别：坐标设定了意图；模型按它的最佳理解渲染。调整提示词的办法是收紧定性锚点，或者加一个接触点句（`feet on the marked floor mark`、`right hand resting on the table edge`）从物理上让位置落地，而不是更用力地重新指定百分比。
 
 ---
 
-## Spatial Layout Block
+## 空间布局块（Spatial Layout Block）
 
-A **Spatial Layout Block** is a named structural unit inside a
-Seedance prompt that consolidates the spatial-vocabulary fields
-from § Frame Coordinate System into a single block the model can
-read as one coherent spatial brief. Where Frame Coordinate System
-provides the *vocabulary*, the Spatial Layout Block provides the
-*structure* for using it.
+**空间布局块**是 Seedance 提示词里一个具名的结构单元，把 § Frame Coordinate System 里的空间词汇字段合并成一个块，让模型能读作一份连贯的空间说明。画面坐标系提供*词汇*，空间布局块提供使用它的*结构*。工作室格式里，这些内容写进第一段定位秒的 `画面：` 行和 `[保持一致]`（见 [空间布局](spatial-layout.md)）。
 
-Scattered spatial directives force the model to reassemble scene
-geometry from fragments — and it often picks the wrong reassembly.
+零散的空间指令迫使模型从碎片里重新拼出场景几何：而它常常拼错。
 
-### What goes in the block
+### 块里放什么（What goes in the block）
 
-A complete Spatial Layout Block names, per subject in frame:
+一个完整的空间布局块，对画面里的每个主体写出：
 
-- **Identity** — which character/prop/element this is (matches a
-  Reference Role handle when references are present)
-- **Screen position** — qualitative anchor + percentage notation
-  paired per § Frame Coordinate System above
-- **Depth layer** — foreground / midground / background
-- **Frame occupancy** — % of frame area the subject fills
-- **Body orientation** — direction the subject faces (toward
-  camera, away, profile-left, profile-right, three-quarter to
-  camera)
-- **Contact points** — what physical surface or object the subject
-  is grounded against (`feet on wet asphalt`, `back pressed against
-  the wall`)
+- **身份**：这是哪个角色/道具/元素（有参考时和参考职责的调用名一致）
+- **画面位置**：按上面 § Frame Coordinate System 配对的定性锚点 + 百分比记法
+- **纵深层**：前景 / 中景 / 背景
+- **画面占比**：主体填满画面面积的百分比
+- **身体朝向**：主体面向的方向（朝镜头、背对、左侧面、右侧面、四分之三朝镜头）
+- **接触点**：主体落在什么实际表面或物体上（`feet on wet asphalt`、`back pressed against the wall`）
 
-Multi-character blocks add the cross-subject relationships:
-relative distance, eyeline direction between subjects, screen-left
-vs screen-right consistency, whether subjects cross the central
-vertical axis, what occludes what.
+多人块再加上跨主体的关系：相对距离、主体之间的视线方向、画面左右的一致性、主体是否越过中央垂直轴、什么遮挡什么。
 
-### When to use a Spatial Layout Block
+### 何时用空间布局块（When to use a Spatial Layout Block）
 
-Three triggers:
+三个触发条件：
 
-1. **More than one subject in frame.** Two-character work is where
-   the model most often swaps screen positions or crosses the
-   central axis without instruction. A block prevents that.
-2. **A specific compositional intent that needs to read across
-   shots.** When the same blocking must hold for several beats — a
-   character anchored left, another anchored right — the block
-   makes the anchor explicit and re-usable.
-3. **A failure-mode-prone shot.** Door-entry shots, hallway-direction
-   shots, and any shot where the model has been picking the wrong
-   spatial reassembly historically all benefit from a block up
-   front rather than inline spatial fragments.
+1. **画面里有一个以上的主体。**双人戏是模型最常在没有指示时互换画面位置或越过中轴的地方。一个块能防止这种情况。
+2. **一个需要跨镜头读得出的特定构图意图。**同样的站位必须保持几个节拍时（一个角色锚在左，另一个锚在右），块让锚点明确并可复用。
+3. **容易出失败模式的镜头。**进门镜头、走廊方向镜头，以及任何模型历来会拼错空间的镜头，都受益于在前面放一个块，而不是行内的空间碎片。
 
-Shots with a single subject in a clear position rarely need a full
-block; a single qualitative-plus-percentage anchor inside the
-Dynamic Description suffices.
+单个主体在清楚位置上的镜头很少需要完整的块；在 Dynamic Description 里放一个定性加百分比的锚点就够了。
 
-### Block-and-prompt fit
+### 块和提示词的配合（Block-and-prompt fit）
 
-The Spatial Layout Block sits **before** the Dynamic Description in
-the output format (see § Output Format for Seedance Prompts below).
-It primes the model with full geometry; the Dynamic Description
-then describes the action that happens inside that geometry.
+空间布局块在输出格式里位于 Dynamic Description **之前**（见下面的 § Output Format for Seedance Prompts）。它先给模型完整的几何；Dynamic Description 再描述在那个几何里发生的动作。
 
-The block does not replace the six-slot formula — camera, lens,
-lighting, and shot timing stay in their respective slots.
+块不替代六槽公式：运镜、镜头、光照和镜头时间留在各自的槽位里。
 
 ---
 
-## Working Modes
+## 工作模式（Working Modes）
 
-Working modes is a user-intent layer above the platform mechanism. It
-names what you are trying to DO when you sit down to write a Seedance
-prompt — independent of which prompt mode you eventually route through.
-See the disambiguation section above for the relationship between
-working modes (intent) and prompt modes (mechanism). The mapping table
-there shows the typical routes.
+工作模式是平台机制之上的用户意图层。它点明你坐下来写一条 Seedance 提示词时想**做**什么：和你最终走哪个提示词模式无关。工作模式（意图）和提示词模式（机制）的关系见上面的消歧一节。那里的映射表显示了典型路线。
 
-### Exploration
+### 探索（Exploration）
 
-Open-ended discovery. No prior shot to anchor on; no constraint to
-match. You're generating to find out what the shot wants to be. Short
-prompts work here — the model has space to bring its own interpretation.
-Typically routes through Reference-Based prompt mode (with a single
-character anchor) or pure text-to-video (no references at all).
+开放式的发现。没有之前的镜头可以锚定；没有要匹配的约束。你生成是为了弄清这个镜头想成为什么。这里短提示词有效：模型有空间带入自己的理解。通常走 Reference-Based 提示词模式（带一个角色锚点）或纯文生视频（完全没有参考）。
 
-### Continuation
+### 续接（Continuation）
 
-Picking up where a previous shot left off. The prior clip is the anchor;
-the new clip continues from its final frame. Working mode and prompt
-mode line up: Continuation working mode almost always routes through
-Continuation prompt mode. See the Continuation Prompt Formula section
-above for the five-rule construction.
+从上一个镜头停下的地方接着做。之前的片子是锚点；新片子从它的最后一帧继续。工作模式和提示词模式对得上：Continuation 工作模式几乎总是走 Continuation 提示词模式。五规则构建方式见上面的续接提示词公式一节。
 
-### Bridging
+### 桥接（Bridging）
 
-Connecting two existing shots that don't currently flow. The shots
-themselves work; the cut between them feels wrong — spatial geography
-is unclear, or the emotional energy mismatches, or the camera character
-jumps. Bridging uses references from both ends — the last frame of the
-upstream shot and the first frame of the downstream shot — to navigate
-the middle. Typically routes through Continuation prompt mode (when the
-upstream last-frame is the dominant anchor) or Reference-Based (when
-both ends carry equal weight). Common reference role configuration:
-Character + Last-Frame + Environment.
+连接两个目前接不顺的已有镜头。镜头本身没问题；它们之间的切镜感觉不对：空间地理不清楚，或者情绪能量不匹配，或者镜头性质跳变。Bridging 用两端的参考（上游镜头的最后一帧和下游镜头的第一帧）来走通中间。通常走 Continuation 提示词模式（上游最后一帧是主导锚点时）或 Reference-Based（两端分量相同时）。常见的参考职责配置：Character + Last-Frame + Environment。
 
-### Repair
+### 修复（Repair）
 
-Fixing a failed shot. Distinct from regenerating with a tweaked prompt —
-Repair acknowledges that the failed clip is data: it shows you what the
-model interpreted wrong, and that interpretation needs to be addressed
-directly. Typically routes through Edit Shot prompt mode (when the
-failure is local — a wrong jacket color, a missing prop) or a fresh
-Reference-Based generation with corrective prompt text (when the failure
-is structural — wrong action beat, drifted identity). Pair with the
-Iteration Rule in `higgsfield-prompt.md` § The Iteration Rule
-when iterating on the corrective prompt.
+修一个失败的镜头。不同于改一下提示词重新生成：Repair 承认失败的片子是数据：它告诉你模型理解错了什么，而那个理解需要被直接处理。通常走 Edit Shot 提示词模式（失败是局部的时候：夹克颜色错了、少了一个道具）或者带纠正性提示词文字的全新 Reference-Based 生成（失败是结构性的时候：动作节拍错了、身份漂移了）。在纠正性提示词上迭代时，配合 `higgsfield-prompt.md` § The Iteration Rule。
 
-### Decision Tree — Picking a Working Mode
+### 决策树：选一个工作模式（Decision Tree — Picking a Working Mode）
 
-The mode you reach for is downstream of what you're noticing in your
-work. Diagnose by symptom, then pick the mode that fits:
+你选哪个模式，取决于你在作品里注意到了什么。按症状诊断，然后选合适的模式：
 
-| What you're seeing | Working mode | Why |
+| 你看到的情况 | 工作模式 | 原因 |
 |---|---|---|
-| Blank page, no anchors yet | Exploration | No prior shot to continue or bridge from; freeform discovery first. |
-| Strong shot that needs a follow | Continuation | The shot earned a sequel; pick up where it left off. |
-| Two strong shots that don't connect | Bridging | The shots work; the seam between them doesn't. |
-| Strong shot but the feeling is weak | Continuation (with role swap) | Re-shoot the same beat with a different reference role carrying the weight — e.g. close-up where the original was wide. |
-| Spatial logic feels off mid-sequence | Bridging (with geography clarification) | The sequence needs a beat that re-establishes who is where. |
-| Failed shot you keep generating around | Repair | Stop iterating on the prompt. Target the failure directly. |
+| 一张白纸，还没有锚点 | Exploration | 没有之前的镜头可以续接或桥接；先自由发现。 |
+| 一个很强的镜头需要后续 | Continuation | 这个镜头值得一个续集；从它停下的地方接上。 |
+| 两个很强的镜头接不上 | Bridging | 镜头都行；它们之间的接缝不行。 |
+| 镜头很强但感觉弱 | Continuation（换职责） | 用不同的参考职责承载分量重拍同一个节拍：例如原来是远景的地方改用近景。 |
+| 段落中途空间逻辑感觉不对 | Bridging（澄清地理） | 段落需要一个重新建立谁在哪里的节拍。 |
+| 一个你一直绕着生成的失败镜头 | Repair | 停止在提示词上迭代。直接针对失败。 |
 
-The decision tree is symptom-first, not mode-first. The mode is the
-treatment; the symptom in your work is the diagnostic. If you find
-yourself reaching for a mode without naming what symptom drove the
-choice, that's a signal to step back.
+决策树是症状优先，不是模式优先。模式是治疗；你作品里的症状是诊断。如果你发现自己伸手去拿一个模式，却说不出是什么症状驱动了这个选择，那就是该退一步的信号。
 
 ---
 
-## Two-Layer Prompt Authoring
+## 两层提示词写作（Two-Layer Prompt Authoring）
 
-A skeleton prompt is not meant to be copied blindly into Seedance and
-expected to work on its own. A skeleton is a structure — the logic of
-the prompt, not the finished prompt. That matters most for the
-Bridging, Continuation, and Repair working modes (see § Working Modes
-above), because those three tasks depend heavily on context: what
-happened before, what must follow, and what exactly the shot is
-supposed to solve.
+骨架提示词不是用来盲目复制进 Seedance、期望它自己就能用的。骨架是一个结构：提示词的逻辑，而不是完成的提示词。这对 Bridging、Continuation 和 Repair 工作模式（见上面的 § Working Modes）最重要，因为这三类任务严重依赖语境：之前发生了什么、之后必须是什么、这个镜头究竟要解决什么。
 
-Each practical skeleton in this workflow has two layers, each with a
-different audience and a different job. Layer 1 uses
-[shared narrative planning](narrative-planning.md), including the eight
-director semantics; Layer 2 compiles the relevant decisions into this mode's
-native skeleton. The two authoring layers are not a stage or shot count.
+这个流程里每个实用骨架都有两层，各自面对不同的读者、承担不同的任务。第 1 层使用 [共享叙事规划](narrative-planning.md)，包括八个导演语义；第 2 层把相关决定编译进这个模式原生的骨架。两个写作层不是阶段数或镜头数。
 
-### The Two-Layer Distinction
+### 两层的区分（The Two-Layer Distinction）
 
-- **Layer 1 — task definition / briefing block.** Written for yourself
-  or pasted into a ChatGPT-style assistant before the production
-  prompt is drafted. Explains the actual problem in plain prose: what
-  scene already exists, what the next scene is, what is missing
-  between them, what must remain the same, and what the bridge or
-  repair must achieve. Layer 1 is the planning step — it forces the
-  prompt author to define the problem cleanly before writing the
-  model-facing prompt.
+- **第 1 层：任务定义 / 说明块。**写给自己，或者在起草制作提示词之前粘进一个 ChatGPT 式的助手。用平实的文字解释实际问题：已经有什么场景、下一个场景是什么、它们之间缺了什么、什么必须保持不变、桥接或修复必须达成什么。第 1 层是规划步骤：它迫使写提示词的人在写面向模型的提示词之前清楚地定义问题。
 
-- **Layer 2 — production prompt for Seedance.** Shorter, cleaner, more
-  execution-oriented. Translates the Layer 1 decision into a
-  model-friendly structure: reference roles declared up front,
-  preservation clauses, the one action, anti-repeat language, camera
-  cue, audio cue. Layer 2 is what gets pasted into the generation
-  field.
+- **第 2 层：给 Seedance 的制作提示词。**更短、更干净、更面向执行。把第 1 层的决定翻译成模型友好的结构：参考职责先声明，保留条款，那一个动作，防重复的措辞，运镜提示，音频提示。第 2 层是粘进生成框的东西。
 
-The distinction makes the workflow practical. Without Layer 1, bridges
-fail because the prompt author hasn't decided what the bridge is
-supposed to solve; continuations restage instead of continuing because
-the prompt author hasn't named what to preserve; repairs over-shoot
-because the prompt author hasn't isolated what to change. The two
-layers exist to prevent those three failure modes by separating the
-planning step from the execution step.
+这个区分让流程可行。没有第 1 层，桥接会失败，因为写提示词的人还没决定桥要解决什么；续接会变成重新调度而不是续接，因为写提示词的人没点明要保留什么；修复会改过头，因为写提示词的人没隔离出要改什么。两层的存在就是为了通过把规划步骤和执行步骤分开，防止这三种失败模式。
 
-### Bridge Skeleton
+### 桥接骨架（Bridge Skeleton）
 
-The Bridging working mode (see § Working Modes / Bridging above) is
-the problem-solving mode — the bridge is not generic cinematic filler.
-Use this skeleton when two scene blocks both work but the connection
-between them does not.
+Bridging 工作模式（见上面的 § Working Modes / Bridging）是解决问题的模式：桥不是泛泛的电影感填充。两个场景块都没问题、但它们之间的连接不行时用这个骨架。
 
-**Layer 1 — bridge briefing block.** Named fields:
+**第 1 层：桥接说明块。**具名字段：
 
 ```
 Scene A ends with:
@@ -1397,8 +734,7 @@ The purpose of the bridge is:
 carry emotion / reposition the viewer in space]
 ```
 
-**Layer 2 — bridge production prompt skeleton.** Reference roles
-declared up front, then the bridging clauses:
+**第 2 层：桥接制作提示词骨架。**参考职责先声明，然后是桥接条款：
 
 ```
 [Reference roles]
@@ -1420,22 +756,13 @@ Camera: [restrained and readable]
 Audio: [live sound only if needed]
 ```
 
-A good bridge often looks "small" compared to an action scene but
-does major structural work. If the Layer 2 prompt produces something
-that feels too eventful, the Layer 1 briefing's "must not do" clause
-was probably too thin — revise the briefing, then re-derive the
-production prompt.
+一座好桥和动作戏比起来常常显得“小”，但承担了重要的结构工作。如果第 2 层提示词产出的东西感觉事件太多，那第 1 层说明里的“must not do”条款可能写得太薄：修改说明，再重新推出制作提示词。
 
-### Continuation Skeleton
+### 续接骨架（Continuation Skeleton）
 
-The Continuation working mode (see § Working Modes / Continuation
-above) solves a temporal problem, not a connection problem: the next
-clip must begin directly after the previous clip, not as a new
-restaging. This skeleton operationalizes the five rules in the
-Continuation Prompt Formula section above — specifically rule #5,
-"No action repeat."
+Continuation 工作模式（见上面的 § Working Modes / Continuation）解决的是时间问题，不是连接问题：下一段片子必须紧接着上一段开始，而不是一次新的重新调度。这个骨架执行上面续接提示词公式一节的五条规则：特别是第 5 条“不重复动作”。
 
-**Layer 1 — continuation briefing block.** Named fields:
+**第 1 层：续接说明块。**具名字段：
 
 ```
 The previous clip ends on:
@@ -1455,8 +782,7 @@ Do not repeat:
 [the previous action phase]
 ```
 
-**Layer 2 — continuation production prompt skeleton.** Three reference
-roles is the typical configuration:
+**第 2 层：续接制作提示词骨架。**典型配置是三个参考职责：
 
 ```
 [Reference roles]
@@ -1476,9 +802,7 @@ Camera: [how the viewer reads the continuation]
 Audio: [live sound only if needed]
 ```
 
-**If the result keeps replaying the previous beat,** the correction is
-not "make the prompt longer." The correction is to strengthen the
-temporal and anti-repeat language. Useful phrase variants:
+**如果结果总是重播上一个节拍，**纠正办法不是“把提示词写长”。纠正办法是加强时间和防重复的措辞。有用的短语变体：
 
 - start immediately after the final frame
 - do not repeat the previous fight
@@ -1486,21 +810,13 @@ temporal and anti-repeat language. Useful phrase variants:
 - continue forward into the new action
 - preserve the same fatigue state and emotional carryover
 
-These are interchangeable — pick the variant whose verbs match the
-prior clip's content. A continuation following a fight scene wants
-"do not repeat the previous fight"; a continuation following a quiet
-moment wants "do not restage the earlier beat."
+这些可以互换：选动词和上一段内容匹配的那个。打斗戏之后的续接要用“do not repeat the previous fight”；安静时刻之后的续接要用“do not restage the earlier beat”。（工作室中文稿写成正向：“紧接上一段最后一帧，继续向前进入新动作”。）
 
-### Repair Skeleton
+### 修复骨架（Repair Skeleton）
 
-The Repair working mode (see § Working Modes / Repair above) does not
-behave like "generate the scene again, but better." That breaks
-continuity and changes too much. The real question is always: what
-exactly am I trying to preserve, and what exactly am I trying to
-change? A usable repair prompt has two parts that map directly onto
-that question — a preservation block and a modification block.
+Repair 工作模式（见上面的 § Working Modes / Repair）不是“把这场戏再生成一遍，但更好”。那会破坏连续性、改动太多。真正的问题永远是：我究竟要保留什么，我究竟要改变什么？一条可用的修复提示词有两部分，直接对应这个问题：一个保留块和一个修改块。
 
-**Layer 1 — repair briefing block.** Named fields:
+**第 1 层：修复说明块。**具名字段：
 
 ```
 Current clip / image state:
@@ -1520,8 +836,7 @@ Do not damage:
 [what tends to drift if the edit is too broad]
 ```
 
-**Layer 2 — repair production prompt skeleton.** Tight, surgical, no
-descriptive ornament:
+**第 2 层：修复制作提示词骨架。**紧凑、外科手术式，没有描述性装饰：
 
 ```
 Keep the original framing, pacing, duration, event timestamps, cuts, environment,
@@ -1532,284 +847,174 @@ Change only [the exact element that needs fixing].
 Do not alter the rest of the shot.
 ```
 
-The "do not damage" field in Layer 1 is the field most often skipped
-and most often the source of repair failures. Name the properties
-that typically drift when an edit goes too broad — those are the
-properties the model needs explicit protection on, even if they
-aren't the properties the edit is targeting.
+第 1 层里的“do not damage”字段最常被跳过，也最常是修复失败的来源。点明编辑范围太宽时通常会漂移的属性：那些就是模型需要明确保护的属性，即使它们不是编辑针对的属性。
 
 ---
 
-## Keyframe Workflow
+## 关键帧流程（Keyframe Workflow）
 
-The most useful official direction on fine-grained Seedance editing
-comes from BytePlus VideoPilot — Seedance's official editing-style
-interface from ByteDance / BytePlus. VideoPilot frames fine-grained
-video editing not as one vague "fix this clip" prompt but as a
-**reference + keyframe + local modification** workflow. Three named
-ingredients, each with its own job.
+关于精细 Seedance 编辑最有用的官方指导，来自 BytePlus VideoPilot：字节跳动 / BytePlus 官方的 Seedance 编辑式界面。VideoPilot 不把精细视频编辑当作一条含糊的“修好这段片子”提示词，而是当作一个**参考 + 关键帧 + 局部修改**的流程。三个具名的组成部分，各有各的任务。
 
-This section names what VideoPilot's interface exposes (Capability
-Surface), how to translate those primitives into prompt-only Seedance
-work when the dedicated UI isn't in play (Translating to Seedance
-Prompts), and the underlying mindset that makes the whole approach
-work (The Editor-not-Regenerator Mindset).
+本节点明 VideoPilot 界面提供什么（能力范围），在不用专门界面时怎么把这些基本操作翻译成纯提示词的 Seedance 工作（翻译成 Seedance 提示词），以及让整个方法起作用的底层思维（做剪辑师，而不是重新生成者）。
 
-> **Sourcing:** The keyframe-editing capability surface below is from
-> the BytePlus VideoPilot fine-tuning documentation
-> (`docs.byteplus.com`) and ByteDance's official Seedance launch
-> materials (`seed.bytedance.com`). Same official source set as the
-> Rule of 12 citation at
-> `higgsfield-models-models-deep-reference.md:274`.
+> **来源：**下面的关键帧编辑能力范围来自 BytePlus VideoPilot 微调文档（`docs.byteplus.com`）和字节跳动官方的 Seedance 发布材料（`seed.bytedance.com`）。和 Rule of 12 引用同一组官方来源：历史上的 Seedance 2.0 资产预算。
 
-### Capability Surface
+### 能力范围（Capability Surface）
 
-VideoPilot exposes five named editing primitives. These are what the
-official UI lets you do; the prompt-side translation in the next
-section is the closest equivalent when working through prompts alone.
+VideoPilot 提供五种具名的编辑基本操作。这些是官方界面让你做的事；下一节的提示词侧翻译，是只用提示词工作时最接近的等价物。
 
-- **Continuous keyframe segmentation.** VideoPilot parses a reference
-  video into continuous keyframe segments. The segmentation is
-  done by the system, not assembled by hand. The unit of edit is the
-  keyframe, not the whole clip.
+- **连续关键帧切分。**VideoPilot 把一段参考视频解析成连续的关键帧段。切分由系统完成，不是手工拼装。编辑的单位是关键帧，不是整段片子。
+- **精细的关键帧编辑。**编辑一次针对一个关键帧。在时间轴上是外科手术式的：改一帧的内容，不重写任何其他帧的指令。
+- **自定义关键帧。**编辑者可以添加系统没自动检测到的关键帧。一个重要节拍落在自动切分的关键帧之间时有用。
+- **局部重绘选中区域。**关键帧内的空间局部编辑：遮住区域，只重绘遮罩里面的东西。在空间轴上是外科手术式的（相对于精细关键帧编辑在时间轴上的手术）。
+- **改写关键帧描述。**改写一个关键帧的描述，会让系统重新生成那一帧**以及**它和相邻关键帧之间的过渡逻辑。这是最接近 Seedance Edit Shot 提示词模式的官方基本操作（见上面的 § Seedance 2.0 Prompt Modes / Edit Shot）。
 
-- **Fine-grained keyframe edits.** Edits target a single keyframe at
-  a time. Surgical at the temporal axis — change one frame's content
-  without rewriting any other frame's instruction.
+### 翻译成 Seedance 提示词（Translating to Seedance Prompts）
 
-- **Custom keyframes.** The editor can add keyframes the system
-  didn't auto-detect. Useful when an important beat falls between
-  the auto-segmented keyframes.
+通过提示词和参考工作、而不是专门的 VideoPilot 关键帧界面时，最接近的实际等价物是六条操作规则。它们都不保证在每个界面里都能完美地外科手术式编辑：它们把官方编辑流程翻译成基于提示词的用法。
 
-- **Partial redraw of selected regions.** Spatial-local edits within
-  a keyframe — mask the region, redraw only what is inside the mask.
-  Surgical at the spatial axis (vs. the temporal-axis surgery of
-  fine-grained keyframe edits).
+1. **用一张截图或最后一帧作为稳定锚点。**
+2. **让身份参考和连续性锚点分开。**
+3. **确切写明什么必须保持不变。**
+4. **确切写明什么在变。**
+5. **如果是续接，禁止重复上一个节拍。**
+6. **如果编辑是局部的，只描述局部改动，并明确保护其余部分。**
 
-- **Keyframe description rewrite.** Rewriting the description of one
-  keyframe causes the system to regenerate that frame AND its
-  transition logic to neighboring keyframes accordingly. This is the
-  closest official primitive to Seedance's Edit Shot prompt mode (see
-  § Seedance 2.0 Prompt Modes / Edit Shot above).
+这些对应仓库里已有的内容：第 3、4、6 条对应修复骨架的保留 / 修改块（见上面的 § Two-Layer Prompt Authoring / Repair Skeleton）；第 1、2 条对应参考职责分类（见上面的 § Reference Roles / Last-Frame 和 § Reference Roles / Character）；第 5 条对应续接骨架的防重复短语库（见上面的 § Two-Layer Prompt Authoring / Continuation Skeleton）。
 
-### Translating to Seedance Prompts
+### 做剪辑师，而不是重新生成者（The Editor-not-Regenerator Mindset）
 
-When working through prompts and references rather than the dedicated
-VideoPilot keyframe UI, the closest practical equivalent is six
-operational rules. None of them guarantee perfect surgical editing
-in every interface — they translate the official editing workflow
-into prompt-based use.
+整个关键帧流程的概念根源：如果目标是外科手术式的编辑，像剪辑师一样思考，而不是像全部重新生成的人。冻住必须保持稳定的部分。隔离必须改变的部分。然后让指令局部而明确。
 
-1. **Use a screenshot or final frame as your stability anchor.**
-2. **Keep the identity reference separate from the continuity anchor.**
-3. **State exactly what must remain unchanged.**
-4. **State exactly what is changing.**
-5. **Forbid repetition of the previous beat if this is a continuation.**
-6. **If the edit is local, describe only the local change and
-   explicitly protect the rest.**
-
-These map onto existing repo surfaces: rules 3, 4, and 6 onto the
-Repair Skeleton's preserve / change blocks (see § Two-Layer Prompt
-Authoring / Repair Skeleton above); rules 1 and 2 onto the Reference
-Roles taxonomy (see § Reference Roles / Last-Frame and § Reference
-Roles / Character above); rule 5 onto the Continuation Skeleton's
-anti-repeat phrase library (see § Two-Layer Prompt Authoring /
-Continuation Skeleton above).
-
-### The Editor-not-Regenerator Mindset
-
-The conceptual root of the whole keyframe workflow surface: if the
-goal is surgical edits, think like an editor, not a full
-regenerator. Freeze the parts that must remain stable. Isolate the
-parts that must change. Then make the instruction local and explicit.
-
-This is also the conceptual root of the Repair Skeleton: the
-preserve / change split is the prompt-side enactment of the
-editor-not-regenerator stance, the same discipline VideoPilot's UI
-primitives express at the interface level.
+这也是修复骨架的概念根源：保留 / 修改的划分，是“做剪辑师而不是重新生成者”立场在提示词侧的执行，和 VideoPilot 界面基本操作在界面层面表达的是同一种纪律。
 
 ---
 
-## Pre-flight Linter
+## 预检 lint（Pre-flight Linter）
 
-Before the user generates, run the prompt through the full preflight:
+用户生成之前，把提示词跑一遍完整的预检：
 
 ```
 python3 scripts/seedance_lint.py --preflight --model seedance_2_0 "<prompt text>"
 ```
 
-The linter is in the repo's scripts/ directory (`../scripts/seedance_lint.py`). `--preflight` chains
-two passes into one PASS/WARN/FAIL report:
+lint 在仓库的 scripts/ 目录里（`../scripts/seedance_lint.py`）。`--preflight` 把两遍检查串成一份 PASS/WARN/FAIL 报告：
 
-**1. Filter lint** (always on):
+**1. 过滤器 lint**（始终开启）：
 
-- **Real names** of public figures / celebrities / politicians
-- **Brand, IP, franchise names** (Nike, Marvel, Spider-Man, Pokémon, etc.)
-- **Raw violence verbs** (fight, attack, kill, shoot, blood, gore, stab)
-- **Age markers** (child, kid, young, teen, boy, girl — Seedance is age-blind)
-- **Note-to-friend voice** (no Style/Mood, no Camera, no Lighting sections)
-- **Overlength** (>180 words is risk territory; >220 words often hard-fails
-  on the text encoder, not the filter)
-- **Conflicting instructions** (moving + frozen, bright + dark, etc.)
+- 公众人物 / 名人 / 政治人物的**真名**
+- **品牌、IP、系列名**（Nike、Marvel、Spider-Man、Pokémon 等）
+- **直白的暴力动词**（fight、attack、kill、shoot、blood、gore、stab）
+- **年龄标记**（child、kid、young、teen、boy、girl：Seedance 不写年龄）
+- **给朋友留言的语气**（没有 Style/Mood、没有 Camera、没有 Lighting 部分）
+- **超长**（>180 词是风险区；>220 词常常在文本编码器而不是过滤器上直接失败。块结构稿自动暂停这条字数检查）
+- **互相冲突的指令**（moving + frozen、bright + dark 等）
 
-**2. Structural lint** (with `--model <id>`; driven by `model-specs.json`,
-never guessed) — the expensive failure class:
+**2. 结构 lint**（带 `--model <id>`；由 `model-specs.json` 驱动，从不猜）：代价高的失败类别：
 
-- Declared shot count ("strictly N shots" / 严格N个镜头) vs actual
-  `【镜头N】`/`[Shot N]` block count
-- Timed beats (`[0-4s]`) summing past the declared duration / model max
-- ZH prompts over the 1,800-character hard cap; ZH antislop phrases
-- `@handle` used before its declaration line
-- Aspect ratio / resolution / mode / duration outside the model's enum —
-  catches Seedance `fast`+1080p (fast cannot output 1080p) and Kling 3.0
-  + 21:9 (no native 21:9)
+- 声明的镜头数（“strictly N shots” / 严格N个镜头）vs 实际的 `【镜头N】`/`[Shot N]` 块数
+- 计时节拍（`[0-4s]`）加起来超过声明的时长 / 模型上限
+- ZH 提示词超过 1,800 字上限（仅双语 JSON 档位）；ZH 反套话短语
+- `@handle` 在声明行之前被使用
+- 画幅 / 分辨率 / 模式 / 时长超出模型的枚举：抓住 Seedance `fast`+1080p（fast 输出不了 1080p）
 
-Settings are read from the prompt's own header lines (`**Aspect ratio**: …`,
-`Resolution: …`, `mode: …`, `Duration: Ns`); override per-field with
-`--ar / --resolution / --mode / --duration`.
+设置从提示词自己的头部行读取（`**Aspect ratio**: …`、`Resolution: …`、`mode: …`、`Duration: Ns`）；用 `--ar / --resolution / --mode / --duration` 逐字段覆盖。
 
-Output is `PASS`, `WARN`, or `FAIL` with the specific fix for each rule hit.
-Treat `FAIL` as "do not hit generate." Treat `WARN` as "likely to pass, but
-here is what to harden." Exit codes: 0 pass/warn, 1 fail, 2 usage — safe to
-script.
+输出是 `PASS`、`WARN` 或 `FAIL`，并给出每条命中规则的具体修法。把 `FAIL` 当作“不要点生成”。把 `WARN` 当作“大概能过，但这里是要加固的地方”。退出码：0 通过/警告，1 失败，2 用法错误：可以安全地用在脚本里。工作室块结构稿还要先跑 `director_contract_lint.py`。
 
 ---
 
-## Drafts Validate the Prompt, Not the Take
+## 草稿验证提示词，而不是那条素材（Drafts Validate the Prompt, Not the Take）
 
-The 480p tier is for **prompt iteration**, not take approval. Seedance 2.0
-exposes **no seed parameter** (verified — `model-specs.json`
-lists `resolution`, `mode`, `genre` and nothing else), so re-running an
-approved 480p draft at 1080p is a **fresh roll**: a new performance, a new
-camera micro-trajectory, new timing. "Approve cheap, re-render at quality"
-is not a workflow Seedance supports.
+480p 档是用来**迭代提示词**的，不是用来批准素材的。Seedance 2.0 **没有 seed 参数**（已核实：`model-specs.json` 列出了 `resolution`、`mode`、`genre`，没有别的），所以把一条批准过的 480p 草稿用 1080p 重新跑，是一次**全新的抽签**：新的表演、新的运镜微轨迹、新的时间。“便宜地批准，再按质量重新渲染”不是 Seedance 支持的流程。
 
-| Persists across rolls (prompt-driven — a draft CAN validate it) | Re-rolled fresh every generation (a draft CANNOT validate it) |
+| 跨抽签保持（由提示词驱动：草稿**能**验证它） | 每次生成都重新抽（草稿**不能**验证它） |
 |---|---|
-| Shot count and structure obedience | Performance — expression, gesture nuance, micro-timing |
-| Blocking obedience (positions, directions, entrances/exits) | Camera micro-trajectory within the named move |
-| @handle / identity contamination | Beat timing inside the clip |
-| Dialogue placement | Fine detail (smoke threads, inscription legibility, reflections) |
-| Content-filter pass/fail | |
+| 镜头数和结构的遵循 | 表演：表情、手势的细微差别、微时间 |
+| 站位的遵循（位置、方向、入画/出画） | 具名运动之内的运镜微轨迹 |
+| @handle / 身份污染 | 片子内部的节拍时间 |
+| 对白位置 | 细节（烟丝、铭文的可读性、反射） |
+| 内容过滤器通过/失败 | |
 
-To carry a look you approved into the final render, use the documented
-transfer mechanism: the **Hero Frame** (`higgsfield-assist.md`)
-plus **start/end-frame pinning** (start_image / end_image reference roles —
-see § Reference Roles above). Pin the frame, not the roll. Fine-detail
-judgments must be **re-checked at final resolution** — 480p hides exactly
-the detail they're about.
+要把你批准的画面带进最终渲染，用记录在案的转移机制：**主画面**加上**首/尾帧钉住**（start_image / end_image 参考职责：见上面的 § Reference Roles；当前项目走 `omni_reference`，把批准的画面作为场景/风格参考）。钉住画面，而不是抽签。细节判断必须**在最终分辨率下重新检查**：480p 恰好藏住了它们关心的细节。
 
 ---
 
-## The Rewrite Playbook
+## 改写手册（The Rewrite Playbook）
 
-When the linter fires, apply the relevant substitutions below while preserving
-the intended scene. Verify the revised prompt against the actual result.
+lint 触发时，在保留预定场景的前提下，应用下面相应的替换。对照实际结果核实改写后的提示词。
 
-### Real names → archetype description
+### 真名 → 原型描述（Real names → archetype description）
 
-❌ "Keanu Reeves walking into a boardroom"
-✅ "A lean man in his late 50s, dark shoulder-length hair, stubble, intense
-  calm expression, in a dark suit, walking into a modern glass boardroom"
+❌ “Keanu Reeves walking into a boardroom”
+✅ “A lean man in his late 50s, dark shoulder-length hair, stubble, intense calm expression, in a dark suit, walking into a modern glass boardroom”
 
-### Brand / IP → visual attributes only
+（引擎规则 1 禁止年龄词；这条示例里的“late 50s”要换成体型和穿着，例如“a lean man with silver-streaked shoulder-length hair”。）
 
-❌ "Spider-Man swinging through New York"
-✅ "A figure in a red and blue form-fitting suit, masked, swinging between
-  skyscrapers on a tensile white line"
+### 品牌 / IP → 只写视觉属性（Brand / IP → visual attributes only）
 
-❌ "Nike shoes on a running track"
-✅ "White athletic shoes with a dark swoosh-free silhouette on a red rubber
-  running track"
+❌ “Spider-Man swinging through New York”
+✅ “A figure in a red and blue form-fitting suit, masked, swinging between skyscrapers on a tensile white line”
 
-### Violence → aftermath / tension / physics
+❌ “Nike shoes on a running track”
+✅ “White athletic shoes with a dark swoosh-free silhouette on a red rubber running track”
 
-❌ "Two people fighting in an alley"
-✅ "Two figures locked in a tense physical confrontation, rain-slick alley,
-  dramatic low-key lighting, camera shuddering on each impact"
+### 暴力 → 余波 / 张力 / 物理（Violence → aftermath / tension / physics）
 
-❌ "An explosion destroys the car"
-✅ "A burst of orange light and smoke billowing out from the car, metal
-  buckling outward, glass fragments catching the light"
+❌ “Two people fighting in an alley”
+✅ “Two figures locked in a tense physical confrontation, rain-slick alley, dramatic low-key lighting, camera shuddering on each impact”
 
-❌ "Blood drips from his hands"
-✅ "His hands tremble at his sides, something dark staining his cuffs"
+❌ “An explosion destroys the car”
+✅ “A burst of orange light and smoke billowing out from the car, metal buckling outward, glass fragments catching the light”
 
-### Weapon → prop + purpose
+❌ “Blood drips from his hands”
+✅ “His hands tremble at his sides, something dark staining his cuffs”
 
-❌ "A man holds a gun to another man's head"
-✅ "A standoff in a concrete stairwell — one figure's arm extended, the other
-  perfectly still, both silhouettes hard-edged against a single overhead
-  fluorescent"
+### 武器 → 道具 + 目的（Weapon → prop + purpose）
 
-### Horror / dark → atmosphere, not acts
+❌ “A man holds a gun to another man's head”
+✅ “A standoff in a concrete stairwell — one figure's arm extended, the other perfectly still, both silhouettes hard-edged against a single overhead fluorescent”
 
-❌ "A monster tears a victim apart"
-✅ "The aftermath of something wrong — an empty room, overturned furniture,
-  a single smear trailing toward the door, ambient dread, flickering practical
-  lamp"
+### 恐怖 / 黑暗 → 氛围，而不是行为（Horror / dark → atmosphere, not acts）
 
-### Build-safe construction — crowds, destruction, creatures
+❌ “A monster tears a victim apart”
+✅ “The aftermath of something wrong — an empty room, overturned furniture, a single smear trailing toward the door, ambient dread, flickering practical lamp”
 
-`[OFFICIAL — Higgsfield cinematic-prompt-builder skill, 2026-07]` — don't
-describe something risky and hope it passes; build the scene safe from the
-start. The substitutions usually read as *more* cinematic, not less: a
-standoff is tenser than a massacre, an evacuated city eerier than a crowd in
-panic, a roar more powerful than a kill.
+### 安全构建：人群、破坏、生物（Build-safe construction — crowds, destruction, creatures）
 
-| Avoid | Build instead |
+`[OFFICIAL — Higgsfield cinematic-prompt-builder skill, 2026-07]`：不要描述有风险的东西再指望它通过；从一开始就把场景搭得安全。替换后的版本通常读起来*更*有电影感，而不是更少：对峙比屠杀更紧张，疏散后的城市比惊慌的人群更诡异，一声咆哮比一次杀戮更有力量。
+
+| 避免 | 改为搭建 |
 |---|---|
-| Civilians in panic, crowds fleeing under debris | An **evacuated / empty** city; abandoned streets; one lone figure for scale |
-| Weapons firing into buildings / at people | Energy-discharge standoffs, sweeping searchlights, charged auras, shockwaves with no muzzle fire |
-| Creatures tearing into each other / gore | A grapple / standoff / near-miss / circling / energy clash — combat **contained** |
-| Destruction with people in harm's way | Destruction in **uninhabited terrain** — glaciers, deserts, ruins, open sea, evacuated zones; figures *reacting* to collapsing terrain, never victims |
+| 惊慌的平民、在碎片下逃跑的人群 | 一座**疏散后 / 空荡**的城市；被遗弃的街道；一个孤独的人形作为尺度 |
+| 武器向建筑 / 向人开火 | 能量释放的对峙、扫过的探照灯、充能的光环、没有枪口火焰的冲击波 |
+| 生物互相撕咬 / 血腥 | 扭打 / 对峙 / 险些擦过 / 绕圈 / 能量对撞：战斗是**受限的** |
+| 有人身处危险的破坏 | **无人区域**里的破坏：冰川、沙漠、废墟、开阔海面、疏散区；人形对崩塌的地形*做出反应*，绝不是受害者 |
 
-**Containment doubles as physics.** Give every creature fight a containment
-rule — `"the fight stays at the sea surface — breach, dive, grapple,
-submerge, never airborne"` · `"boss scale locked at ~2.5 human-heights, not
-kaiju-giant"`. The same clause that keeps the scene safe also grounds the
-physics and stops scale escalation.
+**限制同时也是物理。**给每一场生物打斗一条限制规则：`"the fight stays at the sea surface — breach, dive, grapple, submerge, never airborne"` · `"boss scale locked at ~2.5 human-heights, not kaiju-giant"`。让场景安全的同一句话，也让物理落地，并阻止尺度升级。
 
-**The safe benchmark scene** — when a scene drifts risky, pull it back
-toward this confirmed-passing shape: one original creature (no franchise),
-in a generalized monument/amphitheatre location, in daylight, no weapons
-present, performing expressive action (rising, roaring, spreading wings) —
-expressive rather than violent.
+**安全的基准场景**：场景偏向风险时，把它拉回这个确认能通过的形状：一只原创生物（不是系列 IP），在一个泛化的纪念碑/圆形剧场场景里，白天，没有武器，做富有表现力的动作（升起、咆哮、展开翅膀）：有表现力而不是暴力。
 
 ---
 
-## Voice Rewrite — the "Filmmaker not Friend" Pass
+## 语气改写：“电影人而不是朋友”这一遍（Voice Rewrite — the "Filmmaker not Friend" Pass）
 
-Even with every risk token removed, prompts still get flagged if the voice is
-wrong. Do this pass on every Seedance prompt:
+即使去掉了所有风险词，语气不对的提示词仍然会被标记。对每条 Seedance 提示词做这一遍：
 
-1. **Add a Style & Mood clause up front.** Palette, lens, lighting, atmosphere.
-   Never skip this. It tells the filter "this is a shot."
-2. **Name the camera move.** "Slow dolly-in," "low-angle tracking," "static
-   medium." Not "the camera moves forward."
-3. **Describe physics, not emotion.** "Jaw clenches, nostrils flare" not
-   "looks angry." The filter reads physics as cinematic; emotion language as
-   ambiguous intent. For the muscle-level extreme of this rule — facial
-   expressions as FACS Action Unit codes (AU4+AU5+AU7 for anger) in close-up and
-   dialogue — see `higgsfield-facs.md`.
-4. **Describe force and direction, not destruction sequence.** "Driven into
-   the car, metal buckling" not "thrown into side door, glass shatters, uses
-   rebound to sweep leg."
-5. **Present tense, active voice.** "She turns" not "she is turning."
-6. **Cut the antislop words.** Breathtaking, stunning, epic, masterfully,
-   cinematic masterpiece — these signal marketing copy, not a shot description,
-   and correlate with flags.
+1. **在前面加一句 Style & Mood。**色板、镜头、光照、氛围。绝不跳过。它告诉过滤器“这是一个镜头”。
+2. **点明运镜。**“Slow dolly-in”、“low-angle tracking”、“static medium”。而不是“the camera moves forward”。
+3. **描述物理，而不是情绪。**“Jaw clenches, nostrils flare”而不是“looks angry”。过滤器把物理读作电影感；把情绪语言读作含糊的意图。这条规则在肌肉层面的极致（近景和对白里用 FACS 动作单元代码表示面部表情，例如愤怒用 AU4+AU5+AU7）见 `higgsfield-facs.md`。
+4. **描述力量和方向，而不是破坏顺序。**“Driven into the car, metal buckling”而不是“thrown into side door, glass shatters, uses rebound to sweep leg”。
+5. **现在时，主动语态。**“She turns”而不是“she is turning”。
+6. **删掉套话词。**Breathtaking、stunning、epic、masterfully、cinematic masterpiece：这些是营销文案的信号，不是镜头描述，并且和被标记相关。
 
-> For the eight named substrate channels that "describe physics, not
-> emotion" decomposes into, see `vocab.md` § Emotion as Visible
-> Behavior — Channels.
+> “描述物理，而不是情绪”分解成的八个具名的底层通道，见 `vocab.md` § Emotion as Visible Behavior — Channels。
 
 ---
 
-## Output Format for Seedance Prompts
+## Seedance 提示词的输出格式（Output Format for Seedance Prompts）
 
-When generating a Seedance prompt for the user, use this structure. It
-mirrors what Seedance's filter reads most cleanly:
+为用户生成 Seedance 2.0 原生提示词时，用这个结构。它对应 Seedance 过滤器读得最清楚的形式（工作室当前交付用中文块结构，见 [跨类型导演模板](template-general-director-2-5.md)）：
 
 ```
 **Model:** Seedance 2.0
@@ -1825,192 +1030,108 @@ shot-by-shot if multi-cut. This is the main block.]
 **Camera:** [exact movement name]
 ```
 
-For the full bilingual EN+ZH director output format (used in Seedance's
-web UI), see the extended reference at `seedance-bilingual-json.md`.
+完整的双语 EN+ZH 导演输出格式（用在 Seedance 的网页界面里），见扩展参考 `seedance-bilingual-json.md`。
 
-### Runtime arithmetic for multi-shot prompts
+### 多镜头提示词的时长算术（Runtime arithmetic for multi-shot prompts）
 
-Runtime appears in three places in a delivered Seedance prompt —
-the title line, the meta header (`**Duration:** Xs`), and any
-per-shot timing labels in the Dynamic Description. All three must
-agree.
+时长在交付的 Seedance 提示词里出现在三个地方：标题行、元信息头（`**Duration:** Xs`），以及 Dynamic Description 里的逐镜头时间标签。三者必须一致。
 
-For timed multi-shot prompts, label each shot inline with its time range
-(e.g. `Shot 1 (0-3s): ... hard cut to Shot 2 (3-8s): ... hard cut
-to Shot 3 (8-15s): ...`). This is an example, not a three-shot or 15s default;
-the sequential-cut and freestyle modes may omit per-shot timecodes. The per-shot labels must *sum* to the
-total duration stated in the title and meta header; a drift between
-the two surfaces is the most common source of "my multi-shot prompt
-rendered as a single shot" failures.
+计时多镜头提示词里，每个镜头在行内标出它的时间范围（例如 `Shot 1 (0-3s): ... hard cut to Shot 2 (3-8s): ... hard cut to Shot 3 (8-15s): ...`）。这是一个例子，不是三镜头或 15 秒的默认；有顺序切镜和自由模式可以省略逐镜头时间码。逐镜头标签加起来必须*等于*标题和元信息头里写的总时长；这两处之间的偏差，是“我的多镜头提示词被渲染成了单镜头”失败最常见的来源。
 
-Use the confirmed runtime or the mode's source timing. If neither exists,
-estimate from the planned events and confirm the delivery runtime before generation;
-do not silently assume 5s, 10s, or 15s. A fixed runtime constrains pacing, not stage count.
+用已确认的时长或模式的源时间。两者都没有时，按规划的事件估算，并在生成前确认交付时长；不要悄悄假定 5 秒、10 秒或 15 秒。固定时长约束的是节奏，不是阶段数。
 
-### Shot density for multi-scene prompts
+### 多场景提示词的镜头密度（Shot density for multi-scene prompts）
 
-When grouping multiple shot rows into a single Seedance prompt, use their
-causal continuity, performance load, and runtime. One prompt per 4–5 shot rows
-is a project-derived example, not a starting quota or a platform requirement.
+把多个镜头行合进一条 Seedance 提示词时，按它们的因果连续性、表演负荷和时长来分组。每 4–5 个镜头行一条提示词是一个来自项目的例子，不是起始配额，也不是平台要求。
 
-Group shot rows into one prompt when ALL of these hold:
+以下**全部**成立时，把镜头行合进一条提示词：
 
-- Same character set in frame
-- Same location or contiguous subset of a location
-- Continuous emotional / temporal unit (no time skip, no major mood
-  pivot)
-- Combined runtime fits within the 15s Seedance cap
-- The grouped prompt text stays within practical generation limits —
-  for ZH prompts the 1,800-character hard cap; for EN block prompts
-  there is no character analogue (production medians run far longer —
-  § Field calibration). The once-circulating "~2,500 characters"
-  budget is ZH-derived doctrine, not an EN limit.
+- 画面里是同一组角色
+- 同一个场景，或一个场景里相连的一部分
+- 连续的情绪 / 时间单元（没有时间跳跃，没有大的情绪转折）
+- 合并时长在 Seedance 15 秒上限之内
+- 合并后的提示词文字在实际生成限制之内：双语 JSON 档位的 ZH 提示词是 1,800 字上限（工作室块结构稿没有）；EN 块提示词没有对应的字数限制（制作中位数长得多：§ Field calibration）。曾经流传的“约 2,500 字符”预算是从 ZH 推出来的方法，不是 EN 的限制。
 
-Split into separate prompts when combined runtime exceeds 15s, or when a
-location/time change or a changed character handle list cannot be represented
-clearly within the model's supported shot and complexity budget. A supported
-multishot location cut or a readable entrance can stay in one generation;
-keep required per-shot re-anchoring and engine-specific exit/re-entry handling.
-The fuller production heuristic — five group criteria, five split triggers,
-the complexity budget, and the "don't fragment grief" rule — lives in
-`higgsfield-shotlist-director.md` § Prompt density.
+合并时长超过 15 秒，或者场景/时间变化、改变的角色调用名清单，在模型支持的镜头和复杂度预算内没法清楚表示时，拆成分开的提示词。受支持的多镜头场景切换或可读的入场可以留在一次生成里；保留必要的逐镜头重新锚定和引擎特有的出画/再入画处理。更完整的制作经验（五条分组标准、五个拆分触发、复杂度预算、“不要把哀伤切碎”规则）在 `higgsfield-shotlist-director.md` § Prompt density。
 
-Other empirical examples include 1 prompt per 2–3 dense action rows or 8+
-quiet emotional rows. None determines the stage count. Group from the actual
-content, then check complexity and the generation budget.
+其他经验例子包括每 2–3 个密集动作行或 8 个以上安静情绪行一条提示词。没有一条决定阶段数。按实际内容分组，然后检查复杂度和生成预算。
 
-### Single-vs-multi-shot decision
+### 单镜头还是多镜头（Single-vs-multi-shot decision）
 
-Default is single-shot. Reach for multi-shot when the content is
-action, dynamic dialogue, or anywhere a cut is itself doing work a
-single shot cannot deliver. Everything else holds tighter as a single
-continuous shot.
+默认是单镜头。内容是动作、动态对白，或者任何切镜本身在做单镜头做不到的事的地方，才用多镜头。其他一切作为单个连续镜头会更紧凑。
 
-For continuous motion, describe event-triggered stages within the oner. If timing
-matters, `[0-3s] subject enters frame, [3-7s] camera pushes in` is an illustrative
-budget, paired with `one continuous shot; no cut at stage boundaries`. Timing
-labels can provoke unintended cuts; prefer relative event cues if that happens.
-They are timing targets, not frame-accurate guarantees. The notation reference is
-`vocab.md` § Editing Syntax.
+对连续运动，在一镜到底里描述由事件触发的阶段。时间重要时，`[0-3s] subject enters frame, [3-7s] camera pushes in` 是一个示意预算，配上 `one continuous shot; no cut at stage boundaries`。时间标签可能引发意外的切镜；出现这种情况时优先用相对的事件提示。它们是时间目标，不是帧级精确的保证。记法参考是 `vocab.md` § Editing Syntax。
 
-For timed multi-shot, use the runtime arithmetic above and explicitly label cuts;
-for sequential cuts without a clock, use `CUT n` in narrative order. Per action
-cut, name participants, location, implements, and causal choreography. Do not
-turn every stage or regular time interval into a cut. Choose shot contrast for
-readability after the story boundaries are settled; contrast guidance does not
-supply a stage count or require cuts in a continuous performance.
+计时多镜头用上面的时长算术并明确标出切镜；没有时钟的有顺序切镜，按叙事顺序用 `CUT n`。每次动作切镜都写明参与者、地点、器具和有因果的动作编排。不要把每个阶段或每个固定时间间隔都变成切镜。故事边界定下之后，再为了可读性选择镜头对比；对比指导不提供阶段数，也不要求在连续表演里切镜。
 
 ---
 
-## Post-Clip Decisions
+## 片段之后的决定（Post-Clip Decisions）
 
-When a generated clip raises questions around itself, testing
-becomes narrative work — not "is it good?" but "what does it do?"
-and "what comes after?" The diagnostic below asks four scene-function
-questions; the decision tree maps the answers to next-shot types.
+一段生成的片子在它周围引出问题时，测试就变成了叙事工作：不是“它好不好？”，而是“它做了什么？”和“之后是什么？”下面的诊断问四个关于场景功能的问题；决策树把答案映射到下一个镜头的类型。
 
-### The Four Questions
+### 四个问题（The Four Questions）
 
-After any strong clip, ask these four in order. They surface what
-the clip is doing in the episode and what should come next.
+任何一段强的片子之后，按顺序问这四个。它们揭示这段片子在这一集里在做什么，以及接下来应该是什么。
 
-1. What function does this scene have?
-2. What is missing for it to feel connected?
-3. What shot would make the connection readable?
-4. Is the next step continuation, bridge, contrast, or reset?
+1. 这场戏有什么功能？
+2. 要让它感觉连得上，还缺什么？
+3. 什么镜头能让这个连接读得出来？
+4. 下一步是续接、桥接、对比，还是重置？
 
-These questions are scoped to the next move, not to "solving the
-whole episode." The narrower scope is what keeps them practical.
+这些问题的范围是下一步，而不是“解决整集”。更窄的范围让它们保持实用。
 
-### Next-Shot Decision Tree
+### 下一个镜头的决策树（Next-Shot Decision Tree）
 
-The right question is not "what is the coolest next shot?" but "what
-problem does the episode have right now?" Map the problem to a shot
-type:
+正确的问题不是“下一个最酷的镜头是什么？”，而是“这一集现在有什么问题？”把问题映射到镜头类型：
 
-- **Strong but isolated** → continuation or before/after
-- **Two scenes do not connect** → bridge
-- **Spatial logic unclear** → geography clarification
-- **Structure works but feeling weak** → close-up or reaction insert
-- **Something broken** → targeted repair
+- **强但孤立** → 续接，或之前/之后
+- **两场戏接不上** → 桥接
+- **空间逻辑不清楚** → 澄清地理
+- **结构可以但感觉弱** → 近景或反应插入镜头
+- **有东西坏了** → 定向修复
 
-The next shot is chosen by function, not by excitement.
+下一个镜头按功能选，而不是按兴奋程度。
 
-> Note: "continuation," "bridge," and "targeted repair" here name
-> next-shot types decided post-generation. "Continuation," "Bridging,"
-> and "Repair" in § Working Modes above name per-clip intent during
-> composition — different lifecycle phase, different decision.
+> 注意：这里的“续接”“桥接”和“定向修复”指的是生成之后决定的下一个镜头类型。上面 § Working Modes 里的“Continuation”“Bridging”和“Repair”指的是创作时每段片子的意图：不同的生命周期阶段，不同的决定。
 
 ---
 
-## When the User Is Already in a Failure Loop
+## 用户已经陷在失败循环里时（When the User Is Already in a Failure Loop）
 
-This section handles **filter rejections** — prompts the Seedance
-filter blocks before generation. For **render failures** (FPS drift,
-NSFW false-positive, keyframe-invention, physics-state drift, spatial-
-awareness failures, multi-motion overload), see `higgsfield-seedance-failure-modes.md` in
-this directory — sibling catalog with symptom + mechanism + counter
-per named failure.
+本节处理**过滤器拒绝**：Seedance 过滤器在生成之前拦截的提示词。**渲染失败**（帧率漂移、NSFW 误判、关键帧编造、物理状态漂移、空间感知失败、多重运动过载）见本目录的 `higgsfield-seedance-failure-modes.md`：兄弟目录，每种具名失败都有症状 + 机制 + 对策。
 
-If the user tells you Seedance has flagged them multiple times in a row:
+如果用户告诉你 Seedance 连续多次标记了他们：
 
-1. **Ask for the exact prompt text that got flagged.** Don't guess.
-2. **Run the preflight linter** on that exact text.
-3. **Apply the rewrite playbook** for every rule the linter hit.
-4. **Do a voice pass** (add Style & Mood, name the camera, present-tense physics).
-5. **Verify the revised result.** Check that the intended action, identity,
-   blocking and audio survived the repair. A lint pass alone does not establish
-   that the generation succeeded.
+1. **要被标记的确切提示词文字。**不要猜。
+2. 对那段确切的文字**跑预检 lint**。
+3. 对 lint 命中的每条规则**应用改写手册**。
+4. **做一遍语气改写**（加 Style & Mood、点明运镜、现在时的物理）。
+5. **核实修改后的结果。**检查预定的动作、身份、站位和音频在修复后是否保留下来。光是 lint 通过并不能确定生成成功了。
 
-Do not let the user regenerate the same prompt with one word changed. That
-is the loop that wastes hours.
+不要让用户只改一个词就重新生成同一条提示词。那就是浪费几个小时的循环。
 
 ---
 
-## Multi-Language Prompt Workarounds
+## 多语言提示词的变通办法（Multi-Language Prompt Workarounds）
 
-Seedance prompts default to English. This section documents historical
-language-level workarounds for specific Seedance platform states.
+Seedance 提示词默认是英文。本节记录针对特定 Seedance 平台状态的历史语言层面变通办法。工作室当前交付用中文块结构，台词在 `{}` 里保留原语言。
 
-### Chinese (as of 2026-05-17)
+### 中文（截至 2026-05-17）（Chinese (as of 2026-05-17)）
 
-At Seedance 2.0's launch the model performed better against Chinese
-prompts and enforced a hard 3,000-character cap per prompt. English
-runs roughly 5-10 characters per word; Chinese runs 1-2. Production
-teams used Chinese prompts to compress ~5× more directive content
-into the same character budget — the decisive workaround on long
-multi-shot prompts that otherwise hit the cap.
+Seedance 2.0 发布时，模型对中文提示词表现更好，并且每条提示词有 3,000 字符的硬上限。英文大约每个词 5–10 个字符；中文 1–2 个。制作团队用中文提示词把约 5 倍的指令内容压进同样的字符预算：这是长的多镜头提示词在本会撞上限时的决定性变通办法。
 
-The workaround was a launch-window optimization, not a permanent
-convention. If a long Seedance prompt keeps hitting the cap and
-English compression has been exhausted, the Chinese-density path has
-shipped before — verify the cap state in the current Seedance UI
-before reaching for it.
+这个变通办法是发布窗口期的优化，不是永久的约定。如果一条长的 Seedance 提示词总是撞上限，而英文压缩已经用尽，中文密度的路子以前交付过：用它之前，在当前的 Seedance 界面里核实上限状态。
 
 ---
 
-## Related Skills
+## 相关模块（Related Skills）
 
-- `higgsfield-seedance-2-5.md` — **Seedance 2.5**, the omni-reference
-  dialect: four modes (`t2v` / `omni_reference` / `video_edit` /
-  `video_extension`), 4–30s, 30/10/10 reference materials, in-prompt first-last
-  frames, video editing and forward/backward extension. Caps at 720p — route
-  there when the job is long, edit-shaped, or reference-heavy; stay here when it
-  needs 4K, a start/end-frame role, or a genre hint
-- `higgsfield-acting.md` — the performance layer that fills the
-  PERFORMANCE / CHARACTER ACTING block: objective, obstacle, tactics, beats,
-  subtext, status, mandatory eye life, the acting master profile
-- `higgsfield-seedance-hell-grind.md` (this directory) — Higgsfield's open-sourced feature-film
-  pipeline: asset construction, the per-scene GEO SPATIAL LAYOUT block, the
-  position-fixing first second, dialogue construction, iteration discipline
-- `higgsfield-seedance-vfx` — the video-to-video sibling: transform footage the
-  user already shot (preserve subject + camera, add a VFX element / swap the
-  world / drop a creature / relight to match / sync a timed zoom), std-4K
-- `higgsfield-prompt` — MCSLA formula, archetype router, general prompt structure;
-  the Iteration Rule and 6-Pass Diagnostic Sequence for when generations are
-  off-target and you can't name why
-- `higgsfield-troubleshoot` — diagnosis for non-filter failures (render quality, etc.)
-- `negative-constraints.md` — full negative-constraint reference,
-  including the Content Filter / Safety section
-- `seedance-bilingual-json.md` — extended bilingual director reference
-  (archetypes, cut rules, camera language appendix)
+- `higgsfield-seedance-2-5.md`：**Seedance 2.5**，全参考写法：四种模式（`t2v` / `omni_reference` / `video_edit` / `video_extension`）、4–30 秒、30/10/10 份参考素材、提示词内的首尾帧、视频编辑和前后向延伸。最高 1080p，平台首尾帧只在 `omni_reference` 里：任务长、是编辑形态或参考多时路由到那里；需要 4K、`mode=fast` 或题材提示时留在这里
+- `higgsfield-acting.md`：填充 PERFORMANCE / CHARACTER ACTING 块的表演层：目标、障碍、策略、节拍、潜台词、地位、必须的眼神生命力、表演母本
+- `higgsfield-seedance-hell-grind.md`（本目录）：Higgsfield 开源的长片制作流程：资产构建、逐场 GEO SPATIAL LAYOUT 块、固定位置的第一秒、对白构建、迭代纪律
+- `higgsfield-seedance-vfx`：视频到视频的兄弟模块：变换用户已经拍好的素材（保留主体 + 运镜，加一个视效元素 / 换掉世界 / 放进一只生物 / 重新打光匹配 / 同步一次计时变焦），std-4K
+- `higgsfield-prompt`：MCSLA 公式、原型路由、通用提示词结构；生成偏离目标又说不出原因时用的迭代规则和六遍诊断顺序
+- `higgsfield-troubleshoot`：非过滤器失败的诊断（渲染质量等）
+- `negative-constraints.md`：完整的共享约束参考，包括内容过滤 / 安全一节
+- `seedance-bilingual-json.md`：扩展的双语导演参考（原型、切镜规则、镜头语言附录）

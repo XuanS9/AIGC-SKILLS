@@ -1,205 +1,150 @@
-# Shared Negative Constraints Reference
+# 共享约束参考（Shared Negative Constraints Reference）
 
-Use this reference as an internal, task-specific prevention and diagnosis menu under
-[shared narrative planning](narrative-planning.md). Preserve the techniques below, but
-select only applicable risks not already resolved in the prompt. Do not append whole
-blocks or turn fallback remedies into mandatory shot design. Model/mode examples and
-historical platform observations require the relevant current specification check.
-Independent generation blocks need their own identity/state anchors; connected stages
-share global locks. User-approved choreography, emotion changes, silence, framing and
-reference duties remain intact; diagnose a failure before proposing a changed technique.
+把本参考当作内部的、按任务挑选的预防与诊断菜单使用，服从 [共享叙事规划](narrative-planning.md)。保留下面的技法，但只挑提示词里尚未解决的适用风险。不要整块追加，也不要把补救办法变成必须的镜头设计。模型/模式示例和历史平台观察需要对照当前规格核实。独立的生成块需要各自的身份/状态锚点；相连的阶段共享全局锁定。用户批准的编舞、情绪变化、沉默、构图和参考职责保持不变；先诊断失败，再提出改变技法。
+
+工作室规则：Seedance 提示词正文不写负面提示；下面“预防写法”一列都是正向表述。表里的英文措辞是原版示例，中文稿按同样的意思写成可见的目标状态。
 
 ---
 
-## Body / Motion Artifacts
+## 身体 / 动作瑕疵（Body / Motion Artifacts）
 
-These occur when the model can't resolve complex physical actions in a single generation.
+模型在一次生成里解决不了复杂的身体动作时出现。
 
-| Artifact | Why it happens | Recommended prompt phrasing to prevent it |
+| 瑕疵 | 原因 | 建议的预防写法 |
 |----------|---------------|------------------------------------------|
-| **Floating / extra limbs** | Model hallucinates additional appendages when character pose is ambiguous or occluded | "Anatomically correct, all limbs visible and naturally positioned" |
-| **Limb merging** | Two characters too close together — model can't distinguish whose arm is whose | Keep characters at arm's length or use separate shots; "distinct body separation between characters" |
-| **Unnatural body proportions** | Over-specified conflicting body descriptors (tall + compact) or extreme angles | Pick one body descriptor, keep it consistent; avoid contradictory size cues |
-| **Jittery / stuttering motion** | Too many competing actions can overload a clip | Inspect readable action load; one main action plus 1–2 secondary is a simplification example, not a quota. Split overloaded clips with state handoffs |
-| **Motion morphing on fast action** | Fast motion may exceed temporal coherence | Optional failure remedy: generate Slow Mo then speed up in post, only if compatible with the approved speed, audio and delivery; not the default for fast action |
-| **Specific martial arts failing** | Named techniques may fail to resolve their causal contact | Preserve approved moves and explain direction, contact and response. Broader “general fighting energy” or “struggling” remains an optional abstraction only when the task permits replacing exact choreography |
-| **Grappling renders as embracing** | Close-range physical contact is ambiguous to the model | Use plain text (not @ Elements) for action scenes; describe body positions, not grapple names |
+| **漂浮 / 多出的肢体** | 角色姿势含糊或被遮挡时，模型幻觉出多余的肢体 | "Anatomically correct, all limbs visible and naturally positioned" |
+| **肢体融合** | 两个角色离得太近，模型分不清是谁的手臂 | 让角色保持一臂距离，或分开拍；"distinct body separation between characters" |
+| **身体比例不自然** | 相互冲突的体型描述（高 + 矮壮）过度指定，或极端角度 | 只选一个体型描述并保持一致；避免矛盾的尺寸线索；两人以上写每人身高（cm） |
+| **动作抖动 / 卡顿** | 一个片段里相互竞争的动作太多会过载 | 检查可读的动作负荷；一个主动作加 1–2 个次要动作只是简化示例，不是配额。过载的片段带状态交接拆开 |
+| **快速动作变形** | 快速运动可能超出时间连贯性 | 可选的失败补救：先生成慢动作再在后期加速，前提是与已批准的速度、音频和交付相容；不是快速动作的默认做法 |
+| **具体武术动作失败** | 具名技法可能解决不了它的因果接触 | 保留已批准的动作，写清方向、接触和反应。只有任务允许替换精确编舞时，才可选地抽象成“一般打斗能量”或“扭打” |
+| **擒抱被渲染成拥抱** | 近距离身体接触对模型来说是含糊的 | 动作戏里用文字描述身体位置，而不是擒拿招式名；每个身份单独一行映射，动作句里用角色名 |
 
 ---
 
-## Face / Identity Artifacts
+## 面部 / 身份瑕疵（Face / Identity Artifacts）
 
-These occur when the model loses track of who a character is across frames or generations.
+模型在帧之间或多次生成之间丢失角色是谁时出现。
 
-| Artifact | Why it happens | Recommended prompt phrasing to prevent it |
+| 瑕疵 | 原因 | 建议的预防写法 |
 |----------|---------------|------------------------------------------|
-| **Face morphing / shifting** | No Soul ID reference, or conflicting appearance descriptions in the prompt | Use Soul ID for multi-shot work; remove contradictory appearance descriptors |
-| **Identity drift across shots** | Character description varies between prompts, or identity and motion mixed in one block | Copy-paste exact character description across all prompts; separate Identity Block from Motion Block (see `higgsfield-soul`) |
-| **Character swap (two characters)** | @ Elements in action scenes — model confuses which character is which | Use @ Elements only in static/slow scenes; use plain text for action; put hero character first in prompt |
-| **Face warping during camera moves** | Identity descriptors mixed with temporal/motion language cause the model to re-interpret the face each frame | Keep identity descriptors (face, clothing, body) in a static Identity Block; keep camera and motion in a separate Motion Block |
-| **Wrong expression / frozen face** | No readable response or conflicting cues | Choose a few visible micro-expression/breath cues triggered by the event; an emotional change within a shot is valid and must unfold coherently |
-| **Plastic / waxy skin** | Wrong model for character work, or over-smoothed description | Use Kling 3.0 or Soul Cast for realistic skin; add "natural skin texture, subtle imperfections" |
+| **脸部变形 / 漂移** | 没有身份参考，或提示词里有相互冲突的外貌描述 | 多镜头工作用已登记的角色参考图（[角色资产交付规范](template-character-asset-delivery.md)）；删掉相互矛盾的外貌描述 |
+| **跨镜头身份漂移** | 不同提示词里角色描述不一样，或身份和动作混在一个块里 | 所有提示词复用同一份已登记的身份/参考；身份放映射块，动作放 `[具体情节]` |
+| **角色互换（两个角色）** | 动作戏里模型搞混了哪个角色是哪个 | 每个角色一行映射加一个可见标记；动作句用角色名，不用调用名；`[保持一致]` 写清左右 |
+| **运镜时脸部扭曲** | 身份描述和时间/运动语言混在一起，导致模型每帧重新解读脸 | 身份描述（脸、服装、身体）放静态的身份位置（映射块/资产参考）；运镜和动作分开写 |
+| **表情错误 / 脸冻住** | 没有可读的反应，或线索相互冲突 | 挑几个由事件触发的可见微表情/呼吸线索；镜头内的情绪变化成立，但必须连贯地展开 |
+| **塑料 / 蜡像皮肤** | 角色工作用错了模型，或描述过度磨皮 | 用干净的写实参考；真人方向写“自然的皮肤质感、细微瑕疵”；清理正文里混入的渲染/展示语义 |
 
 ---
 
-## Texture / Lighting Artifacts
+## 质感 / 光照瑕疵（Texture / Lighting Artifacts）
 
-These occur when the model misinterprets visual style or rendering instructions.
+模型误解视觉风格或渲染指令时出现。
 
-| Artifact | Why it happens | Recommended prompt phrasing to prevent it |
+| 瑕疵 | 原因 | 建议的预防写法 |
 |----------|---------------|------------------------------------------|
-| **Flickering textures** | Inconsistent style description across frames, or model fighting between two visual styles | Commit to one named style (Cinematic / VHS / Super 8MM / Anamorphic / Abstract); don't mix competing styles |
-| **Over-lit / flat lighting** | No lighting specification in prompt — model defaults to even, generic lighting | Always specify lighting source and quality: "single side-light", "golden hour", "practical only" |
-| **VFX preset looks cartoonish** | Wrong model for the preset type, or style conflicts with the effect | Grounded presets (Explosion, Freezing) → Kling 3.0/2.6; Stylized presets (Animalization, Multiverse) → Wan 2.5; add "photorealistic, physically accurate" |
-| **Product shots look cheap** | No surface/background specification, generic lighting | Specify background surface ("raw concrete", "black velvet"), add texture cues ("surface catches light on edges") |
-| **Style ignored / generic output** | Style described too vaguely ("make it look cool") or style not named | Use exact named style + specific color grade: "Style: Cinematic. Cold blue shadows, warm amber highlights, high contrast" |
-| **Color grade inconsistency** | Different color descriptions across shots in a sequence | Lock color grade in a Moodboard or repeat exact color language in every prompt |
+| **纹理闪烁** | 跨帧的风格描述不一致，或模型在两种视觉风格之间拉扯 | 只用一种具名风格（Cinematic / VHS / Super 8MM / Anamorphic / Abstract）；不混用相互竞争的风格 |
+| **过曝 / 平光** | 提示词里没写光照，模型默认均匀的通用光 | 总是写明光源和光质：“单侧侧光”“黄金时刻”“只有实景光源” |
+| **特效看起来卡通** | 模型不适合这类特效，或风格与特效冲突 | 写实类特效加“照片写实、物理准确”，写清形态、尺度、材质、运动和残留；风格化特效写出风格化的媒介 |
+| **产品镜头显得廉价** | 没写表面/背景，光照泛泛 | 写明背景表面（“粗糙的混凝土”“黑丝绒”），加质感线索（“表面边缘接住光”） |
+| **风格被忽略 / 输出泛泛** | 风格描述太含糊（“弄得酷一点”）或没点名 | 用具名风格加具体调色：“Style: Cinematic. Cold blue shadows, warm amber highlights, high contrast” |
+| **调色不一致** | 一个段落里各镜头的颜色描述不同 | 在项目视觉总纲里锁定调色，每条提示词的 `[视觉风格]` 复用同一套颜色语言 |
 
 ---
 
-## Whole-Frame Degradation — quality words vs. look choices
+## 整帧退化：质量词与画面选择（Whole-Frame Degradation — quality words vs. look choices）
 
-Keep the requested or established style; do not reselect the medium to fix an
-output deviation. Only if style is missing, infer it from content/genre and
-narrative tone; do not default to live action. Genre alone does
-not dictate medium, and realistic 3D is not live action. Only for human asset sheets
-in a selected live-action project, follow the
-[character asset template](template-character-asset-delivery.md#真人实拍分支降低意外-cg-感的写法):
-anchor the medium as live-actor costume fitting photography, not a render-quality
-label. Its subtle photographic grain is a declared look choice, not a substitute
-for pores or fabric texture; keep those details readable and reduce or omit grain
-if it obscures them. For CG-like live-action characters, inspect the positive
-prompt and appended templates for conflicting render/showcase language and generic
-quality boosters. Remove or replace that contamination while preserving the target
-style, identity and costume. Do not compensate by stacking camera terms or by
-adding negative style prompts, even when a separate negative field is supported.
-Animation, illustration, CG and stop motion use their own medium-specific
-material and lighting language. Do not exclude 3D rendering when CG is the target.
+保持要求的或已确立的风格；不要为修正输出偏差而重选媒介。只有缺少风格时，才从内容/题材和叙事基调推断；不默认真人实拍。题材本身不决定媒介，写实三维也不是真人实拍。只有在选定真人实拍的项目里做人物资产组板时，才按 [角色资产模板](template-character-asset-delivery.md#真人实拍分支降低意外-cg-感的写法)：把媒介锚定为真人演员服装定妆照，而不是渲染质量标签。它轻微的摄影颗粒是声明的画面选择，不能替代毛孔或布料质感；保持这些细节可读，颗粒遮住它们时就减少或去掉。真人角色出现 CG 感时，检查正向提示词和附加模板里有没有冲突的渲染/展示语言和泛泛的质量助推词。删除或替换这些污染，同时保留目标风格、身份和服装。不要靠堆摄影术语来抵消，也不要加负面风格提示词，即使支持独立的负面栏。动画、插画、CG 和定格动画用各自媒介的材质与光照语言。CG 是目标时不要排除三维渲染。8K、高清细节等质量词可以保留，但不能替代具体描述。
 
-Some tokens authors reach for to make an output feel filmic are read as instructions
-about the **rendering** rather than about the subject, and a rendering instruction
-lands on the entire frame. `film grain` dropped in as a quality note softens
-everything in the image; `imperfect focus` takes the frame out of focus, subject
-included.
+作者为了让输出显得有电影感而用的一些词，会被读成关于**渲染**而不是关于主体的指令，而渲染指令落在整帧上。作为质量备注丢进去的 `film grain` 会让画面里的一切变软；`imperfect focus` 让整帧失焦，主体也在内。
 
-**The governing distinction:** *content* may be imperfect — uneven light, an
-asymmetric composition, a messy room, an operator's wobble. *Image quality* must be
-sharp. Imperfection is a subject choice; it is never a rendering instruction.
+**决定性的区分：***内容*可以不完美：不均匀的光、不对称的构图、乱糟糟的房间、操作员的晃动。*画质*必须清晰。不完美是主体的选择；它从来不是渲染指令。
 
-That is why the same word is deliberate craft in one clause and expensive in another.
-Three uses are legal and are used on purpose across this repo:
+所以同一个词，在一个分句里是刻意的技艺，在另一个分句里代价很高。本仓库有意使用三种合法用法：
 
-| Legal use | What it is | Where the repo does it |
+| 合法用法 | 是什么 | 仓库里在哪用 |
 |-----------|-----------|------------------------|
-| **Look choice** | The stock or texture is the piece's declared register, named in the Style / Look slot with what it belongs to | `higgsfield-prompt.md` § Genre Router (a Music Video lead opens on "16mm grain"); `vocab.md` § Film Stock Emulation; `higgsfield-cinema.md` film-stock axis |
-| **Optics as content** | A named optical event, happening to a named element, at a named moment | `higgsfield-seedance-production-patterns.md` § Prompted Imperfection as Realism (heat-haze swim, a brief focus hunt before lock) and its targeted motion blur as artifact concealment |
-| **Plate matching** | Grain, blur and focus falloff matched to an existing plate so a composited element does not read pasted-in | `higgsfield-seedance-vfx.md` § Lighting integration; `higgsfield-seedance-2-5-vfx-pipeline.md` § Reverse-angle locations |
+| **画面选择** | 胶片或质感是作品声明的语域，写在 Style / Look 位置，并说明它属于什么 | `higgsfield-prompt.md` § Genre Router（MV 开头写“16mm grain”）；`vocab.md` § Film Stock Emulation |
+| **光学作为内容** | 一个具名的光学事件，发生在一个具名元素上，在一个具名时刻 | `higgsfield-seedance-production-patterns.md` § Prompted Imperfection as Realism（热浪晃动、锁焦前一次短暂的找焦），以及用于掩盖瑕疵的定向运动模糊 |
+| **底片匹配** | 颗粒、模糊和焦点衰减与已有底片匹配，让合成元素不像贴上去的 | `higgsfield-seedance-vfx.md` § Lighting integration；`higgsfield-seedance-2-5-vfx-pipeline.md` § Reverse-angle locations |
 
-What degrades is the fourth use: the token dropped in bare, attached to nothing,
-trailing the prompt as a general plea for realism.
+造成退化的是第四种用法：这个词光秃秃地丢进去，不依附任何东西，作为对真实感的泛泛恳求拖在提示词末尾。
 
-| Written as a bare quality note | What the model does with it | Write instead |
+| 写成裸露的质量备注 | 模型怎么处理它 | 改写为 |
 |--------------------------------|-----------------------------|---------------|
-| `film grain` (trailing, unattached) | Noise laid across the whole image; fine detail softens with it | Name it as a look with its stock and its home: "Super 8MM warm grain, soft vignette" — or as a plate match: "grain matched to the reference frame" |
-| `imperfect focus` / `soft focus` / `dreamy` | Global sharpness loss — the subject goes soft along with everything else | Name the optical event, its element and its moment: "a brief focus hunt on the badge before it locks" |
-| `edges not perfectly sharp` / `slight natural deviation` / `not completely stable` | Effective resolution drops; the frame reads mushy | Drop them, and put the imperfection in the *subject* instead — a crooked frame on the wall, a chipped mug, light reaching only one side of the face |
-| `blurry background` | The subject blurs with it | Say which plane stays sharp — see § Depth of field below |
-| `hazy` / `foggy` (unquantified) | Whole-frame fog, subject included | Keep for genuine aerial perspective, quantified and located ("haze ramps 20% → 70% behind the ridge"), with the subject's own sharpness stated |
+| `film grain`（拖在末尾，不依附） | 整张图铺上噪点；细节随之变软 | 写成带胶片型号和归属的画面：“Super 8MM warm grain, soft vignette”，或写成底片匹配：“grain matched to the reference frame” |
+| `imperfect focus` / `soft focus` / `dreamy` | 整体锐度下降：主体和其他一切一起变软 | 写出光学事件、它的元素和时刻：“a brief focus hunt on the badge before it locks” |
+| `edges not perfectly sharp` / `slight natural deviation` / `not completely stable` | 有效分辨率下降；画面读起来发糊 | 删掉，把不完美放进*主体*里：墙上挂歪的画框、缺口的马克杯、只照到脸一侧的光 |
+| `blurry background` | 主体跟着一起模糊 | 说清哪个平面保持清晰：见下文 § Depth of field |
+| `hazy` / `foggy`（不量化） | 整帧起雾，主体也在内 | 只用于真正的空气透视，并量化、定位（“山脊后的雾从 20% 渐增到 70%”），同时写明主体自身的清晰度 |
 
-`[UNPROVEN HERE]` — re-derived from a third-party prompting corpus and **not
-A/B'd on our own material**. The probe that settles it is a two-arm 480p pair on
-one identical shot: arm A ends on a bare `film grain, imperfect focus`, arm B on the
-named-look substitute, compared for detail retention on the subject. Until that
-runs this is a drafting preference, not a rule — nothing here blocks a prompt, and
-no linter enforces it.
+`[UNPROVEN HERE]`：从第三方提示词语料重新推导，**没有在我们自己的素材上做过 A/B**。能定论的测试是同一个镜头的一对 480p 两臂试验：A 臂以裸露的 `film grain, imperfect focus` 结尾，B 臂用具名画面的替代写法，比较主体的细节保留。在跑这个测试之前，这是一条写作偏好，不是规则：这里没有任何东西会拦下提示词，也没有 lint 强制它。
 
-### Depth of field — two substitutes, two intents
+### 景深：两种替代，两种意图（Depth of field — two substitutes, two intents）
 
-"No blur" is two different requests and the positive substitute differs. Both
-spellings used in this repo are correct; they are not interchangeable.
+“不要模糊”是两种不同的请求，正向的替代写法也不同。本仓库用到的两种写法都正确，但不能互换。
 
-| What the author actually wants | Positive phrasing | Reach for it when |
+| 作者真正想要的 | 正向写法 | 何时用 |
 |--------------------------------|-------------------|-------------------|
-| Everything in frame sharp, front to back | "sharp focus throughout, deep depth of field" | Landscapes, establishing shots, group blocking, product-on-set where the background is information |
-| The subject crisp and the background soft **on purpose** | "subject in sharp focus, background falling into soft bokeh" | Portraits, dialogue coverage, isolating one figure in a busy set |
+| 画面里从前到后全部清晰 | "sharp focus throughout, deep depth of field" | 风景、建立镜头、群体站位、背景就是信息的布景产品镜头 |
+| 主体清晰、背景**刻意**虚化 | "subject in sharp focus, background falling into soft bokeh" | 肖像、对白覆盖、在繁杂布景里孤立一个人物 |
 
-The first answers "the whole image is mushy"; the second answers "the background
-blur ate my subject." `blurry background` on its own answers neither, because it
-never says which plane is meant to stay sharp.
+第一种回答的是“整张图发糊”；第二种回答的是“背景虚化把我的主体吃掉了”。单写 `blurry background` 两者都回答不了，因为它从来没说哪个平面应该保持清晰。
 
 ---
 
-## Temporal / Consistency Artifacts
+## 时间 / 一致性瑕疵（Temporal / Consistency Artifacts）
 
-These occur across frames in video or across multiple generations in a sequence.
+出现在视频的帧之间，或一个段落的多次生成之间。
 
-| Artifact | Why it happens | Recommended prompt phrasing to prevent it |
+| 瑕疵 | 原因 | 建议的预防写法 |
 |----------|---------------|------------------------------------------|
-| **Static I2V output (barely moves)** | Prompt re-describes the static image instead of what should animate | Only describe what CHANGES or MOVES; add explicit camera movement and atmospheric motion ("dust floats", "steam rises") |
-| **Camera movement not working** | Vague movement or mismatched preset | Write starting view, tracked subject, physical path and final framing. When using a platform preset, name it exactly in settings |
-| **Contradictory camera movements** | Opposing simultaneous instructions | Distinguish sequential moves from simultaneous combinations; use a readable path, splitting clips only when complexity or mode requires it |
-| **Scene continuity breaking** | Inconsistent identity/environment or missing entry state | Reuse identity anchors in independently generated clips; within one complete prompt keep global locks once and carry changed state |
-| **Motion preset not visible** | Preset misnamed or unsuitable context | When a preset is actually selected, retain its exact name and define target, trigger and result |
-| **Lip-sync desync** | Speech length, head motion, track format or mode can interfere | Use [audio diagnostics](higgsfield-audio.md) for the selected model/mode. A 3–8s window and reduced head motion are repair options; preserve approved dialogue and reaction time and check accepted file types |
-| **Background music overriding dialogue** | Unwanted generated sound replaces a supplied output track | For an exclusive original-track task, anchor its playback/time range and remove competing generated sound. Rhythm or performance references follow their separate audio-use rules |
+| **静态 I2V 输出（几乎不动）** | 提示词重新描述了静态图，而不是该动起来的东西 | 只描述**变化**或**运动**的东西；加明确的运镜和氛围运动（“灰尘漂浮”“蒸汽升起”） |
+| **运镜不起作用** | 运动含糊或预设不匹配 | 写出起始视图、跟随的主体、物理路径和结尾构图。使用平台预设时，在设置里准确写出它的名字 |
+| **运镜相互矛盾** | 同时下达相反的指令 | 区分先后的运动和同时的组合；用一条可读的路径，只有复杂度或模式需要时才拆片段 |
+| **场景连续性断裂** | 身份/环境不一致，或缺少进入状态 | 独立生成的片段各自复用身份锚点；一条完整提示词里全局锁定只写一次，并带上改变的状态。Clip 边界按 [Clip 边界隔离](narrative-planning.md#clip-边界隔离强制) 处理 |
+| **运动预设看不出来** | 预设名写错或语境不合适 | 确实选了预设时，保留它的准确名字，并定义目标、触发和结果 |
+| **口型不同步** | 台词长度、头部运动、音轨格式或模式都可能干扰 | 按所选模型/模式用 [音频诊断](higgsfield-audio.md)。3–8 秒的窗口和减少头部运动是修复选项；保留已批准的对白和反应时间，并检查接受的文件类型 |
+| **背景音乐盖过对白** | 不想要的生成声音替代了提供的输出音轨 | 只用原始音轨的任务，锚定它的播放/时间区间，去掉相互竞争的生成声音。节奏或表演参考按各自的音频用途规则处理；工作室默认 `NO BGM` |
 
 ---
 
-## Content Filter / Safety Artifacts
+## 内容过滤 / 安全瑕疵（Content Filter / Safety Artifacts）
 
-These cause generations to be blocked or produce sanitized output.
+会导致生成被拦截，或产出被净化的结果。
 
-| Artifact | Why it happens | Recommended prompt phrasing to prevent it |
+| 瑕疵 | 原因 | 建议的预防写法 |
 |----------|---------------|------------------------------------------|
-| **Generation blocked (horror/dark content)** | Platform safety filters triggered by explicit content descriptions | Describe atmosphere, not explicit acts: "unsettling", "something is wrong", "dread"; use motion presets for horror effects |
-| **Named real person blocked** | Content filter on celebrity / public figure names | Use character descriptions instead of real names; create original characters with Soul Cast |
-| **Brand / IP name blocked** | Trademark/copyright filter on brand names | Describe the product by appearance ("a matte black insulated mug, minimal design, no branding") — never use brand names |
-| **Weapon / violence filtered** | Explicit weapon or injury language triggers moderation | Describe "tension", "aftermath", or "impact" rather than graphic injury; use motion presets for VFX |
+| **生成被拦截（恐怖/黑暗内容）** | 露骨的内容描述触发平台安全过滤 | 写氛围，不写露骨的行为：“令人不安”“有什么不对”“恐惧” |
+| **真人名字被拦截** | 对名人 / 公众人物名字的内容过滤 | 用角色描述代替真名；创作原创角色 |
+| **品牌 / IP 名称被拦截** | 对品牌名的商标/版权过滤 | 按外观描述产品（“一只哑光黑色保温杯，极简设计，没有标识”），绝不写品牌名 |
+| **武器 / 暴力被过滤** | 露骨的武器或伤害语言触发审核 | 写“紧张”“余波”或“冲击”，而不是血腥的伤口；特效写形态与结果。已确认的对白、身份和动作不能被 lint 建议自动改写；有真实政策冲突时报告范围与依据 |
 
 ---
 
-## Cinema Studio–Specific Artifacts
+## Seedance 正向约束说明（Seedance Positive-Constraint Notes）
 
-These only apply when working in Cinema Studio 2.5.
+> **不支持负面提示：**Seedance 不支持在提示词正文里写负面提示语法。不要写“no blur”“avoid shaky camera”或任何基于否定的约束。改用正向替代：
 
-| Artifact | Why it happens | Recommended prompt phrasing to prevent it |
-|----------|---------------|------------------------------------------|
-| **Prompt rejected (too long)** | Cinema Studio has a 512-character hard limit; @ Element chips consume ~80–100 hidden chars each | Max 2 @ tags per prompt; keep visible text under ~250 chars with 2 tags, ~350 with 1, ~450 with 0 |
-| **@ Elements cause character swap in action** | AI re-processes reference data per @ tag, competing with action choreography | Use @ Elements in Scene 1 to lock characters, then use plain text descriptions in subsequent scenes |
-| **3D Mode geometry holes** | Gaussian splatting can't reconstruct fully occluded areas | Use 3D Mode on images with clear depth and minimal occlusion; avoid extreme angles from the original generation |
-| **Optical stack mismatch** | Camera/lens/aperture names put in the prompt field instead of the UI dropdowns | Never put optical stack language in the prompt — it belongs in the UI settings only |
-
----
-
-## Cinema Studio 3.0 Notes
-
-> **No negative prompt support:** Cinema Studio 3.0's generation engine does not support negative prompt syntax. Do not write "no blur", "avoid shaky camera", or any negation-based constraints. Instead, use positive alternatives:
-
-| Negative (don't use with 3.0) | Positive alternative |
+| 否定写法（Seedance 不要用） | 正向替代 |
 |-------------------------------|---------------------|
-| "no shaky camera" | "locked-off static camera, no movement" |
-| "no blur" — meaning the whole frame is mushy | "sharp focus throughout, deep depth of field" |
-| "no blur" — meaning the background blur ate the subject | "subject in sharp focus, background falling into soft bokeh" |
-| "don't make it dark" | "bright, evenly lit, overcast daylight" |
-| "avoid jittery motion" | "smooth, fluid motion, one action per shot" |
-| "no extra limbs" | "anatomically correct, all limbs naturally positioned" |
-| "don't change the character" | "consistent character appearance, same outfit and features throughout" |
+| “no shaky camera” | “locked-off static camera, no movement”（中文：固定，平视，不推拉） |
+| “no blur”：意思是整帧发糊 | “sharp focus throughout, deep depth of field” |
+| “no blur”：意思是背景虚化吃掉了主体 | “subject in sharp focus, background falling into soft bokeh” |
+| “don't make it dark” | “bright, evenly lit, overcast daylight” |
+| “avoid jittery motion” | “smooth, fluid motion, one action per shot”（中文：一段只做一个主运动） |
+| “no extra limbs” | “anatomically correct, all limbs naturally positioned” |
+| “don't change the character” | “consistent character appearance, same outfit and features throughout” |
 
-> **Prevention phrasing for 3.0:** All the prevention phrases in the tables above still work with Cinema Studio 3.0 — they are written as positive constraints by design. The key difference is that Cinema Studio 3.0 requires ALL constraints to be positive. The constraint blocks in this file are already compatible.
+> **Seedance 的预防写法：**上面各表里的预防措辞都刻意写成正向约束；Seedance 要求**所有**约束都是正向的。工作室模板里固定的几句锁定（“恰好 N 人，不出现其他人”“场景只含参考所示内容，不增加家具或房间”“无字幕、无水印”）是经过验证的短锁定尾巴，不是否定清单。
 
 ---
 
-## The words you write are the words you summon
+## 你写下的词，就是你召唤来的词（The words you write are the words you summon）
 
-`[FIELD — Higgsfield Studio, RED FLAG + ONEIRIC + ADILIADA breakdowns, 2026-08]` The studio
-that publishes these models states the rule as one of four things that hold a production
-together: **"Say what you want, not what you avoid — the words you write are the words you
-summon, including the ones inside a 'no'."** Two field cases make it concrete.
+`[FIELD — Higgsfield Studio, RED FLAG + ONEIRIC + ADILIADA breakdowns, 2026-08]` 发布这些模型的工作室，把这条规则列为撑起一部制作的四件事之一：**“说你想要什么，而不是你回避什么：你写下的词就是你召唤来的词，包括‘不’里面的那些。”**两个实地案例让它具体起来。
 
-**The colour war.** A film committed to cold teal-green corridors kept having them flipped
-warm yellow, because the references themselves leaked it — a lit window here, warm globe
-lamps there — and the model amplified it. **Negative lists ("no yellow") did nothing.**
-What worked was positive, with a budget and a failure condition:
+**颜色之战。**一部片锁定了冷青绿色的走廊，却总被翻成暖黄色，因为参考图本身就漏了暖色：这里一扇亮着的窗，那里几盏暖色球灯，模型把它放大了。**否定清单（“no yellow”）毫无作用。**有效的是正向写法，带一个预算和一个失败条件：
 
 ```
 The dominant color must be cold teal-green. Yellow exists only inside
@@ -207,38 +152,27 @@ the lamp bulb and a palm-sized halo beneath it. If the frame turns
 yellow, the frame is wrong.
 ```
 
-Note the shape: it does not forbid yellow, it **allocates** it — one named source and a
-stated size — and then gives the model a test it can apply to its own output.
+注意它的形态：它没有禁止黄色，而是**分配**黄色：一个具名光源加一个写明的大小，然后给模型一个可以用来检验自己输出的测试。
 
-**Overriding a reference in prose.** When a reference photo carried a glowing red window
-that could not be cropped out, the fix was not a ban but a statement of fact about the
-film's world:
+**用文字覆盖参考。**一张参考照片里有一扇裁不掉的发红光的窗，修法不是禁止，而是陈述影片世界的一个事实：
 
-> *"That window glowing in the reference is switched off in our film."*
+> *“参考图里那扇亮着的窗，在我们的片子里是关着的。”*
 
-The model accepted it. A reference is not a contract — you can tell it what is different in
-the shot, and saying so positively beats forbidding what the reference shows.
+模型接受了。参考不是合同：你可以告诉它这个镜头里有什么不同，正向地说出来，胜过禁止参考里显示的东西。
 
-**Where this collides with a legitimate ban.** Two exceptions already documented elsewhere
-in the repo: a property baked into an asset gets its garbage banned **at the asset stage
-only** and then never mentioned again downstream
-(`higgsfield-seedance.md` § Bake it into the asset), and a default the model
-actively reaches for — slow motion in a fight — is worth naming because the untouched
-default is already the failure (`higgsfield-seedance-failure-modes.md` § A fight
-generated as separate clips). Outside those, prefer the positive form.
+**它和合理禁令冲突的地方。**仓库别处已经记录了两个例外：烤进资产里的属性，只在**资产阶段**禁掉它的瑕疵，之后下游再也不提（`higgsfield-seedance.md` § Bake it into the asset）；以及模型主动倾向的默认，比如打斗里的慢动作，值得点名，因为不处理的默认本身就是失败（`higgsfield-seedance-failure-modes.md` § A fight generated as separate clips）。除此之外，优先用正向形式。
 
-## How to Use This File
+## 怎么用这个文件（How to Use This File）
 
-When building a prompt, scan the categories above that match the prompt's content:
+写提示词时，扫一遍与提示词内容匹配的类别：
 
-1. **Character-focused prompt** → check Face/Identity + Body/Motion
-2. **Action/chase prompt** → check Body/Motion + Temporal/Consistency
-3. **Horror/dark prompt** → check Content Filter/Safety + Face/Identity
-4. **Product/commercial prompt** → check Texture/Lighting
-4b. **Prompt reaching for a filmic / imperfect / analog feel** → check Whole-Frame Degradation before writing the texture words
-5. **Multi-shot sequence** → check Temporal/Consistency + Face/Identity
-6. **Cinema Studio prompt** → check Cinema Studio–Specific + all relevant categories
-6b. **Cinema Studio 3.0 prompt** → check Cinema Studio 3.0 Notes + all relevant categories (use positive alternatives only)
-7. **Audio/dialogue prompt** → check Temporal/Consistency (lip-sync section)
+1. **以角色为主的提示词** → 查面部/身份 + 身体/动作
+2. **动作/追逐提示词** → 查身体/动作 + 时间/一致性
+3. **恐怖/黑暗提示词** → 查内容过滤/安全 + 面部/身份
+4. **产品/商业提示词** → 查质感/光照
+4b. **想要电影感 / 不完美 / 模拟质感的提示词** → 写质感词之前先查整帧退化
+5. **多镜头段落** → 查时间/一致性 + 面部/身份
+6. **Seedance 提示词** → 查 Seedance 正向约束说明 + 所有相关类别（只用正向替代）
+7. **音频/对白提示词** → 查时间/一致性（口型那一行）
 
-Append the relevant prevention phrases to your prompt, or use them to catch and fix issues before the user generates.
+挑出适用的预防写法，落进提示词对应的块里，或者用它们在用户生成之前发现并修复问题。不要把整张表附到复制正文里。

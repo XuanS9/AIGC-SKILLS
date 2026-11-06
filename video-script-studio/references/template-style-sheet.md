@@ -1,30 +1,30 @@
-# Worksheet: Project Art Direction
+# 工作表：项目美术设定
 
-Store the completed sheet in the user's project, using its existing art-direction file or section. Record that location and version in `project.md` and the asset registry. This template supplies fields; the project supplies the visual choices.
+填好的设定表存放在用户项目里，用项目已有的美术设定文件或章节。在 `project.md` 和资产总表里记录位置与版本。本模板只给字段，视觉选择由项目决定。
 
-## Reference and scope
+## 参考与范围
 
-- Reference works or images: <selected by the user, or a proposed reference awaiting review>
-- Applicable regions, scenes and period: <which part of each reference applies>
-- Role of each reference: <architecture, materials, lighting, palette, photography, scale>
-- Medium: <the confirmed image-making medium>
-- Evidence: <written interpretation or actual images reviewed>
+- 参考作品或图片：<用户选定，或待审的建议参考>
+- 适用的地区、场景与时代：<每个参考用哪一部分>
+- 每个参考的作用：<建筑、材质、光照、配色、摄影、尺度>
+- 媒介：<已确认的成像媒介>
+- 依据：<文字解读，或实际看过的图片>
 
-## Visible art direction
+## 可见的美术方向
 
-- Palette: <dominant colors, accents and their use; hex values when useful>
-- Environment and weather: <climate, atmosphere and seasonal appearance for this project>
-- Lighting: <sources, direct/diffuse balance, exposure, contrast and shadow transitions>
-- Time of day: <how daylight, dawn, dusk and night preserve the selected look>
-- Architecture and scale: <forms, construction and cultural period>
-- Materials and furnishings: <surfaces, furniture, cargo, daily objects and use marks>
-- Staging space: <open routes, working areas and required points of contact>
-- Characters and creatures: <proportions, material treatment and continuity with the environment>
+- 配色：<主色、点缀色及用法；有用时写 hex 值>
+- 环境与天气：<本项目的气候、空气感与季节外观>
+- 光照：<光源、直射与漫射的比例、曝光、反差与阴影过渡>
+- 时段：<白天、黎明、黄昏和夜晚怎样保持选定的画面>
+- 建筑与尺度：<形制、构造和文化时期>
+- 材质与陈设：<表面、家具、货物、日常物件与使用痕迹>
+- 调度空间：<空出的通道、工作区与必要的接触点>
+- 角色与生物：<比例、材质处理，以及与环境的一致性>
 
-Describe the intended appearance in visible terms. Use brief output requirements where needed; keep production checks in the project record.
+用可见的词描述想要的外观。需要时写简短的输出要求；制作检查放在项目记录里。
 
-## Version and handoff
+## 版本与交接
 
-Record the version, confirmed scope and affected scenes. Each prompt includes the relevant concrete traits for its subject, time and action. A style change updates this project sheet first, followed by affected assets and prompts.
+记录版本、已确认范围和受影响的场景。每条提示词写进与其主体、时段和动作相关的具体特征。改风格时先更新这份项目设定表，再改受影响的资产和提示词。
 
-Use [visual-reference matching](higgsfield-style.md#电影视觉参考匹配) to interpret references, [project workspace](project-workspace.md) to record them, and [prompt construction](higgsfield-prompt.md) to compile independent prompts.
+用 [电影视觉参考匹配](higgsfield-style.md#电影视觉参考匹配) 解读参考，用 [项目工作区](project-workspace.md) 记录，用 [提示词构建](higgsfield-prompt.md) 编译独立提示词。

@@ -1,8 +1,8 @@
-# Model Specs
+# 图像模型规格
 
-**Snapshot: 2026-08-01**. Verify current parameters against a user-provided current schema before production.
+**快照：2026-08-01。**正式制作前，以用户提供的当前 schema 核对参数。
 
-| Model | id (aliases) | Duration | Resolutions | Modes | Aspect ratios | Media roles | Constraints |
+| Model（模型） | id（别名） | 时长 | 分辨率 | 模式 | 画幅 | 媒体职责 | 约束 |
 |-------|--------------|----------|-------------|-------|---------------|-------------|-------------|
 | AutoSprite Animation | autosprite | — | — | — | — | medias: image | — |
 | Bytedance Image Upscale | bytedance_image_upscale | — | 2k, 4k | — | — | medias: image_references | — |
@@ -34,4 +34,4 @@
 | Topaz | topaz_image_generative | — | — | — | — | medias: image_references | — |
 | Z Image | z_image | — | — | — | 1:1, 4:3, 3:4, 16:9, 9:16 | — | — |
 
-Full per-model parameter schemas live in `image-model-specs.json`.
+各模型完整参数 schema 在 `image-model-specs.json`。

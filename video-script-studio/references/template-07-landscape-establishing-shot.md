@@ -1,78 +1,57 @@
-# Template: Landscape / Establishing Shot
+# 模板：风景 / 建立镜头
 
-## Genre/Use-Case
-Wide establishing shots, nature/environment sequences, time-lapse landscapes, epic scale reveals, and any prompt where the environment IS the subject.
+## 题材与用途
+大远景建立镜头、自然/环境段落、延时风景、宏大尺度揭示，以及任何环境本身就是主体的提示词。
 
-## When to use this template
-User asks for an establishing shot, landscape, nature video, environment reveal, aerial view, timelapse, or any prompt where no character is the primary focus.
+## 何时使用
+用户要建立镜头、风景、自然视频、环境揭示、航拍、延时，或任何没有角色作为主要焦点的提示词。
 
-## Recommended model
-**Veo 3 / 3.1** for nature and environment (best at stable, realistic landscapes). **Sora 2** for epic scale and physics (weather, water, destruction). **Wan 2.5** for painterly/fantasy landscapes.
+## 推荐模型
+**Seedance 2.5** `omni_reference`（无参考时用 `t2v`），最高 1080p。风景需要 4K 细节时用 **Seedance 2.0**。
 
-## Narrative planning
+## 叙事规划
 
-Use [shared narrative planning](narrative-planning.md). Its eight
-semantic layers — assets, goal, global audiovisual/space, behavior, stages, continuity,
-final frame, constraints — fit the existing short prompt. A gradual spatial reveal or
-weather/light state change can carry the whole shot; define stages only when the visible
-change needs them. Allocate time afterward for scale, motion, and the intended final
-landscape state. No preset count, equal durations, or mandatory extra events. Preserve
-geography, light direction, weather progression, and sound; keep the one-environmental-
-change-per-clip constraint. Example durations and counts are illustrative, not mandatory.
+使用 [共享叙事规划](narrative-planning.md)。它的八个语义层（资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面、约束）放进本页的短提示词或工作室块结构。一次渐进的空间揭示，或一次天气/光线状态的改变，就足以撑起整条镜头；只有可见变化需要时才分阶段。之后再为尺度、运动和预定的最终风景状态分配时间。不预设数量，不平均分时，也不强加额外事件。保持地理关系、光向、天气进程和声音；守住一条一个环境变化的限制。示例时长和数量只是示意。
 
-## Example prompt
+## 示例提示词
 
 ```
-Model: Veo 3.1
-Aspect: 16:9 | Duration: 10s | Style: Cinematic natural
+模型：Seedance 2.5（omni_reference）
+画幅：16:9｜时长：10 秒｜风格：电影感自然
 
-Open ocean at dusk. The horizon is dark with an approaching storm.
-Waves are already running ahead of it — three-meter swells, grey-green water.
-Camera: Timelapse Landscape as the storm front advances, sky darkening fast.
-Lightning inside the clouds. Then the first rain hits the surface.
-Style: Cinematic, natural grade, no artificial treatment. 16:9.
+黄昏的开阔海面。地平线一片黑，风暴正在逼近。
+浪已经跑在风暴前面：三米高的涌浪，灰绿色的海水。
+运镜：Timelapse Landscape，风暴锋面推进，天色迅速变暗。
+云层里有闪电。然后第一阵雨落到海面上。
+风格：电影感，自然调色，不加人工处理。16:9。
 ```
 
-## Annotation
+## 注释
 
-| Prompt element | Why it works |
+| 提示词元素 | 为什么有效 |
 |---------------|-------------|
-| "Open ocean at dusk" | Specific time + location — not "beautiful nature scene" |
-| "horizon is dark with an approaching storm" | Establishes narrative tension in a landscape — something is coming |
-| "three-meter swells, grey-green water" | Measurable scale + specific color — observable details |
-| "Timelapse Landscape" | Exact preset name for time-compressed environment footage |
-| "storm front advances, sky darkening fast" | Describes what CHANGES — not a static description |
-| "Lightning inside the clouds" | Specific atmospheric event — model knows how to render this |
-| "first rain hits the surface" | Payoff moment — the change the entire shot builds toward |
-| "natural grade, no artificial treatment" | Tells the model NOT to stylize — keep it documentary-real |
+| “黄昏的开阔海面” | 具体时间加地点，不是“美丽的自然景色” |
+| “地平线一片黑，风暴正在逼近” | 在风景里建立叙事张力：有东西要来了 |
+| “三米高的涌浪，灰绿色的海水” | 可测量的尺度加具体颜色，都是可观察的细节 |
+| “Timelapse Landscape” | 时间压缩环境镜头的准确预设名 |
+| “风暴锋面推进，天色迅速变暗” | 写的是**什么在变**，不是静态描述 |
+| “云层里有闪电” | 具体的天气事件，模型知道怎么渲染 |
+| “第一阵雨落到海面上” | 兑现时刻：整条镜头一直在累积的那个变化 |
+| “自然调色，不加人工处理” | 告诉模型不要风格化，保持纪录片式的真实 |
 
-## Negative constraints to include
-- **Texture/Lighting**: Specify "natural grade" to prevent the model from adding cinematic color grading to nature footage.
-- **Temporal/Consistency**: One environmental change per clip. "Storm + earthquake + volcanic eruption" = chaos.
+## 要加入的约束
+- **质感/光照：**写明“自然调色”，防止模型给自然素材加上电影调色。
+- **时间/一致性：**一条一个环境变化。“风暴加地震加火山爆发”就是一团混乱。
 
-> **Identity/Motion separation:** If a person appears in this shot and you're using Soul ID, split the prompt into Identity Block and Motion Block per the rule in `higgsfield-soul`. See template 06 (Portrait/Character Intro) for the full pattern.
+> **身份与动作分离：**画面里有人物时，身份交给资产参考，这里只写动作。完整写法见模板 06（人物登场）。
 
-## Common mistakes
-1. **Adding a character to a landscape shot** — if the environment is the subject, let it be the subject. Characters in establishing shots should be tiny ("a lone figure" at most).
-2. **No temporal change** — landscapes need something to happen: weather moves, light shifts, tide changes. A static description produces a still image, not video.
+## 常见错误
+1. **给风景镜头加角色**：环境是主体，就让它当主体。建立镜头里的人物应该很小（最多“一个孤独的身影”）。
+2. **没有时间上的变化**：风景需要发生点什么：天气移动、光线变化、潮水涨落。静态描述只会得到一张静止图，不是视频。
 
-## Variations
-- **Mountain sunrise**: Timelapse Landscape, "first light crests the ridge, fog burns off the valley below"
-- **Urban establishing**: Hyperlapse down a boulevard, "city wakes up from dawn to rush hour"
-- **Aerial/drone**: FPV Drone or Crane Up, sweeping terrain reveal
-- **Fantasy landscape**: Wan 2.5, add "jewel tones, volumetric light rays through ancient forest canopy"
-- **Post-apocalyptic**: Desaturated orange and brown, dust haze, "ruined skyline, no movement except wind"
-
-## Cinema Studio 3.0 (Business/Team Plan)
-
-**Genre mapping:** Epic (for sweeping vistas) or General
-**Prompt length target:** 30–60 words (Landscape/Travel — lead with Scene)
-**Speed Ramp:** Auto (let the scene breathe)
-
-**@reference workflow:**
-```
-@Image1 as the landscape reference. Dawn breaks over the volcanic ridge,
-mist pouring through the caldera. Birds scatter from the tree line.
-Camera: crane up revealing the full valley. Style: natural color, deep depth of field.
-Audio: wind across open terrain, distant bird calls, rushing water below.
-```
+## 变体
+- **山间日出：**Timelapse Landscape，“第一缕光越过山脊，山谷里的雾被晒散”
+- **城市建立镜头：**沿林荫大道的 Hyperlapse，“城市从黎明醒到早高峰”
+- **航拍/无人机：**FPV Drone 或 Crane Up，大范围扫过地形揭示
+- **奇幻风景：**加“宝石色调，体积光穿过古老森林的林冠”
+- **末日废土：**去饱和的橙棕色，尘霾，“废墟天际线，除了风什么都不动”

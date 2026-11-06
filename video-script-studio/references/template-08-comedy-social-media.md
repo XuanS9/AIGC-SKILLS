@@ -1,91 +1,73 @@
-# Template: Comedy / Social Media
+# 模板：喜剧 / 社交媒体
 
-## Genre/Use-Case
-Comedic skits, social media content, reaction videos, meme-style clips, TikTok/Reels content, and any prompt where the goal is entertainment, humor, or shareability.
+## 题材与用途
+喜剧小品、社媒内容、反应视频、梗图式片段、抖音/Reels 内容，以及任何目的是娱乐、好笑或便于转发的提示词。
 
-## When to use this template
-User asks for funny content, social video, TikTok, Reel, skit, meme, reaction, or anything designed primarily for social platforms with a comedic or entertaining tone.
+## 何时使用
+用户要好笑的内容、社媒视频、抖音、Reel、小品、梗、反应视频，或任何主要为社交平台设计、基调是喜剧或娱乐的内容。
 
-## Recommended model
-**Kling 3.0** for dialogue-driven comedy (native audio, lip-sync). **Minimax Hailuo 2.3** for exaggerated physical comedy (best fluid motion). **Seedance Pro** for fast iteration on multiple comedic concepts.
+## 推荐模型
+对白驱动与肢体喜剧用 **Seedance 2.5** `omni_reference`（原生音频、对口型）。要在多个创意间快速迭代用 **Seedance 2.0 Mini** 或 2.0 `mode=fast`。
 
-## Narrative planning
+## 叙事规划
 
-Use [shared narrative planning](narrative-planning.md). Plan assets,
-goal, global audiovisual/space, behavior, stages, continuity, final frame, and constraints,
-then express the needed information in this short prompt or Identity/Motion format.
-Find the comic cause, reveal, and response/non-response before allocating time for
-speech, recognition, and a readable final reaction. No preset count or equal-time split;
-these functions can share a continuous static shot. Keep one gag per clip and the
-lip-sync restrictions below. Carry prop, gaze, and background state across any cut.
-Example durations and beat counts are illustrative, not mandatory.
+使用 [共享叙事规划](narrative-planning.md)。规划资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面和约束，再把需要的信息写进本页的短提示词或工作室块结构。先找出喜剧的起因、揭晓和反应（或不反应），再为说话、察觉和可读的最终反应分配时间。不预设数量，不平均分时；这些功能可以放在同一个连续的固定镜头里。守住一条一个笑点和下面的对口型限制。任何切镜都要带上道具、视线和背景状态。示例时长和节拍数只是示意。
 
-## Example prompt
+## 示例提示词
 
 ```
-Model: Kling 3.0
-Aspect: 9:16 | Duration: 8s | Style: Cinematic
+模型：Seedance 2.5（omni_reference）
+画幅：9:16｜时长：8 秒｜风格：电影感
 
-A man sits at a desk staring at his laptop, dead-eyed.
-He takes a long sip of coffee, blinks slowly, sets the mug down.
-He says flatly: "This is fine."
-Behind him through the window — a building is on fire, fire trucks arriving.
-He doesn't turn around.
-Camera: static, locked-off, medium shot. No movement.
-Style: Cinematic, bright office lighting, high-key, neutral tones. 9:16.
+一个男人坐在桌前盯着笔记本电脑，眼神空洞。
+他慢慢喝了一大口咖啡，缓慢地眨了眨眼，把杯子放下。
+窗外他身后，一栋楼着火了，消防车正在赶到。
+他没有回头。
+运镜：固定，锁定机位，中景。不动。
+风格：电影感，明亮的办公室灯光，高调光，中性色调。9:16。
+
+[声音]
+对白语言：英语。
+0s-1s｜男人轻声：{Hm.}
+5s-7s｜男人平淡地说：{This is fine.}
 ```
 
-## Annotation
+## 注释
 
-| Prompt element | Why it works |
+| 提示词元素 | 为什么有效 |
 |---------------|-------------|
-| "sits at a desk staring at his laptop, dead-eyed" | Establishes the comic setup — mundane normalcy |
-| "takes a long sip... blinks slowly... sets the mug down" | Deliberate, deadpan timing — comedy lives in the pauses |
-| `"This is fine."` | Dialogue in quotes for Kling 3.0 lip-sync — the punchline |
-| "building is on fire, fire trucks arriving" | Background chaos contrasts foreground calm — visual joke |
-| "He doesn't turn around" | The non-reaction IS the joke — telling the model what NOT to do |
-| "static, locked-off, medium shot. No movement" | Comedy often works best with a still camera — lets the audience see everything |
-| "bright office lighting, high-key" | High-key lighting = comedy convention (vs. low-key for drama) |
-| "9:16" | Vertical for social platforms — where this content lives |
+| “坐在桌前盯着笔记本电脑，眼神空洞” | 建立喜剧铺垫：平凡的日常 |
+| “慢慢喝……缓慢地眨眼……把杯子放下” | 刻意的冷面节奏：喜剧活在停顿里 |
+| `{This is fine.}` | 台词写在音频行里，生成原生口型：这是笑点 |
+| “一栋楼着火了，消防车正在赶到” | 背景混乱对比前景平静：视觉笑话 |
+| “他没有回头” | 不反应**就是**笑点 |
+| “固定，锁定机位，中景。不动” | 喜剧常常最适合固定镜头：让观众看到全部 |
+| “明亮的办公室灯光，高调光” | 高调光是喜剧惯例（剧情片用低调光） |
+| “9:16” | 竖屏，适合这类内容所在的社交平台 |
 
-## Negative constraints to include
-- **Temporal/Consistency**: Lock the camera — static or minimal movement. Comedy timing breaks with aggressive camera work.
-- **Body/Motion**: Keep physical comedy to one gag per clip. "He slips, falls, gets hit by a pie, then trips again" is too much.
-- **Face/Identity**: For lip-sync comedy, remove all head/face motion tokens — they compete with the lip engine.
+## 要加入的约束
+- **时间/一致性：**锁定镜头，固定或极少运动。激进的运镜会打乱喜剧节奏。
+- **身体/动作：**肢体喜剧一条一个笑点。“他滑倒、摔跤、被派砸中、又绊倒”太多了。
+- **面部/身份：**对口型的喜剧，去掉所有头部和面部运动词，它们会和口型争抢。
 
-## Common mistakes
-1. **Over-directing the humor** — "make it funny and hilarious and comedic" tells the model nothing. Set up a specific situation with a specific punchline.
-2. **Too much camera movement** — comedy timing needs the viewer to see everything at once. Static wide shots let the audience be the editor.
+## 常见错误
+1. **过度指导幽默**：“让它好笑、爆笑、搞笑”对模型毫无信息。设定一个具体情境和一个具体笑点。
+2. **运镜太多**：喜剧节奏需要观众一眼看到全部。固定远景让观众自己当剪辑师。
 
-## Variations
-- **Reaction video style**: Close-up on face, Kling 3.0 with audio, exaggerated micro-expression (Frozen Shock or Suppressed Smile)
-- **Physical comedy**: Minimax Hailuo 2.3, wider shot, exaggerated movement, Apply Clone Explosion or Objects Around preset
-- **Talking head/monologue**: 9:16, medium close-up, static camera, dialogue-driven, "direct to camera"
-- **Meme format**: 1:1 square, static, bold simple setup, use Vibe Motion for text overlay
+## 变体
+- **反应视频：**脸部近景，Seedance 2.5 带音频，夸张的微表情（如定格的震惊、憋住的笑）
+- **肢体喜剧：**更宽的景别，夸张动作，具体写清物件怎样飞散或堆积
+- **单人说话/独白：**9:16，中近景，固定镜头，对白驱动，“直视镜头”
+- **梗图格式：**1:1 方形，固定，铺垫简单醒目；文字叠加按 [字幕模板](template-subtitle.md) 只在用户明确要求时加
 
-### Identity Block (if recurring character)
+### 身份（反复出现的角色，写进资产参考）
 ```
-The Soul ID character — round face, large expressive eyes, slightly disheveled hair,
-wearing a wrinkled button-up with the sleeves rolled. Perpetually tired.
-```
-
-### Motion Block
-```
-He sits at a desk, sips coffee, says "This is fine."
-Camera: static, locked-off, medium shot.
-Background: visible chaos through the window.
+圆脸，一双很有表现力的大眼睛，头发有点乱，穿一件皱巴巴的衬衫，袖子卷起来。永远一副累样。
 ```
 
-## Cinema Studio 3.0 (Business/Team Plan)
-
-**Genre mapping:** Comedy
-**Prompt length target:** 40–60 words (Lifestyle/Social — lead with Action)
-**Speed Ramp:** Flash In / Flash Out for comedic timing
-
-**@reference workflow:**
+### 动作
 ```
-@Image1 as the character. He opens a gift box confidently.
-A spring-loaded glitter bomb erupts in his face. He freezes, blinking.
-Camera: static, deadpan framing. Style: bright, evenly lit, social media aesthetic.
-Audio: box opening, explosion of glitter, stunned silence, distant laughter.
+他坐在桌前，喝咖啡。
+运镜：固定，锁定机位，中景。
+背景：窗外看得见的混乱。
 ```

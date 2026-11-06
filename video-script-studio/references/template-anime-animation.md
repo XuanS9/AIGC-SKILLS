@@ -1,64 +1,37 @@
-# Template: Anime Animation (Seedance 2.0)
+# 模板：日式动画（Seedance 2.0）（Template: Anime Animation (Seedance 2.0)）
 
-Paste-ready workflow + prompt scaffolding for anime and stylized 2D
-animation in Seedance 2.0 — fight scenes, peaceful beats, transformations,
-and consistent-character sequences. Built around the layered
-director's-grammar formula, with a reusable anime style block and a
-character-turnaround prompt for identity locking.
+Seedance 2.0 里日式动画和风格化 2D 动画的可粘贴流程与提示词骨架：打斗戏、平静的节拍、变身，以及角色保持一致的段落。围绕分层的导演语法公式搭建，配一个可复用的动画风格块，以及一条用于锁定身份的角色转面提示词。工作室完整视频仍按中文块结构交付：本页的风格块编译进 `[视觉风格]`，角色身份走资产参考，对白写进 `[声音]` 的计时行。
 
-## When to use this template
+## 何时使用
 
-Reach for this when the user wants anime or stylized-2D motion — sakuga
-action, transformation reveals, calm character moments, or multi-shot
-anime sequences with stylized characters and environments. The
-identity-lock and style-block pieces matter most when the same character
-must stay consistent across shots.
+用户要日式动画或风格化 2D 运动时使用：作画高光的动作、变身揭示、平静的角色时刻，或带风格化角色和环境的多镜头动画段落。同一个角色必须跨镜头保持一致时，身份锁定和风格块最重要。
 
 ---
 
-## The layered prompt formula
+## 分层提示词公式（The layered prompt formula）
 
-Plan the video with [shared narrative planning](narrative-planning.md):
-assets/references → goal and ending → global audiovisual and spatial rules → behavior
-and rhythm → stages → continuity → final frame/handoff → constraints. These eight
-layers organize meaning; compile them into the compact formula below, with the
-constraint line last. Keep the reusable style, constraint, and static turnaround
-blocks in their native formats.
+用 [共享叙事规划](narrative-planning.md) 规划视频：资产/参考 → 目标与结局 → 全局视听与空间规则 → 行为与节奏 → 阶段 → 连续性 → 结尾画面/交接 → 约束。这八层组织含义；把它们编译进下面的紧凑公式，约束一行放最后。可复用的风格、约束和静态转面块保留原生格式。
 
-Choose stage boundaries from events, causal turns, reveals, or state changes, then
-choose shots for visibility and estimate action, reaction, dialogue, and transition
-time. There is no preset stage count or equal-duration rule. A continuous shot may
-span stages; a stage may need several shots or generations. Carry identity, pose,
-prop ownership, transformation state, and sound across boundaries to the planned ending.
+从事件、因果转折、揭晓或状态变化选择阶段边界，然后为了可见性选镜头，并估算动作、反应、对白和转场时间。没有预设的阶段数，也没有等长规则。一个连续镜头可以跨几个阶段；一个阶段可能需要几个镜头或几次生成。跨边界带上身份、姿势、道具归属、变身状态和声音，直到计划的结局。
 
 ```text
 SUBJECT + ACTION + ENVIRONMENT + CAMERA MOVEMENT + VISUAL STYLE + CONSTRAINTS
 ```
 
-- **Subject** — who or what is in the scene. Feed Seedance the character
-  visually (reference image or the turnaround sheet below) rather than
-  describing them in words alone.
-- **Action** — what changes or moves. One dominant action per shot. Request
-  multiple shots when the event, reveal, or spatial readability needs them;
-  allocate their durations after planning the changes.
-- **Environment** — where it happens. A Soul 2.0 or GPT Image reference
-  image for the location helps consistency.
-- **Camera** — how the viewer sees it: low-angle, high-angle, dolly-zoom,
-  pan, tilt, POV shots, multiple face close-ons.
-- **Visual style** — the final identity (the anime style block below).
-- **Constraints** — the IP-safe / format guardrails (last line, verbatim).
+- **主体**：场景里是谁或什么。用视觉方式喂给 Seedance（参考图或下面的转面表），而不只是用文字描述。
+- **动作**：什么在变化或移动。每个镜头一个主导动作。事件、揭晓或空间可读性需要时请求多个镜头；规划好变化后再分配时长。
+- **环境**：在哪里发生。场景的参考图有助于一致性。
+- **运镜**：观众怎么看到它：低角度、高角度、滑动变焦、摇、俯仰、POV 镜头、多个脸部近景。
+- **视觉风格**：最终的画面身份（下面的动画风格块）。
+- **约束**：IP 安全 / 格式护栏（最后一行）。
 
-> Keep the subject consistent by repeating stable traits every shot (hair,
-> outfit, posture, expression). For anime, consistency matters even more —
-> the turnaround sheet gives the model far more geometry to hold onto than
-> text descriptors do.
+> 每个镜头重复稳定的特征（头发、服装、姿态、表情）来保持主体一致。日式动画对一致性的要求更高：转面表给模型的几何信息远比文字描述多。
 
 ---
 
-## Reusable anime style block (paste verbatim)
+## 可复用的动画风格块（Reusable anime style block）
 
-Drop this block into the **Visual style** layer of any anime prompt. It is
-preserved as a single reusable string:
+把这个块放进任何动画提示词的**视觉风格**层。它作为一整段可复用的字符串保留：
 
 ```text
 2026 animation style anime animation, post time skip. 2d anime glow subtle
@@ -71,7 +44,9 @@ simplified. Make sure to get characters consistent. Give multiple faces
 close-ons and different POV shots.
 ```
 
-**IP-safe constraint line (always append, verbatim):**
+工作室中文稿对应的写法（放进 `[视觉风格]`）：二维日式动画，线条干净、粗细均匀，平涂赛璐璐上色，两到三级明暗；色板柔和、低饱和；光照柔和均匀，特效光对受光方向影响很小；渐变少；构图简化。
+
+**IP 安全约束行（原生格式时追加）：**
 
 ```text
 NO NSFW, NO COPYRIGHTED Content. NO TEXT, 16:9 video (no black stripes on
@@ -79,17 +54,13 @@ the borders), NO LOGO(S). RESPECT THE MANGA IMAGE PANELS. DO NOT USE IMAGES
 AS STARTING FRAMES, BUT AS STYLE LOOKS.
 ```
 
-The constraint line both fixes format (16:9, no borders/text/logos) and
-keeps the generation inside content policy — it tells Seedance to treat any
-uploaded manga panels as *style references*, not literal starting frames.
+这一行既固定格式（16:9，没有黑边/文字/标识），又让生成留在内容政策之内：它告诉 Seedance 把上传的漫画画格当作*风格参考*，而不是字面的起始帧。**工作室格式：**块结构稿里不写这串否定清单；画幅放在平台设置，`[保持一致]` 末尾写“无字幕、无水印”，参考职责写在映射块（“只用画面风格，不作起始画面”）。
 
 ---
 
-## Character turnaround sheet prompt (identity lock)
+## 角色转面表提示词（身份锁定）（Character turnaround sheet prompt (identity lock)）
 
-Generate a character spreadsheet first, then feed it as the subject
-reference for every shot. Paste this prompt into an image model (Soul 2.0,
-GPT Image 2.0, or Nano Banana Pro):
+先生成一张角色设定表，再把它作为每个镜头的主体参考。把下面的提示词贴进图像模型（Soul 2.0、GPT Image 2.0 或 Nano Banana Pro）。**工作室项目**的角色组板以 [角色资产交付规范](template-character-asset-delivery.md) 为准（唯一清晰面部特写 + 三个无头全身格，背景按服装明度选）；下面这份原版多格转面表只在用户明确要求这种版式时使用。
 
 ```text
 A high-definition, clean, minimalist character design board / character
@@ -129,19 +100,15 @@ cropping, no extra props, no explanatory text, no logo, no watermark, no UI
 elements, no like/save buttons, no social-media-screenshot appearance.
 ```
 
-[Character appearance description] — or, better, swap in the turnaround sheet
-you generated as the subject reference.
+[角色外观描述]：或者更好的做法，换成你生成的转面表作为主体参考。
 
 ---
 
-## Worked anime prompts
+## 动画提示词示例（Worked anime prompts）
 
-Shot counts and timings in source examples are illustrative, not mandatory:
-"around 7 scenes, average ~2 seconds" describes one possible treatment, not a
-stage count or a rule to make shots equal. Derive the actual schedule from the
-chosen events and supported runtime before filling the prompt.
+来源示例里的镜头数和时长只是示意：“大约 7 个场景，平均约 2 秒”描述的是一种可能的处理，不是阶段数，也不是让镜头等长的规则。填提示词之前，先从选定的事件和支持的时长推出实际的节拍表。
 
-**Anime action / transformation:**
+**动画动作 / 变身：**
 
 ```text
 In an epic sakuga anime animation, generate an unexpected transformation of
@@ -155,7 +122,7 @@ confirmed final form and composition.] Background should be [..] (check referenc
 [paste IP-safe constraint line]
 ```
 
-**Realistic handheld scene (for contrast with anime):**
+**写实手持镜头（与动画对比）：**
 
 ```text
 Generate a handheld shot of [character from reference image] but giant
@@ -168,32 +135,16 @@ lifelike video recorded on iPhone (no phone visible).
 
 ---
 
-## Motion, style, and iteration notes
+## 运动、风格与迭代说明（Motion, style, and iteration notes）
 
-- **Control motion explicitly.** Specify how the body moves, how the camera
-  moves, and how the environment reacts (wind in hair, drifting dust, light
-  flicker). Combine a subject action with a camera move for energy — "the
-  character turns sharply toward camera while the camera zooms forward
-  slightly" reads far more alive than "dynamic."
-- **Request shots explicitly when needed.** State what each view reveals and
-  its entry/exit state. The source's "10 different shots from 10 perspectives
-  in the first 10s" is an illustrative montage, not a pacing quota. Preserve a
-  continuous take when the action reads clearly; vary shot lengths with the
-  performance and music rather than adding cuts to fill time.
-- **Match style language to the goal.** Anime → clean linework, flat cel
-  shading, subtle glow, soft gradients, consistent design. Live action →
-  natural skin texture, realistic depth, lens behavior. Prop close-ups →
-  controlled lighting, reflections, material detail.
-- **Iterate one variable at a time.** First pass: composition + motion.
-  Second: camera + pacing. Third: style + consistency. Final: polish the
-  strongest result. Faster than rewriting from scratch each time.
+- **明确控制运动。**写清身体怎么动、摄影机怎么动、环境怎么反应（头发里的风、飘动的灰尘、光的闪烁）。把主体动作和运镜结合起来制造能量：“角色猛地转向镜头，同时镜头微微向前推近”比“很有动感”活得多。
+- **需要时明确请求镜头。**写清每个视角揭示什么，以及它的进入/离开状态。原资料里“前 10 秒里从 10 个视角拍 10 个不同镜头”是一个示意性的蒙太奇，不是节奏配额。动作读得清楚时保留连续镜头；按表演和音乐改变镜头长度，而不是为了填时间加切镜。
+- **让风格语言匹配目标。**日式动画 → 干净的线条、平涂赛璐璐、细微的光晕、柔和的渐变、一致的设计。真人 → 自然的皮肤质感、真实的纵深、镜头行为。道具近景 → 受控的光照、反射、材质细节。
+- **一次迭代一个变量。**第一轮：构图 + 运动。第二轮：运镜 + 节奏。第三轮：风格 + 一致性。最后：打磨最好的那条结果。比每次从头重写快。
 
-## Common mistakes
+## 常见错误（Common mistakes）
 
-- Overloading the prompt with conflicting styles (realistic + cartoon +
-  watercolor + toy-like at once → unstable output).
-- Not describing motion; forgetting the camera; mixing too many characters
-  in one shot; asking for too many unrelated actions.
-- Vague words ("awesome," "insane," "beautiful") with no specifics.
-- Changing style mid-prompt. One good prompt beats five messy ones.
-
+- 在提示词里堆相互冲突的风格（写实 + 卡通 + 水彩 + 玩具感同时出现 → 输出不稳定）。
+- 不描述运动；忘了运镜；一个镜头里混太多角色；要求太多不相关的动作。
+- 没有具体内容的含糊词（“超棒”“疯狂”“美”）。
+- 提示词中途换风格。一条好的提示词胜过五条乱的。

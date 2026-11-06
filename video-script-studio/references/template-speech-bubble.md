@@ -1,22 +1,12 @@
-# Template: Speech Bubble Text Overlay
+# 模板：对话气泡文字叠加
 
-Paste-ready Seedance text-overlay template for speech bubbles —
-character-attributed dialogue text rendered inside the frame next to
-the speaking character. Use for comic-style scenes, social-media
-clip dialogue, animated explainers.
+可直接粘贴的 Seedance 文字叠加模板：在说话角色旁边的画面里渲染出归属于该角色的对白文字。用于漫画风场景、社媒片段的对白、动画讲解。仅在用户明确要求文字叠加时使用；默认视频无字幕。
 
-## Timing within the video
+## 在视频中的时间安排
 
-Use [shared narrative planning](narrative-planning.md) for the parent
-video's semantic layers: assets, goal, global audiovisual/space, behavior, stages,
-continuity, final frame, constraints. Retain this short bubble format. Let the speaker's
-utterance and response define the cue, then allow entrance, reading, and exit time; do
-not impose a beat count or equal-duration slots. Match the actual dialogue/source timeline,
-track the speaker and bubble through motion, and specify whether it clears or remains
-at the final frame. Keep the short-dialogue and positioning constraints below; longer
-confirmed dialogue needs multiple readable bubbles rather than silent deletion.
+用 [共享叙事规划](narrative-planning.md) 规划所属视频的语义层：资产、目标、全局视听与空间、行为、阶段、连续性、结尾画面、约束。保留本页的简短气泡格式。由说话人的这句话和回应决定气泡出现的时机，再留出进入、阅读和退出的时间；不强加节拍数或等长时段。对齐实际的对白或源时间线，在运动中跟住说话人和气泡，并写明气泡在结尾画面是消失还是保留。守住下面的短对白和位置约束；已确认的长对白要拆成多个可读的气泡，不能悄悄删掉。
 
-## Prompt template
+## 提示词模板
 
 ```
 Character A says, "[SHORT DIALOGUE]". A clean speech bubble appears
@@ -24,25 +14,16 @@ near Character A's head, positioned in the upper-left area, with
 simple readable text and no complex symbols.
 ```
 
-## Field fills
+## 字段填写
 
-- **`Character A`** — replace with the actual character handle
-  (`@Image1`, Soul ID name, or "the woman in the red jacket" if
-  un-referenced).
-- **`[SHORT DIALOGUE]`** — keep under ~8 words. Longer dialogue
-  overflows the bubble or shrinks the text below readability.
-- **Bubble position** — `upper-left area` is the default; swap to
-  `upper-right` if the character is screen-left and the bubble would
-  cross over their face. Avoid bubbles that overlap the speaking
-  character's face.
+- **`Character A`**：换成实际角色名（已绑定的参考用资产中文名，无参考时写“穿红夹克的女人”这类可见标记）。
+- **`[SHORT DIALOGUE]`**：控制在约 8 个词以内。更长的对白会溢出气泡，或把字缩到看不清。
+- **气泡位置**：默认 `upper-left area`（左上方）；角色在画面左侧、气泡会压到脸时，换成 `upper-right`（右上方）。避免气泡压住说话角色的脸。
 
-## Why "no complex symbols"
+## 为什么写“no complex symbols”
 
-Seedance's text renderer handles letters and basic punctuation
-reliably. Symbols (em-dash, curly quotes, asterisks, emoji) often
-render as garbled glyphs or get dropped. Keep dialogue text plain.
+Seedance 的文字渲染对字母和基础标点很可靠。符号（破折号、弯引号、星号、emoji）常被渲染成乱码或直接丢掉。对白文字保持朴素。
 
-## See also
+## 另见
 
-- `template-subtitle.md` (sibling template) — for spoken-line text synchronized
-  to dialogue audio
+- `template-subtitle.md`（同类模板）：与对白音频同步的台词字幕
