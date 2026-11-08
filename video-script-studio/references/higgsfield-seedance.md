@@ -29,7 +29,7 @@
 
 用户想要 Seedance 2.0 / Seedance Pro 提示词时，或者 Seedance 生成被拦截、被标记或静默失败时，使用这个模块。这个模块的任务是阻止额度浪费在过滤器拒绝上。本文件是 Seedance 2.0 的历史资料，只在选择 2.0 或做对应诊断时加载；当前项目默认 Seedance 2.5 `omni_reference` 和中文块结构（[跨类型导演模板](template-general-director-2-5.md)）。下面的英文代码块是原版示例。
 
-> **引擎规则（和本文件一起读）：**Seedance 2.0 引擎的硬性渲染约束（不写年龄、出画 = 隐性切镜、画外 = 不存在、不拍反射镜头、追踪 ≤3 个角色、双重对比切镜规则）在本目录的 `higgsfield-seedance-engine-rules.md`，连同高风险镜头表（反射、同一角色的分身、人群、文字渲染）和它的缓解办法。本参考是那个规则核心的 `EN-director` *档位*；`ZH-house` 和 `bilingual-JSON` 档位（`seedance-bilingual-json.md`）遵守同一个核心。写作时就标出高风险镜头类型：绝不悄悄违反一条恰好和项目主画面冲突的规则。
+> **引擎规则（和本文件一起读）：**Seedance 2.0 引擎的硬性渲染约束（不写年龄、出画 = 隐性切镜、画外 = 不存在、不拍反射镜头、追踪 ≤3 个角色、双重对比切镜规则）在本目录的 `higgsfield-seedance-engine-rules.md`，连同高风险镜头表（反射、同一角色的分身、人群、文字渲染）和它的缓解办法。本参考是那个规则核心的 `EN-director` *档位*；`ZH-house` 和 `bilingual-JSON` 档位（`seedance-bilingual-json.md`）遵守同一个核心。写作时就标出高风险镜头类型：绝不悄悄违反一条与项目主画面冲突的规则。
 
 > **制作模式（兄弟参考）：**在 Higgsfield 自己的 Seedance-4K 影片教程里演示有效的模式（参考职责词汇、坐标站位、视频参考屏幕合成、提示出来的瑕疵、60:30:10 调色）在本目录的 `higgsfield-seedance-production-patterns.md`，标为 `[DEMO]`。
 
@@ -936,7 +936,7 @@ lint 在仓库的 scripts/ 目录里（`../scripts/seedance_lint.py`）。`--pre
 | 对白位置 | 细节（烟丝、铭文的可读性、反射） |
 | 内容过滤器通过/失败 | |
 
-要把你批准的画面带进最终渲染，用记录在案的转移机制：**主画面**加上**首/尾帧钉住**（start_image / end_image 参考职责：见上面的 § Reference Roles；当前项目走 `omni_reference`，把批准的画面作为场景/风格参考）。钉住画面，而不是抽签。细节判断必须**在最终分辨率下重新检查**：480p 恰好藏住了它们关心的细节。
+要把你批准的画面带进最终渲染，用记录在案的转移机制：**主画面**加上**首/尾帧钉住**（start_image / end_image 参考职责：见上面的 § Reference Roles；当前项目走 `omni_reference`，把批准的画面作为场景/风格参考）。钉住画面，而不是抽签。细节判断必须**在最终分辨率下重新检查**：480p 遮住了它们关心的细节。
 
 ---
 

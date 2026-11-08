@@ -342,7 +342,7 @@ A martial artist performs a spinning kick in a dojo.
 | 镜头性格 + 制作感 | `@Video1 — use for camera character and production feel: same cinematic register, same operator presence, same overall quality` |
 | 音色 + 表演风格 | `@Video1 — use for character voice and performance style: same vocal character, same delivery register, same performance energy` |
 
-这种写法有效，是因为它告诉模型参考的哪个维度重要，让提示词的其余部分驱动新内容。工作室格式里，这一句写在 `[动作与声音参考]` 的映射行。
+这种写法有效，是因为它告诉模型参考的哪个维度重要，让提示词的其余部分驱动新内容。工作室格式里，这一句按参考名称写在 `[动作与声音参考]` 的职责行，标签只在开头 `[参考资产]`。
 
 ### 硬限制（Hard Limits）
 

@@ -63,7 +63,7 @@ Final frame: Roco one step closer, Lulu's back touching the fence,
   eyeline locked, negative space narrowed to half the original.
 ```
 
-编译成工作室块结构时：`[角色]` 首行写 `恰好 2 人`，两人各写身高；第一段是约 1 秒的定位全景，`[声音]` 写 `0s-1s｜Roco 轻声：{Hm.}`；`no music` 改为末尾 `NO BGM。`。
+编译成工作室块结构时：`[角色]` 首行写 `只有 2 人`，两人各写身高；第一段是约 1 秒的定位全景，`[声音]` 写 `0s-1s｜Roco 轻声：{Hm.}`；`no music` 改为末尾 `NO BGM。`。
 
 ## 这个示例展示了什么
 

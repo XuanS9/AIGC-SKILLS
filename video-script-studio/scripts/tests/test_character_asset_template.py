@@ -27,6 +27,19 @@ class CharacterAssetTemplateTests(unittest.TestCase):
                           .replace('[音色标签]', 'Voice: male, low husky baritone, slow drawl'))
                 self.assertEqual(self.validate(filled), [])
 
+    def test_first_line_must_lock_one_head_and_each_body_crop(self):
+        prompt = self.prompts[1]
+        for before, after in [
+            ('整张图只有一个头部', '全图唯一清晰面部'),
+            ('仅在第一格面部特写出现', '面部清楚'),
+            ('正面全身（颈部裁切）', '正面全身'),
+            ('90°侧面全身（颈部裁切）', '90°侧面全身'),
+            ('背面全身（颈部裁切）', '背面全身'),
+        ]:
+            with self.subTest(before=before):
+                self.assertIn('首行单头与裁切', self.validate(prompt.replace(before, after)))
+        self.assertEqual(self.validate(prompt), [])
+
     def test_generic_format_is_medium_neutral(self):
         prompt = self.prompts[0]
         self.assertIn('[已选媒介与具体风格]', prompt)
@@ -58,10 +71,10 @@ class CharacterAssetTemplateTests(unittest.TestCase):
                 replacements = {
                     '已选媒介与具体风格': medium, '角色姓名': '测试角色', '年龄': '30', '性别': '男性',
                     '五官+发型描述+与媒介匹配的面部细节': '短发、圆脸，' + detail,
-                    '中性/冷静等': '中性', '体型+完整服装描述+符合使用状态的材料细节': '中等体型、蓝衣长裤与布鞋，' + detail,
-                    '身高与体型比例': '身高175cm，肩宽中等',
+                    '中性/冷静等': '中性', '服装主轮廓+完整服装层次与部位固有色/材质+标志造型及位置/连接+关键结构的数量/位置/连接+符合使用状态的材料细节': '方短蓝布上衣、宽直灰布长裤与黑布鞋，左肩有深色梯形护肩，前襟三枚纽扣沿中线连接，' + detail,
+                    '身高、骨架体量、肩胯与躯腿比例、肌肉/脂肪分布及稳定体态': '身高175cm，中等骨架，肩胯接近等宽，躯干紧凑、腿长适中，前臂与大腿有适度肌肉体积，腰腹自然平直，双肩平放',
                     '按服装明度选的中性背景：深色服装用明亮浅暖白灰、浅色服装用中灰，与服装明度明显拉开': background, '音色标签': 'Voice: female, bright quick alto',
-                    '与内容题材及已选媒介匹配的光影、色彩和材质/画材表现': light, '目标媒介': medium,
+                    '跨资产共用的具体画法、配色倾向与材质表现；本图让固有色和结构可读的光影/色层': '低饱和蓝灰配色，' + light, '目标媒介': medium,
                 }
                 prompt = self.prompts[0]
                 for key, value in replacements.items():
@@ -70,6 +83,35 @@ class CharacterAssetTemplateTests(unittest.TestCase):
                 self.assertEqual(self.validate(prompt), [])
                 for term in ('真人演员', '85mm', '窗光', '胶片颗粒'):
                     self.assertNotIn(term, prompt)
+
+    def test_basic_asset_skeletons_expose_style_and_color_inputs(self):
+        # Template-input coverage only; actual style/readability is a visual review.
+        generic = self.prompts[0].splitlines()
+        self.assertIn('已选媒介与具体风格', generic[0])
+        self.assertIn('部位固有色/材质', generic[3])
+        self.assertIn('关键结构的数量/位置/连接', generic[3])
+        self.assertIn('跨资产共用的具体画法', generic[5])
+        bp_section = self.document.split('## 7. 生物/道具资产的多视图与结构', 1)[1]
+        bp = re.findall(r'```text\n(.*?)\n```', bp_section, re.S)
+        self.assertEqual(len(bp), 2)
+        for prompt in bp:
+            with self.subTest(start=prompt[:40]):
+                self.assertIn('已确认媒介与具体画法', prompt.splitlines()[0])
+                self.assertIn('已确认的整体配色倾向', prompt.splitlines()[-1])
+                self.assertIn('颜色', prompt)
+                self.assertIn('中性背景', prompt)
+                self.assertNotIn('与项目已定媒介匹配', prompt)
+        self.assertIn('各部件固有色、材料及反光差异', bp[1])
+
+    def test_skeleton_exposes_body_silhouette_and_signature_without_extra_rows(self):
+        # Field coverage, not a score for beauty or silhouette recognition.
+        lines = self.prompts[0].splitlines()
+        self.assertEqual(len(lines), 6)
+        for field in ('骨架体量', '肩胯与躯腿比例', '肌肉/脂肪分布', '稳定体态',
+                      '服装主轮廓', '标志造型及位置/连接'):
+            self.assertIn(field, lines[3])
+        self.assertIn('中性站姿', lines[3])
+        self.assertIn('头部不入画', lines[3])
 
     def test_validator_still_rejects_missing_views_and_text_constraint(self):
         prompt = self.prompts[1]
@@ -106,6 +148,15 @@ class CharacterAssetTemplateTests(unittest.TestCase):
         long_label = prompt.replace('Voice: female, cool clear mezzo, measured regal cadence',
                                     'Voice: female, cool clear mezzo with a measured regal cadence and soft edges')
         self.assertIn('音色标签长度', self.validate(long_label))
+
+    def test_no_dialogue_is_not_an_asset_voice_exception(self):
+        prompt = self.prompts[1]
+        self.assertEqual(self.validate(prompt.replace('24岁欧洲皇室女性', '24岁欧洲皇室女性，本段无对白')), [])
+        label = 'Voice: female, cool clear mezzo, measured regal cadence'
+        self.assertIn('实际音色标签内容', self.validate(prompt.replace(label, '')))
+        self.assertIn('实际音色标签内容', self.validate(prompt.replace(label, '无台词角色')))
+        missing = prompt.replace('音色标签', '无台词标记').replace(label, '')
+        self.assertIn('图底波形与音色标签', self.validate(missing))
 
     def test_voice_label_states_gender_and_no_age_word(self):
         prompt = self.prompts[1]

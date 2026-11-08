@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Validate scene-image graphs, Clip mappings and optional delivery titles.
+"""Validate scene-image graphs, Clip mappings, object usage and delivery titles.
 
 Uses schema_version 1 without modifying or migrating projects. Planned/null
-assets are allowed. Default document coverage is complete; --scoped allows a
-nonempty subset for a sample/batch, while the supplied registry graph is always
-checked in full. Results concern data/text only, never images or bindings.
+assets are allowed. Optional video_delivery.object_usage counts distinct Clip
+IDs and requires registered assets for objects used by >=2 Clips. It does not
+infer identity or inventory completeness from prose. Default document coverage
+is complete; --scoped allows a nonempty sample/batch subset, while supplied
+registry data is always checked in full. Never validates images or bindings.
 """
 from __future__ import annotations
 import argparse
@@ -115,6 +117,65 @@ def image_title_refs(metadata):
     return result
 
 
+def validate_object_usage(data, clips):
+    """Validate an explicit inventory only; never guess identity from prose."""
+    errors, warnings = [], []
+    delivery = data.get('video_delivery', {})
+    usage = delivery.get('object_usage')
+    if 'object_usage' not in delivery:
+        return [], ['未提供object_usage，资产建立门槛未核验（须人工对账）'], {
+            'object_usage': 'not_provided'}
+    if not isinstance(usage, list):
+        return ['video_delivery.object_usage须为数组'], [], {'object_usage': 'invalid'}
+    registered = {}
+    for asset in data['assets']:
+        if isinstance(asset, dict) and isinstance(asset.get('handle'), str):
+            registered.setdefault(asset['handle'], []).append(asset)
+    seen_objects, seen_handles = set(), set()
+    total, shared = 0, 0
+    for row in usage:
+        if not isinstance(row, dict):
+            errors.append('object_usage条目须为对象'); continue
+        kind, name = row.get('type'), row.get('name')
+        ids = row.get('clip_ids')
+        if (not isinstance(kind, str) or kind not in {'C', 'B', 'P', 'S'}
+                or not isinstance(name, str) or not name.strip()):
+            errors.append('object_usage须有C/B/P/S类型与非空对象名'); continue
+        identity = (kind, name.strip())
+        if identity in seen_objects:
+            errors.append(f'object_usage重复对象：{kind}/{name}'); continue
+        seen_objects.add(identity)
+        if not isinstance(ids, list) or any(not isinstance(v, str) for v in ids):
+            errors.append(f'{name}的clip_ids须为字符串数组'); continue
+        unique = set(ids)
+        total += 1
+        if len(unique) != len(ids):
+            warnings.append(f'{name}重复Clip已按集合去重，不增加资产计数')
+        unknown = unique - set(clips)
+        if unknown:
+            errors.append(f'{name}的object_usage引用不存在的Clip：' + '、'.join(sorted(unknown)))
+        required = len(unique) >= 2
+        shared += int(required)
+        handle = row.get('asset_handle')
+        if handle is None:
+            if required:
+                errors.append(f'{name}出现在{len(unique)}条独立视频提示词中，必须建立共享资产（缺asset_handle）')
+            continue
+        if not isinstance(handle, str) or not handle.strip():
+            errors.append(f'{name}的asset_handle须为基础资产调用名或null'); continue
+        if handle in seen_handles:
+            errors.append(f'object_usage同一资产被拆成多行：{handle}')
+        seen_handles.add(handle)
+        matches = registered.get(handle, [])
+        if len(matches) != 1:
+            errors.append(f'{name}的共享资产未唯一登记：{handle}'); continue
+        asset = matches[0]
+        if asset.get('name') != name or (asset.get('type') is not None and asset['type'] != kind):
+            errors.append(f'{name}的object_usage身份／类型与基础资产不一致：{handle}')
+    return errors, warnings, {'object_usage': 'provided', 'usage_objects': total,
+                              'shared_objects': shared}
+
+
 def validate_data(data, video_text=None, scene_text=None, scoped=False):
     errors, warnings = [], []
     if (not isinstance(data, dict) or type(data.get('schema_version')) is not int
@@ -202,6 +263,9 @@ def validate_data(data, video_text=None, scene_text=None, scoped=False):
             if 'actual_file' in ref and ref['actual_file'] != views[image_id][1].get('actual_file'):
                 errors.append(f'{clip_id}/{image_id}文件版本与视图不一致')
             refs.setdefault(image_id, []).append((clip_id, interval))
+    usage_errors, usage_warnings, usage_counts = validate_object_usage(data, clips)
+    errors.extend(usage_errors)
+    warnings.extend(usage_warnings)
     if views and not records:
         warnings.append('未提供Clip数据，双向映射待核验')
     for image_id, (_, view) in views.items():
@@ -288,7 +352,8 @@ def validate_data(data, video_text=None, scene_text=None, scoped=False):
     if scene_text is None:
         warnings.append('未提供场景文件，标题/源图与总表一致性未检查')
     return errors, warnings, {'images': len(views), 'clips': len(clips),
-                              'document_coverage': 'scoped' if scoped else 'complete'}
+                              'document_coverage': 'scoped' if scoped else 'complete',
+                              **usage_counts}
 
 
 def main():

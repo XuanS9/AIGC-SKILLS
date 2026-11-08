@@ -96,13 +96,20 @@ class SingleOwnerTests(unittest.TestCase):
         'Clip 边界与定位秒': ('narrative-planning.md', 'Clip 边界隔离（强制）'),
         '30 秒上限': ('narrative-planning.md', '单个Clip的30秒硬上限与超量处理'),
         '多线叙事': ('narrative-planning.md', '多线叙事与交叉剪辑'),
+        '固定资产入口': ('template-general-director-2-5.md', '固定资产入口'),
         '块结构逐项写法': ('template-general-director-2-5.md', '1. 块结构（Higgsfield / Dreamina Seedance 2.5 标准）'),
         '一次交付': ('template-general-director-2-5.md', '1.5 一次交付：导演方案＋提示词＋生成风险'),
+        '资产建立门槛': ('asset-registry.md', '资产建立门槛：按独立视频提示词计数'),
         '纯环境场景图': ('spatial-layout.md', '场景资产内容边界'),
         '进出门方向': ('spatial-layout.md', '3.2 进出门：门槛方向锁定'),
         '修改后复查': ('production-checks.md', '修改后标准复查闭环'),
         '统一验收': ('production-checks.md', '统一调用与验收总表'),
         '导演决策': ('directorial-shot-design.md', '导演决策流程'),
+        '听者与旁观者互动': ('higgsfield-acting.md', '双人和多人互动闭环'),
+        '全片风格短句': ('higgsfield-style.md', '全片风格短句'),
+        '资产先定画风': ('higgsfield-style.md', '资产图先定画风与细节'),
+        '剧本驱动资产设计': ('asset-design-basis.md', '剧本到设计的最小闭环'),
+        '造型辨识度与身材': ('asset-design-basis.md', '造型辨识度与身材设计'),
     }
 
     def test_each_rule_has_one_owning_heading_linked_from_the_entry(self):

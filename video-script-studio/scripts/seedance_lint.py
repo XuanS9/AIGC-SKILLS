@@ -370,10 +370,12 @@ def detect_regime(text: str) -> str:
         return "block"
     return "short"
 TIMED_BEAT_RANGE = re.compile(r"\[\s*(\d+)\s*[–-]\s*(\d+)\s*s\s*\]")
-HANDLE_RE = re.compile(r"@([\w-]+)")
+HANDLE_RE = re.compile(r"@([\w-]+?)(?=对应|[^\w-]|$)")
 HANDLE_DECL_RE = re.compile(r"^\s*[*\-•]?\s*\**@([\w-]+)\**\s*[:=（(—–]")
-# Studio mapping line: "名字 对应 @名字。" declares the handle (block structure).
+# Studio fixed-header mapping: "@资产 对应 名称。"; keep legacy declarations
+# readable for native formats, while director_contract_lint enforces the current form.
 STUDIO_DECL_RE = re.compile(r"对应\s*@([\w-]+)")
+STUDIO_PREFIX_DECL_RE = re.compile(r"^\s*@([\w-]+)\s*对应")
 PLATFORM_SLOT_RE = re.compile(r"@(?:Image|Video|Audio)\s*\d+(?![\w-])", re.IGNORECASE)
 
 
@@ -615,6 +617,9 @@ def structural_lint(text: str, settings: Settings, spec: dict | None,
         m = HANDLE_DECL_RE.match(line)
         if m:
             declared_handles.setdefault(m.group(1).lower(), i)
+        prefix = STUDIO_PREFIX_DECL_RE.match(line)
+        if prefix:
+            declared_handles.setdefault(prefix.group(1).lower(), i)
         for m in STUDIO_DECL_RE.finditer(line):
             declared_handles.setdefault(m.group(1).lower(), i)
     if declared_handles:

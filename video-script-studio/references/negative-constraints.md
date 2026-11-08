@@ -136,7 +136,7 @@
 | “no extra limbs” | “anatomically correct, all limbs naturally positioned” |
 | “don't change the character” | “consistent character appearance, same outfit and features throughout” |
 
-> **Seedance 的预防写法：**上面各表里的预防措辞都刻意写成正向约束；Seedance 要求**所有**约束都是正向的。工作室模板里固定的几句锁定（“恰好 N 人，不出现其他人”“场景只含参考所示内容，不增加家具或房间”“无字幕、无水印”）是经过验证的短锁定尾巴，不是否定清单。
+> **Seedance 的预防写法：**上面各表里的预防措辞都刻意写成正向约束；Seedance 要求**所有**约束都是正向的。工作室模板里固定的几句锁定（“只有 N 人，不出现其他人”“场景只含参考所示内容，不增加家具或房间”“无字幕、无水印”）是经过验证的短锁定尾巴，不是否定清单。
 
 ---
 

@@ -14,8 +14,8 @@ from studio_fixtures import HM, KEY, KEY_SEGMENTS, audio, fenced, prompt, segmen
 PROMPT = KEY
 SPOKEN = with_dialogue()
 LINE = '{Here you go.}'
-CHAR = '林岚 对应 @林岚。本段状态：站在柜台前，右手捏着钥匙。'
-REF = PROMPT.replace('[生成目标]', '[角色]\n恰好 1 人，不出现其他人：林岚。\n' + CHAR + '\n\n[生成目标]').replace(
+CHAR = '林岚。本段状态：站在柜台前，右手捏着钥匙。'
+REF = PROMPT.replace('[参考资产]\n本段无参考资产。', '[参考资产]\n@林岚 对应 林岚。').replace('[生成目标]', '[角色]\n只有 1 人，不出现其他人：林岚。\n' + CHAR + '\n\n[生成目标]').replace(
     '本段无对白（设计）。', '本段无对白（设计）。\n' + HM.replace('她', '林岚') + '\n')
 
 
@@ -98,15 +98,58 @@ class ContractTests(unittest.TestCase):
             'framing jargon': (PROMPT.replace('→ 结束：钥匙仍在她指间', '→ 结束：落幅钥匙仍在她指间'), '元语言'),
             'elision': (PROMPT.replace('对方手掌托住', '省略走到柜台的过程，对方手掌托住'), '元语言'),
             'cross-prompt ref': (PROMPT.replace('钥匙始终只有 1 把。', '同上，钥匙始终只有 1 把。'), '元语言'),
-            'no count line': (REF.replace('恰好 1 人，不出现其他人：林岚。\n', ''), '人数'),
+            'no count line': (REF.replace('只有 1 人，不出现其他人：林岚。\n', ''), '人数'),
             'no cut lock': (PROMPT.replace('只在指定处切镜，镜头不会自行切换。', ''), '只在指定处切镜'),
             'repeats plot': (PROMPT.replace('玻璃反光低对比', '对方手掌托住钥匙，她才松开手指'), '复述'),
-            'scene without lock': (PROMPT.replace('[生成目标]', '[场景]\n柜台 对应 @柜台。柜台在画面中部。\n\n[生成目标]'), '场景只含参考所示内容'),
+            'scene without lock': (PROMPT.replace('[生成目标]', '[场景]\n柜台。柜台在画面中部。\n\n[生成目标]'), '场景只含参考所示内容'),
         }
         for name, (text, needle) in cases.items():
             with self.subTest(name=name):
                 errors, _ = lint.check_document(text)
                 self.assertTrue(any(needle in e for e in errors), errors)
+
+    def test_fixed_asset_header(self):
+        self.assertEqual(lint.check_document(REF), ([], 1))
+        absent = REF.replace('[参考资产]\n@林岚 对应 林岚。\n\n', '')
+        self.assertTrue(any('参考资产' in e for e in lint.check_document(absent)[0]))
+        late = absent.replace('[具体情节]', '[参考资产]\n@林岚 对应 林岚。\n\n[具体情节]')
+        self.assertTrue(lint.check_document(late)[0])
+        for block in ('角色', '道具', '场景', '动作与声音参考', '声音', '保持一致'):
+            with self.subTest(block=block):
+                text = REF.replace('[' + block + ']', '[' + block + ']\n标签 @林岚。') if '[' + block + ']' in REF else REF.replace('[生成目标]', '[' + block + ']\n标签 @林岚。\n\n[生成目标]')
+                self.assertTrue(any('素材调用名' in e for e in lint.check_document(text)[0]))
+        for row in ('@林岚 对应 林岚。\n@林岚 对应 林岚。',
+                    '角色｜林岚 对应 @林岚、@周远。',
+                    '本段无参考资产。\n@林岚 对应 林岚。'):
+            self.assertTrue(lint.check_document(REF.replace('@林岚 对应 林岚。', row))[0])
+        many = REF.replace('@林岚 对应 林岚。',
+                           '@林岚 对应 林岚。\n@幼龙 对应 幼龙。\n@钥匙 对应 钥匙。\n@柜台 对应 柜台。\n@递交参考 对应 递交参考。\n@声线参考 对应 声线参考。\n@暖光参考 对应 暖光参考。')
+        for invalid in ('角色｜林岚 对应 @林岚。', '林岚 对应 @林岚。',
+                        '- @林岚 对应 林岚。', '1. @林岚 对应 林岚。',
+                        '@林岚、@周远 对应 两人。'):
+            self.assertTrue(lint.check_document(REF.replace('@林岚 对应 林岚。', invalid))[0])
+        compact = REF.replace('@林岚 对应 林岚。', '@林岚对应林岚。')
+        self.assertEqual(lint.check_document(compact), ([], 1))
+        renamed = REF.replace('@林岚 对应 林岚。', '@母亲定妆 对应 林岚。')
+        self.assertEqual(lint.check_document(renamed), ([], 1))
+        mixed = many.replace('@柜台 对应 柜台。', '@柜台 对应 柜台。\n@柜台 对应 另一个名称。')
+        self.assertTrue(any('只列一次' in e for e in lint.check_document(mixed)[0]))
+        self.assertEqual(lint.check_document(many), ([], 1))
+        self.assertEqual(lint.check_document(PROMPT), ([], 1))
+
+    def test_asset_introductions_and_states_are_not_lost(self):
+        text = REF.replace('@林岚 对应 林岚。',
+                           '@林岚 对应 林岚。介绍：旅人。本段状态：站在柜台前，右手捏钥匙。身高 165 cm。参考用途：身份与衣装。音色：female, low airy voice.')
+        self.assertEqual(lint.check_document(text), ([], 1))
+        for block in lint.split_blocks(lint.parse_clips(text)[0].body):
+            if block[0] == '参考资产':
+                for token in ('介绍：旅人', '本段状态：', '右手捏钥匙', '身高 165 cm', '参考用途：', '音色：'):
+                    self.assertIn(token, block[2])
+        compact = text.replace('@林岚 对应 林岚。', '@林岚对应林岚。')
+        self.assertEqual(lint.check_document(compact), ([], 1))
+        two = text.replace('只有 1 人，不出现其他人：林岚。', '只有 2 人，不出现其他人：林岚、周远。').replace(
+            '[角色]', '@周远 对应 周远。本段状态：柜台后，左手接钥匙。身高 178 cm。\n\n[角色]')
+        self.assertFalse(any('身高' in e for e in lint.check_document(two)[0]))
 
     def test_positioning_hm_fixes_blocking(self):
         self.assertEqual(lint.check_document(REF), ([], 1))
@@ -114,21 +157,21 @@ class ContractTests(unittest.TestCase):
         self.assertTrue(any('定位秒' in e and 'Hm.' in e for e in errors), errors)
         errors, _ = lint.check_document(REF.replace('0s-2.5s｜林岚轻声', '0s-1s｜林岚轻声'))
         self.assertTrue(any('须与第一段' in e for e in errors), errors)
-        nobody = REF.replace('恰好 1 人，不出现其他人：林岚。\n' + CHAR, '恰好 0 人：画面中没有人物。')
-        self.assertTrue(any('恰好 0 人' in e for e in lint.check_document(nobody)[0]))
+        nobody = REF.replace('只有 1 人，不出现其他人：林岚。\n' + CHAR, '只有 0 人：画面中没有人物。')
+        self.assertTrue(any('只有 0 人' in e for e in lint.check_document(nobody)[0]))
         self.assertEqual(lint.check_document(nobody.replace(HM.replace('她', '林岚') + '\n', '')), ([], 1))
         # The hm is not script dialogue: the truth document need not contain it.
         self.assertEqual(lint.check_document(with_dialogue(REF), dialogue_source=LINE), ([], 1))
 
     def test_heights_required_for_two_characters(self):
-        second = '周远 对应 @周远。本段状态：站在柜台后。'
-        two = REF.replace('恰好 1 人，不出现其他人：林岚。', '恰好 2 人，不出现其他人：林岚、周远。').replace(
+        second = '周远。本段状态：站在柜台后。'
+        two = REF.replace('只有 1 人，不出现其他人：林岚。', '只有 2 人，不出现其他人：林岚、周远。').replace(
             CHAR, CHAR + '\n' + second)
         self.assertTrue(any('身高' in e for e in lint.check_document(two)[0]))
         ok = two.replace(CHAR, CHAR + '身高 165 cm。').replace(second, second + '身高 178 cm。')
         self.assertFalse(any('身高' in e for e in lint.check_document(ok)[0]))
         # Creatures mapped with @ are not counted as people and need no height.
-        beast = ok.replace(second + '身高 178 cm。', second + '身高 178 cm。\n古鳄 对应 @古鳄。本段状态：半沉在水里。')
+        beast = ok.replace(second + '身高 178 cm。', second + '身高 178 cm。\n古鳄。本段状态：半沉在水里。')
         self.assertFalse(any('身高' in e for e in lint.check_document(beast)[0]))
 
     def test_no_length_cap_and_state_line_needs_no_exclusion(self):
@@ -146,7 +189,7 @@ class ContractTests(unittest.TestCase):
         allowed = REF.replace(CHAR, CHAR + '音色：Voice: female, low airy mezzo.')
         self.assertEqual(lint.check_document(allowed), ([], 1))
         errors, _ = lint.check_document(PROMPT.replace('侧窗柔光', '音色：低中音。侧窗柔光'))
-        self.assertTrue(any('音色描述只写在 [角色]' in e for e in errors))
+        self.assertTrue(any('音色描述只写在 [参考资产]/[角色]' in e for e in errors))
 
     def test_clip_limit(self):
         for end, passed in [('3', True), ('9', True), ('30', True), ('30.001', False), ('31', False)]:
@@ -247,7 +290,7 @@ class CraftWarningTests(unittest.TestCase):
         self.assertFalse(self.warns(full, '动作写得太简略'))
 
     def test_listener_required_for_two_people_in_wider_shots(self):
-        two = '恰好 2 人，不出现其他人：林岚、周远。\n林岚：短发。身高 165 cm。\n周远：衬衫。身高 178 cm。'
+        two = '只有 2 人，不出现其他人：林岚、周远。\n林岚：短发。身高 165 cm。\n周远：衬衫。身高 178 cm。'
         body = one(size='双人中景', fov=47).replace('[生成目标]', '[角色]\n' + two + '\n\n[生成目标]')
         self.assertTrue(self.warns(body, '听者'))
         body = body.replace('→ 结束：', '听者：周远看着她。\n→ 结束：')
@@ -264,7 +307,7 @@ def flat(n=8, size='中景', fov=47, move='固定', people=1, picture='她站在
                     end_state='她站定。') for i in range(n)]
     names = '、'.join(f'人{i}' for i in range(people))
     heights = '\n'.join(f'人{i}：身高 17{i} cm。' for i in range(people))
-    return prompt(segs, characters=f'恰好 {people} 人，不出现其他人：{names}。\n{heights}',
+    return prompt(segs, characters=f'只有 {people} 人，不出现其他人：{names}。\n{heights}',
                   audio=audio(*lines) if dialogue else '本段无对白（设计）。\n' + lines[0] + '\nNO BGM。')
 
 

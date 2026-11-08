@@ -13,11 +13,11 @@ def segment(start, end, size, fov, move, *, picture, camera, action, expression,
     return '\n'.join(lines)
 
 
-def prompt(segments, *, characters=None, props=None, scenes=None, goal='她在柜台旁递还钥匙，对方接住。',
+def prompt(segments, *, assets='本段无参考资产。', characters=None, props=None, scenes=None, goal='她在柜台旁递还钥匙，对方接住。',
            style='侧窗柔光从画面左侧射入，色温 4000K，玻璃反光低对比。', cut=True,
            audio='本段无对白（设计）。现场声为房间底噪。NO BGM。',
            consistency='钥匙始终只有 1 把。左右均以镜头为准。无字幕、无水印。'):
-    blocks = []
+    blocks = ['[参考资产]\n' + assets]
     if characters is not None:
         blocks.append('[角色]\n' + characters)
     if props is not None:

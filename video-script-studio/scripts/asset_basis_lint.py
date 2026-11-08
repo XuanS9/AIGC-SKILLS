@@ -7,8 +7,9 @@ Checks, per C/B/P/S asset in asset-registry.json:
     "推导", or "不适用：<reason>");
   - every script_features entry has feature/scene/where, and where is
     base | video | state:<name> with <name> present in state_plan;
-  - features marked base/state appear literally in the asset's prompt block
-    (base) or are planned in state_plan (state);
+  - features marked base appear literally in the asset's copyable prompt
+    body, not only in surrounding design notes; state features point to a
+    named state_plan entry (state image content is not checked);
   - the asset's prompt block carries no external film/series style anchor.
 
 It does not judge whether a derivation is right or whether an image fits the
@@ -52,6 +53,33 @@ def prompt_block(text: str, asset: dict) -> str | None:
     return None
 
 
+def prompt_body(section: str) -> str:
+    """Use text/unlabelled fences when present; preserve unfenced legacy text.
+
+    Empty or other-language fences must not make design notes count as image
+    instructions. Semantic source fidelity and feature visibility remain manual.
+    """
+    blocks, current = [], []
+    marker = None
+    language = ''
+    fenced = False
+    for line in section.splitlines(keepends=True):
+        if marker is None:
+            opening = re.match(r'^[ \t]*(`{3,}|~{3,})([^\r\n]*)', line)
+            if opening:
+                marker, language = opening.group(1), opening.group(2).strip()
+                fenced = True
+                current = []
+        elif re.fullmatch(r'[ \t]*' + re.escape(marker[0]) +
+                          '{' + str(len(marker)) + r',}[ \t]*', line.rstrip('\r\n')):
+            if language in ('', 'text'):
+                blocks.append(''.join(current))
+            marker = None
+        else:
+            current.append(line)
+    return '\n'.join(blocks) if fenced else section
+
+
 def check(registry: dict, root: Path) -> list[tuple[str, str, str]]:
     findings = []
     for asset in registry.get('assets', []):
@@ -89,13 +117,14 @@ def check(registry: dict, root: Path) -> list[tuple[str, str, str]]:
         else:
             findings.append(('WARN', label, 'no prompt_file; base features not checked'))
 
+        body = prompt_body(text) if text is not None else None
         for feat in asset.get('script_features', []):
             if not isinstance(feat, dict) or not all(feat.get(k) for k in ('feature', 'scene', 'where')):
                 findings.append(('FAIL', label, f'script_features entry incomplete: {feat}'))
                 continue
             where = feat['where']
             if where == 'base':
-                if text is not None and feat['feature'] not in text:
+                if body is not None and feat['feature'] not in body:
                     findings.append(('FAIL', label, f'feature "{feat["feature"]}" ({feat["scene"]}) not in prompt'))
             elif where.startswith('state:'):
                 if where[6:] not in states:
@@ -103,8 +132,7 @@ def check(registry: dict, root: Path) -> list[tuple[str, str, str]]:
             elif where != 'video':
                 findings.append(('FAIL', label, f'feature "{feat["feature"]}": unknown where {where!r}'))
 
-        if text is not None:
-            body = '\n'.join(block for block in re.findall(r'```(?:text)?\n(.*?)```', text, re.S)) or text
+        if body is not None:
             hit = NAME_ANCHOR.search(body) or EN_ANCHOR.search(body)
             if hit:
                 findings.append(('FAIL', label, f'external style anchor in prompt: "{hit.group(0)}"'))

@@ -77,6 +77,38 @@ class AssetBasisLintTests(unittest.TestCase):
         reg = registry(script_features=[{'feature': '低凹鞍部', 'scene': '剧本 1a', 'where': 'base'}])
         self.assertTrue(self.fails(self.run_check(reg)))
 
+    def test_block_outside_notes_do_not_satisfy_base_feature(self):
+        for outside in ('依据：系带短靴，来源剧本5e。\n', ''):
+            prompts = PROMPTS.replace('象牙白低跟系带短靴，', '')
+            prompts = prompts.replace('```text', outside + '```text', 1)
+            findings = self.run_check(registry(), prompts)
+            self.assertTrue(any('系带短靴' in f[2] for f in self.fails(findings)))
+        # Genuine prompt content satisfies coverage; a source note is not required.
+        self.assertEqual(self.fails(self.run_check(registry())), [])
+
+    def test_empty_or_nonprompt_fence_does_not_fall_back_to_notes(self):
+        for fence in ('```text\n```', '```json\n{"feature": "系带短靴"}\n```'):
+            prompts = '# 艾莉娅（艾莉娅@艾莉娅）\n依据：系带短靴\n' + fence + '\n'
+            findings = self.run_check(registry(), prompts)
+            self.assertTrue(any('系带短靴' in f[2] for f in self.fails(findings)))
+
+    def test_plain_prompt_legacy_and_unlabelled_fence_are_supported(self):
+        for prompts in (PROMPTS.replace('```text\n', '').replace('```', ''),
+                        PROMPTS.replace('```text', '```')):
+            self.assertEqual(self.fails(self.run_check(registry(), prompts)), [])
+
+    def test_style_sources_outside_fence_are_not_prompt_pollution(self):
+        prompts = PROMPTS.replace('```text', '来源记录：《示例影片》风格，仅拆解来源。\n```text', 1)
+        self.assertEqual(self.fails(self.run_check(registry(), prompts)), [])
+
+    def test_fence_parser_does_not_pair_closing_fence_with_next_opening(self):
+        section = ('# 测试\n```json\n{}\n```\n系带短靴\n'
+                   '```text\n普通布鞋\n```\n')
+        self.assertEqual(lint.prompt_body(section).strip(), '普通布鞋')
+        self.assertEqual(lint.prompt_body('说明\n```text\n未闭合正文'), '')
+        self.assertEqual(lint.prompt_body('~~~text\n鞋\n~~~\n'), '鞋\n')
+        self.assertEqual(lint.prompt_body('````text\n鞋\n````\n'), '鞋\n')
+
     def test_state_feature_must_point_to_planned_state(self):
         reg = registry(state_plan=[])
         self.assertTrue(any('unplanned' in f[2] for f in self.fails(self.run_check(reg))))

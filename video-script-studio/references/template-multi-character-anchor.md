@@ -1,6 +1,8 @@
 # 模板：多人锚定提示词
 
-可直接粘贴的 Seedance 2.0 提示词模板，用于画面里有两个及以上角色的镜头。在动作描述之前，先锁定每个角色的身份、位置、景深、姿势、视线和接触点。工作室交付仍用中文块结构；本页字段在编译时映射到 `[角色]` 映射行（含身高）、`[具体情节]` 各段的 `画面：`/`听者：` 行与 `[保持一致]`。
+原生站位规划骨架，用于画面里有两个及以上角色的镜头；不是当前工作室可直接提交的完整提示词。在动作描述之前，先锁定每个角色的身份、位置、景深、姿势、视线和接触点。工作室交付仍用中文块结构；参考标签归 `[参考资产]`，关系补充归 `[角色]`，站位与反应映射到 `[具体情节]` 的 `画面：`/`听者：` 及 `[保持一致]`。
+
+**站位锚定不能代替互动。**填写后按[互动闭环](higgsfield-acting.md#双人和多人互动闭环)补关键听者和旁观者的触发、反应过程、余态与发起者接续；具体写法见[三人演出小样](template-ensemble-reaction.md)。不把静态视线锁直接复制成整场的倾听表演。
 
 ## 何时使用
 
@@ -39,7 +41,9 @@ Cross-character relationships:
   Negative space: [where the empty area sits in frame].
 
 Goal: [event and intended visible outcome].
-Action and response: [trigger → character behavior → resulting shared state;
+Action and response: [initiator's action → what each key listener/witness can perceive
+  → their visible response and sustained state → initiator's uptake when perceptible;
+  background groups continue or respond according to their attention;
   timing assigned after planning, preserving the anchors until the scripted move].
 Camera: [shot size], [angle], [lens], [movement].
 Setting: [location, time, weather, atmosphere, production design].

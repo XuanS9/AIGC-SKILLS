@@ -269,5 +269,5 @@ no environment, no props, no lighting effects, no beauty retouching.
 
 参考表是可复用的身份资产，不是最终产品。把它喂进：
 
-- **电影感道具连续性**：把参考表绑定为身份参考，然后只描述预期的动作和状态变化（见 `higgsfield-seedance.md` § Reference Roles）。工作室格式在映射块写 `道具名 对应 @道具名`。
+- **电影感道具连续性**：把参考表绑定为身份参考，然后只描述预期的动作和状态变化（见 `higgsfield-seedance.md` § Reference Roles）。工作室格式在开头 `[参考资产]` 写 `@道具名 对应 道具名。`。
 - **角色工作**：同样的身份锁定纪律适用于角色转面表（见 `template-character-asset-delivery.md`）。

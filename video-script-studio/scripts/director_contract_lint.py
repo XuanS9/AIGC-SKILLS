@@ -29,10 +29,10 @@ import re
 import sys
 
 # Block order (Higgsfield omni-reference template, written in Chinese).
-BLOCK_ORDER = ('角色', '道具', '场景', '动作与声音参考', '生成目标',
+BLOCK_ORDER = ('参考资产', '角色', '道具', '场景', '动作与声音参考', '生成目标',
                '具体情节', '视觉风格', '镜头', '声音', '保持一致')
-REQUIRED_BLOCKS = ('生成目标', '具体情节', '视觉风格', '镜头', '声音', '保持一致')
-REFERENCE_BLOCKS = ('角色', '道具', '场景', '动作与声音参考')
+REQUIRED_BLOCKS = ('参考资产', '生成目标', '具体情节', '视觉风格', '镜头', '声音', '保持一致')
+REFERENCE_BLOCKS = ('参考资产',)
 ENGLISH_LABELS = re.compile(r'^\s*\[(Characters|Props|Scenes|Motion and Audio|Generation Goal|Stage\b[^\]]*|'
                             r'Visual Style|Camera|Audio|Maintain Consistency)\]\s*$', re.M)
 HEADERS = REQUIRED_BLOCKS  # kept for importers; the required blocks
@@ -67,7 +67,7 @@ AUDIO_LINE = re.compile(
     rf'^\s*({NUMBER})\s*s\s*-\s*({NUMBER})\s*s\s*[｜|]\s*([^：:\n{{}}]+?)\s*[:：]\s*\{{([^{{}}\n]*)\}}\s*[。.]?\s*$', re.M)
 # The positioning-second vocalisation (Hell Grind "hm"), written {Hm.}.
 HM = re.compile(r'^\s*h+m+[.。!！]?\s*$', re.I)
-PEOPLE = re.compile(r'^\s*恰好\s*(\d+)\s*人', re.M)
+PEOPLE = re.compile(r'^\s*只有\s*(\d+)\s*人', re.M)
 FENCE = re.compile(r'^\s*(`{3,}|~{3,})([^\n]*)$')
 MAX_CLIP_DURATION = Decimal(30)
 
@@ -147,7 +147,7 @@ def parse_clips(text: str) -> list[ClipText]:
     if len({name for _, name in starts}) != len(starts):
         raise ValueError('Clip 编号重复')
     # A leading preamble must not hide an unlabelled prompt.
-    if re.search(r'(?m)^\s*\[(?:角色|生成目标|阶段)', text[:starts[0][0]]):
+    if re.search(r'(?m)^\s*\[(?:参考资产|角色|生成目标|阶段)', text[:starts[0][0]]):
         raise ValueError('首个 Clip 标题前含未编号提示词，请单独检查')
     clips = []
     for index, (start, name) in enumerate(starts):
@@ -201,10 +201,10 @@ def check_clip(clip: ClipText, duration: Decimal | None = None) -> tuple[list[st
     if duration is not None and duration > MAX_CLIP_DURATION:
         errors.append(f'声明时长 {duration}s 超过单个 Clip 硬上限30秒；须压缩或顺延到下一个 Clip')
     if LEGACY_HEADER.search(clip.body):
-        errors.append('旧标题已停用：用 [角色] [道具] [场景] [动作与声音参考] [生成目标] [具体情节] [视觉风格] [镜头] [声音] [保持一致]；【】是 Dreamina 字幕括号')
+        errors.append('旧标题已停用：用 [参考资产] [角色] [道具] [场景] [动作与声音参考] [生成目标] [具体情节] [视觉风格] [镜头] [声音] [保持一致]；【】是 Dreamina 字幕括号')
         return errors, []
     if ENGLISH_LABELS.search(clip.body):
-        errors.append('块标签用中文：[角色] [道具] [场景] [动作与声音参考] [生成目标] [具体情节] [视觉风格] [镜头] [声音] [保持一致]')
+        errors.append('块标签用中文：[参考资产] [角色] [道具] [场景] [动作与声音参考] [生成目标] [具体情节] [视觉风格] [镜头] [声音] [保持一致]')
         return errors, []
     if LEGACY_DIALOGUE.search(clip.body):
         errors.append('台词写成 对白：说话人＋状态＋说：{English line}，不用「」')
@@ -251,7 +251,7 @@ def check_clip(clip: ClipText, duration: Decimal | None = None) -> tuple[list[st
         elif positioning[0]['end'] != segments[0]['end']:
             errors.append(f"定位 hm 的时间段须与第一段 0s-{segments[0]['end']}s 一致")
     if people and int(people.group(1)) == 0 and positioning:
-        errors.append('恰好 0 人的 Clip 没有人能发出定位 hm，删掉这一行')
+        errors.append('只有 0 人的 Clip 没有人能发出定位 hm，删掉这一行')
     sfx_ok = [x for seg in segments for line in seg['fields'].get('声音', []) for x in SFX.findall(line)]
     if SFX.findall(clip.body) != sfx_ok:
         errors.append('音效 <…> 只写在 [具体情节] 各段的 “声音：” 行')
@@ -276,7 +276,7 @@ def check_clip(clip: ClipText, duration: Decimal | None = None) -> tuple[list[st
     voice = re.compile(r'(?:固定声线|音色描述|音色|Voice Description|Vocal profile|Voice)\s*[:：]', re.I)
     for name in ('生成目标', '具体情节', '视觉风格', '镜头', '保持一致'):
         if voice.search(parts[name]):
-            errors.append(f'音色描述只写在 [角色]，不放 [{name}]')
+            errors.append(f'音色描述只写在 [参考资产]/[角色]，不放 [{name}]')
     errors.extend(readability_errors(clip.body, parts, segments))
     return errors, dialogue
 
@@ -411,7 +411,7 @@ def positive_duration(value: str) -> Decimal:
 
 # Higgsfield / Dreamina Seedance 2.5 model-readability rules
 # (references/template-general-director-2-5.md § 模型可读性).
-HANDLE = re.compile(r'@[^\s，。；、：:,;.（）()「」【】\[\]{}<>｜|]+')
+HANDLE = re.compile(r'@[^\s，。；、：:,;.（）()「」【】\[\]{}<>｜|]+?(?=对应|[\s，。；、：:,;.（）()「」【】\[\]{}<>｜|]|$)')
 META_TERMS = re.compile(
     r'镜头\s*\d+|落幅|起幅|机位|关系中景|关系全景|关系近景|省略[^，。；]{0,12}|'
     r'承接[^，。；]{0,8}|完成后才|确认[^，。；]{0,10}才|本镜|上一镜|下一镜|前一段|上一段|'
@@ -419,13 +419,42 @@ META_TERMS = re.compile(
 CUT_LOCK = re.compile(r'只在指定处切镜，镜头不会自行切换')
 
 
-def readability_errors(body: str, parts: dict, segments: list) -> list[str]:
+def asset_header_errors(parts: dict, names: list[str]) -> list[str]:
+    """Fixed first block, one declaration per line, no handles in later blocks."""
     errors = []
+    if names and names[0] != '参考资产':
+        errors.append('[参考资产] 必须是复制正文第一个块，不能藏在角色或情节之后')
+    header = parts.get('参考资产', '')
+    found = []
+    for line in header.splitlines():
+        if not line.strip():
+            continue
+        handles = HANDLE.findall(line)
+        if not handles:
+            if line.strip() != '本段无参考资产。':
+                errors.append('[参考资产] 每行以 @ 开头，写“@资产 对应 名称。”；无参考写“本段无参考资产。”')
+            continue
+        if len(handles) != 1 or not re.fullmatch(
+                r'\s*@[^\s，。；、：:,;.（）()「」【】\[\]{}<>｜|]+\s*对应\s*[^@\n。；｜|]+。[^@\n]*', line):
+            errors.append('[参考资产] 每行必须以 @资产 开头，写“@资产 对应 名称。介绍/本段状态/参考用途：…”；不加类型前缀或第二个标签')
+        found.extend(handles)
+    if len(found) != len(set(found)):
+        errors.append('[参考资产] 同一 @资产 只列一次，不重复添加槽位')
+    if found and '本段无参考资产。' in header:
+        errors.append('[参考资产] 既有资产映射又声明无参考')
+    for name, content in parts.items():
+        if name == '参考资产':
+            continue
+        handles = HANDLE.findall(content)
+        if handles:
+            errors.append(f'[{name}] 出现素材调用名 {handles[0]}：@ 只放在开头 [参考资产]，其余块用名称')
+    return errors
+
+
+def readability_errors(body: str, parts: dict, segments: list) -> list[str]:
+    errors = asset_header_errors(parts, list(parts))
     prose = '\n'.join([parts['生成目标'], parts['具体情节'], parts['视觉风格'], parts['镜头'],
                        parts['声音'], parts['保持一致']])
-    found = HANDLE.findall(prose)
-    if found:
-        errors.append(f'正文出现素材调用名 {found[0]}：@ 只放在 [角色]/[道具]/[场景]/[动作与声音参考]，其余用中文名')
     hits = META_TERMS.findall(prose)
     if hits:
         kinds = list(dict.fromkeys(re.sub(r'\d+', 'N', re.sub(r'^(省略|承接|确认).*', r'\1…', h)) for h in hits))
@@ -444,12 +473,12 @@ def readability_errors(body: str, parts: dict, segments: list) -> list[str]:
     if repeated:
         errors.append(f'[视觉风格]/[保持一致] 复述具体情节内容：“{repeated[0].strip()[:20]}…”')
     chars = parts.get('角色', '')
-    count = re.search(r'^\s*恰好\s*(\d+)\s*人', chars, re.M)
+    count = re.search(r'^\s*只有\s*(\d+)\s*人', chars, re.M)
     if chars and not count:
-        errors.append('[角色] 首行须写人数：“恰好 N 人，不出现其他人：…”')
+        errors.append('[角色] 首行须写人数：“只有 N 人，不出现其他人：…”')
     people = int(count.group(1)) if count else 0
-    if people >= 2 and len(re.findall(r'身高\s*\d{3}\s*cm', chars)) < people:
-        errors.append(f'[角色] 写了 {people} 人，须给每个人写身高（cm），防止身高趋同；生物不算人数，可写体长')
+    if people >= 2 and len(re.findall(r'身高\s*\d{3}\s*cm', chars + '\n' + parts.get('参考资产', ''))) < people:
+        errors.append(f'[角色] 写了 {people} 人，须在 [参考资产] 或 [角色] 给每个人写身高（cm），防止身高趋同；生物不算人数，可写体长')
     if '场景' in parts and '场景只含参考所示内容' not in parts['场景']:
         errors.append('[场景] 须写 “场景只含参考所示内容，不增加家具或房间。”')
     return errors
@@ -516,7 +545,7 @@ def craft_warnings(text: str) -> list[str]:
     for clip in parse_clips(text):
         blocks = {n: c for n, _, c in split_blocks(clip.body)}
         scene = blocks.get('具体情节', '')
-        people = re.search(r'恰好\s*(\d+)\s*人', blocks.get('角色', ''))
+        people = re.search(r'只有\s*(\d+)\s*人', blocks.get('角色', ''))
         many = people is not None and int(people.group(1)) >= 2
         for seg in split_segments(scene):
             if not seg['full']:
@@ -626,7 +655,7 @@ def risk_warnings(text: str) -> list[str]:
     warnings = []
     for clip in parse_clips(text):
         blocks = {n: c for n, _, c in split_blocks(clip.body)}
-        people = re.search(r'恰好\s*(\d+)\s*人', blocks.get('角色', ''))
+        people = re.search(r'只有\s*(\d+)\s*人', blocks.get('角色', ''))
         in_frame = re.search(r'最多\s*(\d+)\s*人入画', blocks.get('角色', ''))
         if people and int(people.group(1)) >= 5 and not (in_frame and int(in_frame.group(1)) <= 3):
             warnings.append(f'{clip.name}: 同框 {people.group(1)} 人，模型容易混脸或丢人；多人镜头尽量 ≤3 人入画，其余人用背影或出画，并在 [角色] 写“每次最多 3 人入画”')

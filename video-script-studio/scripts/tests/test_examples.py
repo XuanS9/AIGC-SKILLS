@@ -41,6 +41,7 @@ EXAMPLES = [
     ('template-general-director-2-5.md', 3, [16, 16, 14]),
     ('template-full-performance-example.md', 1, [30]),
     ('spatial-layout.md', 2, [6, 6]),
+    ('template-ensemble-reaction.md', 1, [10]),
 ]
 MULTI_CLIP = [('template-action-example-xianxia.md', 2)]
 
@@ -77,13 +78,20 @@ class ExamplesPassBothLintersTests(unittest.TestCase):
         for body in bodies:
             with self.subTest(start=body[:24]):
                 blocks = {n: c for n, _, c in contract.split_blocks(body)}
+                self.assertEqual(list(blocks)[0], '参考资产')
+                handles = contract.HANDLE.findall(body)
+                self.assertEqual(handles, contract.HANDLE.findall(blocks['参考资产']))
+                for line in blocks['参考资产'].splitlines():
+                    if line != '本段无参考资产。':
+                        self.assertTrue(line.startswith('@'), line)
+                self.assertEqual(len(handles), len(set(handles)))
                 scene, audio = blocks['具体情节'], blocks['声音']
                 # Dialogue follows Higgsfield: only in [声音], as timed lines.
                 self.assertNotRegex(scene, r'(?m)^\s*对白\s*[:：]')
                 self.assertEqual(contract.DIALOGUE.findall(body),
                                  [l['text'] for l in contract.audio_lines(audio)])
                 # First second carries the positioning hm when people are present.
-                people = int(re.search(r'恰好\s*(\d+)\s*人', blocks['角色']).group(1))
+                people = int(re.search(r'只有\s*(\d+)\s*人', blocks['角色']).group(1))
                 first = contract.split_segments(scene)[0]
                 self.assertLessEqual(first['end'] - first['start'], Decimal('1.5'))
                 hm = [l for l in contract.audio_lines(audio) if contract.HM.match(l['text'])]
@@ -103,6 +111,15 @@ class ExamplesPassBothLintersTests(unittest.TestCase):
                                         capture_output=True, text=True)
                 with self.subTest(script=script):
                     self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_ensemble_example_dialogue_and_craft(self):
+        body = full_prompts('template-ensemble-reaction.md')[0]
+        truth = '林岚：「Take it.」\n周远：「Keep it.」'
+        self.assertEqual(contract.check_document(body, Decimal('10'), truth), ([], 1))
+        self.assertEqual(contract.craft_warnings(body), [])
+        # Word coverage is mechanical; reaction causality is reviewed in the doc.
+        missing = body.replace('4.2s-5.2s｜周远摇头低声说：{Keep it.}\n', '')
+        self.assertTrue(contract.check_document(missing, Decimal('10'), truth)[0])
 
     def test_example_mutations_are_rejected(self):
         body = full_prompts('template-general-director-2-5.md')[0]

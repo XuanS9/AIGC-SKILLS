@@ -2,7 +2,7 @@
 
 一个**原样粘在**连贯 Seedance 2.0 分镜表每条提示词前面的风格块。改一次，处处都变。它锁定全片的整体画面，让 25 个分别生成的场景读起来像同一部作品。
 
-格式说明：原样前缀是**连贯分镜表**的形态 `[FIELD — 13-project harvest]`。*独立*的块式提示词恰好相反：它从 SCENE CONTEXT 开头，把风格分散进各自归属的块（`higgsfield-seedance.md` § Distributed style — the standalone-block rule）。
+格式说明：原样前缀是**连贯分镜表**的形态 `[FIELD — 13-project harvest]`。*独立*的块式提示词与此前不同：它从 SCENE CONTEXT 开头，把风格分散进各自归属的块（`higgsfield-seedance.md` § Distributed style — the standalone-block rule）。
 
 工作室交付时，前缀的内容编译进每条提示词的 `[视觉风格]` 与 `[保持一致]`，不在块结构前另加一段；声音策略落在 `[声音]` 末尾的 `NO BGM。`，`[保持一致]` 末尾写“无字幕、无水印”。
 

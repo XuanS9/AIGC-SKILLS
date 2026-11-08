@@ -399,7 +399,7 @@
 
 两种写法指向同一个底层的 @ 参考机制；用哪种括号取决于你在面向哪个界面。
 
-- **`@Image1`**：在给 Higgsfield 生成引擎的实际提示词里使用的平台侧参考语法。大写 `I`，没有下划线，单个 `@`。用于 `template-*.md` 和大多数子模块的提示词示例（如 `template-06-portrait-character-intro.md`）。提示词里的写法：`@Image1 as the character`、`@Image2 as the background`。工作室项目里，项目调用名是 `@` + 纯中文名（写在映射块 `名字 对应 @名字`），平台槽位编号另行维护。
+- **`@Image1`**：在给 Higgsfield 生成引擎的实际提示词里使用的平台侧参考语法。大写 `I`，没有下划线，单个 `@`。用于 `template-*.md` 和大多数子模块的提示词示例（如 `template-06-portrait-character-intro.md`）。提示词里的写法：`@Image1 as the character`、`@Image2 as the background`。工作室项目里，项目调用名是 `@` + 纯中文名（写在开头 `[参考资产]` 的 `@名字 对应 名字。` 行），平台槽位编号另行维护。
 - **`<<<image_1>>>`**：Seedance 2 Skill 内部的显式参考写法，用在给 `seedance-bilingual-json.md` 中英双语提示词导演的用户请求里。小写 `image`，下划线，三重尖括号。用户请求里打出来时 Seedance Skill 能识别，然后映射到合适的场景元素（见 `seedance-bilingual-json.md` § Image reference system）。
 
 **按槽位的职责约定**：制作实践给每个 `@Image` 槽位锁定一个稳定的职责，在一张分镜表的每条提示词里保持一致：`@Image1 = 角色身份`、`@Image2 = 服装`、`@Image3 = 环境 + 光照`、`@Image4 = 构图`、`@Video1 = 动作`、`@Video2 = 运镜`、`@Audio1 = 节奏 + 氛围`。这个约定是团队侧的纪律，不由模型强制；好处是长分镜表里参考稳定（见 `higgsfield-seedance.md` § Per-Image Role Convention）。

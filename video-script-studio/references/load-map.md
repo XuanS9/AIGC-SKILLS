@@ -16,11 +16,15 @@
 **按内容自动接入**（无需用户点名模块；实际读取与落点记入 [统一调用与验收总表](production-checks.md#统一调用与验收总表)）：
 
 - 人物表演（含动作、无对白和背景人物）：[acting](higgsfield-acting.md) 人物档案、身体、眼神与验收规则及 [FACS 身体微反应](higgsfield-facs.md#物理微节拍脸以外的身体physical-micro-beats--the-body-beyond-the-face)；精细表情、特写按需读完整 FACS 工作流。非人角色读 [非人适配](higgsfield-acting.md#非人角色表演适配)，不默认用人类 FACS。
+- 双人/多人互动（包括无对白、正反打和有关系旁观者）：完整读 [互动闭环](higgsfield-acting.md#双人和多人互动闭环)，将关键听者/旁观者的触发、反应过程、余态和主体接续落实到正文；首次写此类场景或诊断反应偏弱时读 [三人演出小样](template-ensemble-reaction.md)，不能只查 `听者：` 是否存在。
 - 剧情创作与改写：[scene-engine](higgsfield-scene-engine.md) 内部检查目标、障碍、策略、反转与价值变化；专门审计时才展示报告，不给无人风景或纯功能演示强加反转。
 - 多场景、关联提示词或分镜交付：[shotlist](higgsfield-shotlist-director.md)，沿用素材、编号、状态和工具检查；仅需提示词时交块结构，分镜任务按其原生 HTML 等契约交付。
 - 对白、具体声效、音乐同步或附带音轨：[audio](higgsfield-audio.md)，先区分原样输出、节奏驱动和表演参考；纯音频任务保留原输出。
 - 角色进出门或方向颠倒诊断：[门槛方向锁定](spatial-layout.md#32-进出门门槛方向锁定)，核对具名门两侧的状态转移，不以进出画判断。
 - 动作、打斗、追逐：[动作导演](fight-director.md)（档案、交锋、三强度与速度轴、联合任务检查）。
+- 视频创作、分组调整及新增角色／道具／场景：先读[资产建立门槛](asset-registry.md#资产建立门槛按独立视频提示词计数)，统计适用独立提示词集合并筛出共享对象；不能用单条多镜头代替多条提示词。
+- 视频及图像的风格编写/漏项诊断：读当前项目美术、[资产图先定画风与细节](higgsfield-style.md#资产图先定画风与细节)与[全片风格短句](higgsfield-style.md#全片风格短句)，先核资产正文的画法、部位配色和结构细节，再核视频继承，不只在视频补光照。
+- 新建/改写角色、生物、道具、场景资产：按[剧本到设计的最小闭环](asset-design-basis.md#剧本到设计的最小闭环)和[造型辨识度与身材设计](asset-design-basis.md#造型辨识度与身材设计)从资料形成可见设计，落实体量/比例、大轮廓、记忆点与功能；首次或相关诊断读[剧本驱动资产小样](template-story-driven-assets.md)。不把内部依据卡变成用户问卷。
 - 角色资产提示词：完整读取 [角色资产交付规范](template-character-asset-delivery.md)，先给资产样本；仅要角色视频时沿用已确认身份与参考职责，不输出资产提示词，缺素材说明缺项、不自动开启资产制作。
 
 ## 详规唯一归属
@@ -32,10 +36,11 @@
 | 事件时钟、叙事剪辑、生成分组 | [narrative-planning](narrative-planning.md) |
 | 观看任务、重点、调度、切/留/删并、悬念交叉剪辑节奏 | [directorial-shot-design](directorial-shot-design.md) |
 | 镜长复核、真实镜头计数与证据 | [shot-rhythm](shot-rhythm.md) |
-| 人物/非人可见行为 | [higgsfield-acting](higgsfield-acting.md) |
+| 人物/非人可见行为、听者与旁观者互动闭环 | [higgsfield-acting](higgsfield-acting.md) |
 | 空间设计、参考复用、纯环境转译、进出门方向 | [spatial-layout](spatial-layout.md) |
-| 中文命名、文件、图号、源图和Clip映射 | [asset-registry](asset-registry.md) |
-| 资产外观从故事推导、依据卡、剧本↔资产双向核对、状态图计划 | [asset-design-basis](asset-design-basis.md) |
+| 资产建立门槛、独立提示词计数、中文命名、文件、图号、源图和Clip映射 | [asset-registry](asset-registry.md) |
+| 资产外观从故事推导、身材/辨识度设计、设计链、功能推演、双向核对与状态图计划 | [asset-design-basis](asset-design-basis.md) |
+| 资产图先定画风与细节、全片风格短句、视觉参考转译与局部光色 | [higgsfield-style](higgsfield-style.md) |
 | 三层验收、复查闭环和工具边界 | [production-checks](production-checks.md) |
 | 跨会话项目记录和依赖回写 | [project-workspace](project-workspace.md) |
 | 离线模型规格信任与更新 | [model-spec-maintenance](model-spec-maintenance.md) |

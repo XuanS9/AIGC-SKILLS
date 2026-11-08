@@ -50,6 +50,13 @@ class PreflightIntegrationTests(unittest.TestCase):
                                    '--preflight', '--file', str(path), *args],
                                   capture_output=True, text=True)
 
+    def test_at_first_asset_declarations_are_recognised(self):
+        for declaration in ('@母亲 对应 母亲。', '@母亲对应母亲。'):
+            body = prompt().replace('本段无参考资产。', declaration)
+            findings, _ = self.findings(body)
+            self.assertFalse(any(f.rule in ('handles-not-declared-in-prompt', 'undeclared-handle', 'handle-used-before-declared') for f in findings), findings)
+            self.assertEqual(contract.check_document(body), ([], 1))
+
     def test_chinese_settings_and_bold_english_settings(self):
         zh = lint.parse_settings_header('画幅：16:9｜分辨率：1080p｜模式：omni_reference｜时长：8.5秒')
         self.assertEqual(zh, lint.Settings('16:9', '1080p', 'omni_reference', Decimal('8.5')))

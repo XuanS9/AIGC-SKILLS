@@ -142,7 +142,7 @@ ACTION TIMING
 1.0s onward — ROCO answers into the same rhythm, dry and worn: "You're late."
 ```
 
-> 工作室采纳了这条规则：每个 Clip 有 `恰好 N≥1 人` 时，`[声音]` 必须有一行 `0s-<第一段结束>s｜<名字>轻声：{Hm.}`，由 `director_contract_lint.py` 检查（格式归属：[跨类型导演模板](template-general-director-2-5.md)）。
+> 工作室采纳了这条规则：每个 Clip 有 `只有 N≥1 人` 时，`[声音]` 必须有一行 `0s-<第一段结束>s｜<名字>轻声：{Hm.}`，由 `director_contract_lint.py` 检查（格式归属：[跨类型导演模板](template-general-director-2-5.md)）。
 >
 > 这是 `higgsfield-seedance-production-patterns.md` 里“开场画面不空”模式的*刻意例外*，而不是和它矛盾。那条规则禁止的是**空的**开场画面：模型“到场”时画面里没有人。Hell Grind 的远景**从第一帧起就站满了人**；它扣住的是*动作*，只扣一秒，换来整场戏的位置锁定。
 
@@ -163,7 +163,7 @@ Exactly ONE mannequin, NEVER render a second one.
 FIVE smashed mannequins, never re-rendered as intact, never multiplied. Two trays, never more.
 ```
 
-计数的物件属于 POSITIVE LOCKS，写成画面里**有**什么。（工作室格式的对应写法是 `[角色]` 块的 `恰好 N 人`，以及 `[保持一致]` 里的物件数量。）
+计数的物件属于 POSITIVE LOCKS，写成画面里**有**什么。（工作室格式的对应写法是 `[角色]` 块的 `只有 N 人`，以及 `[保持一致]` 里的物件数量。）
 
 ---
 
@@ -329,7 +329,7 @@ next to a standing human = failed shot.
 
 ## 五条规则，压缩版（The five rules, compressed）
 
-1. **先做资产。**在每个角色、场景和道具都锁定并经过压力测试之前，一个镜头都不要生成。这一条省下的钱比其他所有加起来都多。
+1. **先筛选共享资产。**工作室按[独立视频提示词门槛](asset-registry.md#资产建立门槛按独立视频提示词计数)决定是否建角色／生物／道具／场景资产；单次对象保留必要文字。先锁共享设计与布局，实图压力测试只在相关风险或用户要求时执行，不升级为所有对象出图的前置门禁。
 2. **每次都描述一切。**模型没有记忆。描述词一字不差地进入每条提示词，绝不缩短。
 3. **一次只改一样东西。**整个重写提示词，你就丢掉了起作用的部分。每次迭代改一行；比较结果之后再改另一个变量。
 4. **给模型更少的自由。**一个角落而不是一个房间，一个锚点而不是开阔空间，一张地图而不是猜测，每个镜头一个动作。

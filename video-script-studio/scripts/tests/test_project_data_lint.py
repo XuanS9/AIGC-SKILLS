@@ -20,7 +20,9 @@ def fixture():
             {'name': '雪院', 'image_id': 'S01-01', 'source_image_id': 'S01',
              'actual_file': None, 'generate_separate_image': True, 'generation_method': 'image_to_image',
              'clip_scope': '1-2（0—4秒）'}]}],
-        'video_delivery': {'edit_order': ['1-1', '1-2'], 'clips': [
+        'video_delivery': {'object_usage': [
+            {'type': 'S', 'name': '长屋', 'clip_ids': ['1-1', '1-2'], 'asset_handle': '@长屋'}],
+            'edit_order': ['1-1', '1-2'], 'clips': [
             {'id': '1-1', 'duration_seconds': 8, 'scene_image_references': [
                 {'image_id': 'S01', 'time_range_seconds': None, 'actual_file': None}]},
             {'id': '1-2', 'duration_seconds': 8, 'scene_image_references': [
