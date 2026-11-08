@@ -69,15 +69,17 @@ class ContractTests(unittest.TestCase):
             'overlap': PROMPT.replace('2.5s-5s｜', '2s-5s｜'),
             'not from zero': PROMPT.replace('0s-2.5s｜', '1s-2.5s｜'),
             'reverse': PROMPT.replace('2.5s-5s｜', '2.5s-1s｜'),
-            'bad segment head': PROMPT.replace('｜视场角47°｜', '｜47°｜'),
+            'bad segment head': PROMPT.replace('｜视场角47°', '｜47°'),
             'off-anchor fov': PROMPT.replace('视场角47°', '视场角50°'),
             'non-size word': PROMPT.replace('侧面中景', '侧面看过去'),
-            'no picture line': PROMPT.replace('画面：柜台横在', '柜台横在'),
-            'no camera line': PROMPT.replace('运镜：固定，平视，不推拉。\n', ''),
-            'no action line': PROMPT.replace('动作：对方手掌', '对方手掌'),
-            'no expression line': PROMPT.replace('表情：她目光落在', '她目光落在'),
+            'no photography line': PROMPT.replace('摄影：', '构图：', 1),
+            'no performance line': PROMPT.replace('演出：', '表演：', 1),
+            'empty photography': PROMPT.replace('摄影：固定，平视，不推拉。柜台横在画面中部，她站在画面左，对方站在画面右。', '摄影：'),
+            'duplicate photography': PROMPT.replace('摄影：', '摄影：固定。\n摄影：', 1),
+            'legacy segment head': PROMPT.replace('视场角47°', '视场角47°｜固定', 1),
+            'legacy field': PROMPT.replace('摄影：', '画面：', 1),
             'no end line': PROMPT.replace('→ 结束：钥匙仍在她指间。', '钥匙仍在她指间。'),
-            'stray line': PROMPT.replace('运镜：固定，平视，不推拉。\n', '运镜：固定，平视，不推拉。\n随便一行。\n'),
+            'stray line': PROMPT.replace('摄影：', '随便一行。\n摄影：', 1),
             'settings inside': PROMPT.replace('NO BGM。', 'NO BGM。\n时长：5秒'),
             'no subtitles line': PROMPT.replace('无字幕、无水印。', ''),
             'contradictory silence': SPOKEN.replace('对白语言：英语。', '对白语言：英语。本段无对白（设计）。'),
@@ -275,25 +277,27 @@ class CraftWarningTests(unittest.TestCase):
         few = one().replace('她目光落在钥匙上，嘴唇抿紧。', '她很难过。')
         self.assertTrue(self.warns(few, '可见线索'))
         many = one().replace('她目光落在钥匙上，嘴唇抿紧。', '她眉心微收，眼眶泛红，嘴唇抿紧，鼻翼张开，喉结滚动，呼吸停顿，手指发抖。')
-        self.assertTrue(self.warns(many, '偏多'))
+        self.assertFalse(self.warns(many, '偏多'))  # combined performance density requires semantic review
         self.assertFalse(self.warns(one(), '可见线索'))
 
     def test_picture_needs_two_layout_anchors(self):
-        thin = one().replace('画面：她站在柜台前，画面左侧是窗，背景是货架。', '画面：她站在柜台前。')
+        thin = one().replace('她站在柜台前，画面左侧是窗，背景是货架。', '她站在柜台前。')
         self.assertTrue(self.warns(thin, '方位词'))
         self.assertFalse(self.warns(one(), '方位词'))
 
-    def test_action_needs_measure_or_sequence(self):
-        thin = one('4').replace('动作：她先把钥匙推到指尖，再前伸约 20 cm 后站定。', '动作：她递钥匙。')
-        self.assertTrue(self.warns(thin, '动作写得太简略'))
+    def test_natural_action_does_not_require_measure(self):
+        thin = one('4').replace('她先把钥匙推到指尖，再前伸约 20 cm 后站定。', '她将钥匙推到指尖，伸手递出。')
+        self.assertFalse(self.warns(thin, '动作写得太简略'))
+        self.assertEqual(lint.check_document(thin)[0], [])
         full = one('4')
         self.assertFalse(self.warns(full, '动作写得太简略'))
 
-    def test_listener_required_for_two_people_in_wider_shots(self):
+    def test_interaction_can_be_inline_or_separate(self):
         two = '只有 2 人，不出现其他人：林岚、周远。\n林岚：短发。身高 165 cm。\n周远：衬衫。身高 178 cm。'
         body = one(size='双人中景', fov=47).replace('[生成目标]', '[角色]\n' + two + '\n\n[生成目标]')
-        self.assertTrue(self.warns(body, '听者'))
-        body = body.replace('→ 结束：', '听者：周远看着她。\n→ 结束：')
+        self.assertFalse(self.warns(body, '听者'))
+        body = body.replace('她目光落在钥匙上，嘴唇抿紧。', '她目光落在钥匙上，嘴唇抿紧；周远见她停手，伸手托住钥匙。')
+        body = body.replace('→ 结束：', '互动：周远看着她。\n→ 结束：')
         self.assertFalse(self.warns(body, '听者'))
 
 
@@ -315,15 +319,26 @@ class VarietyAndRiskTests(unittest.TestCase):
     def warns(self, text, needle):
         return any(needle in w for w in lint.boundary_warnings(text))
 
-    def test_flat_clip_warns(self):
+    def test_repeated_cuts_request_review_not_variety_quotas(self):
         text = flat()
         self.assertEqual(lint.check_document(text)[0], [])
-        for needle in ['种景别', '视场角只用了', '全部是固定镜头', '连续 3 段同一景别']:
-            with self.subTest(needle=needle):
-                self.assertTrue(self.warns(text, needle))
+        warnings = lint.variety_warnings(text)
+        self.assertEqual(len(warnings), 1)
+        self.assertIn('单调风险待复核', warnings[0])
+        self.assertIn('有意重复可保留', warnings[0])
+        for quota in ('至少 3 种', '至少 3 档', '至少给一个', '换景别或换角度'):
+            self.assertNotIn(quota, warnings[0])
 
-    def test_short_clip_is_not_judged_for_variety(self):
-        self.assertFalse(self.warns(flat(3), '种景别'))
+    def test_continuous_fixed_take_has_no_variety_quota(self):
+        for text in (one('25'), flat().replace('切至中景', '中景')):
+            self.assertEqual(lint.check_document(text)[0], [])
+            self.assertEqual(lint.variety_warnings(text), [])
+
+    def test_review_depends_on_repeated_shots_not_twenty_seconds(self):
+        self.assertEqual(lint.variety_warnings(flat(2)), [])
+        self.assertTrue(lint.variety_warnings(flat(3)))
+        changing = flat(3).replace('3s-6s｜切至中景', '3s-6s｜切至近景')
+        self.assertEqual(lint.variety_warnings(changing), [])
 
     def test_crowd_warns_unless_frame_limit_written(self):
         text = flat(2, people=5)
@@ -398,6 +413,31 @@ class ClipBoundaryWarningTests(unittest.TestCase):
                                      '--file', str(path)], capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout)
             self.assertIn('WARN:', result.stdout)
+
+
+class CompactFormatTests(unittest.TestCase):
+    def test_sync_performance_optional_interaction_and_natural_measure(self):
+        scene = '''0s-3s｜中近景｜视场角47°
+摄影：固定，侧面略俯；Runa在画面左下，工头腿部在右侧。
+演出：Runa右掌向身下挪少许，借掌根撑起上身。右掌受力时动作短停，嘴唇轻颤、眼睑收窄；工头见她停下，空左手伸向她左上臂。
+声音：<手掌擦过湿木板>
+→ 结束：Runa上身稍起，工头左手已伸到她左上臂旁。'''
+        body = prompt([scene], cut=False)
+        self.assertEqual(lint.check_document(body)[0], [])
+        seg = lint.split_segments(scene)[0]
+        self.assertEqual(set(seg['fields']), {'摄影', '演出', '声音'})
+        self.assertIn('受力时', seg['fields']['演出'][0])
+        self.assertIn('固定', seg['move'])
+        self.assertFalse(any('动作写得太简略' in w or '听者' in w
+                             for w in lint.craft_warnings(body)))
+        separate = body.replace('；工头见她停下', '。\n互动：工头见她停下')
+        self.assertEqual(lint.check_document(separate)[0], [])
+
+    def test_all_new_fields_nonempty_and_unique(self):
+        for label in ('摄影', '演出'):
+            with self.subTest(label=label):
+                invalid = PROMPT.replace(label + '：', label + '：\n' + label + '：', 1)
+                self.assertTrue(lint.check_document(invalid)[0])
 
 
 if __name__ == '__main__':

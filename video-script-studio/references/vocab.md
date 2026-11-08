@@ -1,6 +1,6 @@
 # Higgsfield 词汇参考（Higgsfield Vocabulary Reference）
 
-本文件是术语表：英文术语本身就是提示词词汇，保留原文；释义用中文。工作室块结构稿里，这些词按需要写进 `[具体情节]` 段头与 `运镜：`/`画面：` 行、`[视觉风格]`、`[镜头]`；英文预设名照原样写。
+本文件是术语表：英文术语本身就是提示词词汇，保留原文；释义用中文。工作室块结构稿里，这些词按需要写进 `[具体情节]` 段头与 `摄影：` 行、`[视觉风格]`、`[镜头]`；英文预设名照原样写。
 
 ## 运镜术语（Camera Movement Terminology）
 
@@ -79,7 +79,7 @@
 
 提示词里表示时间和剪辑结构的写法惯例。
 
-- **`[0-Ns]` 括号写法**：单个连续镜头内各阶段的时间区间前缀。例：`[0-3s] subject enters frame, [3-7s] camera pushes in`。用于单镜头连续运动里的逐秒节拍（见 `higgsfield-seedance.md` § Single-vs-multi-shot decision）。工作室格式改用段头 `起s-止s｜景别｜视场角N°｜运镜`。
+- **`[0-Ns]` 括号写法**：单个连续镜头内各阶段的时间区间前缀。例：`[0-3s] subject enters frame, [3-7s] camera pushes in`。用于单镜头连续运动里的逐秒节拍（见 `higgsfield-seedance.md` § Single-vs-multi-shot decision）。工作室格式改用段头 `起s-止s｜景别｜视场角N°`。
 - **`Establishing → phrase → reaction` 箭头写法**：多镜头对白或节拍段落的剪辑流写法。读作“建立镜头，然后台词，然后反应镜头”。三拍切镜结构的紧凑速记。
 
 ### 运动层级（Motion Hierarchy）
@@ -322,7 +322,7 @@
 
 下面的微表情词汇一节列出具名的终点表情（憋住的笑、冷静盘算等）：它们是这些通道的组合。上面的通道是底层；具名表情是底层产生的东西。
 
-这八个通道是情绪的**行为**拆解。**解剖**拆解（把具名的面部肌肉写成 FACS 动作单元代码，如 AU6 脸颊上提、AU12 嘴角上提，用于肌肉级的 Seedance 控制）是它的同类，在 `higgsfield-facs.md`。通道说身体*做*什么；AU 说哪些*肌肉*在动。工作室格式里，这些线索写在 `[具体情节]` 各段的 `表情：` 行，近景/特写写 2–4 个。
+这八个通道是情绪的**行为**拆解。**解剖**拆解（把具名的面部肌肉写成 FACS 动作单元代码，如 AU6 脸颊上提、AU12 嘴角上提，用于肌肉级的 Seedance 控制）是它的同类，在 `higgsfield-facs.md`。通道说身体*做*什么；AU 说哪些*肌肉*在动。工作室格式里，这些线索写在 `[具体情节]` 各段的 `演出：` 行，近景/特写写 2–4 个。
 
 ---
 
@@ -445,7 +445,7 @@
 - `Foreground plane: particle layer only — no subject.`
 - `Background: unlit void, no detail.`
 
-原资料建议总是在负面提示里强化区域规则（见上文 § Negative-prompt reinforcement 及其工作室范围）。下文 § Negative space 是空间分区体系里一种常见的区域类型。工作室格式里，区域写在 `[具体情节]` 各段的 `画面：` 行（前景/中景/背景、画面左/右/上/下）。
+原资料建议总是在负面提示里强化区域规则（见上文 § Negative-prompt reinforcement 及其工作室范围）。下文 § Negative space 是空间分区体系里一种常见的区域类型。工作室格式里，区域写在 `[具体情节]` 各段的 `摄影：` 行（前景/中景/背景、画面左/右/上/下）。
 
 > 属于“五支柱电影运动语言”框架，另见 § Camera Movement Terminology → Camera Contract、§ Motion Physics Anchor、§ Lens Behavior Sequence、§ Negative space（下文）。译自 Adil Aliyev 的 cinematic-motion-language 原始语料。
 

@@ -123,7 +123,7 @@ Include these Action Units (one captioned panel each):
 
 ## 第 2 步：把 AU 代码写进 Seedance 提示词（Step 2 — Put AU Codes in the Seedance Prompt）
 
-选好之后，可选的 AU 跟在相应的计时可见行为后面。根入口的工作室块结构契约和实际的模型/模式优先；下面的 Seedance 2.0 示例不是通用的平台要求。FACS 只细化面部描述。工作室格式里，AU 写在 `[具体情节]` 各段的 `表情：` 行。
+选好之后，可选的 AU 跟在相应的计时可见行为后面。根入口的工作室块结构契约和实际的模型/模式优先；下面的 Seedance 2.0 示例不是通用的平台要求。FACS 只细化面部描述。工作室格式里，AU 写在 `[具体情节]` 各段的 `演出：` 行。
 
 ### 两种写法：两种都试（Two specification styles — test both）
 
@@ -270,7 +270,7 @@ Include these Action Units (one captioned panel each):
 
 ## 物理微节拍：脸以外的身体（Physical Micro-Beats — the Body Beyond the Face）
 
-`[OFFICIAL — Higgsfield shotlist-builder skill, 2026-07; re-authored from the Chinese source]`：AU 代码止于脸。制作中的表演指导把同样肌肉级的纪律延伸到**喉、呼吸、皮肤和姿态**。这些配方和 AU 代码一起（或代替它）放进提示词的表演描述里（工作室格式：`[具体情节]` 各段的 `动作：`/`表情：`/`听者：` 行）。
+`[OFFICIAL — Higgsfield shotlist-builder skill, 2026-07; re-authored from the Chinese source]`：AU 代码止于脸。制作中的表演指导把同样肌肉级的纪律延伸到**喉、呼吸、皮肤和姿态**。这些配方和 AU 代码一起（或代替它）放进提示词的表演描述里（工作室格式：`[具体情节]` 各段的 `演出：`/`互动：` 行）。
 
 **这些是菜单，不是清单。**只挑表达当前触发、且在所选景别下看得见或听得见的线索。**2–4 个破绽**是可选示例，不是下限也不是上限；面部 AU 经验不给身体动作设配额。保留完整的动作/反应链，挑有意义的呼吸或微表情细节，不加每秒一个的节拍表：
 

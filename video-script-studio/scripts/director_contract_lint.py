@@ -41,15 +41,15 @@ HEADER = BLOCK
 LEGACY_HEADER = re.compile(r'^\s*[【\[](参考素材职责|一句话概述|全局补充)[】\]]\s*$|^\s*【具体情节】\s*$|^\s*\[阶段\s*\d', re.M)
 CLIP = re.compile(r'^#{1,6}\s+Clip\s+([1-9]\d*-[1-9]\d*)(?=\s|[｜|]|$)', re.I)
 NUMBER = r'(?:\d+(?:\.\d+)?)'
-# Segment head inside [具体情节]:  1s-4s｜切至双人中景｜视场角47°｜固定
+# Segment head inside [具体情节]:  1s-4s｜切至双人中景｜视场角47°
 SEGMENT = re.compile(
     rf'^\s*({NUMBER})\s*s\s*-\s*({NUMBER})\s*s\s*[｜|]\s*([^｜|\n]+?)\s*[｜|]'
-    r'\s*视场角\s*(\d+)\s*°\s*[｜|]\s*([^｜|\n]+?)\s*$', re.M)
+    r'\s*视场角\s*(\d+)\s*°\s*$', re.M)
 TIME_LOOSE = re.compile(rf'^\s*{NUMBER}\s*s?\s*[-–—~～至]\s*{NUMBER}\s*(?:s|秒)', re.M)
 TIME = re.compile(rf'^\s*({NUMBER})\s*s\s*-\s*({NUMBER})\s*s\s*[｜|]', re.M)
 # '对白' is parsed only to report it: dialogue belongs in [声音].
-SEGMENT_FIELDS = ('画面', '运镜', '动作', '表情', '听者', '声音', '对白')
-REQUIRED_FIELDS = ('画面', '运镜', '动作', '表情')
+SEGMENT_FIELDS = ('摄影', '演出', '互动', '声音', '对白')
+REQUIRED_FIELDS = ('摄影', '演出')
 FOV_ANCHORS = {180, 107, 84, 63, 47, 29, 18, 12, 8}
 # Longest first so 中近景 is not read as 中景 or 近景.
 SIZE_RANK = [('大特写', 7), ('大远景', 0), ('大全景', 1), ('中全景', 2), ('中近景', 4), ('过肩', 4),
@@ -305,7 +305,7 @@ def split_segments(scene: str) -> list[dict]:
             line = line.strip()
             if not line:
                 continue
-            f = re.match(r'^(画面|运镜|动作|表情|听者|声音|对白)\s*[:：]\s*(.*)$', line)
+            f = re.match(r'^(摄影|演出|互动|声音|对白)\s*[:：]\s*(.*)$', line)
             e = re.match(r'^→\s*结束\s*[:：]\s*(.*)$', line)
             if f:
                 fields.setdefault(f.group(1), []).append(f.group(2))
@@ -315,7 +315,7 @@ def split_segments(scene: str) -> list[dict]:
                 fields.setdefault('_stray', []).append(line)
         out.append(dict(start=Decimal(m.group(1)), end=Decimal(m.group(2)),
                         size=full.group(3) if full else '', fov=int(full.group(4)) if full else None,
-                        move=full.group(5) if full else '', head=head, full=bool(full),
+                        move=' '.join(fields.get('摄影', [])) if full else '', head=head, full=bool(full),
                         fields=fields, end_state=end_state, raw=body))
     return out
 
@@ -323,17 +323,17 @@ def split_segments(scene: str) -> list[dict]:
 def segment_errors(scene: str, segments: list, duration) -> list[str]:
     errors = []
     if not segments:
-        errors.append('[具体情节] 缺少时间段，如 “0s-1s｜双人全景｜视场角84°｜固定”')
+        errors.append('[具体情节] 缺少时间段，如 “0s-1s｜双人全景｜视场角84°”')
         return errors
     if scene[:TIME.search(scene).start()].strip():
         errors.append('[具体情节] 首个时间段前有未分配内容')
     if TIME_LOOSE.search(scene) and len(TIME_LOOSE.findall(scene)) != len(segments):
-        errors.append('[具体情节] 含无法解析的时间段：段头须为 “1s-4s｜景别｜视场角47°｜运镜”')
+        errors.append('[具体情节] 含无法解析的时间段：段头须为 “1s-4s｜景别｜视场角47°”')
     previous = Decimal(0)
     for seg in segments:
         label = f"{seg['start']}s-{seg['end']}s"
         if not seg['full']:
-            errors.append(f'{label}：段头须为 “{label}｜景别｜视场角N°｜运镜”')
+            errors.append(f'{label}：段头须为 “{label}｜景别｜视场角N°”')
             previous = seg['end']
             continue
         if seg['start'] != previous:
@@ -349,13 +349,16 @@ def segment_errors(scene: str, segments: list, duration) -> list[str]:
         for name in REQUIRED_FIELDS:
             if name not in seg['fields']:
                 errors.append(f'{label}：缺少 “{name}：” 行')
+        for name, values in seg['fields'].items():
+            if name != '_stray' and (len(values) != 1 or not values[0].strip()):
+                errors.append(f'{label}：{name}行须非空且只出现一次')
         if seg['end_state'] is None:
             errors.append(f'{label}：须以 “→ 结束：” 收尾')
         if '对白' in seg['fields']:
             errors.append(f'{label}：台词不写在段内；移到 [声音]：“{label}｜说话人＋状态＋说：{{English line}}”，'
-                          '段内 动作/表情 只写看得见的说话动作（张口、气息、姿态）')
+                          '段内 演出 只写看得见的说话动作（张口、气息、姿态）')
         if seg['fields'].get('_stray'):
-            errors.append(f"{label}：有未归类的行 “{seg['fields']['_stray'][0][:16]}…”；只用 画面/运镜/动作/表情/听者/声音 与 → 结束")
+            errors.append(f"{label}：有未归类的行 “{seg['fields']['_stray'][0][:16]}…”；只用 摄影/演出/互动/声音 与 → 结束")
         previous = seg['end']
     if duration is not None and previous != duration:
         errors.append(f'时间轴终点 {previous}s 与声明时长 {duration}s 不符')
@@ -466,7 +469,7 @@ def readability_errors(body: str, parts: dict, segments: list) -> list[str]:
     # Plot = action, expression and listener lines; positions/light may be restated
     # in [保持一致] (Higgsfield's Maintain Consistency repeats spatial direction).
     stage_clauses = {c.strip() for seg in segments
-                     for name in ('动作', '表情', '听者') for line in seg['fields'].get(name, [])
+                     for name in ('演出', '互动') for line in seg['fields'].get(name, [])
                      for c in clause.split(line) if len(c.strip()) >= 6}
     repeated = [c for c in clause.split(parts['保持一致'] + '\n' + parts['视觉风格'])
                 if len(c.strip()) >= 6 and c.strip() in stage_clauses]
@@ -540,19 +543,18 @@ def size_jump(text: str) -> int:
 
 
 def craft_warnings(text: str) -> list[str]:
-    """Camera, expression, listener and density checks per segment (WARN only)."""
+    """Camera/composition and close-up cues; interaction/density need semantic review."""
     warnings = []
     for clip in parse_clips(text):
         blocks = {n: c for n, _, c in split_blocks(clip.body)}
         scene = blocks.get('具体情节', '')
         people = re.search(r'只有\s*(\d+)\s*人', blocks.get('角色', ''))
-        many = people is not None and int(people.group(1)) >= 2
         for seg in split_segments(scene):
             if not seg['full']:
                 continue
             label = f"{clip.name} {seg['start']}s-{seg['end']}s"
             length = seg['end'] - seg['start']
-            camera_line = ' '.join(seg['fields'].get('运镜', []))
+            camera_line = ' '.join(seg['fields'].get('摄影', []))
             kind, minimum = camera_kind(seg['move'] + ' ' + camera_line)
             moving = kind not in (None, '固定')
             if moving and kind != '手持' and not CAMERA_MEASURE.search(camera_line):
@@ -566,23 +568,13 @@ def craft_warnings(text: str) -> list[str]:
                 if a in camera_line + seg['move'] and b in camera_line + seg['move']:
                     warnings.append(f'{label}: 同一段同时有“{a}”和“{b}”；一镜一个主运动')
             rank = size_rank(seg['size'])
-            expression = ' '.join(seg['fields'].get('表情', []))
+            expression = ' '.join(seg['fields'].get('演出', []))
             cues = len(set(EXPRESSION_CUES.findall(expression)))
-            if rank is not None and rank >= CLOSE and cues < 2 and not expression.startswith('不适用'):
+            if rank is not None and rank >= CLOSE and cues < 2 and '不适用' not in expression and not (people and int(people.group(1)) == 0):
                 warnings.append(f'{label}: {seg["size"]}的表情只有 {cues} 个可见线索；近景/特写写 2–4 个（眼、眉、嘴、呼吸、手）')
-            if cues > 5:
-                warnings.append(f'{label}: 表情线索 {cues} 个，偏多；一次情绪变化写 2–4 个即可')
-            if many and rank is not None and rank <= 3 and '听者' not in seg['fields'] and not expression.startswith('不适用'):
-                warnings.append(f'{label}: 两人以上同框却没写“听者：”；画面里其他人也要有可见反应')
-            picture = ' '.join(seg['fields'].get('画面', []))
+            picture = ' '.join(seg['fields'].get('摄影', []))
             if len(set(LAYOUT_WORDS.findall(picture))) < 2:
                 warnings.append(f'{label}: 画面只有 {len(set(LAYOUT_WORDS.findall(picture)))} 个方位词；写清前景/中景/背景与画面左/右/上/下各有什么')
-            action = ' '.join(seg['fields'].get('动作', []))
-            if length >= 2 and not (ACTION_DETAIL.search(action) or len(re.findall(r'[，；]', action)) >= 2):
-                warnings.append(f'{label}: 动作写得太简略；写起势→过程→结果，并给出幅度（cm）、用时（秒）或速度（km/h）')
-            actions = len(re.findall(r'[，；。]', action))
-            if moving and kind in ('环绕', '升降/揭示') and actions > 3:
-                warnings.append(f'{label}: 大运镜段动作偏多；运镜幅度大时动作要少（每5秒1–2个主要动作）')
     return warnings
 
 
@@ -594,7 +586,7 @@ def boundary_warnings(text: str) -> list[str]:
         if not beats:
             continue
         (fsize, fmove, first), (lsize, lmove, last) = beats[0], beats[-1]
-        camera_line = ' '.join(l for l in last.splitlines() if l.strip().startswith('运镜'))
+        camera_line = ' '.join(l for l in last.splitlines() if l.strip().startswith('摄影'))
         end_line = last.split('→', 1)[-1]
         camera_tail = re.split(r'[，。；]', camera_line.rstrip('。'))[-1] if camera_line else ''
         tail = ' '.join([lmove if not camera_line else '', camera_tail, end_line])
@@ -609,7 +601,7 @@ def boundary_warnings(text: str) -> list[str]:
         rank = size_rank(fsize)
         if rank is not None and rank > 3:
             warnings.append(f'{clip.name}: 首镜是{fsize}；定位秒默认全景，按戏份可用中景')
-        picture = ' '.join(l for l in first.splitlines() if l.strip().startswith('画面'))
+        picture = ' '.join(l for l in first.splitlines() if l.strip().startswith('摄影'))
         if not STATE_WORDS.search(picture or first[:160]):
             warnings.append(f'{clip.name}: 首镜画面未写人物位置/朝向/持物；定位秒需让画面先到位')
     for (prev, pb), (nxt, nb) in zip(rows, rows[1:]):
@@ -622,27 +614,29 @@ def boundary_warnings(text: str) -> list[str]:
 
 
 
-# Visual variety (template §1 镜头变化). WARN only: a 20 s+ clip that stays at
-# one or two shot sizes, never moves, or repeats a size three times reads flat.
+# Repeated coverage is a review signal, never a shot/FOV/movement quota.
 def variety_warnings(text: str) -> list[str]:
+    """Conservative explicit-cut review; segments are not necessarily shots."""
     warnings = []
     for clip in parse_clips(text):
-        segs = [s for s in split_segments(next((c for n, _, c in split_blocks(clip.body) if n == '具体情节'), '')) if s['full']]
-        if not segs:
-            continue
-        total = segs[-1]['end']
-        ranks = [size_rank(s['size']) for s in segs]
-        if total >= 20 and len({r for r in ranks if r is not None}) < 3:
-            warnings.append(f'{clip.name}: {total} 秒只用了 {len({r for r in ranks if r is not None})} 种景别；20 秒以上建议至少 3 种（远/全/中/近/特写）')
-        if total >= 20 and len({s['fov'] for s in segs}) < 3:
-            warnings.append(f'{clip.name}: 视场角只用了 {len({s["fov"] for s in segs})} 档；20 秒以上建议至少 3 档')
-        if total >= 20 and all(camera_kind(s['move'])[0] in (None, '固定') for s in segs):
-            warnings.append(f'{clip.name}: {total} 秒全部是固定镜头；至少给一个有动机的运镜（推近、跟拍、揭示）')
-        run = 1
-        for a, b in zip(ranks, ranks[1:]):
-            run = run + 1 if a is not None and a == b else 1
-            if run == 3:
-                warnings.append(f'{clip.name}: 连续 3 段同一景别；换景别或换角度，或合并成一段')
+        scene = next((c for n, _, c in split_blocks(clip.body) if n == '具体情节'), '')
+        segs = [s for s in split_segments(scene) if s['full']]
+        shots = []
+        for seg in segs:
+            if not shots or re.search(r'切至|硬切|反打|切回', seg['size']):
+                shots.append([])
+            shots[-1].append(seg)
+        signatures = []
+        for shot in shots:
+            # A shot changing size or move across its segments is not repeated
+            # coverage merely because its opening resembles the previous shot.
+            values = {(size_rank(s['size']), camera_kind(s['move'])[0]) for s in shot}
+            signature = next(iter(values)) if len(values) == 1 else None
+            signatures.append(signature if signature and None not in signature else None)
+        for i in range(2, len(signatures)):
+            if signatures[i] is not None and signatures[i] == signatures[i - 1] == signatures[i - 2]:
+                warnings.append(f'{clip.name}: 单调风险待复核：明确切镜标记显示连续3个镜头景别与主运镜相同；'
+                                '核观看任务、调度与停留价值，有意重复可保留，在块外记录理由；不要求增加景别、视场角或运镜')
                 break
     return warnings
 
@@ -669,7 +663,7 @@ def risk_warnings(text: str) -> list[str]:
             if not seg['full']:
                 continue
             label = f"{clip.name} {seg['start']}s-{seg['end']}s"
-            picture = ' '.join(seg['fields'].get('画面', []))
+            picture = ' '.join(seg['fields'].get('摄影', []))
             if re.search(r'屏幕里|屏幕中|取景框里|画面里的画面|镜子里|倒影里', picture):
                 warnings.append(f'{label}: 画中画（屏幕/镜子/倒影里的人物）容易出错；备选：只拍屏幕的光照在脸上，或切到被拍的人')
     return warnings

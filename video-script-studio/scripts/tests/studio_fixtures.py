@@ -3,10 +3,10 @@
 
 def segment(start, end, size, fov, move, *, picture, camera, action, expression,
             listener=None, sound=None, end_state):
-    lines = [f'{start}s-{end}s｜{size}｜视场角{fov}°｜{move}',
-             f'画面：{picture}', f'运镜：{camera}', f'动作：{action}', f'表情：{expression}']
+    lines = [f'{start}s-{end}s｜{size}｜视场角{fov}°',
+             f'摄影：{camera}{picture}', f'演出：{action}{expression}']
     if listener:
-        lines.append(f'听者：{listener}')
+        lines.append(f'互动：{listener}')
     if sound:
         lines.append(f'声音：{sound}')
     lines.append(f'→ 结束：{end_state}')

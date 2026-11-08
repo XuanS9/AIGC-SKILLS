@@ -17,7 +17,7 @@ import director_contract_lint as contract
 
 REVIEW_THRESHOLD = Decimal(3)
 MIN_EQUAL_RUN = 4
-# Each [具体情节] segment "0s-3s｜景别｜视场角N°｜运镜": a segment whose shot size opens
+# Each [具体情节] segment "0s-3s｜景别｜视场角N°": a segment whose shot size opens
 # with a cut word ("切至…") starts a new shot; any other segment continues the
 # current shot (one continuous take across segments).
 CUT_OPEN = re.compile(r'^(?:切至|切到|切回|硬切|反打|甩镜)')
